@@ -28,9 +28,18 @@ class Profile extends StatelessWidget {
                 children: ListTile.divideTiles(
                   context: context,
                   tiles: [
-                    ProfileField(),
-                    ProfileField(),
-//                        Profile()
+                    ProfileField(
+                      fieldValue: 'Male',
+                      fieldLabel: 'Gender',
+                    ),
+                    ProfileField(
+                      fieldValue: 'Sample Address',
+                      fieldLabel: 'Address',
+                    ),
+                    ProfileField(
+                      fieldValue: '123-4567',
+                      fieldLabel: 'Tel. No.',
+                    ),
                   ]
                 ).toList(),
               ),
@@ -43,19 +52,54 @@ class Profile extends StatelessWidget {
 }
 
 class ProfileField extends StatefulWidget {
-  ProfileField({Key key}) : super (key: key);
+  final String fieldValue;
+  final String fieldLabel;
+  String updateLabel;
+
+  ProfileField({
+    Key key,
+    this.fieldValue,
+    this.fieldLabel,
+  }) : super (key: key){
+    this.updateLabel = 'Update $fieldLabel';
+  }
 
   @override
   _ProfileFieldState createState() => _ProfileFieldState();
 }
 
 class _ProfileFieldState extends State<ProfileField> {
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('Male'),
-      subtitle: Text('Gender'),
-      trailing: Icon(Icons.edit),
+      title: Text(widget.fieldValue),
+      subtitle: Text(widget.fieldLabel),
+      trailing: IconButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext buildContext) {
+              return SimpleDialog(
+                title: Text(widget.updateLabel),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.0)
+                ),
+                children: <Widget>[
+                  SimpleDialogOption(
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                    },
+                    child: Text('Close'),
+                  )
+                ],
+                semanticLabel: widget.updateLabel,
+              );
+            }
+          );
+        },
+        icon: Icon(Icons.edit)
+      ),
     );
   }
 }
