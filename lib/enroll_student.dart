@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'home_page.dart';
 
 class EnrollStudent extends StatefulWidget {
   @override
@@ -52,7 +53,10 @@ class _EnrollStudentState extends State<EnrollStudent> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          Route route = MaterialPageRoute(builder: (context) => HomePage());
+          Navigator.push(context, route);
+        },
         isExtended: true,
         label: Text('Enroll'),
         elevation: 4.0,
