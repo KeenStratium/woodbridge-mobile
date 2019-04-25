@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'home.dart';
+import 'student_picker.dart';
 import 'login.dart';
 
 class WoodbridgeApp extends StatelessWidget {
@@ -8,7 +8,7 @@ class WoodbridgeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Woodbridge',
-      home: HomePage(),
+      home: StudentPicker(),
       initialRoute: '/login',
       onGenerateRoute: _getRoute,
     );

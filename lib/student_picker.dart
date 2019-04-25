@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'enroll_student.dart';
 
-class HomePage extends StatelessWidget {
+class StudentPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +102,8 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-
+                          Route route = MaterialPageRoute(builder: (context) => EnrollStudent());
+                          Navigator.push(context, route);
                         },
                         elevation: 3.0,
                         padding: EdgeInsets.symmetric(vertical: 16.0),
