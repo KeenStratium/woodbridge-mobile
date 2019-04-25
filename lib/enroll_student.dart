@@ -74,11 +74,12 @@ class _EnrollStudentState extends State<EnrollStudent> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 32.0),
+                    alignment: AlignmentDirectional.topStart,
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
                       'Basic Information',
                       style: TextStyle(
-                        fontSize: 20.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.w700
                       ),
                     ),

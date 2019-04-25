@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'notifications.dart';
+import 'profile.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -71,17 +72,15 @@ class HomePage extends StatelessWidget {
                     MenuItem(
                         icon: Icons.notifications_none,
                         label: 'Notifications',
-//                        gestureCallback: () {
-//                          Route route = MaterialPageRoute(builder: (context) => Notifications());
-//                          Navigator.push(context, route);
-//                        }
                         pageBuilder: Notifications(),
                         buildContext: context,
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
                         icon: Icons.person_outline,
-                        label: 'Profile'
+                        label: 'Profile',
+                        pageBuilder: Profile(),
+                        buildContext: context,
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
@@ -164,8 +163,8 @@ class MenuItem extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w600
+                fontSize: 16.0,
+                fontWeight: FontWeight.w600
               ),
             ),
           ],
