@@ -71,7 +71,12 @@ class HomePage extends StatelessWidget {
                     MenuItem(
                         icon: Icons.notifications_none,
                         label: 'Notifications',
-                        pageRoute: MaterialPageRoute(builder: (context) => Notifications())
+//                        gestureCallback: () {
+//                          Route route = MaterialPageRoute(builder: (context) => Notifications());
+//                          Navigator.push(context, route);
+//                        }
+                        pageBuilder: Notifications(),
+                        buildContext: context,
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
@@ -130,20 +135,22 @@ class MenuItem extends StatelessWidget {
     this.child,
     this.label,
     this.icon,
-    this.pageRoute
+    this.pageBuilder,
+    this.buildContext
   }) : super(key: key);
 
   final Widget child;
   final IconData icon;
   final String label;
-  final Route pageRoute;
+  final Widget pageBuilder;
+  final BuildContext buildContext;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Route route = pageRoute;
-        Navigator.push(context, route);
+        Route route = MaterialPageRoute(builder: (buildContext) => pageBuilder);
+        Navigator.push(buildContext, route);
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24.0),
