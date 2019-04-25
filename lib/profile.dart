@@ -8,52 +8,34 @@ class Profile extends StatelessWidget {
         title: Text('Profile'),
       ),
       body: SafeArea(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              Container(
-                alignment: AlignmentDirectional.topStart,
-                padding: EdgeInsets.symmetric(vertical: 28.0, horizontal: 20.0),
-                child: Text(
-                  'Basic Information',
-                  style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w700
-                  ),
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: AlignmentDirectional.topStart,
+              padding: EdgeInsets.symmetric(vertical: 28.0, horizontal: 20.0),
+              child: Text(
+                'Basic Information',
+                style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700
                 ),
               ),
-              Divider(height: 1.0, color: Colors.grey[300]),
-              Expanded(
-//                fit: FlexFit.loose,
-                flex: 1,
-                child: ListView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: ListTile.divideTiles(
-                    context: context,
-                    tiles: [
-                      ListTile(
-                        title: Text('Male'),
-                        subtitle: Text('Gender'),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.edit)
-                        ),
-                      ),
-                      ListTile(
-                        title: Text('Male'),
-                        subtitle: Text('Gender'),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.edit)
-                        ),
-                      ),
+            ),
+            Divider(height: 1.0, color: Colors.grey[300]),
+            Flexible(
+              child: ListView(
+                physics: NeverScrollableScrollPhysics(),
+                children: ListTile.divideTiles(
+                  context: context,
+                  tiles: [
+                    ProfileField(),
+                    ProfileField(),
 //                        Profile()
-                    ]
-                  ).toList(),
-                ),
-              )
-            ],
-          ),
+                  ]
+                ).toList(),
+              ),
+            )
+          ],
         ),
       ),
     );
