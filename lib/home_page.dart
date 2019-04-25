@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'notifications.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -69,7 +70,8 @@ class HomePage extends StatelessWidget {
                   children: <Widget>[
                     MenuItem(
                         icon: Icons.notifications_none,
-                        label: 'Notifications'
+                        label: 'Notifications',
+                        pageRoute: MaterialPageRoute(builder: (context) => Notifications())
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
@@ -127,29 +129,22 @@ class MenuItem extends StatelessWidget {
     Key key,
     this.child,
     this.label,
-    this.icon
+    this.icon,
+    this.pageRoute
   }) : super(key: key);
 
   final Widget child;
   final IconData icon;
   final String label;
+  final Route pageRoute;
 
   @override
   Widget build(BuildContext context) {
-//    return FlatButton.icon(
-//      padding: EdgeInsets.symmetric(vertical: 16.0),
-//      onPressed: () {},
-//      icon: Icon(icon),
-//      label: Text(
-//        label,
-//        style: TextStyle(
-//            fontSize: 16.0,
-//            fontWeight: FontWeight.w600
-//        ),
-//      ),
-//    );
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Route route = pageRoute;
+        Navigator.push(context, route);
+      },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24.0),
         child: Row(
