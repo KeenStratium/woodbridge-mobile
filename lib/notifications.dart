@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
+import 'woodbridge-ui_components.dart';
 
 final List<Object> _notificationData = [
   {'msg': 'Teacher has posted your 1st quarter grade', 'postDate': 'about an hour ago'},
   {'msg': 'Teacher has posted your 2nd quarter grade', 'postDate': 'about two hours ago'},
   {'msg': 'Teacher has posted your 3rd quarter grade', 'postDate': 'about three hours ago'},
 ];
-//
-//final Iterable<Widget> _notificationViews = _notificationData.map((notif) =>
-//  new _TextNotifications(
-//    msg: notif.msg,
-//    postDate: notif.postDate
-//  )
-//);
-
 
 class Notifications extends StatelessWidget {
   @override
@@ -24,32 +17,7 @@ class Notifications extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CircleAvatar(
-                        backgroundColor: Colors.tealAccent[700],
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      Text(
-                        'Kion Kefir C. Gargar',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w700
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Divider(height: 1.0, color: Colors.grey[300]),
-              ],
-            ),
+            ProfileHeader(),
             Flexible(
               child: ListView(
                 children: ListTile.divideTiles(
