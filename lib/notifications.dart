@@ -81,13 +81,11 @@ class Notifications extends StatelessWidget {
 class _TextNotifications extends StatefulWidget {
   final String msg;
   final String postDate;
-  final Icon icon;
 
   _TextNotifications({
     Key key,
     this.msg,
     this.postDate,
-    this.icon
 }) : super (key: key);
 
   @override
