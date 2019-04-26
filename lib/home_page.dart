@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'notifications.dart';
 import 'profile.dart';
+import 'grades.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -85,7 +86,9 @@ class HomePage extends StatelessWidget {
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
                       icon: Icons.star_border,
-                      label: 'Grades'
+                      label: 'Grades',
+                      pageBuilder: Grades(),
+                      buildContext: context,
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
