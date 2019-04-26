@@ -31,14 +31,32 @@ class Profile extends StatelessWidget {
                     ProfileField(
                       fieldValue: 'Male',
                       fieldLabel: 'Gender',
+                      child: TextField(
+                        decoration: InputDecoration(
+                            hintText: 'Male'
+                        ),
+                        autofocus: true,
+                      ),
                     ),
                     ProfileField(
                       fieldValue: 'Sample Address',
                       fieldLabel: 'Address',
+                      child: TextField(
+                        decoration: InputDecoration(
+                            hintText: 'Sample Address'
+                        ),
+                        autofocus: true,
+                      ),
                     ),
                     ProfileField(
                       fieldValue: '123-4567',
                       fieldLabel: 'Tel. No.',
+                      child: TextField(
+                        decoration: InputDecoration(
+                            hintText: '123-4567'
+                        ),
+                        autofocus: true,
+                      ),
                     ),
                   ]
                 ).toList(),
@@ -54,12 +72,14 @@ class Profile extends StatelessWidget {
 class ProfileField extends StatefulWidget {
   final String fieldValue;
   final String fieldLabel;
+  final Widget child;
   String updateLabel;
 
   ProfileField({
     Key key,
     this.fieldValue,
     this.fieldLabel,
+    this.child,
   }) : super (key: key){
     this.updateLabel = 'Update $fieldLabel';
   }
@@ -80,17 +100,44 @@ class _ProfileFieldState extends State<ProfileField> {
           showDialog(
             context: context,
             builder: (BuildContext buildContext) {
-              return SimpleDialog(
+              return AlertDialog(
                 title: Text(widget.updateLabel),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6.0)
                 ),
-                children: <Widget>[
-                  SimpleDialogOption(
+                content: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: widget.child
+                    )
+                  ],
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.grey[700]
+                      ),
+                    ),
+                    textTheme: ButtonTextTheme.normal,
                     onPressed: () {
                       Navigator.pop(context, true);
                     },
-                    child: Text('Close'),
+                  ),
+                  FlatButton(
+                    child: Text(
+                      'Update',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    textTheme: ButtonTextTheme.accent,
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                    },
                   )
                 ],
                 semanticLabel: widget.updateLabel,
