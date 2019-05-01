@@ -3,6 +3,7 @@ import 'notifications.dart';
 import 'profile.dart';
 import 'grades.dart';
 import 'attendance.dart';
+import 'activities.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -93,15 +94,17 @@ class HomePage extends StatelessWidget {
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
-                        icon: Icons.event_available,
-                        label: 'Attendance',
+                      icon: Icons.event_available,
+                      label: 'Attendance',
                       pageBuilder: Attendance(),
                       buildContext: context,
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
-                        icon: Icons.event,
-                        label: 'Calendar of Activities'
+                      icon: Icons.event,
+                      label: 'Calendar of Activities',
+                      pageBuilder: Activities(),
+                      buildContext: context,
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(

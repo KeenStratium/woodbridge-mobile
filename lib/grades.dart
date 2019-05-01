@@ -12,6 +12,11 @@ class Grade {
   Grade({this.subject, this.first, this.second, this.third, this.fourth, this.ave});
 }
 
+class Areas {
+  String number;
+  String location;
+}
+
 List<Grade> grades = <Grade>[
   Grade(subject: 'Reading Readiness', first: 'MS', second: 'S', third: 'S', fourth: 'S', ave: 'S'),
   Grade(subject: 'Math', first: 'MS', second: 'S', third: 'VS', fourth: 'S', ave: 'MS'),
@@ -104,7 +109,7 @@ class Grades extends StatelessWidget {
                             Text(grade.ave),
                           )
                         ]
-                    )).toList()
+                    )).toList(),
                 ),
               )
             ],
