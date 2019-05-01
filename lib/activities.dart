@@ -73,68 +73,86 @@ class Activities extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: EdgeInsets.all(20.0),
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: events.length,
-                  itemExtent: 96.0,
-                  cacheExtent: 96.0,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Container(
-                        height: 80.0,
-                        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey[200],
-                            width: 1.00
-                          )
+                child: Flex(
+                  direction: Axis.vertical,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Text(
+                        'January',
+                        style: TextStyle(
+                            fontSize: 18.0,
+                          fontWeight: FontWeight.w600
                         ),
-                        child: Flex(
-                          direction: Axis.horizontal,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(right: 24.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    events[index].day,
-                                    style: TextStyle(
-                                      fontSize: 24.0
-                                    ),
-                                  ),
-                                  Text(events[index].weekday,)
-                                ],
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: events.length,
+                        itemExtent: 96.0,
+                        cacheExtent: 96.0,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Container(
+                              height: 80.0,
+                              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey[200],
+                                  width: 1.00
+                                )
                               ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              child: Flex(
+                                direction: Axis.horizontal,
                                 children: <Widget>[
-                                  Text(
-                                    events[index].title,
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w500
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 24.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(
+                                          events[index].day,
+                                          style: TextStyle(
+                                            fontSize: 24.0
+                                          ),
+                                        ),
+                                        Text(events[index].weekday,)
+                                      ],
                                     ),
                                   ),
-                                  Row(
-                                    children: <Widget>[
-                                      Text(events[index].time),
-                                      Text('/'),
-                                      Text(events[index].venue)
-                                    ],
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(
+                                          events[index].title,
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.w500
+                                          ),
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            Text(events[index].time),
+                                            Text('/'),
+                                            Text(events[index].venue)
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   )
                                 ],
                               ),
-                            )
-                          ],
-                        ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 )
               ),
             )
