@@ -74,7 +74,7 @@ class DashboardTile extends StatelessWidget {
             style: TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.w700,
-              color: Colors.grey[800]
+              color: Colors.grey[900]
             ),
           ) : this.child,
         ],
