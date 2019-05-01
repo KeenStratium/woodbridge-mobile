@@ -4,6 +4,7 @@ import 'profile.dart';
 import 'grades.dart';
 import 'attendance.dart';
 import 'activities.dart';
+import 'gallery.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -108,8 +109,10 @@ class HomePage extends StatelessWidget {
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
-                        icon: Icons.filter,
-                        label: 'Activity Gallery'
+                      icon: Icons.filter,
+                      label: 'Activity Gallery',
+                      pageBuilder: ActivityGallery(),
+                      buildContext: context,
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
