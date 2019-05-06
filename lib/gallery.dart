@@ -80,6 +80,14 @@ class GalleryPreview extends StatelessWidget {
 }
 
 class ActivityGallery extends StatelessWidget {
+  final String firstName;
+  final String lastName;
+
+  ActivityGallery({
+    this.firstName,
+    this.lastName,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,7 +99,8 @@ class ActivityGallery extends StatelessWidget {
           direction: Axis.vertical,
           children: <Widget>[
             ProfileHeader(
-              profileName: 'Kion Kefir C. Gargar',
+              firstName: this.firstName,
+              lastName: this.lastName,
             ),
             Expanded(
               child: Padding(

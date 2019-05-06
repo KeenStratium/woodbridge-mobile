@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'woodbridge-ui_components.dart';
 import 'home_page.dart';
 
 class EnrollStudent extends StatefulWidget {
@@ -54,7 +55,18 @@ class _EnrollStudentState extends State<EnrollStudent> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Route route = MaterialPageRoute(builder: (context) => HomePage());
+          Route route = MaterialPageRoute(builder: (context) => HomePage(
+            child: Avatar(
+              backgroundColor: Colors.cyan,
+              maxRadius: 48.0,
+              minRadius: 24.0,
+              initial: 'KE',
+              fontSize: 24.0,
+            ),
+            firstName: 'Keanu Kent',
+            lastName: 'Gargar',
+            heroTag: 'keanu',
+          ));
           Navigator.push(context, route);
         },
         isExtended: true,
