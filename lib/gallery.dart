@@ -1,47 +1,78 @@
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
+import 'GalleryDetail.dart';
 
 class GalleryPreview extends StatelessWidget {
+  final String heroTag;
+  final String imgPath;
+  final String name;
+  final String subName;
+
+  GalleryPreview({
+    this.heroTag,
+    this.imgPath,
+    this.name,
+    this.subName
+  });
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Flex(
-        direction: Axis.vertical,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 1.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  color: Colors.grey[800]
-                ),
-              ),
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Text(
-                  'Album Name',
-                  style: TextStyle(
-                    fontSize: 14.0
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: new Container(
+        child: new Flex(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          direction: Axis.vertical,
+          children: <Widget>[
+            Hero(
+              tag: this.heroTag,
+              child: Material(
+                child: InkWell(
+                  onTap: () =>
+                    Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (BuildContext context) => new GalleryDetail(
+                        galleryName: this.name,
+                        heroTag: this.heroTag,
+                        imgPath: this.imgPath,
+                      ),
+                    )),
+                  child: new Image.asset(
+                    this.imgPath,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              Text(
-                '10 photos',
-                style: TextStyle(
-                  fontSize: 12.0
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Text(
+                        this.name,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                    Text(
+                      this.subName,
+                      style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w300
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -69,10 +100,30 @@ class ActivityGallery extends StatelessWidget {
                   crossAxisCount: 2,
                   scrollDirection: Axis.vertical,
                   children: <Widget>[
-                    GalleryPreview(),
-                    GalleryPreview(),
-                    GalleryPreview(),
-                    GalleryPreview()
+                    GalleryPreview(
+                      heroTag: 'aquaman',
+                      imgPath: 'img/aquaman.jpg',
+                      name: 'Album name 1',
+                      subName: '10 photos'
+                    ),
+                    GalleryPreview(
+                      heroTag: 'venom',
+                      imgPath: 'img/venom.jpg',
+                      name: 'Album name 2',
+                      subName: '8 photos'
+                    ),
+                    GalleryPreview(
+                      heroTag: 'flash',
+                      imgPath: 'img/flash.jpg',
+                      name: 'Album name 3',
+                      subName: '12 photos'
+                    ),
+                    GalleryPreview(
+                      heroTag: 'superman',
+                      imgPath: 'img/superman.jpg',
+                      name: 'Album name 4',
+                      subName: '15 photos'
+                    )
                   ],
                 ),
               ),
