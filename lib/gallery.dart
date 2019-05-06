@@ -22,7 +22,7 @@ class GalleryPreview extends StatelessWidget {
             ),
           ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -63,15 +63,18 @@ class ActivityGallery extends StatelessWidget {
               profileName: 'Kion Kefir C. Gargar',
             ),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                scrollDirection: Axis.vertical,
-                children: <Widget>[
-                  GalleryPreview(),
-                  GalleryPreview(),
-                  GalleryPreview(),
-                  GalleryPreview()
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  scrollDirection: Axis.vertical,
+                  children: <Widget>[
+                    GalleryPreview(),
+                    GalleryPreview(),
+                    GalleryPreview(),
+                    GalleryPreview()
+                  ],
+                ),
               ),
             )
           ],
