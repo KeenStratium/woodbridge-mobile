@@ -1,6 +1,105 @@
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
+class Payment {
+  String label;
+  String amount;
+
+  Payment({this.label, this.amount});
+}
+
+List<Payment> pre_school_payments = <Payment>[
+  Payment(
+      label: '1/14/2019',
+      amount: 'P5,000'
+  ),
+  Payment(
+      label: '2/10/2019',
+      amount: 'P5,000'
+  ),
+  Payment(
+      label: '2/14/2019',
+      amount: 'P2,000'
+  )
+];
+
+List<Payment> kumon_payments = <Payment>[
+  Payment(
+      label: '1/14/2019',
+      amount: 'P5,000'
+  ),
+  Payment(
+      label: '2/10/2019',
+      amount: 'P5,000'
+  ),
+  Payment(
+      label: '2/14/2019',
+      amount: 'P2,000'
+  )
+];
+
+class PaymentDataView extends StatelessWidget{
+  final String title;
+  final List<Payment> payments;
+
+  PaymentDataView({
+    this.title,
+    this.payments
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                this.title,
+                style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+            ],
+          ),
+        ),
+        ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: this.payments.length,
+          itemBuilder: (BuildContext context, int index) {
+            Payment payment = this.payments[index];
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    payment.label,
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                  Text(
+                    payment.amount,
+                    style: TextStyle(
+                        fontSize: 16.0
+                    ),
+                  ),
+                ]
+              ),
+            );
+          },
+        )
+      ],
+    );
+  }
+}
+
 class PaymentDetails extends StatelessWidget {
   final String date;
 
@@ -58,7 +157,14 @@ class PaymentDetails extends StatelessWidget {
                       ),
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
-
+                    PaymentDataView(
+                        title: 'Pre-School',
+                        payments: pre_school_payments
+                    ),
+                    PaymentDataView(
+                        title: 'Kumon',
+                        payments: kumon_payments
+                    ),
                   ],
                 ),
               )

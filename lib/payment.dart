@@ -2,39 +2,6 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
 
-class PaymentDataView extends StatelessWidget{
-  final String title;
-  final List<Payment> payments;
-
-  PaymentDataView({
-    this.title,
-    this.payments
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Text(this.title),
-        ListView.builder(
-          itemCount: this.payments.length,
-          itemBuilder: (BuildContext context, int index) {
-            Payment payment = this.payments[index];
-
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(payment.label),
-                Text(payment.amount)
-              ]
-            );
-          },
-        )
-      ],
-    );
-  }
-}
-
 class Payment {
   String label;
   String amount;
@@ -51,10 +18,10 @@ List<Payment> payments = <Payment>[
     label: '2/10/2019',
     amount: 'P5,000'
   ),
-//  Payment(
-//    label: '2/14/2019',
-//    amount: 'P2,000'
-//  )
+  Payment(
+    label: '2/14/2019',
+    amount: 'P2,000'
+  )
 ];
 
 class PaymentHistory extends StatelessWidget {
@@ -81,7 +48,7 @@ class PaymentHistory extends StatelessWidget {
                     child: Flex(
                       direction: Axis.horizontal,
                       children: <Widget>[
-                        Flexible(
+                        Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
@@ -93,7 +60,7 @@ class PaymentHistory extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Flexible(
+                        Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             mainAxisSize: MainAxisSize.max,
@@ -162,14 +129,6 @@ class PaymentHistory extends StatelessWidget {
                   )
                 ],
               ),
-            ),
-            PaymentDataView(
-              title: 'Pre-School',
-              payments: payments
-            ),
-            PaymentDataView(
-              title: 'Kumon',
-              payments: payments
             ),
           ],
         )
