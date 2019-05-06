@@ -3,6 +3,14 @@ import 'woodbridge-ui_components.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
 
 class Attendance extends StatelessWidget {
+  final String firstName;
+  final String lastName;
+
+  Attendance({
+    this.firstName,
+    this.lastName,
+  });
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -15,7 +23,8 @@ class Attendance extends StatelessWidget {
           direction: Axis.vertical,
           children: <Widget>[
             ProfileHeader(
-              profileName: 'Kion Kefir C. Gargar',
+              firstName: this.firstName,
+              lastName: this.lastName,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),

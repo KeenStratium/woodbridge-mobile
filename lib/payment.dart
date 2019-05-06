@@ -25,6 +25,14 @@ List<Payment> payments = <Payment>[
 ];
 
 class PaymentHistory extends StatelessWidget {
+  final String firstName;
+  final String lastName;
+
+  PaymentHistory({
+    this.firstName,
+    this.lastName,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +44,8 @@ class PaymentHistory extends StatelessWidget {
           direction: Axis.vertical,
           children: <Widget>[
             ProfileHeader(
-              profileName: 'Kion Kefir C. Gargar',
+              firstName: this.firstName,
+              lastName: this.lastName,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),

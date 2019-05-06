@@ -24,6 +24,14 @@ List<Grade> grades = <Grade>[
 ];
 
 class Grades extends StatelessWidget {
+  final String firstName;
+  final String lastName;
+
+  Grades({
+    this.firstName,
+    this.lastName
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +44,8 @@ class Grades extends StatelessWidget {
           child: Column(
             children: <Widget>[
               ProfileHeader(
-                profileName: 'Kion Kefir C. Gargar',
+                firstName: this.firstName,
+                lastName: this.lastName,
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

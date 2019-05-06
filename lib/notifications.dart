@@ -8,6 +8,14 @@ final List<Object> _notificationData = [
 ];
 
 class Notifications extends StatelessWidget {
+  final String firstName;
+  final String lastName;
+
+  Notifications({
+    this.firstName,
+    this.lastName,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +25,10 @@ class Notifications extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            ProfileHeader(),
+            ProfileHeader(
+              firstName: this.firstName,
+              lastName: this.lastName,
+            ),
             Flexible(
               child: ListView(
                 children: ListTile.divideTiles(

@@ -1,11 +1,45 @@
 import 'package:flutter/material.dart';
 
+class Avatar extends StatelessWidget {
+  final Color backgroundColor;
+  final double maxRadius;
+  final String initial;
+  final double fontSize;
+  double minRadius = null;
+
+  Avatar({
+    this.backgroundColor,
+    this.maxRadius,
+    this.initial,
+    this.fontSize,
+    this.minRadius
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      child: Text(
+        this.initial,
+        style: TextStyle(
+          fontSize: this.fontSize,
+        ),
+      ),
+      backgroundColor: this.backgroundColor,
+      foregroundColor: Colors.white,
+      maxRadius: this.maxRadius,
+      minRadius: this.minRadius,
+    );
+  }
+}
+
 class ProfileHeader extends StatelessWidget {
-  final String profileName;
+  final String firstName;
+  final String lastName;
 
   ProfileHeader({
     Key key,
-    this.profileName,
+    this.firstName,
+    this.lastName
   }) : super(key: key);
 
   @override
@@ -24,7 +58,7 @@ class ProfileHeader extends StatelessWidget {
                 width: 8.0,
               ),
               Text(
-                this.profileName,
+                '${this.firstName} ${this.lastName}',
                 style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w700

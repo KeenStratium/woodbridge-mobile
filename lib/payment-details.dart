@@ -102,9 +102,13 @@ class PaymentDataView extends StatelessWidget{
 
 class PaymentDetails extends StatelessWidget {
   final String date;
+  final String firstName;
+  final String lastName;
 
   PaymentDetails({
-    this.date
+    this.date,
+    this.firstName,
+    this.lastName
   });
 
   @override
@@ -118,7 +122,8 @@ class PaymentDetails extends StatelessWidget {
           child: Column(
             children: <Widget>[
               ProfileHeader(
-                profileName: 'Kion Kefir C. Gargar',
+                firstName: this.firstName,
+                lastName: this.lastName,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
