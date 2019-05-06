@@ -4,6 +4,7 @@ import 'profile.dart';
 import 'grades.dart';
 import 'attendance.dart';
 import 'activities.dart';
+import 'payment.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -113,8 +114,10 @@ class HomePage extends StatelessWidget {
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                     MenuItem(
-                        icon: Icons.payment,
-                        label: 'Payment History'
+                      icon: Icons.payment,
+                      label: 'Payment History',
+                      pageBuilder: PaymentHistory(),
+                      buildContext: context,
                     ),
                     Divider(height: 1.0, color: Colors.grey[300]),
                   ],
