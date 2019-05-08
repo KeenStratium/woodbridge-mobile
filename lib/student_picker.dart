@@ -1,9 +1,96 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'enroll_student.dart';
+import 'package:http/http.dart' as http;
 import 'home_page.dart';
 
+class StudentAvatarPicker extends StatelessWidget with WidgetsBindingObserver{
+  final String userId;
+  String fname;
+  String lname;
+
+  StudentAvatarPicker({
+     this.userId
+  });
+
+  getStudentInfo() async {
+    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/student/get-student'),
+      body: json.encode({
+        'data': userId
+      }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+    var data = json.decode(response.body)[0];
+
+    this.fname = data['s_fname'];
+    this.lname = data['s_lname'];
+
+    print(data);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Hero(
+          tag: this.userId,
+          child: FittedBox(
+              child: Material(
+                child: InkWell(
+                  onTap: () =>
+                      Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (BuildContext context) => new HomePage(
+                          child: Avatar(
+                            backgroundColor: Colors.indigo,
+                            maxRadius: 48.0,
+                            minRadius: 24.0,
+                            initial: 'KI',
+                            fontSize: 24.0,
+                          ),
+                          firstName: 'fname',
+                          lastName: 'lname',
+                          heroTag: this.userId,
+                        ),
+                      )),
+                  child: Avatar(
+                    backgroundColor: Colors.indigo,
+                    maxRadius: 80.0,
+                    initial: 'KI',
+                    fontSize: 32.0,
+                  ),
+                ),
+              ),
+              fit: BoxFit.contain
+          ),
+        ),
+        Container(
+            margin: EdgeInsets.only(top: 16.0),
+            child: Text(
+              'fname',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+              ),
+            )
+        )
+      ],
+    );
+  }
+}
+
 class StudentPicker extends StatelessWidget {
+  List<String> userIds;
+
+  StudentPicker({
+    this.userIds
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,99 +117,8 @@ class StudentPicker extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Hero(
-                              tag: 'kion',
-                              child: FittedBox(
-                                child: Material(
-                                  child: InkWell(
-                                    onTap: () =>
-                                      Navigator.of(context).push(new MaterialPageRoute(
-                                        builder: (BuildContext context) => new HomePage(
-                                          child: Avatar(
-                                            backgroundColor: Colors.indigo,
-                                            maxRadius: 48.0,
-                                            minRadius: 24.0,
-                                            initial: 'KI',
-                                            fontSize: 24.0,
-                                          ),
-                                          firstName: 'Kion Kefir',
-                                          lastName: 'Gargar',
-                                          heroTag: 'kion',
-                                        ),
-                                      )),
-                                      child: Avatar(
-                                        backgroundColor: Colors.indigo,
-                                        maxRadius: 80.0,
-                                        initial: 'KI',
-                                        fontSize: 32.0,
-                                      ),
-                                  ),
-                                ),
-                                fit: BoxFit.contain
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 16.0),
-                              child: Text(
-                                'Gargar, \nKion Kefir',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              )
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          width: 40.0,
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Hero(
-                              tag: 'keanu',
-                              child: FittedBox(
-                                  child: Material(
-                                    child: InkWell(
-                                      onTap: () =>
-                                          Navigator.of(context).push(new MaterialPageRoute(
-                                            builder: (BuildContext context) => new HomePage(
-                                              child: Avatar(
-                                                backgroundColor: Colors.cyan,
-                                                maxRadius: 48.0,
-                                                minRadius: 24.0,
-                                                initial: 'KE',
-                                                fontSize: 24.0,
-                                              ),
-                                              firstName: 'Keanu Kent',
-                                              lastName: 'Gargar',
-                                              heroTag: 'keanu',
-                                            ),
-                                          )),
-                                      child: Avatar(
-                                        backgroundColor: Colors.cyan,
-                                        maxRadius: 80.0,
-                                        initial: 'KE',
-                                        fontSize: 32.0,
-                                      ),
-                                    ),
-                                  ),
-                                  fit: BoxFit.contain
-                              ),
-                            ),
-                            Container(
-                                margin: EdgeInsets.only(top: 16.0),
-                                child: Text(
-                                  'Gargar, \nKeanu Kent',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                )
-                            )
-                          ],
-                        ),
+                        StudentAvatarPicker(userId: userIds[0]),
+                        SizedBox(width: 40.0),
                       ],
                     ),
                   ),

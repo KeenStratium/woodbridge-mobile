@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'student_picker.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,6 +13,37 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  Future<dynamic> getData() async {
+    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/account/login'),
+      body: json.encode({
+        'data': {
+          'uname': _userController.text,
+          'pass': _passwordController.text
+        }
+      }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+    var data = json.decode(response.body);
+
+    try{
+      var userData = data[0];
+      List<String> userIds;
+
+      if(userData['user_id'].runtimeType == String){
+        userIds = [userData['user_id']];
+      }else{
+        userIds = userData['user_id'];
+      }
+      return userIds;
+      print(userIds);
+    }catch(e){
+      print('Invalid credentials');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: TextField(
+                        autofocus: true,
                         controller: _userController,
                         decoration: InputDecoration(
                           filled: false,
@@ -64,8 +101,14 @@ class _LoginPageState extends State<LoginPage> {
                               fontWeight: FontWeight.w700
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.pop(context);
+                          onPressed: () async {
+//                            Navigator.pop(context);
+                            var userIds = await getData();
+                            print(await userIds);
+                            Route route = MaterialPageRoute(builder: (BuildContext context) => StudentPicker(
+                                userIds: userIds
+                            ));
+                            Navigator.push(context, route);
                           },
                           elevation: 3.0,
                           padding: EdgeInsets.symmetric(vertical: 16.0),
