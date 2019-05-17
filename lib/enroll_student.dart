@@ -9,6 +9,10 @@ class EnrollStudent extends StatefulWidget {
 
 class _EnrollStudentState extends State<EnrollStudent> {
   String _genderValue = 'Male';
+  int _genderRadio = -1;
+  int _femaleRadio = -1;
+  int correctScore = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +29,6 @@ class _EnrollStudentState extends State<EnrollStudent> {
         color: Colors.white,
         notchMargin: 5.0,
         child: Row(
-//          mainAxisSize: MainAxisSize.max,
-//          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             /*Add the Items here*/
             Container(
@@ -129,34 +131,30 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: FormField(
-                            builder: (FormFieldState state) {
-                              return InputDecorator(
-                                decoration: InputDecoration(
-                                  labelText: 'Gender'
-                                ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                    value: _genderValue,
-                                    isDense: true,
-                                    items: <String>['Male', 'Female', 'Neutral']
-                                      .map<DropdownMenuItem<String>>((String value) {
-                                        return DropdownMenuItem(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      })
-                                      .toList(),
-                                    onChanged: (String newValue) {
-                                      setState(() {
-                                        _genderValue = newValue;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Radio(
+                                onChanged: (value) {
+                                  setState(() {
+                                    _genderRadio = value;
+                                  });
+                                },
+                                value: 0,
+                                groupValue: _genderRadio
+                              ),
+                              Text('Female'),
+                              Radio(
+                                onChanged: (value) {
+                                  setState(() {
+                                    _genderRadio = value;
+                                  });
+                                },
+                                value: 1,
+                                groupValue: _genderRadio ,
+                              ),
+                              Text('Male')
+                            ],
+                          )
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
