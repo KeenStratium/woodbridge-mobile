@@ -145,28 +145,33 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                   )
                                 ),
                               ),
-                              Row(
+                              Flex(
+                                direction: Axis.horizontal,
                                 children: <Widget>[
-                                  Radio(
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _genderRadio = value;
-                                      });
-                                    },
-                                    value: 0,
-                                    groupValue: _genderRadio
+                                  Flexible(
+                                    child: RadioListTile(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _genderRadio = value;
+                                        });
+                                      },
+                                      value: 0,
+                                      groupValue: _genderRadio,
+                                      title: Text('Female'),
+                                    ),
                                   ),
-                                  Text('Female'),
-                                  Radio(
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _genderRadio = value;
-                                      });
-                                    },
-                                    value: 1,
-                                    groupValue: _genderRadio ,
+                                  Flexible(
+                                    child: RadioListTile(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _genderRadio = value;
+                                        });
+                                      },
+                                      value: 1,
+                                      groupValue: _genderRadio,
+                                      title: Text('Male'),
+                                    ),
                                   ),
-                                  Text('Male')
                                 ],
                               ),
                             ],
@@ -176,18 +181,26 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-                              hintText: 'First Name',
-                              labelText: 'First Name'
+                              hintText: 'Home Address',
+                              labelText: 'Home Address'
                             ),
                           ),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Middle Name',
-                              labelText: 'Middle Name'
-                            ),
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: <Widget>[
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    hintText: 'Home Telephone Number',
+                                    labelText: 'Home Telephone Number'
+                                  ),
+                                ),
+                              ),
+                              Text('N/A')
+                            ],
                           ),
                         ),
                         Container(
