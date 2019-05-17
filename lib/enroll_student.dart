@@ -130,29 +130,45 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: Row(
+                          padding: EdgeInsets.symmetric(vertical: 18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Radio(
-                                onChanged: (value) {
-                                  setState(() {
-                                    _genderRadio = value;
-                                  });
-                                },
-                                value: 0,
-                                groupValue: _genderRadio
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12.0),
+                                child: Text(
+                                  'Sex: ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16.0,
+                                    color: Colors.black54
+                                  )
+                                ),
                               ),
-                              Text('Female'),
-                              Radio(
-                                onChanged: (value) {
-                                  setState(() {
-                                    _genderRadio = value;
-                                  });
-                                },
-                                value: 1,
-                                groupValue: _genderRadio ,
+                              Row(
+                                children: <Widget>[
+                                  Radio(
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _genderRadio = value;
+                                      });
+                                    },
+                                    value: 0,
+                                    groupValue: _genderRadio
+                                  ),
+                                  Text('Female'),
+                                  Radio(
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _genderRadio = value;
+                                      });
+                                    },
+                                    value: 1,
+                                    groupValue: _genderRadio ,
+                                  ),
+                                  Text('Male')
+                                ],
                               ),
-                              Text('Male')
                             ],
                           )
                         ),
