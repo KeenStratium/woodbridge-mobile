@@ -89,7 +89,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                     alignment: AlignmentDirectional.topStart,
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
-                      'Basic Information',
+                      "Student's Basic Information",
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w700
@@ -104,6 +104,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
                             decoration: InputDecoration(
+                              hintText: 'First Name',
                               labelText: 'First Name'
                             ),
                           ),
@@ -112,7 +113,8 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-                                labelText: 'Middle Name'
+                                hintText: 'Initial Middle Name',
+                                labelText: 'Initial Middle Name'
                             ),
                           ),
                         ),
@@ -120,8 +122,8 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-//                            hintText: 'First Name',
-                                labelText: 'Last Name'
+                              hintText: 'Last Name',
+                              labelText: 'Last Name'
                             ),
                           ),
                         ),
@@ -160,8 +162,8 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-//                            hintText: 'First Name',
-                                labelText: 'First Name'
+                              hintText: 'First Name',
+                              labelText: 'First Name'
                             ),
                           ),
                         ),
@@ -169,8 +171,8 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-//                            hintText: 'First Name',
-                                labelText: 'Middle Name'
+                              hintText: 'Middle Name',
+                              labelText: 'Middle Name'
                             ),
                           ),
                         ),
@@ -178,8 +180,8 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-//                            hintText: 'First Name',
-                                labelText: 'Last Name'
+                              hintText: 'Last Name',
+                              labelText: 'Last Name'
                             ),
                           ),
                         ),
