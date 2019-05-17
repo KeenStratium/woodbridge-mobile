@@ -14,7 +14,34 @@ class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  Future<dynamic> getData() async {
+  Future<List<String>> _getStudentInfo(String userId) async {
+    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/student/get-student'),
+        body: json.encode({
+          'data': userId
+        }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+
+    var data = json.decode(response.body)[0];
+
+    return [userId, data['s_fname'], data['s_lname']];
+  }
+
+  Future<List> _getStudentsInfo(List<String> userIds) async {
+    List<List<String>> users;
+
+    for(var i = 0; i < userIds.length; i++){
+      List<String> user = await _getStudentInfo(userIds[i]);
+
+      users[i] = user;
+    }
+
+    return users;
+  }
+
+  Future<List> getData() async {
     http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/account/login'),
       body: json.encode({
         'data': {
@@ -27,20 +54,17 @@ class _LoginPageState extends State<LoginPage> {
         'Content-Type': 'application/json'
       });
 
-    var data = json.decode(response.body);
+    var data = await json.decode(response.body);
 
-    try{
-      var userData = data[0];
-      List<String> userIds;
+    try {
+      var userData = await data[0];
 
       if(userData['user_id'].runtimeType == String){
-        userIds = [userData['user_id']];
+        return [userData['user_id']];
       }else{
-        userIds = userData['user_id'];
+        return userData['user_id'];
       }
-      return userIds;
-      print(userIds);
-    }catch(e){
+    } catch(e) {
       print('Invalid credentials');
     }
   }
@@ -101,14 +125,14 @@ class _LoginPageState extends State<LoginPage> {
                               fontWeight: FontWeight.w700
                             ),
                           ),
-                          onPressed: () async {
-//                            Navigator.pop(context);
-                            var userIds = await getData();
-                            print(await userIds);
-                            Route route = MaterialPageRoute(builder: (BuildContext context) => StudentPicker(
-                                userIds: userIds
-                            ));
-                            Navigator.push(context, route);
+                          onPressed: () => {
+                            getData().then((data) {
+                              Route route = MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return StudentPicker(users: data);
+                                  });
+                              Navigator.push(context, route);
+                            })
                           },
                           elevation: 3.0,
                           padding: EdgeInsets.symmetric(vertical: 16.0),

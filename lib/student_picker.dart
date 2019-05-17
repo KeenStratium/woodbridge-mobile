@@ -7,31 +7,37 @@ import 'enroll_student.dart';
 import 'package:http/http.dart' as http;
 import 'home_page.dart';
 
-class StudentAvatarPicker extends StatelessWidget with WidgetsBindingObserver{
-  final String userId;
+class StudentAvatarPicker extends StatefulWidget{
+  final userId;
+
+  StudentAvatarPicker({
+    Key key,
+    this.userId,
+  }) : super(key: key);
+
+  @override
+  _StudentAvatarPickerState createState() => _StudentAvatarPickerState();
+}
+
+class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
   String fname;
   String lname;
 
-  StudentAvatarPicker({
-     this.userId
-  });
-
-  getStudentInfo() async {
-    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/student/get-student'),
-      body: json.encode({
-        'data': userId
-      }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+  void getStudent(userId) async {
+    await _getStudentInfo(userId)
+        .then((data) {
+      setState(() {
+        fname = data['s_fname'];
+        lname = data['s_lname'];
       });
+    });
+  }
 
-    var data = json.decode(response.body)[0];
+  @override
+  void initState() {
+    super.initState();
 
-    this.fname = data['s_fname'];
-    this.lname = data['s_lname'];
-
-    print(data);
+    getStudent(widget.userId);
   }
 
   @override
@@ -39,30 +45,30 @@ class StudentAvatarPicker extends StatelessWidget with WidgetsBindingObserver{
     return Column(
       children: <Widget>[
         Hero(
-          tag: this.userId,
+          tag: widget.userId,
           child: FittedBox(
               child: Material(
                 child: InkWell(
                   onTap: () =>
                       Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) => new HomePage(
+                        builder: (BuildContext context) => HomePage(
                           child: Avatar(
                             backgroundColor: Colors.indigo,
                             maxRadius: 48.0,
                             minRadius: 24.0,
-                            initial: 'KI',
                             fontSize: 24.0,
+                            initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}"
                           ),
-                          firstName: 'fname',
-                          lastName: 'lname',
-                          heroTag: this.userId,
+                          firstName: fname ?? '',
+                          lastName: lname ?? '',
+                          heroTag: widget.userId,
                         ),
                       )),
                   child: Avatar(
                     backgroundColor: Colors.indigo,
                     maxRadius: 80.0,
-                    initial: 'KI',
                     fontSize: 32.0,
+                    initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}",
                   ),
                 ),
               ),
@@ -72,7 +78,7 @@ class StudentAvatarPicker extends StatelessWidget with WidgetsBindingObserver{
         Container(
             margin: EdgeInsets.only(top: 16.0),
             child: Text(
-              'fname',
+              '${fname ?? ''} ${lname ?? ''}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
@@ -84,13 +90,33 @@ class StudentAvatarPicker extends StatelessWidget with WidgetsBindingObserver{
   }
 }
 
-class StudentPicker extends StatelessWidget {
-  List<String> userIds;
+Future<Map> _getStudentInfo(userId) async {
+  String url = 'http://54.169.38.97:4200/api/student/get-student';
+
+  var response = await http.post(url, body: json.encode({
+    'data': userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+  return jsonDecode(response.body)[0];
+}
+
+class StudentPicker extends StatefulWidget {
+ var userIds = 'S-1557210835494';
+ List users;
 
   StudentPicker({
-    this.userIds
-  });
+    Key key,
+    @required this.users
+  }) : super(key: key);
 
+  @override
+  _StudentPickerState createState() => _StudentPickerState();
+}
+
+class _StudentPickerState extends State<StudentPicker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,7 +143,7 @@ class StudentPicker extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        StudentAvatarPicker(userId: userIds[0]),
+                        StudentAvatarPicker(userId: widget.users[0]),
                         SizedBox(width: 40.0),
                       ],
                     ),
