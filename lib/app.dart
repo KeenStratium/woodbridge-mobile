@@ -8,7 +8,7 @@ class WoodbridgeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Woodbridge',
-      home: StudentPicker(),
+      home: LoginPage(),
       initialRoute: '/login',
       onGenerateRoute: _getRoute,
     );

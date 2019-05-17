@@ -19,7 +19,7 @@ class Avatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       child: Text(
-        this.initial,
+        this.initial ?? '',
         style: TextStyle(
           fontSize: this.fontSize,
         ),

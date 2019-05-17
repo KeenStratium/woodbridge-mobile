@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'student_picker.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,6 +13,61 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  Future<List<String>> _getStudentInfo(String userId) async {
+    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/student/get-student'),
+        body: json.encode({
+          'data': userId
+        }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+
+    var data = json.decode(response.body)[0];
+
+    return [userId, data['s_fname'], data['s_lname']];
+  }
+
+  Future<List> _getStudentsInfo(List<String> userIds) async {
+    List<List<String>> users;
+
+    for(var i = 0; i < userIds.length; i++){
+      List<String> user = await _getStudentInfo(userIds[i]);
+
+      users[i] = user;
+    }
+
+    return users;
+  }
+
+  Future<List> getData() async {
+    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/account/login'),
+      body: json.encode({
+        'data': {
+          'uname': _userController.text,
+          'pass': _passwordController.text
+        }
+      }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+    var data = await json.decode(response.body);
+
+    try {
+      var userData = await data[0];
+
+      if(userData['user_id'].runtimeType == String){
+        return [userData['user_id']];
+      }else{
+        return userData['user_id'];
+      }
+    } catch(e) {
+      print('Invalid credentials');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: TextField(
+                        autofocus: true,
                         controller: _userController,
                         decoration: InputDecoration(
                           filled: false,
@@ -64,8 +125,14 @@ class _LoginPageState extends State<LoginPage> {
                               fontWeight: FontWeight.w700
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.pop(context);
+                          onPressed: () => {
+                            getData().then((data) {
+                              Route route = MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return StudentPicker(users: data);
+                                  });
+                              Navigator.push(context, route);
+                            })
                           },
                           elevation: 3.0,
                           padding: EdgeInsets.symmetric(vertical: 16.0),
