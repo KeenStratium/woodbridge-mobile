@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'woodbridge-ui_components.dart';
 import 'home_page.dart';
 
@@ -10,9 +12,24 @@ class EnrollStudent extends StatefulWidget {
 class _EnrollStudentState extends State<EnrollStudent> {
   String _genderValue = 'Male';
   int _genderRadio = -1;
-  int _femaleRadio = -1;
-  int correctScore = 0;
 
+  bool _hadPriorSchooling = false;
+  bool _homeTelNumNA = false;
+
+  String _dateBirthValue = null;
+  DateTime _dateBirth;
+
+  List _month = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.',' Nov.', 'Dec.'];
+
+  Future _selectDateBirth() async {
+    _dateBirth = await showDatePicker(
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(2000),
+        lastDate: (new DateTime.now()).add(new Duration(hours: 1))
+    );
+    if(_dateBirth != null) setState(() => _dateBirthValue = _dateBirth.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +132,8 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-                                hintText: 'Initial Middle Name',
-                                labelText: 'Initial Middle Name'
+                                hintText: 'Middle Initial',
+                                labelText: 'Middle Initial'
                             ),
                           ),
                         ),
@@ -190,57 +207,171 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: Flex(
                             direction: Axis.horizontal,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Flexible(
+                                flex: 1,
                                 child: TextFormField(
+                                  style: TextStyle(
+                                    color: _homeTelNumNA ? Colors.black38 : Colors.black87
+                                  ),
                                   decoration: InputDecoration(
                                     hintText: 'Home Telephone Number',
-                                    labelText: 'Home Telephone Number'
+                                    labelText: 'Home Telephone Number',
+                                  ),
+                                  enabled: !_homeTelNumNA
+                                ),
+                              ),
+                              Flexible(
+                                flex: 0,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Checkbox(
+                                        value: _homeTelNumNA,
+                                        onChanged: (bool value) {
+                                          setState(() {
+                                            _homeTelNumNA = !_homeTelNumNA;
+                                          });
+                                        },
+                                      ),
+                                      Text('N/A')
+                                    ],
                                   ),
                                 ),
                               ),
-                              Text('N/A')
+
                             ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  'Date of Birth: ',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16.0,
+                                      color: Colors.black54
+                                  )
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                                      color: Color.fromRGBO(0, 0, 0, .03)
+                                    ),
+                                    child: Text(
+                                      _dateBirth == null ? 'Please select date' : '${_month[_dateBirth.month - 1]} ${_dateBirth.day.toString()}, ${_dateBirth.year.toString()}',
+                                      style: _dateBirth == null ? TextStyle(fontSize: 16.0, color: Colors.black38, fontWeight: FontWeight.w600) : TextStyle(fontSize: 16.0),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 1.0),
+                                    child: OutlineButton(
+                                      onPressed: () {
+                                        return _selectDateBirth();
+                                      },
+                                      borderSide: BorderSide(
+                                        color: _dateBirth == null ? Colors.blueAccent : Colors.black12
+                                      ),
+                                      child: Text(
+                                        _dateBirth == null ? 'Select Date' : 'Change Date',
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w600,
+                                          color: _dateBirth == null ? Colors.blueAccent : Colors.black54
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 6.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Place of Birth',
+                              labelText: 'Place of Birth'
+                            ),
                           ),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-                              hintText: 'Last Name',
-                              labelText: 'Last Name'
+                                hintText: 'Religion',
+                                labelText: 'Religion'
                             ),
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: FormField(
-                            builder: (FormFieldState state) {
-                              return InputDecorator(
-                                decoration: InputDecoration(
-                                    labelText: 'Gender'
+                          padding: EdgeInsets.symmetric(vertical: 18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  'Has your child had prior schooling?',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16.0,
+                                      color: Colors.black54
+                                  )
                                 ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                    value: _genderValue,
-                                    isDense: true,
-                                    items: <String>['Male', 'Female', 'Neutral']
-                                        .map<DropdownMenuItem<String>>((String value) {
-                                      return DropdownMenuItem(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    })
-                                        .toList(),
-                                    onChanged: (String newValue) {
-                                      setState(() {
-                                        _genderValue = newValue;
-                                      });
-                                    },
+                              ),
+                              Flex(
+                                direction: Axis.horizontal,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 32.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Checkbox(
+                                            value: _hadPriorSchooling,
+                                            onChanged: (bool value) {
+                                              setState(() {
+                                                _hadPriorSchooling = !_hadPriorSchooling;
+                                              });
+                                            },
+                                          ),
+                                          Text('YES')
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
+                                  Flexible(
+                                    flex: 1,
+                                    child: TextFormField(
+                                      style: TextStyle(
+                                        color: !_hadPriorSchooling ? Colors.black38 : Colors.black87
+                                      ),
+                                      decoration: InputDecoration(
+                                          hintText: 'School History',
+                                          labelText: 'If so, what school?'
+                                      ),
+                                      enabled: _hadPriorSchooling,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         )
                       ],
