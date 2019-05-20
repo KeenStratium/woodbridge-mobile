@@ -37,15 +37,29 @@ class _EnrollStudentState extends State<EnrollStudent> {
   final _fatherFnameController = TextEditingController();
   final _fatherMiddleInitialController = TextEditingController();
   final _fatherLnameController = TextEditingController();
+  final _fatherHomeAddrController = TextEditingController();
+  final _fatherOccupationController = TextEditingController();
+  final _fatherBusAddrController = TextEditingController();
+  final _fatherBusTelNumController = TextEditingController();
+  final _fatherMobileNumController = TextEditingController();
+  final _fatherEmailAddrController = TextEditingController();
   String _fatherTitle;
+  bool _fatherHomeAddrSIsSame = false;
 
   // Family - Mother
   final _motherFnameController = TextEditingController();
   final _motherMiddleInitialController = TextEditingController();
   final _motherLnameController = TextEditingController();
+  final _motherHomeAddrController = TextEditingController();
+  final _motherOccupationController = TextEditingController();
+  final _motherBusAddrController = TextEditingController();
+  final _motherBusTelNumController = TextEditingController();
+  final _motherMobileNumController = TextEditingController();
+  final _motherEmailAddrController = TextEditingController();
   String _motherTitle;
+  bool _motherHomeAddrSIsSame = false;
 
-
+  
   Future _selectDateBirth() async {
     _dateBirth = await showDatePicker(
         context: context,
@@ -330,6 +344,17 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
+                              Container(
+                                alignment: AlignmentDirectional.topStart,
+                                margin: EdgeInsets.symmetric(vertical: 6.0),
+                                child: Text(
+                                  "Father",
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w500
+                                  ),
+                                ),
+                              ),
                               InputTextField(label: "Father's First Name", controller: _fatherFnameController),
                               InputTextField(label: "Father's Middle Initial", controller: _fatherMiddleInitialController),
                               InputTextField(label: "Father's Last Name", controller: _fatherLnameController),
@@ -337,6 +362,46 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                 fieldTitle: "Father's Title",
                                 child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _fatherTitle)
                               ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  TextFormField(
+                                      controller: _fatherHomeAddrController,
+                                      style: TextStyle(
+                                          color: _fatherHomeAddrSIsSame ? Colors.black38 : Colors.black87
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: "Home Address",
+                                        labelText: "Home Address",
+                                      ),
+                                      enabled: !_fatherHomeAddrSIsSame
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Checkbox(
+                                        value: _fatherHomeAddrSIsSame,
+                                        onChanged: (bool value) {
+                                          setState(() {
+                                            _fatherHomeAddrSIsSame = !_fatherHomeAddrSIsSame;
+                                            if(value){
+                                              _fatherHomeAddrController.text = _homeAddressController.text;
+                                            }else {
+                                              _fatherHomeAddrController.clear();
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      Text('same as student')
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              InputTextField(label: "Father's Occupation", controller: _fatherOccupationController),
+                              InputTextField(label: "Business Address", controller: _fatherBusAddrController),
+                              InputTextField(label: "Business Tel. #", controller: _fatherBusTelNumController),
+                              InputTextField(label: "Mobile #", controller: _fatherMobileNumController),
+                              InputTextField(label: "Email Address", controller: _fatherEmailAddrController),
                             ],
                           ),
                         ),
@@ -348,6 +413,17 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
+                              Container(
+                                alignment: AlignmentDirectional.topStart,
+                                margin: EdgeInsets.symmetric(vertical: 6.0),
+                                child: Text(
+                                  "Mother",
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w500
+                                  ),
+                                ),
+                              ),
                               InputTextField(label: "Mother's First Name", controller: _motherFnameController),
                               InputTextField(label: "Mother's Middle Initial", controller: _motherMiddleInitialController),
                               InputTextField(label: "Mother's Last Name", controller: _motherLnameController),
@@ -355,6 +431,46 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                   fieldTitle: "Mother's Title",
                                   child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _motherTitle)
                               ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  TextFormField(
+                                      controller: _motherHomeAddrController,
+                                      style: TextStyle(
+                                          color: _motherHomeAddrSIsSame ? Colors.black38 : Colors.black87
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: "Home Address",
+                                        labelText: "Home Address",
+                                      ),
+                                      enabled: !_motherHomeAddrSIsSame
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Checkbox(
+                                        value: _motherHomeAddrSIsSame,
+                                        onChanged: (bool value) {
+                                          setState(() {
+                                            _motherHomeAddrSIsSame = !_motherHomeAddrSIsSame;
+                                            if(value){
+                                              _motherHomeAddrController.text = _homeAddressController.text;
+                                            }else {
+                                              _motherHomeAddrController.clear();
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      Text('same as student')
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              InputTextField(label: "Mother's Occupation", controller: _motherOccupationController),
+                              InputTextField(label: "Business Address", controller: _motherBusAddrController),
+                              InputTextField(label: "Business Tel. #", controller: _motherBusTelNumController),
+                              InputTextField(label: "Mobile #", controller: _motherMobileNumController),
+                              InputTextField(label: "Email Address", controller: _motherEmailAddrController),
                             ],
                           ),
                         ),
