@@ -19,6 +19,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
 
   List _month = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.',' Nov.', 'Dec.'];
 
+  // Student
   final _fnameController = TextEditingController();
   final _middleInitialController = TextEditingController();
   final _lnameController = TextEditingController();
@@ -27,6 +28,12 @@ class _EnrollStudentState extends State<EnrollStudent> {
   final _placeOfBirthController = TextEditingController();
   final _religionController = TextEditingController();
   final _schoolHistoryController = TextEditingController();
+
+  // Family - Father
+  final _fatherFnameController = TextEditingController();
+
+  // Family - Mother
+  final _motherFnameController = TextEditingController();
 
 
   Future _selectDateBirth() async {
@@ -113,7 +120,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                 children: <Widget>[
                   Container(
                     alignment: AlignmentDirectional.topStart,
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    margin: EdgeInsets.symmetric(vertical: 16.0),
                     child: Text(
                       "Student's Basic Information",
                       style: TextStyle(
@@ -126,36 +133,9 @@ class _EnrollStudentState extends State<EnrollStudent> {
                     autovalidate: true,
                     child: Column(
                       children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: TextFormField(
-                            controller: _fnameController,
-                            decoration: InputDecoration(
-                              hintText: 'First Name',
-                              labelText: 'First Name'
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: TextFormField(
-                            controller: _middleInitialController,
-                            decoration: InputDecoration(
-                                hintText: 'Middle Initial',
-                                labelText: 'Middle Initial'
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: TextFormField(
-                            controller: _lnameController,
-                            decoration: InputDecoration(
-                              hintText: 'Last Name',
-                              labelText: 'Last Name'
-                            ),
-                          ),
-                        ),
+                        InputTextField(label: "First Name", controller: _fnameController),
+                        InputTextField(label: "Middle Initial", controller: _middleInitialController),
+                        InputTextField(label: "Last Name", controller: _lnameController),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 18.0),
                           child: Column(
@@ -204,16 +184,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             ],
                           )
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: TextFormField(
-                            controller: _homeAddressController,
-                            decoration: InputDecoration(
-                              hintText: 'Home Address',
-                              labelText: 'Home Address'
-                            ),
-                          ),
-                        ),
+                        InputTextField(label: "Home Address", controller: _homeAddressController),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: Flex(
@@ -311,26 +282,8 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             ],
                           )
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: TextFormField(
-                            controller: _placeOfBirthController,
-                            decoration: InputDecoration(
-                              hintText: 'Place of Birth',
-                              labelText: 'Place of Birth'
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                          child: TextFormField(
-                            controller: _religionController,
-                            decoration: InputDecoration(
-                                hintText: 'Religion',
-                                labelText: 'Religion'
-                            ),
-                          ),
-                        ),
+                        InputTextField(label: "Place of Birth", controller: _placeOfBirthController),
+                        InputTextField(label: "Religion", controller: _religionController),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 18.0),
                           child: Column(
@@ -391,12 +344,74 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         )
                       ],
                     ),
+                  ),
+                  Container(
+                    alignment: AlignmentDirectional.topStart,
+                    margin: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      "Family Background",
+                      style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w700
+                      ),
+                    ),
+                  ),
+                  Form(
+                    autovalidate: true,
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: <Widget>[
+                        Flexible(
+                          child: Column(
+                            children: <Widget>[
+                              InputTextField(label: "Father's First Name", controller: _fatherFnameController)
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        ),
+                        Flexible(
+                          child: Column(
+                            children: <Widget>[
+                              InputTextField(label: "Mother's First Name", controller: _motherFnameController)
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
             ),
           ),
         )
+      ),
+    );
+  }
+}
+
+class InputTextField extends StatelessWidget {
+  final double VerticalSpacing = 6.0;
+
+  final String label;
+  TextEditingController controller;
+
+  InputTextField({
+    this.label,
+    this.controller
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: VerticalSpacing),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+            hintText: label,
+            labelText: label
+        ),
       ),
     );
   }
