@@ -17,6 +17,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
 
   DateTime _dateBirth;
 
+  List<String> sexLabels = ['Male', 'Female'];
   List _month = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.',' Nov.', 'Dec.'];
 
   // Student
@@ -29,11 +30,20 @@ class _EnrollStudentState extends State<EnrollStudent> {
   final _religionController = TextEditingController();
   final _schoolHistoryController = TextEditingController();
 
+  // Family
+  List<String> titleLabels = ['Mr.', 'Mrs.', 'Dr.', 'Ms.', 'Arch.', 'Atty.', 'Engr.', 'Hon.', 'Other'];
+
   // Family - Father
   final _fatherFnameController = TextEditingController();
+  final _fatherMiddleInitialController = TextEditingController();
+  final _fatherLnameController = TextEditingController();
+  String _fatherTitle;
 
   // Family - Mother
   final _motherFnameController = TextEditingController();
+  final _motherMiddleInitialController = TextEditingController();
+  final _motherLnameController = TextEditingController();
+  String _motherTitle;
 
 
   Future _selectDateBirth() async {
@@ -136,54 +146,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         InputTextField(label: "First Name", controller: _fnameController),
                         InputTextField(label: "Middle Initial", controller: _middleInitialController),
                         InputTextField(label: "Last Name", controller: _lnameController),
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 18.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(top: 12.0),
-                                child: Text(
-                                  'Sex: ',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16.0,
-                                    color: Colors.black54
-                                  )
-                                ),
-                              ),
-                              Flex(
-                                direction: Axis.horizontal,
-                                children: <Widget>[
-                                  Flexible(
-                                    child: RadioListTile(
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _genderRadio = value;
-                                        });
-                                      },
-                                      value: 0,
-                                      groupValue: _genderRadio,
-                                      title: Text('Female'),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: RadioListTile(
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _genderRadio = value;
-                                        });
-                                      },
-                                      value: 1,
-                                      groupValue: _genderRadio,
-                                      title: Text('Male'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                        ),
+                        InputRadioButton(radioValue: _genderRadio, radioValueLabels: sexLabels),
                         InputTextField(label: "Home Address", controller: _homeAddressController),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
@@ -360,11 +323,20 @@ class _EnrollStudentState extends State<EnrollStudent> {
                     autovalidate: true,
                     child: Flex(
                       direction: Axis.horizontal,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Flexible(
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              InputTextField(label: "Father's First Name", controller: _fatherFnameController)
+                              InputTextField(label: "Father's First Name", controller: _fatherFnameController),
+                              InputTextField(label: "Father's Middle Initial", controller: _fatherMiddleInitialController),
+                              InputTextField(label: "Father's Last Name", controller: _fatherLnameController),
+                              customFormField(
+                                fieldTitle: "Father's Title",
+                                child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _fatherTitle)
+                              ),
                             ],
                           ),
                         ),
@@ -373,8 +345,16 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         ),
                         Flexible(
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              InputTextField(label: "Mother's First Name", controller: _motherFnameController)
+                              InputTextField(label: "Mother's First Name", controller: _motherFnameController),
+                              InputTextField(label: "Mother's Middle Initial", controller: _motherMiddleInitialController),
+                              InputTextField(label: "Mother's Last Name", controller: _motherLnameController),
+                              customFormField(
+                                  fieldTitle: "Mother's Title",
+                                  child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _motherTitle)
+                              ),
                             ],
                           ),
                         ),
@@ -412,6 +392,138 @@ class InputTextField extends StatelessWidget {
             hintText: label,
             labelText: label
         ),
+      ),
+    );
+  }
+}
+
+class InputRadioButton extends StatefulWidget {
+  int radioValue;
+  final List<String> radioValueLabels;
+
+  InputRadioButton({
+    this.radioValue,
+    this.radioValueLabels
+  });
+
+  @override
+  _InputRadioButtonState createState() => _InputRadioButtonState();
+}
+
+class _InputRadioButtonState extends State<InputRadioButton> {
+  List<Widget> listWidgets() {
+    List<Widget> radioLabelWidgets = new List();
+
+    for(int i = 0; i < widget.radioValueLabels.length; i++){
+      final String label = widget.radioValueLabels[i];
+
+      radioLabelWidgets.add(Flexible(
+        child: RadioListTile(
+          onChanged: (value) {
+            setState(() {
+              widget.radioValue = value;
+            });
+          },
+          value: i,
+          groupValue: widget.radioValue,
+          title: Text(label),
+        ),
+      ));
+    }
+
+    return radioLabelWidgets;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 18.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: Text(
+              'Sex: ',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16.0,
+                color: Colors.black54
+              )
+            ),
+          ),
+          Flex(
+            direction: Axis.horizontal,
+            children: listWidgets()
+          ),
+        ],
+      )
+    );
+  }
+}
+
+class InputDropdownButton extends StatefulWidget{
+  final List<String> dropdownValueLabels;
+  String dropdownValue;
+
+  InputDropdownButton({
+    this.dropdownValueLabels,
+    this.dropdownValue
+  });
+
+  @override
+  _InputDropdownButtonState createState() => _InputDropdownButtonState();
+}
+
+class _InputDropdownButtonState extends State<InputDropdownButton> {
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: widget.dropdownValue ?? widget.dropdownValueLabels[0],
+      onChanged: (String newValue) {
+        setState(() {
+          widget.dropdownValue = newValue;
+        });
+      },
+      items: widget.dropdownValueLabels.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value)
+        );
+      }).toList(),
+    );
+  }
+}
+
+class customFormField extends StatelessWidget {
+  final String fieldTitle;
+  final Widget child;
+
+  customFormField({
+    this.fieldTitle,
+    this.child
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+                fieldTitle,
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16.0,
+                    color: Colors.black54
+                )
+            ),
+          ),
+          child
+        ],
       ),
     );
   }
