@@ -10,16 +10,24 @@ class EnrollStudent extends StatefulWidget {
 }
 
 class _EnrollStudentState extends State<EnrollStudent> {
-  String _genderValue = 'Male';
   int _genderRadio = -1;
 
   bool _hadPriorSchooling = false;
   bool _homeTelNumNA = false;
 
-  String _dateBirthValue = null;
   DateTime _dateBirth;
 
   List _month = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.',' Nov.', 'Dec.'];
+
+  final _fnameController = TextEditingController();
+  final _middleInitialController = TextEditingController();
+  final _lnameController = TextEditingController();
+  final _homeAddressController = TextEditingController();
+  final _homeTelNumController = TextEditingController();
+  final _placeOfBirthController = TextEditingController();
+  final _religionController = TextEditingController();
+  final _schoolHistoryController = TextEditingController();
+
 
   Future _selectDateBirth() async {
     _dateBirth = await showDatePicker(
@@ -28,7 +36,6 @@ class _EnrollStudentState extends State<EnrollStudent> {
         firstDate: new DateTime(2000),
         lastDate: (new DateTime.now()).add(new Duration(hours: 1))
     );
-    if(_dateBirth != null) setState(() => _dateBirthValue = _dateBirth.toString());
   }
 
   @override
@@ -122,6 +129,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
+                            controller: _fnameController,
                             decoration: InputDecoration(
                               hintText: 'First Name',
                               labelText: 'First Name'
@@ -131,6 +139,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
+                            controller: _middleInitialController,
                             decoration: InputDecoration(
                                 hintText: 'Middle Initial',
                                 labelText: 'Middle Initial'
@@ -140,6 +149,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
+                            controller: _lnameController,
                             decoration: InputDecoration(
                               hintText: 'Last Name',
                               labelText: 'Last Name'
@@ -197,6 +207,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
+                            controller: _homeAddressController,
                             decoration: InputDecoration(
                               hintText: 'Home Address',
                               labelText: 'Home Address'
@@ -212,6 +223,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                               Flexible(
                                 flex: 1,
                                 child: TextFormField(
+                                  controller: _homeTelNumController,
                                   style: TextStyle(
                                     color: _homeTelNumNA ? Colors.black38 : Colors.black87
                                   ),
@@ -302,6 +314,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
+                            controller: _placeOfBirthController,
                             decoration: InputDecoration(
                               hintText: 'Place of Birth',
                               labelText: 'Place of Birth'
@@ -311,6 +324,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 6.0),
                           child: TextFormField(
+                            controller: _religionController,
                             decoration: InputDecoration(
                                 hintText: 'Religion',
                                 labelText: 'Religion'
@@ -359,6 +373,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                   Flexible(
                                     flex: 1,
                                     child: TextFormField(
+                                      controller: _schoolHistoryController,
                                       style: TextStyle(
                                         color: !_hadPriorSchooling ? Colors.black38 : Colors.black87
                                       ),
