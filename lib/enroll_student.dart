@@ -399,7 +399,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                 fieldTitle: "Father's Title",
                                 child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _fatherTitle)
                               ),
-                              ConditionalInputTextField(
+                              ReactiveInputTextField(
                                 controller: _fatherHomeAddrController,
                                 conditionalControl: _fatherHomeAddrSIsSame,
                                 label: 'Home Address',
@@ -449,7 +449,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                   fieldTitle: "Mother's Title",
                                   child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _motherTitle)
                               ),
-                              ConditionalInputTextField(
+                              ReactiveInputTextField(
                                 controller: _motherHomeAddrController,
                                 conditionalControl: _motherHomeAddrSIsSame,
                                 label: 'Home Address',
@@ -718,14 +718,14 @@ class ControlledTextField extends StatelessWidget {
   }
 }
 
-class ConditionalInputTextField extends StatefulWidget {
+class ReactiveInputTextField extends StatefulWidget {
   TextEditingController controller;
   bool conditionalControl;
   String label;
   String conditionalLabel;
   var onChange;
 
-  ConditionalInputTextField({
+  ReactiveInputTextField({
     this.controller,
     this.conditionalControl,
     this.onChange,
@@ -734,10 +734,10 @@ class ConditionalInputTextField extends StatefulWidget {
   });
 
   @override
-  _ConditionalInputTextFieldState createState() => _ConditionalInputTextFieldState();
+  _ReactiveInputTextFieldState createState() => _ReactiveInputTextFieldState();
 }
 
-class _ConditionalInputTextFieldState extends State<ConditionalInputTextField> {
+class _ReactiveInputTextFieldState extends State<ReactiveInputTextField> {
   @override
   Widget build(BuildContext context) {
     return Column(
