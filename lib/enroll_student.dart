@@ -717,6 +717,7 @@ class NewSiblingDetector extends TextInputFormatter {
       
       _siblingsNameController.add(TextEditingController());
       siblingNameFields.add(InputTextField(
+          label: "Sibling #${newSiblingIndex + 1}",
           controller: _siblingsNameController[newSiblingIndex],
           inputFormatter: <TextInputFormatter>[
             NewSiblingDetector(siblingIndex: newSiblingIndex),
@@ -725,8 +726,6 @@ class NewSiblingDetector extends TextInputFormatter {
     } else if (siblingIndex == siblingNameFields.length-2 && newValue.text.length == 0 && oldValue.text.length > 0){
       _siblingsNameController.removeLast();
       siblingNameFields.removeLast();
-    } else {
-      print('${siblingIndex} == ${siblingNameFields.length-1} && ${newValue.text.length} == 0 && ${oldValue.text.length} > 0');
     }
     return newValue;
   }
