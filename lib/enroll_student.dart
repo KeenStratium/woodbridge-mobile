@@ -52,6 +52,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
 
   bool _hadPriorSchooling = false;
   bool _homeTelNumNA = false;
+  bool _hadAllergies = false;
 
   DateTime _dateBirth;
 
@@ -67,6 +68,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
   final _placeOfBirthController = TextEditingController();
   final _religionController = TextEditingController();
   final _schoolHistoryController = TextEditingController();
+  final _allergiesController = TextEditingController();
 
   // Family
   List<String> titleLabels = ['Mr.', 'Mrs.', 'Dr.', 'Ms.', 'Arch.', 'Atty.', 'Engr.', 'Hon.', 'Other'];
@@ -508,7 +510,67 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             )
                           )
                         ),
-                        InputTextField(label: "Does your child have any allergies?", controller: _fatherFnameController),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  'Does your child have any allergies?',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16.0,
+                                    color: Colors.black54
+                                  )
+                                ),
+                              ),
+                              Flex(
+                                direction: Axis.horizontal,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 32.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Checkbox(
+                                            value: _hadAllergies,
+                                            onChanged: (bool value) {
+                                              setState(() {
+                                                _hadAllergies = !_hadAllergies;
+                                                if(!value){
+                                                  _allergiesController.clear();
+                                                }
+                                              });
+                                            },
+                                          ),
+                                          Text('YES')
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 1,
+                                    child: TextFormField(
+                                      controller: _allergiesController,
+                                      style: TextStyle(
+                                        color: !_hadAllergies ? Colors.black38 : Colors.black87
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: 'Seafood, peanuts, etc...',
+                                        labelText: 'If so, please specify'
+                                      ),
+                                      enabled: _hadAllergies,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   )
@@ -689,31 +751,6 @@ class customFormField extends StatelessWidget {
           child
         ],
       ),
-    );
-  }
-}
-
-class ControlledTextField extends StatelessWidget {
-  TextEditingController controller;
-  bool conditionalControl;
-
-  ControlledTextField({
-    this.controller,
-    this.conditionalControl
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-        controller: controller,
-        style: TextStyle(
-            color: conditionalControl ? Colors.black38 : Colors.black87
-        ),
-        decoration: InputDecoration(
-          hintText: "Home Address",
-          labelText: "Home Address",
-        ),
-        enabled: !conditionalControl
     );
   }
 }
