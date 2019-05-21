@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 
 import 'woodbridge-ui_components.dart';
 import 'home_page.dart';
+
+List<TextEditingController> _siblingsNameController = <TextEditingController>[
+  TextEditingController()
+];
+List<TextEditingController> _siblingsAgeController = <TextEditingController>[
+  TextEditingController()
+];
+
+List<InputTextField> siblingNameFields = <InputTextField>[
+  InputTextField(
+      label: "Sibling #1",
+      controller: _siblingsNameController[0],
+      inputFormatter: <TextInputFormatter>[
+        NewSiblingDetector(siblingIndex: 0),
+      ]
+  ),
+];
+List<InputTextField> siblingAgeFields = <InputTextField>[
+  InputTextField(label: "Age", controller: _siblingsAgeController[0]),
+];
 
 class EnrollStudent extends StatefulWidget {
   @override
@@ -59,13 +80,12 @@ class _EnrollStudentState extends State<EnrollStudent> {
   String _motherTitle;
   bool _motherHomeAddrSIsSame = false;
 
-  
   Future _selectDateBirth() async {
     _dateBirth = await showDatePicker(
-        context: context,
-        initialDate: new DateTime.now(),
-        firstDate: new DateTime(2000),
-        lastDate: (new DateTime.now()).add(new Duration(hours: 1))
+      context: context,
+      initialDate: new DateTime.now(),
+      firstDate: new DateTime(2000),
+      lastDate: (new DateTime.now()).add(new Duration(hours: 1))
     );
   }
 
@@ -476,6 +496,41 @@ class _EnrollStudentState extends State<EnrollStudent> {
                         ),
                       ],
                     ),
+                  ),
+                  Form(
+                    autovalidate: true,
+                    child: Flex(
+                      direction: Axis.vertical,
+                      children: <Widget>[
+                        customFormField(
+                          fieldTitle: "Does your child have any siblings?",
+                          child: SingleChildScrollView(
+                            child: Flex(
+                              direction: Axis.horizontal,
+                              children: <Widget>[
+                                Flexible(
+                                  flex: 3,
+                                  child: Flex(
+                                    direction: Axis.vertical,
+                                    children: siblingNameFields
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                ),
+                                Flexible(
+                                  flex: 1,
+                                  child: Flex(
+                                    direction: Axis.vertical,
+                                    children: siblingAgeFields,
+                                  ),
+                                )
+                              ],
+                            )
+                          )
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
@@ -489,13 +544,14 @@ class _EnrollStudentState extends State<EnrollStudent> {
 
 class InputTextField extends StatelessWidget {
   final double VerticalSpacing = 6.0;
-
   final String label;
+  List<TextInputFormatter> inputFormatter;
   TextEditingController controller;
 
   InputTextField({
     this.label,
-    this.controller
+    this.controller,
+    this.inputFormatter
   });
 
   @override
@@ -504,6 +560,7 @@ class InputTextField extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: VerticalSpacing),
       child: TextFormField(
         controller: controller,
+        inputFormatters: inputFormatter,
         decoration: InputDecoration(
             hintText: label,
             labelText: label
@@ -642,5 +699,35 @@ class customFormField extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class NewSiblingDetector extends TextInputFormatter {
+  int siblingIndex;
+
+  NewSiblingDetector({
+    this.siblingIndex
+  });
+
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+
+    if(siblingIndex == siblingNameFields.length-1 && newValue.text.length > 0 && oldValue.text.length == 0){
+      int newSiblingIndex = siblingIndex + 1;
+      
+      _siblingsNameController.add(TextEditingController());
+      siblingNameFields.add(InputTextField(
+          controller: _siblingsNameController[newSiblingIndex],
+          inputFormatter: <TextInputFormatter>[
+            NewSiblingDetector(siblingIndex: newSiblingIndex),
+          ]
+      ));
+    } else if (siblingIndex == siblingNameFields.length-2 && newValue.text.length == 0 && oldValue.text.length > 0){
+      _siblingsNameController.removeLast();
+      siblingNameFields.removeLast();
+    } else {
+      print('${siblingIndex} == ${siblingNameFields.length-1} && ${newValue.text.length} == 0 && ${oldValue.text.length} > 0');
+    }
+    return newValue;
   }
 }
