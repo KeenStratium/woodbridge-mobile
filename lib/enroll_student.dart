@@ -82,7 +82,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
   final _fatherMobileNumController = TextEditingController();
   final _fatherEmailAddrController = TextEditingController();
   String _fatherTitle;
-  bool _fatherHomeAddrSIsSame = false;
+  static bool _fatherHomeAddrSIsSame = false;
 
   // Family - Mother
   final _motherFnameController = TextEditingController();
@@ -95,7 +95,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
   final _motherMobileNumController = TextEditingController();
   final _motherEmailAddrController = TextEditingController();
   String _motherTitle;
-  bool _motherHomeAddrSIsSame = false;
+  static bool _motherHomeAddrSIsSame = false;
 
   Future _selectDateBirth() async {
     _dateBirth = await showDatePicker(
@@ -387,8 +387,8 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                 child: Text(
                                   "Father",
                                   style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w500
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w500
                                   ),
                                 ),
                               ),
@@ -399,40 +399,21 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                 fieldTitle: "Father's Title",
                                 child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _fatherTitle)
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  TextFormField(
-                                      controller: _fatherHomeAddrController,
-                                      style: TextStyle(
-                                          color: _fatherHomeAddrSIsSame ? Colors.black38 : Colors.black87
-                                      ),
-                                      decoration: InputDecoration(
-                                        hintText: "Home Address",
-                                        labelText: "Home Address",
-                                      ),
-                                      enabled: !_fatherHomeAddrSIsSame
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Checkbox(
-                                        value: _fatherHomeAddrSIsSame,
-                                        onChanged: (bool value) {
-                                          setState(() {
-                                            _fatherHomeAddrSIsSame = !_fatherHomeAddrSIsSame;
-                                            if(value){
-                                              _fatherHomeAddrController.text = _homeAddressController.text;
-                                            }else {
-                                              _fatherHomeAddrController.clear();
-                                            }
-                                          });
-                                        },
-                                      ),
-                                      Text('same as student')
-                                    ],
-                                  ),
-                                ],
+                              ConditionalInputTextField(
+                                controller: _fatherHomeAddrController,
+                                conditionalControl: _fatherHomeAddrSIsSame,
+                                label: 'Home Address',
+                                conditionalLabel: 'same as student',
+                                onChange: ((value) {
+                                  setState(() {
+                                    _fatherHomeAddrSIsSame = !_fatherHomeAddrSIsSame;
+                                    if(value){
+                                      _fatherHomeAddrController.text = _homeAddressController.text;
+                                    }else {
+                                      _fatherHomeAddrController.clear();
+                                    }
+                                  });
+                                }),
                               ),
                               InputTextField(label: "Father's Occupation", controller: _fatherOccupationController),
                               InputTextField(label: "Business Address", controller: _fatherBusAddrController),
@@ -468,40 +449,21 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                   fieldTitle: "Mother's Title",
                                   child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _motherTitle)
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  TextFormField(
-                                      controller: _motherHomeAddrController,
-                                      style: TextStyle(
-                                          color: _motherHomeAddrSIsSame ? Colors.black38 : Colors.black87
-                                      ),
-                                      decoration: InputDecoration(
-                                        hintText: "Home Address",
-                                        labelText: "Home Address",
-                                      ),
-                                      enabled: !_motherHomeAddrSIsSame
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Checkbox(
-                                        value: _motherHomeAddrSIsSame,
-                                        onChanged: (bool value) {
-                                          setState(() {
-                                            _motherHomeAddrSIsSame = !_motherHomeAddrSIsSame;
-                                            if(value){
-                                              _motherHomeAddrController.text = _homeAddressController.text;
-                                            }else {
-                                              _motherHomeAddrController.clear();
-                                            }
-                                          });
-                                        },
-                                      ),
-                                      Text('same as student')
-                                    ],
-                                  ),
-                                ],
+                              ConditionalInputTextField(
+                                controller: _motherHomeAddrController,
+                                conditionalControl: _motherHomeAddrSIsSame,
+                                label: 'Home Address',
+                                conditionalLabel: 'same as student',
+                                onChange: ((value) {
+                                  setState(() {
+                                    _motherHomeAddrSIsSame = !_motherHomeAddrSIsSame;
+                                    if(value){
+                                      _motherHomeAddrController.text = _homeAddressController.text;
+                                    }else {
+                                      _motherHomeAddrController.clear();
+                                    }
+                                  });
+                                }),
                               ),
                               InputTextField(label: "Mother's Occupation", controller: _motherOccupationController),
                               InputTextField(label: "Business Address", controller: _motherBusAddrController),
@@ -546,6 +508,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             )
                           )
                         ),
+                        InputTextField(label: "Does your child have any allergies?", controller: _fatherFnameController),
                       ],
                     ),
                   )
@@ -726,6 +689,84 @@ class customFormField extends StatelessWidget {
           child
         ],
       ),
+    );
+  }
+}
+
+class ControlledTextField extends StatelessWidget {
+  TextEditingController controller;
+  bool conditionalControl;
+
+  ControlledTextField({
+    this.controller,
+    this.conditionalControl
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+        controller: controller,
+        style: TextStyle(
+            color: conditionalControl ? Colors.black38 : Colors.black87
+        ),
+        decoration: InputDecoration(
+          hintText: "Home Address",
+          labelText: "Home Address",
+        ),
+        enabled: !conditionalControl
+    );
+  }
+}
+
+class ConditionalInputTextField extends StatefulWidget {
+  TextEditingController controller;
+  bool conditionalControl;
+  String label;
+  String conditionalLabel;
+  var onChange;
+
+  ConditionalInputTextField({
+    this.controller,
+    this.conditionalControl,
+    this.onChange,
+    this.label,
+    this.conditionalLabel
+  });
+
+  @override
+  _ConditionalInputTextFieldState createState() => _ConditionalInputTextFieldState();
+}
+
+class _ConditionalInputTextFieldState extends State<ConditionalInputTextField> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        TextFormField(
+            controller: widget.controller,
+            style: TextStyle(
+                color: widget.conditionalControl ? Colors.black38 : Colors.black87
+            ),
+            decoration: InputDecoration(
+              hintText: widget.label,
+              labelText: widget.label,
+            ),
+            enabled: !widget.conditionalControl
+        ),
+        Row(
+          children: <Widget>[
+            Checkbox(
+              value: widget.conditionalControl,
+              onChanged: (bool value) {
+                widget.onChange(value);
+              },
+            ),
+            Text(widget.conditionalLabel)
+          ],
+        ),
+      ],
     );
   }
 }
