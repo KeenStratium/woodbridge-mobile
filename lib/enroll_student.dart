@@ -12,17 +12,34 @@ List<TextEditingController> _siblingsAgeController = <TextEditingController>[
   TextEditingController()
 ];
 
-List<InputTextField> siblingNameFields = <InputTextField>[
+List<FocusNode> _siblingNameFocus = <FocusNode>[
+  FocusNode()
+];
+
+List<FocusNode> _siblingAgeFocus = <FocusNode>[
+  FocusNode()
+];
+
+List<InputTextField> _siblingNameFields = <InputTextField>[
   InputTextField(
       label: "Sibling #1",
       controller: _siblingsNameController[0],
-      inputFormatter: <TextInputFormatter>[
-        NewSiblingDetector(siblingIndex: 0),
-      ]
+      onSaved: () {
+        onSave(0);
+      },
+      focus: _siblingNameFocus[0],
   ),
 ];
-List<InputTextField> siblingAgeFields = <InputTextField>[
-  InputTextField(label: "Age", controller: _siblingsAgeController[0]),
+
+List<InputTextField> _siblingAgeFields = <InputTextField>[
+  InputTextField(
+    label: "Age",
+    controller: _siblingsAgeController[0],
+    onSaved: () {
+      onSave(0);
+    },
+    focus: _siblingAgeFocus[0],
+  ),
 ];
 
 class EnrollStudent extends StatefulWidget {
@@ -512,7 +529,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                   flex: 3,
                                   child: Flex(
                                     direction: Axis.vertical,
-                                    children: siblingNameFields
+                                    children: _siblingNameFields
                                   ),
                                 ),
                                 Padding(
@@ -522,7 +539,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                   flex: 1,
                                   child: Flex(
                                     direction: Axis.vertical,
-                                    children: siblingAgeFields,
+                                    children: _siblingAgeFields,
                                   ),
                                 )
                               ],
@@ -547,20 +564,31 @@ class InputTextField extends StatelessWidget {
   final String label;
   List<TextInputFormatter> inputFormatter;
   TextEditingController controller;
+  final onSaved;
+  FocusNode focus;
 
   InputTextField({
     this.label,
     this.controller,
-    this.inputFormatter
+    this.inputFormatter,
+    this.onSaved,
+    this.focus
   });
 
   @override
   Widget build(BuildContext context) {
+    focus == null ? null : this.focus.addListener(() {
+      if(!focus.hasFocus){
+        onSaved();
+      }
+    });
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: VerticalSpacing),
       child: TextFormField(
         controller: controller,
         inputFormatters: inputFormatter,
+        focusNode: focus,
         decoration: InputDecoration(
             hintText: label,
             labelText: label
@@ -702,31 +730,46 @@ class customFormField extends StatelessWidget {
   }
 }
 
-class NewSiblingDetector extends TextInputFormatter {
-  int siblingIndex;
+onSave(siblingIndex) {
+  if(siblingIndex == _siblingNameFields.length-1 && _siblingsNameController[siblingIndex].text.length > 0){
+    int newSiblingIndex = siblingIndex + 1;
 
-  NewSiblingDetector({
-    this.siblingIndex
-  });
+    _siblingsNameController.add(TextEditingController());
+    _siblingNameFocus.add(FocusNode());
+    _siblingsAgeController.add(TextEditingController());
+    _siblingAgeFocus.add(FocusNode());
 
-  @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    _siblingNameFields.add(InputTextField(
+        label: "Sibling #${newSiblingIndex + 1}",
+        controller: _siblingsNameController[newSiblingIndex],
+        onSaved: () {
+          onSave(newSiblingIndex);
+        },
+        focus: _siblingNameFocus[newSiblingIndex],
+    ));
+    _siblingAgeFields.add(InputTextField(
+      label: "Age",
+      controller: _siblingsAgeController[newSiblingIndex],
+      onSaved: () {
+        onSave(newSiblingIndex);
+      },
+      focus: _siblingAgeFocus[newSiblingIndex],
+    ));
+  } else if (siblingIndex != _siblingNameFields.length-1 && _siblingsNameController[siblingIndex].text.length == 0){
+    for(int i = siblingIndex; i < _siblingNameFields.length - 1; i++){
+      _siblingNameFields[i].controller.text = _siblingsNameController[i+1].text;
+      _siblingAgeFields[i].controller.text = _siblingsAgeController[i+1].text;
 
-    if(siblingIndex == siblingNameFields.length-1 && newValue.text.length > 0 && oldValue.text.length == 0){
-      int newSiblingIndex = siblingIndex + 1;
-      
-      _siblingsNameController.add(TextEditingController());
-      siblingNameFields.add(InputTextField(
-          label: "Sibling #${newSiblingIndex + 1}",
-          controller: _siblingsNameController[newSiblingIndex],
-          inputFormatter: <TextInputFormatter>[
-            NewSiblingDetector(siblingIndex: newSiblingIndex),
-          ]
-      ));
-    } else if (siblingIndex == siblingNameFields.length-2 && newValue.text.length == 0 && oldValue.text.length > 0){
-      _siblingsNameController.removeLast();
-      siblingNameFields.removeLast();
+      _siblingNameFields[i].focus = _siblingNameFields[i+1].focus;
+      _siblingAgeFields[i].focus = _siblingAgeFields[i+1].focus;
     }
-    return newValue;
+    _siblingNameFields.removeLast();
+    _siblingsNameController.removeLast();
+
+    _siblingAgeFields.removeLast();
+    _siblingsAgeController.removeLast();
+
+    _siblingAgeFocus.removeLast();
+    _siblingNameFocus.removeLast();
   }
 }
