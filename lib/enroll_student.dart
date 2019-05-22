@@ -112,6 +112,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
   bool _hadAllergies = false;
 
   DateTime _dateBirth;
+  String _dateBirthValue = null;
 
   List<String> sexLabels = ['Male', 'Female'];
   List _month = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.',' Nov.', 'Dec.'];
@@ -164,6 +165,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
       firstDate: new DateTime(2000),
       lastDate: (new DateTime.now()).add(new Duration(hours: 1))
     );
+    if(_dateBirth != null) setState(() => _dateBirthValue = _dateBirth.toString());
   }
 
   @override
@@ -336,7 +338,9 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                     padding: const EdgeInsets.only(right: 1.0),
                                     child: OutlineButton(
                                       onPressed: () {
-                                        return _selectDateBirth();
+                                        setState(() {
+                                          _selectDateBirth();
+                                        });
                                       },
                                       borderSide: BorderSide(
                                         color: _dateBirth == null ? Colors.blueAccent : Colors.black12
