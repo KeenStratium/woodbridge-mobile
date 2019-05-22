@@ -624,7 +624,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Flexible(
-                                    flex: 3,
+                                    flex: 2,
                                     child: Text(
                                       'Does your child have any allergies?',
                                       softWrap: true,

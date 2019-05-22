@@ -117,3 +117,59 @@ class DashboardTile extends StatelessWidget {
   }
 
 }
+
+class CtaButton extends FlatButton {
+  String label;
+  var onPressed;
+  Color color;
+
+  CtaButton({
+    this.onPressed,
+    this.label,
+    this.color
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: FlatButton(
+        color: color,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(6.0))
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.white
+          ),
+        ),
+        onPressed: (() {
+          onPressed();
+        }),
+        padding: EdgeInsets.symmetric(vertical: 20.0),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+    );
+  }
+}
+
+class accentCtaButton extends FlatButton {
+  String label;
+  var onPressed;
+
+  accentCtaButton({
+    this.onPressed,
+    this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CtaButton(
+      label: label,
+      onPressed: onPressed,
+      color: Theme.of(context).accentColor
+    );
+  }
+}

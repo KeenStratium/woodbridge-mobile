@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'student_picker.dart';
 import 'login.dart';
+import 'colors.dart';
+
+final ThemeData _woodbridgeTheme = _buildWoodbridgeTheme();
+
+ThemeData _buildWoodbridgeTheme() {
+  return ThemeData(
+    fontFamily: 'Roboto',
+    accentColor: blue,
+  );
+}
 
 class WoodbridgeApp extends StatelessWidget {
   @override
@@ -11,6 +21,7 @@ class WoodbridgeApp extends StatelessWidget {
       home: LoginPage(),
       initialRoute: '/login',
       onGenerateRoute: _getRoute,
+      theme: _woodbridgeTheme
     );
   }
 
