@@ -440,106 +440,98 @@ class _EnrollStudentState extends State<EnrollStudent> {
                   ),
                   Form(
                     autovalidate: true,
-                    child: Flex(
-                      direction: Axis.horizontal,
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Flexible(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                alignment: AlignmentDirectional.topStart,
-                                margin: EdgeInsets.symmetric(vertical: 6.0),
-                                child: Text(
-                                  "Father",
-                                  style: TextStyle(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              alignment: AlignmentDirectional.topStart,
+                              margin: EdgeInsets.symmetric(vertical: 16.0),
+                              child: Text(
+                                "Father",
+                                style: TextStyle(
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.w500
-                                  ),
                                 ),
                               ),
-                              InputTextField(label: "Father's First Name", controller: _fatherFnameController),
-                              InputTextField(label: "Father's Middle Initial", controller: _fatherMiddleInitialController),
-                              InputTextField(label: "Father's Last Name", controller: _fatherLnameController),
-                              customFormField(
-                                fieldTitle: "Father's Title",
-                                child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _fatherTitle)
-                              ),
-                              ReactiveInputTextField(
-                                controller: _fatherHomeAddrController,
-                                conditionalControl: _fatherHomeAddrSIsSame,
-                                label: 'Home Address',
-                                conditionalLabel: 'same as student',
-                                onChange: ((value) {
-                                  setState(() {
-                                    _fatherHomeAddrSIsSame = !_fatherHomeAddrSIsSame;
-                                    if(value){
-                                      _fatherHomeAddrController.text = _homeAddressController.text;
-                                    }else {
-                                      _fatherHomeAddrController.clear();
-                                    }
-                                  });
-                                }),
-                              ),
-                              InputTextField(label: "Father's Occupation", controller: _fatherOccupationController),
-                              InputTextField(label: "Business Address", controller: _fatherBusAddrController),
-                              InputTextField(label: "Business Tel. #", controller: _fatherBusTelNumController),
-                              InputTextField(label: "Mobile #", controller: _fatherMobileNumController),
-                              InputTextField(label: "Email Address", controller: _fatherEmailAddrController),
-                            ],
-                          ),
+                            ),
+                            InputTextField(label: "Father's First Name", controller: _fatherFnameController),
+                            InputTextField(label: "Father's Middle Initial", controller: _fatherMiddleInitialController),
+                            InputTextField(label: "Father's Last Name", controller: _fatherLnameController),
+                            customFormField(
+                              fieldTitle: "Father's Title",
+                              child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _fatherTitle)
+                            ),
+                            ReactiveInputTextField(
+                              controller: _fatherHomeAddrController,
+                              conditionalControl: _fatherHomeAddrSIsSame,
+                              label: 'Home Address',
+                              conditionalLabel: 'same as student',
+                              onChange: ((value) {
+                                setState(() {
+                                  _fatherHomeAddrSIsSame = !_fatherHomeAddrSIsSame;
+                                  if(value){
+                                    _fatherHomeAddrController.text = _homeAddressController.text;
+                                  }else {
+                                    _fatherHomeAddrController.clear();
+                                  }
+                                });
+                              }),
+                            ),
+                            InputTextField(label: "Father's Occupation", controller: _fatherOccupationController),
+                            InputTextField(label: "Business Address", controller: _fatherBusAddrController),
+                            InputTextField(label: "Business Tel. #", controller: _fatherBusTelNumController),
+                            InputTextField(label: "Mobile #", controller: _fatherMobileNumController),
+                            InputTextField(label: "Email Address", controller: _fatherEmailAddrController),
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        ),
-                        Flexible(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                alignment: AlignmentDirectional.topStart,
-                                margin: EdgeInsets.symmetric(vertical: 6.0),
-                                child: Text(
-                                  "Mother",
-                                  style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w500
-                                  ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              alignment: AlignmentDirectional.topStart,
+                              margin: EdgeInsets.symmetric(vertical: 16.0),
+                              child: Text(
+                                "Mother",
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w500
                                 ),
                               ),
-                              InputTextField(label: "Mother's First Name", controller: _motherFnameController),
-                              InputTextField(label: "Mother's Middle Initial", controller: _motherMiddleInitialController),
-                              InputTextField(label: "Mother's Last Name", controller: _motherLnameController),
-                              customFormField(
-                                  fieldTitle: "Mother's Title",
-                                  child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _motherTitle)
-                              ),
-                              ReactiveInputTextField(
-                                controller: _motherHomeAddrController,
-                                conditionalControl: _motherHomeAddrSIsSame,
-                                label: 'Home Address',
-                                conditionalLabel: 'same as student',
-                                onChange: ((value) {
-                                  setState(() {
-                                    _motherHomeAddrSIsSame = !_motherHomeAddrSIsSame;
-                                    if(value){
-                                      _motherHomeAddrController.text = _homeAddressController.text;
-                                    }else {
-                                      _motherHomeAddrController.clear();
-                                    }
-                                  });
-                                }),
-                              ),
-                              InputTextField(label: "Mother's Occupation", controller: _motherOccupationController),
-                              InputTextField(label: "Business Address", controller: _motherBusAddrController),
-                              InputTextField(label: "Business Tel. #", controller: _motherBusTelNumController),
-                              InputTextField(label: "Mobile #", controller: _motherMobileNumController),
-                              InputTextField(label: "Email Address", controller: _motherEmailAddrController),
-                            ],
-                          ),
+                            ),
+                            InputTextField(label: "Mother's First Name", controller: _motherFnameController),
+                            InputTextField(label: "Mother's Middle Initial", controller: _motherMiddleInitialController),
+                            InputTextField(label: "Mother's Last Name", controller: _motherLnameController),
+                            customFormField(
+                                fieldTitle: "Mother's Title",
+                                child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _motherTitle)
+                            ),
+                            ReactiveInputTextField(
+                              controller: _motherHomeAddrController,
+                              conditionalControl: _motherHomeAddrSIsSame,
+                              label: 'Home Address',
+                              conditionalLabel: 'same as student',
+                              onChange: ((value) {
+                                setState(() {
+                                  _motherHomeAddrSIsSame = !_motherHomeAddrSIsSame;
+                                  if(value){
+                                    _motherHomeAddrController.text = _homeAddressController.text;
+                                  }else {
+                                    _motherHomeAddrController.clear();
+                                  }
+                                });
+                              }),
+                            ),
+                            InputTextField(label: "Mother's Occupation", controller: _motherOccupationController),
+                            InputTextField(label: "Business Address", controller: _motherBusAddrController),
+                            InputTextField(label: "Business Tel. #", controller: _motherBusTelNumController),
+                            InputTextField(label: "Mobile #", controller: _motherMobileNumController),
+                            InputTextField(label: "Email Address", controller: _motherEmailAddrController),
+                          ],
                         ),
                       ],
                     ),
