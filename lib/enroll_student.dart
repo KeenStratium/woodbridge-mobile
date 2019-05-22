@@ -69,6 +69,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
   final _religionController = TextEditingController();
   final _schoolHistoryController = TextEditingController();
   final _allergiesController = TextEditingController();
+  final _legalGuardianController = TextEditingController();
 
   // Family
   List<String> titleLabels = ['Mr.', 'Mrs.', 'Dr.', 'Ms.', 'Arch.', 'Atty.', 'Engr.', 'Hon.', 'Other'];
@@ -510,6 +511,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             )
                           )
                         ),
+                        InputTextField(label: "Who is your child's legal guardian?", controller: _legalGuardianController),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 18.0),
                           child: Column(
