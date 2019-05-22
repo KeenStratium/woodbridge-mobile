@@ -337,11 +337,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 1.0),
                                     child: OutlineButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _selectDateBirth();
-                                        });
-                                      },
+                                      onPressed: () { _selectDateBirth(); },
                                       borderSide: BorderSide(
                                         color: _dateBirth == null ? Colors.blueAccent : Colors.black12
                                       ),
