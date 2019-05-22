@@ -626,7 +626,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                   Flexible(
                                     flex: 2,
                                     child: Text(
-                                      'Does your child have any allergies?',
+                                      'Is your child currently under any medication(s)?',
                                       softWrap: true,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
