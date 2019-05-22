@@ -5,6 +5,7 @@ import 'dart:async';
 import 'woodbridge-ui_components.dart';
 import 'home_page.dart';
 
+// Sibling Controllers
 List<TextEditingController> _siblingsNameController = <TextEditingController>[
   TextEditingController()
 ];
@@ -12,6 +13,7 @@ List<TextEditingController> _siblingsAgeController = <TextEditingController>[
   TextEditingController()
 ];
 
+// Sibling Focus
 List<FocusNode> _siblingNameFocus = <FocusNode>[
   FocusNode()
 ];
@@ -20,12 +22,23 @@ List<FocusNode> _siblingAgeFocus = <FocusNode>[
   FocusNode()
 ];
 
+// Sibling Fields
 List<InputTextField> _siblingNameFields = <InputTextField>[
   InputTextField(
       label: "Sibling #1",
       controller: _siblingsNameController[0],
       onSaved: () {
-        onSave(0);
+        onSave(
+          0,
+          _siblingNameFields,
+          _siblingAgeFields,
+          _siblingsNameController,
+          _siblingsAgeController,
+          _siblingNameFocus,
+          _siblingAgeFocus,
+          "Sibling",
+          "Age"
+        );
       },
       focus: _siblingNameFocus[0],
   ),
@@ -35,10 +48,54 @@ List<InputTextField> _siblingAgeFields = <InputTextField>[
   InputTextField(
     label: "Age",
     controller: _siblingsAgeController[0],
-    onSaved: () {
-      onSave(0);
-    },
     focus: _siblingAgeFocus[0],
+  ),
+];
+
+// Assigned Controllers
+List<TextEditingController> _assignedPickupController = <TextEditingController>[
+  TextEditingController()
+];
+List<TextEditingController> _assignedRelationController = <TextEditingController>[
+  TextEditingController()
+];
+
+// Assigned Focus
+List<FocusNode> _assignedPickupFocus = <FocusNode>[
+  FocusNode()
+];
+
+List<FocusNode> _assignedRelationFocus = <FocusNode>[
+  FocusNode()
+];
+
+// Assigned Fields
+List<InputTextField> _assignedPickupFields = <InputTextField>[
+  InputTextField(
+    label: "Assigned",
+    controller: _assignedPickupController[0],
+    onSaved: () {
+      onSave(
+        0,
+        _assignedPickupFields,
+        _assignedRelationFields,
+        _assignedPickupController,
+        _assignedRelationController,
+        _assignedPickupFocus,
+        _assignedRelationFocus,
+        "Assigned",
+        "Relationship"
+      );
+    },
+    focus: _assignedPickupFocus[0],
+  ),
+];
+
+List<InputTextField> _assignedRelationFields = <InputTextField>[
+  InputTextField(
+    label: "Relationship",
+    controller: _assignedRelationController[0],
+    focus: _assignedRelationFocus[0],
   ),
 ];
 
@@ -512,6 +569,33 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           )
                         ),
                         InputTextField(label: "Who is your child's legal guardian?", controller: _legalGuardianController),
+                        customFormField(
+                          fieldTitle: "Who is/are assigned to pick your child up from the school?",
+                          child: SingleChildScrollView(
+                                child: Flex(
+                                  direction: Axis.horizontal,
+                                  children: <Widget>[
+                                    Flexible(
+                                      flex: 3,
+                                      child: Flex(
+                                          direction: Axis.vertical,
+                                          children: _assignedPickupFields
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                    ),
+                                    Flexible(
+                                      flex: 2,
+                                      child: Flex(
+                                        direction: Axis.vertical,
+                                        children: _assignedRelationFields,
+                                      ),
+                                    )
+                                  ],
+                                )
+                            )
+                        ),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 18.0),
                           child: Column(
@@ -810,46 +894,52 @@ class _ReactiveInputTextFieldState extends State<ReactiveInputTextField> {
   }
 }
 
-onSave(siblingIndex) {
-  if(siblingIndex == _siblingNameFields.length-1 && _siblingsNameController[siblingIndex].text.length > 0){
-    int newSiblingIndex = siblingIndex + 1;
+onSave(fieldIndex, columnOneFields, columnTwoFields, columnOneController, columnTwoController, columnOneFocus, columnTwoFocus, columnOneLabel, columnTwoLabel) {
+  if(fieldIndex == columnOneFields.length-1 && columnOneController[fieldIndex].text.length > 0){
+    int newSiblingIndex = fieldIndex + 1;
 
-    _siblingsNameController.add(TextEditingController());
-    _siblingNameFocus.add(FocusNode());
-    _siblingsAgeController.add(TextEditingController());
-    _siblingAgeFocus.add(FocusNode());
+    columnOneController.add(TextEditingController());
+    columnOneFocus.add(FocusNode());
+    columnTwoController.add(TextEditingController());
+    columnTwoFocus.add(FocusNode());
 
-    _siblingNameFields.add(InputTextField(
-        label: "Sibling #${newSiblingIndex + 1}",
-        controller: _siblingsNameController[newSiblingIndex],
+    columnOneFields.add(InputTextField(
+        label: "${columnOneLabel} #${newSiblingIndex + 1}",
+        controller: columnOneController[newSiblingIndex],
         onSaved: () {
-          onSave(newSiblingIndex);
+          onSave(
+            newSiblingIndex,
+            columnOneFields,
+            columnTwoFields,
+            columnOneController,
+            columnTwoController,
+            columnOneFocus,
+            columnTwoFocus,
+            columnOneLabel,
+            columnTwoLabel);
         },
-        focus: _siblingNameFocus[newSiblingIndex],
+        focus: columnOneFocus[newSiblingIndex],
     ));
-    _siblingAgeFields.add(InputTextField(
-      label: "Age",
-      controller: _siblingsAgeController[newSiblingIndex],
-      onSaved: () {
-        onSave(newSiblingIndex);
-      },
-      focus: _siblingAgeFocus[newSiblingIndex],
+    columnTwoFields.add(InputTextField(
+      label: columnTwoLabel,
+      controller: columnTwoController[newSiblingIndex],
+      focus: columnTwoFocus[newSiblingIndex],
     ));
-  } else if (siblingIndex != _siblingNameFields.length-1 && _siblingsNameController[siblingIndex].text.length == 0){
-    for(int i = siblingIndex; i < _siblingNameFields.length - 1; i++){
-      _siblingNameFields[i].controller.text = _siblingsNameController[i+1].text;
-      _siblingAgeFields[i].controller.text = _siblingsAgeController[i+1].text;
+  } else if (fieldIndex != columnOneFields.length-1 && columnOneController[fieldIndex].text.length == 0){
+    for(int i = fieldIndex; i < columnOneFields.length - 1; i++){
+      columnOneFields[i].controller.text = columnOneController[i+1].text;
+      columnTwoFields[i].controller.text = columnTwoController[i+1].text;
 
-      _siblingNameFields[i].focus = _siblingNameFields[i+1].focus;
-      _siblingAgeFields[i].focus = _siblingAgeFields[i+1].focus;
+      columnOneFields[i].focus = columnOneFields[i+1].focus;
+      columnTwoFields[i].focus = columnTwoFields[i+1].focus;
     }
-    _siblingNameFields.removeLast();
-    _siblingsNameController.removeLast();
+    columnOneFields.removeLast();
+    columnOneController.removeLast();
 
-    _siblingAgeFields.removeLast();
-    _siblingsAgeController.removeLast();
+    columnTwoFields.removeLast();
+    columnTwoController.removeLast();
 
-    _siblingAgeFocus.removeLast();
-    _siblingNameFocus.removeLast();
+    columnTwoFocus.removeLast();
+    columnOneFocus.removeLast();
   }
 }
