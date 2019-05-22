@@ -110,6 +110,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
   bool _hadPriorSchooling = false;
   bool _homeTelNumNA = false;
   bool _hadAllergies = false;
+  bool _hadMedications = false;
 
   DateTime _dateBirth;
   String _dateBirthValue = null;
@@ -128,6 +129,13 @@ class _EnrollStudentState extends State<EnrollStudent> {
   final _schoolHistoryController = TextEditingController();
   final _allergiesController = TextEditingController();
   final _legalGuardianController = TextEditingController();
+  final _medicationNamesController = TextEditingController();
+  final _medicationPurposesController = TextEditingController();
+  final _activitiesController = TextEditingController();
+  final _prefferedToysController = TextEditingController();
+  final _spendsHisDayController = TextEditingController();
+  final _schoolExpectationsController = TextEditingController();
+  final _otherConcernsController = TextEditingController();
 
   // Family
   List<String> titleLabels = ['Mr.', 'Mrs.', 'Dr.', 'Ms.', 'Arch.', 'Atty.', 'Engr.', 'Hon.', 'Other'];
@@ -596,6 +604,92 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                 )
                             )
                         ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: AlignmentDirectional.topStart,
+                    margin: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      "Health and History",
+                      style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w700
+                      ),
+                    ),
+                  ),
+                  Form(
+                    child: Flex(
+                      direction: Axis.vertical,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Flex(
+                                direction: Axis.horizontal,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 3,
+                                    child: Text(
+                                      'Does your child have any allergies?',
+                                      softWrap: true,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 16.0,
+                                          color: Colors.black54
+                                      )
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Checkbox(
+                                          value: _hadMedications,
+                                          onChanged: (bool value) {
+                                            setState(() {
+                                              _hadMedications = !_hadMedications;
+                                              if(!value){
+                                                _medicationNamesController.clear();
+                                                _medicationPurposesController.clear();
+                                              }
+                                            });
+                                          },
+                                        ),
+                                        Text('YES')
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              TextFormField(
+                                controller: _medicationNamesController,
+                                style: TextStyle(
+                                    color: !_hadMedications ? Colors.black38 : Colors.black87
+                                ),
+                                decoration: InputDecoration(
+                                    hintText: 'Medications...',
+                                    labelText: 'If so, please specify medications'
+                                ),
+                                enabled: _hadMedications,
+                              ),
+                              TextFormField(
+                                controller: _medicationPurposesController,
+                                style: TextStyle(
+                                    color: !_hadMedications ? Colors.black38 : Colors.black87
+                                ),
+                                decoration: InputDecoration(
+                                    hintText: 'Purposes...',
+                                    labelText: 'If so, please specify purposes'
+                                ),
+                                enabled: _hadMedications,
+                              ),
+                            ],
+                          ),
+                        ),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 18.0),
                           child: Column(
@@ -604,12 +698,12 @@ class _EnrollStudentState extends State<EnrollStudent> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Text(
-                                  'Does your child have any allergies?',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16.0,
-                                    color: Colors.black54
-                                  )
+                                    'Does your child have any allergies?',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16.0,
+                                        color: Colors.black54
+                                    )
                                 ),
                               ),
                               Flex(
@@ -643,11 +737,11 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                     child: TextFormField(
                                       controller: _allergiesController,
                                       style: TextStyle(
-                                        color: !_hadAllergies ? Colors.black38 : Colors.black87
+                                          color: !_hadAllergies ? Colors.black38 : Colors.black87
                                       ),
                                       decoration: InputDecoration(
-                                        hintText: 'Seafood, peanuts, etc...',
-                                        labelText: 'If so, please specify'
+                                          hintText: 'Seafood, peanuts, etc...',
+                                          labelText: 'If so, please specify'
                                       ),
                                       enabled: _hadAllergies,
                                     ),
@@ -656,7 +750,30 @@ class _EnrollStudentState extends State<EnrollStudent> {
                               ),
                             ],
                           ),
-                        )
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: AlignmentDirectional.topStart,
+                    margin: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      "Other Information",
+                      style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w700
+                      ),
+                    ),
+                  ),
+                  Form(
+                    child: Flex(
+                      direction: Axis.vertical,
+                      children: <Widget>[
+                        InputTextField(label: "What activities interest your child", controller: _activitiesController),
+                        InputTextField(label: "What toys do your child prefer to play with", controller: _prefferedToysController),
+                        InputTextField(label: "How does your child usually spend his day", controller: _spendsHisDayController),
+                        InputTextField(label: "What do you expect your child to gain from his school experience", controller: _schoolExpectationsController),
+                        InputTextField(label: "What other concerns do we need to know regarding your child", controller: _otherConcernsController),
                       ],
                     ),
                   )
@@ -701,8 +818,9 @@ class InputTextField extends StatelessWidget {
         inputFormatters: inputFormatter,
         focusNode: focus,
         decoration: InputDecoration(
-            hintText: label,
-            labelText: label
+          hintText: label,
+          labelText: label,
+          hintMaxLines: 2
         ),
       ),
     );
@@ -894,7 +1012,17 @@ class _ReactiveInputTextFieldState extends State<ReactiveInputTextField> {
   }
 }
 
-onSave(fieldIndex, columnOneFields, columnTwoFields, columnOneController, columnTwoController, columnOneFocus, columnTwoFocus, columnOneLabel, columnTwoLabel) {
+onSave(
+  fieldIndex,
+  columnOneFields,
+  columnTwoFields,
+  columnOneController,
+  columnTwoController,
+  columnOneFocus,
+  columnTwoFocus,
+  columnOneLabel,
+  columnTwoLabel
+) {
   if(fieldIndex == columnOneFields.length-1 && columnOneController[fieldIndex].text.length > 0){
     int newSiblingIndex = fieldIndex + 1;
 
