@@ -14,33 +14,6 @@ class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  Future<List<String>> _getStudentInfo(String userId) async {
-    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/student/get-student'),
-        body: json.encode({
-          'data': userId
-        }),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        });
-
-    var data = json.decode(response.body)[0];
-
-    return [userId, data['s_fname'], data['s_lname']];
-  }
-
-  Future<List> _getStudentsInfo(List<String> userIds) async {
-    List<List<String>> users;
-
-    for(var i = 0; i < userIds.length; i++){
-      List<String> user = await _getStudentInfo(userIds[i]);
-
-      users[i] = user;
-    }
-
-    return users;
-  }
-
   Future<List> getData() async {
     http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/account/login'),
       body: json.encode({
