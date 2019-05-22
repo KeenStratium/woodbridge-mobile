@@ -55,6 +55,8 @@ flutter:
     - img/superman.jpg
     - img/venom.jpg
     - img/superman.jpg
+    - img/background-img.png
+    - img/woodbridge_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
