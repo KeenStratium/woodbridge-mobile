@@ -37,11 +37,14 @@ class _LoginPageState extends State<LoginPage> {
       var userData = await data[0];
 
       if(userData['user_id'].runtimeType == String){
-        return [userData['user_id']];
+        print('is string');
+        return ['S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
       }else{
+        print('not string');
         return userData['user_id'];
       }
     } catch(e) {
+      print(e);
       print('Invalid credentials');
     }
   }
@@ -131,6 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                             getData().then((data) {
                               Route route = MaterialPageRoute(
                                   builder: (BuildContext context) {
+                                    print(data);
                                     return StudentPicker(users: data);
                                   });
                               Navigator.push(context, route);
