@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'student_picker.dart';
 import 'login.dart';
 import 'colors.dart';
 
@@ -8,7 +7,7 @@ final ThemeData _woodbridgeTheme = _buildWoodbridgeTheme();
 
 ThemeData _buildWoodbridgeTheme() {
   return ThemeData(
-    fontFamily: 'Roboto',
+    fontFamily: 'Muli',
     accentColor: blue,
   );
 }
