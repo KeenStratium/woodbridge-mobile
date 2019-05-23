@@ -20,7 +20,7 @@ class Areas {
 List<Grade> grades = <Grade>[
   Grade(subject: 'Reading Readiness', first: 'MS', second: 'S', third: 'S', fourth: 'S', ave: 'S'),
   Grade(subject: 'Math', first: 'MS', second: 'S', third: 'VS', fourth: 'S', ave: 'MS'),
-  Grade(subject: 'Language Arts', first: 'O', second: 'VS', third: 'S', fourth: 'VS', ave: 'MS'),
+  Grade(subject: 'Delights in learning new skills, Delights in learning new skills', first: 'O', second: 'VS', third: 'S', fourth: 'VS', ave: 'MS'),
 ];
 
 class Grades extends StatelessWidget {
@@ -129,9 +129,10 @@ class GradeCard extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
             child: Text(
               grade.subject,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black87,
                 fontSize: 18.0,
