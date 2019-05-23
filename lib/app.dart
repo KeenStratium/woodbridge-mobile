@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
 
-import 'student_picker.dart';
 import 'login.dart';
+import 'colors.dart';
+
+final ThemeData _woodbridgeTheme = _buildWoodbridgeTheme();
+
+ThemeData _buildWoodbridgeTheme() {
+  return ThemeData(
+    fontFamily: 'Muli',
+    accentColor: blue,
+    backgroundColor: Color.fromRGBO(246, 246, 246, 1),
+    scaffoldBackgroundColor: Color.fromRGBO(246, 246, 246, 1),
+    appBarTheme: AppBarTheme(
+      color: blue
+    )
+  );
+}
 
 class WoodbridgeApp extends StatelessWidget {
   @override
@@ -11,6 +25,7 @@ class WoodbridgeApp extends StatelessWidget {
       home: LoginPage(),
       initialRoute: '/login',
       onGenerateRoute: _getRoute,
+      theme: _woodbridgeTheme
     );
   }
 
@@ -26,4 +41,3 @@ class WoodbridgeApp extends StatelessWidget {
     );
   }
 }
-
