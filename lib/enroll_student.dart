@@ -190,28 +190,55 @@ class _EnrollStudentState extends State<EnrollStudent> {
         ),
         color: Colors.white,
         notchMargin: 5.0,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 40.0),
-          child: accentCtaButton(
-            label: 'SUBMIT',
-            onPressed: () {
-              Route route = MaterialPageRoute(builder: (context) => HomePage(
-                child: Avatar(
-                  backgroundColor: Colors.cyan,
-                  maxRadius: 48.0,
-                  minRadius: 24.0,
-                  initial: 'KE',
-                  fontSize: 24.0,
+        child: Row(
+          children: <Widget>[
+            /*Add the Items here*/
+            Container(
+              /*Padding changes the height*/
+              padding: EdgeInsets.all(6.0),
+              child: OutlineButton.icon(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.cancel,
+                  color: Colors.grey[500]
                 ),
-                firstName: 'Keanu Kent',
-                lastName: 'Gargar',
-                heroTag: 'keanu',
-              ));
-              Navigator.push(context, route);
-            },
-          ),
-        )
+                label: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.w600
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.0)
+                ),
+              )
+            )
+          ],
+        ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Route route = MaterialPageRoute(builder: (context) => HomePage(
+            child: Avatar(
+              backgroundColor: Colors.cyan,
+              maxRadius: 48.0,
+              minRadius: 24.0,
+              initial: 'KE',
+              fontSize: 24.0,
+            ),
+            firstName: 'Keanu Kent',
+            lastName: 'Gargar',
+            heroTag: 'keanu',
+          ));
+          Navigator.push(context, route);
+        },
+        isExtended: true,
+        label: Text('Enroll'),
+        elevation: 4.0,
+        icon: Icon(Icons.school),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
@@ -597,9 +624,9 @@ class _EnrollStudentState extends State<EnrollStudent> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Flexible(
-                                    flex: 2,
+                                    flex: 3,
                                     child: Text(
-                                      'Is your child currently under any medication(s)?',
+                                      'Does your child have any allergies?',
                                       softWrap: true,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,

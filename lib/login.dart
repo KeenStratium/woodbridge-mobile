@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'colors.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'student_picker.dart';
-
-import 'woodbridge-ui_components.dart';
-
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,6 +13,33 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  Future<List<String>> _getStudentInfo(String userId) async {
+    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/student/get-student'),
+        body: json.encode({
+          'data': userId
+        }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+
+    var data = json.decode(response.body)[0];
+
+    return [userId, data['s_fname'], data['s_lname']];
+  }
+
+  Future<List> _getStudentsInfo(List<String> userIds) async {
+    List<List<String>> users;
+
+    for(var i = 0; i < userIds.length; i++){
+      List<String> user = await _getStudentInfo(userIds[i]);
+
+      users[i] = user;
+    }
+
+    return users;
+  }
 
   Future<List> getData() async {
     http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/account/login'),
@@ -37,14 +60,11 @@ class _LoginPageState extends State<LoginPage> {
       var userData = await data[0];
 
       if(userData['user_id'].runtimeType == String){
-        print('is string');
-        return ['S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
+        return [userData['user_id']];
       }else{
-        print('not string');
         return userData['user_id'];
       }
     } catch(e) {
-      print(e);
       print('Invalid credentials');
     }
   }
@@ -53,133 +73,109 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("img/background-img.png"),
-            fit: BoxFit.cover
-          )
-        ),
-        child: SafeArea(
-          child: Container(
-            alignment: AlignmentDirectional.center,
-            child: Flex(
-              direction: Axis.vertical,
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 40.0),
+          alignment: AlignmentDirectional.center,
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Flexible(
-                  child: FittedBox(
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 12.0),
-                      width: 128.0,
-                      height: 128.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage("img/woodbridge_logo.png"),
-                          fit: BoxFit.cover
-                        )
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 28.0, vertical: 14.0),
-                  padding: EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                    boxShadow: [BrandTheme.cardShadow]
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 8.0),
-                              child: TextFormField(
-                                autofocus: true,
-                                controller: _userController,
-                                decoration: InputDecoration(
-                                  filled: false,
-                                  labelText: 'Email/Username',
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 8.0),
-                              child: TextFormField(
-                                controller: _passwordController,
-                                decoration: InputDecoration(
-                                  filled: false,
-                                  labelText: 'Password',
-                                ),
-                              ),
-                            ),
-                          ],
+                Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextField(
+                        autofocus: true,
+                        controller: _userController,
+                        decoration: InputDecoration(
+                          filled: false,
+                          labelText: 'Login',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(5))
+                          )
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: accentCtaButton(
-                          label: 'Log In',
-                          onPressed: (() {
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                            filled: false,
+                            labelText: 'Password',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(5))
+                            )
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: RaisedButton(
+                          child: Text(
+                            'Log In',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700
+                            ),
+                          ),
+                          onPressed: () => {
                             getData().then((data) {
                               Route route = MaterialPageRoute(
                                   builder: (BuildContext context) {
-                                    print(data);
                                     return StudentPicker(users: data);
                                   });
                               Navigator.push(context, route);
-                            });
-                          }),
+                            })
+                          },
+                          elevation: 3.0,
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2.0),
-                  child: Text(
-                    'or',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      fontSize: 16.0
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 14.0),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        child: Column(
-                          children: <Widget>[
-                            CtaButton(
-                              label: 'Login with Facebook',
-                              color: facebookBlue,
-                              onPressed: (() {
-                                return null;
-                              }),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 32.0),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: RaisedButton(
+                                child: Text('Login with FB'),
+                                onPressed: () {},
+                                elevation: 0.0,
+                                padding: EdgeInsets.symmetric(vertical: 12.0),
+                                highlightElevation: 0.0,
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: RaisedButton(
+                                child: Text('Login with Google'),
+                                onPressed: () {},
+                                elevation: 0.0,
+                                padding: EdgeInsets.symmetric(vertical: 12.0),
+                                highlightElevation: 0.0,
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
                             ),
-                            CtaButton(
-                              label: 'Login with Google',
-                              color: googleRed,
-                              onPressed: (() {
-                                return null;
-                              }),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 )
               ],
             ),

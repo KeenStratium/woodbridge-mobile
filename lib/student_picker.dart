@@ -25,7 +25,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
 
   void getStudent(userId) async {
     await _getStudentInfo(userId)
-    .then((data) {
+        .then((data) {
       setState(() {
         fname = data['s_fname'];
         lname = data['s_lname'];
@@ -42,63 +42,50 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 7.0, vertical: 7.0),
-      padding: EdgeInsets.symmetric(horizontal: 24.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(7.0)),
-        boxShadow: [BrandTheme.cardShadow]
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Hero(
-            tag: widget.userId,
-            child: FittedBox(
-                child: Material(
-                  child: InkWell(
-                    onTap: () =>
-                        Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (BuildContext context) => HomePage(
-                            child: Avatar(
-                              backgroundColor: Colors.indigo,
-                              maxRadius: 48.0,
-                              minRadius: 24.0,
-                              fontSize: 24.0,
-                              initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}"
-                            ),
-                            firstName: fname ?? '',
-                            lastName: lname ?? '',
-                            heroTag: widget.userId,
+    return Column(
+      children: <Widget>[
+        Hero(
+          tag: widget.userId,
+          child: FittedBox(
+              child: Material(
+                child: InkWell(
+                  onTap: () =>
+                      Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (BuildContext context) => HomePage(
+                          child: Avatar(
+                            backgroundColor: Colors.indigo,
+                            maxRadius: 48.0,
+                            minRadius: 24.0,
+                            fontSize: 24.0,
+                            initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}"
                           ),
-                        )),
-                    child: Avatar(
-                      backgroundColor: Colors.indigo,
-                      maxRadius: 48.0,
-                      fontSize: 24.0,
-                      initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}",
-                    ),
+                          firstName: fname ?? '',
+                          lastName: lname ?? '',
+                          heroTag: widget.userId,
+                        ),
+                      )),
+                  child: Avatar(
+                    backgroundColor: Colors.indigo,
+                    maxRadius: 80.0,
+                    fontSize: 32.0,
+                    initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}",
                   ),
                 ),
-                fit: BoxFit.contain
-            ),
+              ),
+              fit: BoxFit.contain
           ),
-          Container(
-            width: 128.0,
+        ),
+        Container(
             margin: EdgeInsets.only(top: 16.0),
             child: Text(
-              '${fname ?? ''}',
+              '${fname ?? ''} ${lname ?? ''}',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black87,
                 fontWeight: FontWeight.w700,
               ),
             )
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 }
@@ -117,6 +104,7 @@ Future<Map> _getStudentInfo(userId) async {
 }
 
 class StudentPicker extends StatefulWidget {
+ var userIds = 'S-1557210835494';
  List users;
 
   StudentPicker({
@@ -132,74 +120,61 @@ class _StudentPickerState extends State<StudentPicker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 33.0),
+          padding: EdgeInsets.symmetric(horizontal: 40.0),
           alignment: AlignmentDirectional.center,
-          child: Flex(
-            direction: Axis.vertical,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Flex(
-                    direction: Axis.vertical,
-                    children: <Widget>[
-                      Flexible(
-                        flex: 0,
-                        child: Container(
-                          margin: EdgeInsets.symmetric(vertical: 24.0),
-                          child: Text(
-                            'Select Student',
-                            style: TextStyle(
-                              fontSize: 22.0,
-                              fontWeight: FontWeight.w600
-                            )
-                          ),
-                        ),
-                      ),
-                      Flexible(
-                        flex: 0,
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                              maxWidth: 360.00
-                          ),
-                          child: Container(
-                            child: GridView.count(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                primary: false,
-                                childAspectRatio: .9,
-                                crossAxisCount: 2,
-                                children: widget.users.map((userId) {
-                                  return StudentAvatarPicker(userId: userId);
-                                }).toList()
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Select Student',
+                  style: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w600
+                  )
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 7.0),
-                child: Container(
-                  padding: EdgeInsets.only(top: 8.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: accentCtaButton(
-                      label: 'Enroll New Student',
-                      onPressed: () {
-                        Route route = MaterialPageRoute(builder: (context) => EnrollStudent());
-                        Navigator.push(context, route);
-                      },
+                FittedBox(
+                  fit: BoxFit.contain,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 48.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        StudentAvatarPicker(userId: widget.users[0]),
+                        SizedBox(width: 40.0),
+                      ],
                     ),
                   ),
                 ),
-              )
-            ],
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: RaisedButton(
+                        child: Text(
+                          'Enroll New Student',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700
+                          ),
+                        ),
+                        onPressed: () {
+                          Route route = MaterialPageRoute(builder: (context) => EnrollStudent());
+                          Navigator.push(context, route);
+                        },
+                        elevation: 3.0,
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
