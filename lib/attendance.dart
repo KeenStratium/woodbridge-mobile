@@ -80,14 +80,19 @@ class Attendance extends StatelessWidget {
             ),
             Expanded(
               flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: CalendarCarousel(
-                  weekdayTextStyle: TextStyle(
-                    color: Colors.grey[600]
-                  ),
-                  weekendTextStyle: TextStyle(
-                    color: Colors.redAccent
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  child: CalendarCarousel(
+                    weekdayTextStyle: TextStyle(
+                      color: Colors.grey[600]
+                    ),
+                    weekendTextStyle: TextStyle(
+                      color: Colors.redAccent
+                    ),
                   ),
                 ),
               ),
