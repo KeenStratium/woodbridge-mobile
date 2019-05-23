@@ -10,7 +10,7 @@ ThemeData _buildWoodbridgeTheme() {
     fontFamily: 'Muli',
     accentColor: blue,
     backgroundColor: Color.fromRGBO(246, 246, 246, 1),
-    scaffoldBackgroundColor: Color.fromRGBO(246, 246, 246, 1),
+    scaffoldBackgroundColor: Color.fromRGBO(245, 244, 245, 1),
     appBarTheme: AppBarTheme(
       color: blue
     )

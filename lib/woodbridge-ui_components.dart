@@ -56,6 +56,9 @@ class ProfileHeader extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
+          decoration: BoxDecoration(
+            color: Colors.white
+          ),
           padding: EdgeInsets.symmetric(vertical: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
