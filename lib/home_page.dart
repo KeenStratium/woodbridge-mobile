@@ -268,16 +268,7 @@ class HomePage extends StatelessWidget {
                               iconPath: 'img/Icons/icon_students_2x.png',
                               label: 'Profile',
                               pageBuilder: Profile(
-                                avatar: Hero(
-                                  tag: heroTag,
-                                  child: Avatar(
-                                    backgroundColor: Colors.indigo,
-                                    maxRadius: 48.0,
-                                    minRadius: 20.0,
-                                    fontSize: 20.0,
-                                    initial: "KG",
-                                  ),
-                                ),
+                                heroTag: heroTag
                               ),
                               buildContext: context,
                             ),

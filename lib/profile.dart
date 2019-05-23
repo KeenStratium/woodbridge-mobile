@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
 class Profile extends StatelessWidget {
-  final Widget avatar;
+  final String heroTag;
 
   Profile({
-    this.avatar
+    this.heroTag
   });
 
   @override
@@ -21,7 +21,16 @@ class Profile extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 28.0),
               child: Column(
                 children: <Widget>[
-                  avatar,
+                  Hero(
+                    tag: heroTag,
+                    child: Avatar(
+                      backgroundColor: Colors.indigo,
+                      maxRadius: 48.0,
+                      minRadius: 20.0,
+                      fontSize: 20.0,
+                      initial: "KG",
+                    ),
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.0),
                   ),
