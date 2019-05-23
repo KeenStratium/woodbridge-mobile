@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'woodbridge-ui_components.dart';
 
 class Profile extends StatelessWidget {
   @override
@@ -11,8 +12,34 @@ class Profile extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Container(
+              padding: EdgeInsets.symmetric(vertical: 28.0),
+              child: Column(
+                children: <Widget>[
+                  Avatar(
+                    backgroundColor: Colors.indigo,
+                    maxRadius: 48.0,
+                    minRadius: 20.0,
+                    fontSize: 20.0,
+                    initial: "KG"
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                  ),
+                  Text(
+                    'Gargar, Keanu Kent B.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20.0,
+                      color: Theme.of(context).accentColor
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
               alignment: AlignmentDirectional.topStart,
-              padding: EdgeInsets.symmetric(vertical: 28.0, horizontal: 20.0),
+              margin: EdgeInsets.only(bottom: 28.0),
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
                 'Basic Information',
                 style: TextStyle(
@@ -31,32 +58,14 @@ class Profile extends StatelessWidget {
                     ProfileField(
                       fieldValue: 'Male',
                       fieldLabel: 'Gender',
-                      child: TextField(
-                        decoration: InputDecoration(
-                            hintText: 'Male'
-                        ),
-                        autofocus: true,
-                      ),
                     ),
                     ProfileField(
                       fieldValue: 'Sample Address',
                       fieldLabel: 'Address',
-                      child: TextField(
-                        decoration: InputDecoration(
-                            hintText: 'Sample Address'
-                        ),
-                        autofocus: true,
-                      ),
                     ),
                     ProfileField(
                       fieldValue: '123-4567',
                       fieldLabel: 'Tel. No.',
-                      child: TextField(
-                        decoration: InputDecoration(
-                            hintText: '123-4567'
-                        ),
-                        autofocus: true,
-                      ),
                     ),
                   ]
                 ).toList(),
@@ -72,17 +81,12 @@ class Profile extends StatelessWidget {
 class ProfileField extends StatefulWidget {
   final String fieldValue;
   final String fieldLabel;
-  final Widget child;
-  String updateLabel;
 
   ProfileField({
     Key key,
     this.fieldValue,
     this.fieldLabel,
-    this.child,
-  }) : super (key: key){
-    this.updateLabel = 'Update $fieldLabel';
-  }
+  });
 
   @override
   _ProfileFieldState createState() => _ProfileFieldState();
@@ -95,58 +99,6 @@ class _ProfileFieldState extends State<ProfileField> {
     return ListTile(
       title: Text(widget.fieldValue),
       subtitle: Text(widget.fieldLabel),
-      trailing: IconButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext buildContext) {
-              return AlertDialog(
-                title: Text(widget.updateLabel),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6.0)
-                ),
-                content: Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: widget.child
-                    )
-                  ],
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.grey[700]
-                      ),
-                    ),
-                    textTheme: ButtonTextTheme.normal,
-                    onPressed: () {
-                      Navigator.pop(context, true);
-                    },
-                  ),
-                  FlatButton(
-                    child: Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
-                    textTheme: ButtonTextTheme.accent,
-                    onPressed: () {
-                      Navigator.pop(context, true);
-                    },
-                  )
-                ],
-                semanticLabel: widget.updateLabel,
-              );
-            }
-          );
-        },
-        icon: Icon(Icons.edit)
-      ),
     );
   }
 }
