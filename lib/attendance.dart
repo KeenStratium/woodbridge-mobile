@@ -21,71 +21,138 @@ class Attendance extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         body: Flex(
           direction: Axis.vertical,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            ProfileHeader(
-              firstName: this.firstName,
-              lastName: this.lastName,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-              child: Flex(
-                direction: Axis.horizontal,
+            Flexible(
+              flex: 2,
+              child: Column(
                 children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        DashboardTile(
-                          label: 'QUARTER',
-                          displayPlainValue: false,
-                          child: DropdownButton<String>(
-                              value: '1st quarter',
-                              onChanged: (String newValue) {},
-                              items: <String>['1st quarter', '2nd quarter', '3rd quarter', '4th quarter']
-                                .map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value)
-                                  );
-                                }).toList(),
+                  ProfileHeader(
+                    firstName: this.firstName,
+                    lastName: this.lastName,
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: double.infinity,
+                          maxHeight: 90.0
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [BrandTheme.cardShadow],
+                            borderRadius: BorderRadius.all(Radius.circular(7.0))
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          child: Flex(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            direction: Axis.horizontal,
+                            children: <Widget>[
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Days Present',
+                                      style: TextStyle(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                      ),
+                                    ),
+                                    Text(
+                                      '38',
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 32.0,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: double.infinity,
+                                width: 1.0,
+                                color: Colors.black12,
+                                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'School Days',
+                                      style: TextStyle(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                      ),
+                                    ),
+                                    Text(
+                                      '44',
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 32.0,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: double.infinity,
+                                width: 1.0,
+                                color: Colors.black12,
+                                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Days Absent',
+                                      style: TextStyle(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                      ),
+                                    ),
+                                    Text(
+                                      '6',
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 32.0,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        DashboardTile(
-                          label: 'DAYS PRESENT',
-                          displayPlainValue: true,
-                          value: '38',
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        DashboardTile(
-                          label: 'SCHOOL DAYS',
-                          displayPlainValue: true,
-                          value: '44',
-                        ),
-                        DashboardTile(
-                          label: 'DAYS ABSENT',
-                          displayPlainValue: true,
-                          value: '6',
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
             Expanded(
-              flex: 1,
+              flex: 3,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
                   child: CalendarCarousel(
                     weekdayTextStyle: TextStyle(
                       color: Colors.grey[600]
