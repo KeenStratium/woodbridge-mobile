@@ -20,7 +20,7 @@ class Areas {
 List<Grade> grades = <Grade>[
   Grade(subject: 'Reading Readiness', first: 'MS', second: 'S', third: 'S', fourth: 'S', ave: 'S'),
   Grade(subject: 'Math', first: 'MS', second: 'S', third: 'VS', fourth: 'S', ave: 'MS'),
-  Grade(subject: 'Delights in learning new skills, Delights in learning new skills', first: 'O', second: 'VS', third: 'S', fourth: 'VS', ave: 'MS'),
+  Grade(subject: 'Language Arts', first: 'O', second: 'VS', third: 'S', fourth: 'VS', ave: 'MS'),
 ];
 
 class Grades extends StatelessWidget {
