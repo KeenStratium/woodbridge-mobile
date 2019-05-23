@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class BrandTheme {
   static final BoxShadow cardShadow = BoxShadow(
     color: Color.fromRGBO(0, 0, 0, .25),
-    offset: Offset.zero,
-    blurRadius: 7.0,
-    spreadRadius: -1.0
+    blurRadius: 5.0,
+    offset: Offset(1.0, 1.0),
+    spreadRadius: -2.0
   );
 }
 

@@ -63,9 +63,9 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                           builder: (BuildContext context) => HomePage(
                             child: Avatar(
                               backgroundColor: Colors.indigo,
-                              maxRadius: 48.0,
-                              minRadius: 24.0,
-                              fontSize: 24.0,
+                              maxRadius: 40.0,
+                              minRadius: 20.0,
+                              fontSize: 20.0,
                               initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}"
                             ),
                             firstName: fname ?? '',
