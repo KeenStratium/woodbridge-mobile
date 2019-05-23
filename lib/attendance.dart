@@ -160,6 +160,12 @@ class Attendance extends StatelessWidget {
                     weekendTextStyle: TextStyle(
                       color: Colors.redAccent
                     ),
+                    daysHaveCircularBorder: false,
+                    todayBorderColor: Colors.redAccent,
+                    todayButtonColor: Colors.white,
+                    todayTextStyle: TextStyle(
+                      color: Colors.black87
+                    ),
                   ),
                 ),
               ),
