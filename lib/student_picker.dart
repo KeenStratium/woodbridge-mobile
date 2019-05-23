@@ -48,12 +48,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(7.0)),
-        boxShadow: [BoxShadow(
-          color: Color.fromRGBO(0, 0, 0, .25),
-          offset: Offset.zero,
-          blurRadius: 7.0,
-          spreadRadius: -1.0
-        )]
+        boxShadow: [BrandTheme.cardShadow]
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

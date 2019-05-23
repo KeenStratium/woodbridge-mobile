@@ -89,12 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                    boxShadow: [BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, .35),
-                      offset: Offset.zero,
-                      blurRadius: 14.0,
-                      spreadRadius: -2.0
-                    )]
+                    boxShadow: [BrandTheme.cardShadow]
                   ),
                   child: Column(
                     children: <Widget>[

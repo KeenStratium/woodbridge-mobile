@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+class BrandTheme {
+  static final BoxShadow cardShadow = BoxShadow(
+    color: Color.fromRGBO(0, 0, 0, .25),
+    offset: Offset.zero,
+    blurRadius: 7.0,
+    spreadRadius: -1.0
+  );
+}
+
 class Avatar extends StatelessWidget {
   final Color backgroundColor;
   final double maxRadius;
