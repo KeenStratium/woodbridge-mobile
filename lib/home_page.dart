@@ -23,9 +23,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
           child: Column(
             children: <Widget>[
               Column(
@@ -162,16 +162,30 @@ class HomePage extends StatelessWidget {
               )
             ],
           ),
-        )
-      ),
-      appBar: AppBar(
-        title: Text('Woodbridge'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {},
-          )
-        ],
+        ),
+        appBar: AppBar(
+          title: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("img/woodbridge_logo.png")
+              )
+            ),
+          ),
+          leading: Icon(
+            Icons.notifications_none,
+            color: Theme.of(context).accentColor,
+          ),
+          backgroundColor: Colors.white,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Theme.of(context).accentColor,
+              ),
+              onPressed: () {},
+            )
+          ],
+        ),
       ),
     );
   }
