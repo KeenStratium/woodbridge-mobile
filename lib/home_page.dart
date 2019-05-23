@@ -333,9 +333,18 @@ class HomePage extends StatelessWidget {
               )
             ),
           ),
-          leading: Icon(
-            Icons.notifications_none,
-            color: Theme.of(context).accentColor,
+          leading: IconButton(
+            onPressed: () {
+              Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
+                firstName: this.firstName,
+                lastName: this.lastName,
+              ));
+              Navigator.push(context, route);
+            },
+            icon: Icon(
+              Icons.notifications_none,
+              color: Theme.of(context).accentColor,
+            ),
           ),
           backgroundColor: Colors.white,
           actions: <Widget>[
