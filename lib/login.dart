@@ -19,34 +19,36 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   Future<List> getData() async {
-    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/account/login'),
-      body: json.encode({
-        'data': {
-          'uname': _userController.text,
-          'pass': _passwordController.text
-        }
-      }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
+//    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/account/login'),
+//      body: json.encode({
+//        'data': {
+//          'uname': _userController.text,
+//          'pass': _passwordController.text
+//        }
+//      }),
+//      headers: {
+//        'Accept': 'application/json',
+//        'Content-Type': 'application/json'
+//      });
+//
+//    var data = await json.decode(response.body);
+//
+//    try {
+//      var userData = await data[0];
+//
+//      if(userData['user_id'].runtimeType == String){
+//        print('is string');
+//        return ['S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
+//      }else{
+//        print('not string');
+//        return userData['user_id'];
+//      }
+//    } catch(e) {
+//      print(e);
+//      print('Invalid credentials');
+//    }
 
-    var data = await json.decode(response.body);
-
-    try {
-      var userData = await data[0];
-
-      if(userData['user_id'].runtimeType == String){
-        print('is string');
-        return ['S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
-      }else{
-        print('not string');
-        return userData['user_id'];
-      }
-    } catch(e) {
-      print(e);
-      print('Invalid credentials');
-    }
+    return ['S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
   }
 
   @override
