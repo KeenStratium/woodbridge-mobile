@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
 class Profile extends StatelessWidget {
+  final Widget avatar;
+
+  Profile({
+    this.avatar
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,13 +21,7 @@ class Profile extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 28.0),
               child: Column(
                 children: <Widget>[
-                  Avatar(
-                    backgroundColor: Colors.indigo,
-                    maxRadius: 48.0,
-                    minRadius: 20.0,
-                    fontSize: 20.0,
-                    initial: "KG"
-                  ),
+                  avatar,
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.0),
                   ),
