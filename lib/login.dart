@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'colors.dart';
 
+import 'package:flutter/services.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'student_picker.dart';
@@ -48,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
 //      print('Invalid credentials');
 //    }
 
-    return ['S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
+    return ['S-1557211347790', 'S-1558317961029', 'S-1558418591682', 'S-1558680062880', 'S-1558590912317', 'S-1557903052999', 'S-1557210541856'];
   }
 
   @override
