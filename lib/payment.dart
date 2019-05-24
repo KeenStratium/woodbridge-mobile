@@ -12,15 +12,15 @@ class Payment {
 List<Payment> payments = <Payment>[
   Payment(
     label: '1/14/2019',
-    amount: 'P5,000'
+    amount: '₱5,000'
   ),
   Payment(
     label: '2/10/2019',
-    amount: 'P5,000'
+    amount: '₱5,000'
   ),
   Payment(
     label: '2/14/2019',
-    amount: 'P2,000'
+    amount: '₱2,000'
   )
 ];
 
@@ -39,6 +39,7 @@ class PaymentHistory extends StatelessWidget {
       appBar: AppBar(
         title: Text('Payment History')
       ),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Flex(
           direction: Axis.vertical,
@@ -88,12 +89,13 @@ class PaymentHistory extends StatelessWidget {
                   DataTable(
                     columns: <DataColumn>[
                       DataColumn(
-                        label: Flexible(
+                        label: Expanded(
                           child: Text(
                             'DATE OF PAYMENT',
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
-                              fontSize: 16.0,
+                              fontSize: 14.0,
                               color: Colors.grey[800],
                             ),
                           ),
@@ -104,7 +106,15 @@ class PaymentHistory extends StatelessWidget {
                       ),
                       DataColumn(
                         label: Flexible(
-                          child: Text('AMOUNT'),
+                          child: Text(
+                            'AMOUNT',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14.0,
+                              color: Colors.grey[800],
+                            ),
+                          ),
                         ),
                         numeric: false,
                         onSort: (i, j){},
@@ -114,7 +124,13 @@ class PaymentHistory extends StatelessWidget {
                     rows: payments.map((payment) => DataRow(
                       cells: [
                         DataCell(
-                          Text(payment.label),
+                          Text(
+                            payment.label,
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16.0
+                            ),
+                          ),
                           onTap: () {
                             Route route = MaterialPageRoute(
                               builder: (buildContext) => PaymentDetails(
@@ -124,7 +140,13 @@ class PaymentHistory extends StatelessWidget {
                           }
                         ),
                         DataCell(
-                          Text(payment.amount),
+                          Text(
+                            payment.amount,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600
+                            ),
+                          ),
                           onTap: () {
                             Route route = MaterialPageRoute(
                                 builder: (buildContext) => PaymentDetails(
