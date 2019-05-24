@@ -197,26 +197,15 @@ List<List<ActivityEvent>> monthActivities = <List<ActivityEvent>>[
   may, june, july, august
 ];
 
-
-List<Widget> _buildActivities (BuildContext context) {
-  List<Widget> activities = List<Widget>();
-
-  int i = 0;
-
-  activities.addAll(_buildLists(context, i, i += monthActivities.length));
-
-  return activities;
-}
-
 List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
   return List.generate(count, (sliverIndex) {
     sliverIndex += firstIndex;
     return new SliverStickyHeaderBuilder(
       builder: (context, state) => _buildHeader(context, sliverIndex, state),
-      sliver: new SliverList(
-        delegate: new SliverChildBuilderDelegate((context, i) =>
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate((context, i) =>
           Container(
-            margin: EdgeInsets.only(top: i == 0 ? 20.0 : 0.00, bottom:  i == monthActivities[sliverIndex].length - 1 ? 20.00 : 0.00),
+            margin: EdgeInsets.only(top: i == 0 ? 20.0 : 0.00, bottom: i == monthActivities[sliverIndex].length - 1 ? 20.00 : 0.00),
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Container(
               height: 80.0,
@@ -324,7 +313,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
               ),
             ),
           ),
-          childCount: monthActivities.length,
+          childCount: monthActivities[sliverIndex].length,
         ),
       ),
     );
@@ -334,7 +323,6 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
 Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState state, {String text}) {
   return new Container(
     height: 48.0,
-//    color: Colors.white,
     padding: EdgeInsets.symmetric(horizontal: 20.0),
     alignment: Alignment.centerLeft,
     decoration: BoxDecoration(
@@ -387,7 +375,7 @@ class Activities extends StatelessWidget {
             Flexible(
               child: Builder(builder: (BuildContext context) {
                 return new CustomScrollView(
-                  slivers: _buildActivities(context),
+                  slivers: _buildLists(context, 0, monthActivities.length),
                 );
               }),
             )
