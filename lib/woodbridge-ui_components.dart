@@ -113,7 +113,7 @@ class DashboardTile extends StatelessWidget {
             style: TextStyle(
               fontSize: 12.0,
               fontWeight: FontWeight.w700,
-              color: Colors.grey[500]
+              color: Colors.grey[600]
             ),
           ),
           Padding(
