@@ -17,62 +17,59 @@ class GalleryPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: new Container(
-        child: new Flex(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          direction: Axis.vertical,
-          children: <Widget>[
-            Hero(
-              tag: this.heroTag,
-              child: Material(
-                child: InkWell(
-                  onTap: () =>
-                    Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) => new GalleryDetail(
-                        galleryName: this.name,
-                        heroTag: this.heroTag,
-                        imgPath: this.imgPath,
-                      ),
-                    )),
-                  child: new Image.asset(
-                    this.imgPath,
-                    fit: BoxFit.cover,
-                  ),
+    return Container(
+      child: new Flex(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        direction: Axis.vertical,
+        children: <Widget>[
+          Hero(
+            tag: this.heroTag,
+            child: Material(
+              child: InkWell(
+                onTap: () =>
+                  Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new GalleryDetail(
+                      galleryName: this.name,
+                      heroTag: this.heroTag,
+                      imgPath: this.imgPath,
+                    ),
+                  )),
+                child: new Image.asset(
+                  this.imgPath,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
-                      child: Text(
-                        this.name,
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600
-                        ),
-                      ),
-                    ),
-                    Text(
-                      this.subName,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 2.0),
+                    child: Text(
+                      this.name,
                       style: TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.w300
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Text(
+                    this.subName,
+                    style: TextStyle(
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w300
+                    ),
+                  ),
+                ],
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -103,11 +100,12 @@ class ActivityGallery extends StatelessWidget {
               lastName: this.lastName,
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Container(
                 child: GridView.count(
                   crossAxisCount: 2,
                   scrollDirection: Axis.vertical,
+                  mainAxisSpacing: 1.0,
+                  crossAxisSpacing: 1.0,
                   children: <Widget>[
                     GalleryPreview(
                       heroTag: 'aquaman',
