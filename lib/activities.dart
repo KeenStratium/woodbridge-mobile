@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'dart:ui' as ui;
+
 
 class ActivityEvent {
   String title;
@@ -16,7 +16,7 @@ class ActivityEvent {
 List<ActivityEvent> may = <ActivityEvent>[
   ActivityEvent(
     title: 'Event title 1',
-    venue: 'Multi-purpose Gym',
+    venue: 'Multi-purpose Gym Multi-purpose Gym',
     time: '8:00am',
     day: '02',
     weekday: 'Tue'
@@ -257,53 +257,74 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
                               fontWeight: FontWeight.w700
                           ),
                         ),
-                        Row(
+                        Flex(
+                          direction: Axis.horizontal,
                           children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.access_time,
-                                  size: 16.0,
-                                  color: Colors.black54,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 1.0),
-                                ),
-                                Text(
-                                  monthActivities[sliverIndex][i].time,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black87,
-                                    fontSize: 14.0
+                            Flexible(
+                              flex: 0,
+                              child: Flex(
+                                direction: Axis.horizontal,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.access_time,
+                                    size: 16.0,
+                                    color: Colors.black54,
                                   ),
-                                ),
-                              ],
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 1.0),
+                                  ),
+                                  Text(
+                                    monthActivities[sliverIndex][i].time,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                      fontSize: 14.0
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 6.0),
                             ),
-                            Row(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.location_on,
-                                  size: 16.0,
-                                  color: Colors.black54,
+                            Expanded(
+                              flex: 3,
+                              child: Flex(
+                                direction: Axis.horizontal,
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 0,
+                                    child: Icon(
+                                      Icons.location_on,
+                                      size: 16.0,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 1.0),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 1,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Text(
+                                        monthActivities[sliverIndex][i].venue,
+                                        overflow: TextOverflow.fade,
+                                        softWrap: false,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black87,
+                                          fontSize: 14.0
+                                      ),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 1.0),
-                                ),
-                                Text(
-                                  monthActivities[sliverIndex][i].venue,
-                                  overflow: TextOverflow.ellipsis,
-                                  softWrap: true,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black87,
-                                    fontSize: 14.0
-                                ),
-                              ),
-                            ],
-                          )
+                                    ),
+                                  ),
+                              ],
+                          ),
+                            )
                         ],
                       )
                     ],
