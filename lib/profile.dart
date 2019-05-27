@@ -23,7 +23,25 @@ Map profileInformation = {
     "Father's Mobile No.": '09289065696',
     "Father's Email Address": 'kevinklinegargar@gmail.com',
     "Father's Home Address": 'Home Address',
-  }
+    "Mother's Name": 'Mrs. Daniel Padilla Sr.',
+    "Mother's Age": '25',
+    "Mother's Home Address": 'Home Address',
+    "Mother's Business Address": 'Business Address',
+    "Mother's Tel. No.": '123-4567',
+    "Mother's Mobile No.": '09289065696',
+    "Mother's Email Address": 'msdanielpaddila@gmail.com',
+    "Mother's Home Address": 'Home Address',
+    "Child's siblings": [
+      {
+        'Sibling #1': 'Keanu Kent Gargar',
+        'age': '22',
+      },
+      {
+        'Sibling #2': 'Kefir Kion Gargar',
+        'age': '5'
+      }
+    ]
+  },
 };
 
 class Profile extends StatelessWidget {
@@ -71,16 +89,39 @@ class Profile extends StatelessWidget {
       profileInformation.forEach((label, value) {
         List<Widget> sectionFields = <Widget>[];
 
-        print(label);
         if(value is Map){
           value.forEach((label, value) {
-            sectionFields.add(
-              ProfileField(
-                fieldValue: value,
-                fieldLabel: label,
-              )
-            );
-            print('$label: $value');
+            if(value is String){
+              sectionFields.add(
+                ProfileField(
+                  fieldValue: value,
+                  fieldLabel: label,
+                )
+              );
+            }else if(value is List){
+              value.forEach((valueObj) {
+                List<Widget> sectionListFields = <Widget>[];
+
+                valueObj.forEach((objLabel, objValue) {
+                  sectionListFields.add(
+                    Flexible(
+                      flex: objLabel == 'age' ? 1 : 3,
+                      child: ProfileField(
+                        fieldValue: objValue,
+                        fieldLabel: objLabel,
+                      ),
+                    )
+                  );
+                });
+                sectionFields.add(
+                  Flex(
+                    direction: Axis.horizontal,
+                    children: sectionListFields
+                  )
+                );
+
+              });
+            }
           });
 
           profileSections.add(
