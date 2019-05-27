@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
+
 class Profile extends StatelessWidget {
   final String heroTag;
+  final String firstName;
+  final String lastName;
 
   Profile({
-    this.heroTag
+    this.heroTag,
+    this.firstName,
+    this.lastName
   });
 
   @override
   Widget build(BuildContext context) {
+    String fInitial;
+    String lInitial;
+
+    try {
+      fInitial = firstName != null ? firstName[0] ?? '' : '';
+    } catch(e) {
+      fInitial = '';
+    }
+
+    try {
+      lInitial = lastName != null ? lastName[0] ?? '' : '';
+    } catch(e) {
+      lInitial = '';
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
@@ -28,14 +47,14 @@ class Profile extends StatelessWidget {
                       maxRadius: 48.0,
                       minRadius: 20.0,
                       fontSize: 20.0,
-                      initial: "KG",
+                      initial: "$fInitial$lInitial",
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.0),
                   ),
                   Text(
-                    'Gargar, Keanu Kent B.',
+                    '$lastName, $firstName',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 20.0,
@@ -75,6 +94,22 @@ class Profile extends StatelessWidget {
                     ProfileField(
                       fieldValue: '123-4567',
                       fieldLabel: 'Tel. No.',
+                    ),
+                    ProfileField(
+                      fieldValue: 'December 1, 2014',
+                      fieldLabel: 'Birthday',
+                    ),
+                    ProfileField(
+                      fieldValue: 'Bacolod City',
+                      fieldLabel: 'Place of Birth',
+                    ),
+                    ProfileField(
+                      fieldValue: 'Filipino',
+                      fieldLabel: 'Citizenship',
+                    ),
+                    ProfileField(
+                      fieldValue: 'Catholic',
+                      fieldLabel: 'Religion',
                     ),
                   ]
                 ).toList(),
