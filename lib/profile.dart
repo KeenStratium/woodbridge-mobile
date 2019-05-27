@@ -31,17 +31,39 @@ Map profileInformation = {
     "Mother's Mobile No.": '09289065696',
     "Mother's Email Address": 'msdanielpaddila@gmail.com',
     "Mother's Home Address": 'Home Address',
+    "Child's legal guardian": 'Kevin Kline Gargar',
     "Child's siblings": [
       {
         'Sibling #1': 'Keanu Kent Gargar',
-        'age': '22',
+        'Age': '22',
       },
       {
         'Sibling #2': 'Kefir Kion Gargar',
-        'age': '5'
+        'Age': '5'
+      }
+    ],
+    "Assigned to pickup your child from school": [
+      {
+        'Assigned #1': 'Kevin Gargar',
+        'Relationship': 'Father'
+      },
+      {
+        'Assigned #2': 'Anne Marie Gargar',
+        'Relationship': 'Mother'
       }
     ]
   },
+  'Health & History': {
+    "Child's current medications": "Medication #1, Medication #2",
+    "Medication purposes": "Medcation purpose"
+  },
+  'Other information': {
+    'Activities that interests your child': 'Football, Army, Fireman',
+    "Child's preferred toys": 'LEGO, Building Blocks, Puzzles',
+    "How child usually spend his/her day": 'Playing toys and games, watching kids youtube',
+    "School experience expectations": 'Able to nurture',
+    "Other concerns regarding child": 'N/A'
+  }
 };
 
 class Profile extends StatelessWidget {
@@ -99,13 +121,32 @@ class Profile extends StatelessWidget {
                 )
               );
             }else if(value is List){
+
+              sectionFields.add(
+                Padding(padding: EdgeInsets.symmetric(vertical: 10.0))
+              );
+              sectionFields.add(
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                  child: Text(
+                    label,
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87
+                    ),
+                  ),
+                )
+              );
+
               value.forEach((valueObj) {
                 List<Widget> sectionListFields = <Widget>[];
 
                 valueObj.forEach((objLabel, objValue) {
                   sectionListFields.add(
                     Flexible(
-                      flex: objLabel == 'age' ? 1 : 3,
+                      flex: objLabel == 'Age' ? 1 : objLabel == 'Relationship' ? 2 : 3,
                       child: ProfileField(
                         fieldValue: objValue,
                         fieldLabel: objLabel,
@@ -119,8 +160,10 @@ class Profile extends StatelessWidget {
                     children: sectionListFields
                   )
                 );
-
               });
+              sectionFields.add(
+                Padding(padding: EdgeInsets.symmetric(vertical: 10.0))
+              );
             }
           });
 
@@ -135,7 +178,7 @@ class Profile extends StatelessWidget {
                     child: Container(
                       alignment: AlignmentDirectional.topStart,
                       margin: EdgeInsets.only(bottom: 20.0),
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         label,
                         style: TextStyle(
@@ -240,8 +283,8 @@ class _ProfileFieldState extends State<ProfileField> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(widget.fieldValue),
-      subtitle: Text(widget.fieldLabel),
+      title: Text(widget.fieldValue, softWrap: true),
+      subtitle: Text(widget.fieldLabel, softWrap: true),
     );
   }
 }
