@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'model.dart';
+
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
@@ -66,7 +71,23 @@ Map profileInformation = {
   }
 };
 
-class Profile extends StatelessWidget {
+Future<Map> fetchProfileInformation(userId) async {
+  String url = '$baseApi/student/get-profile-info';
+
+  print(url);
+
+  var response = await http.post(url, body: json.encode({
+    'data': 'S-1557210835494'
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+
+class Profile extends StatefulWidget {
   final String heroTag;
   final String firstName;
   final String lastName;
@@ -78,6 +99,19 @@ class Profile extends StatelessWidget {
   });
 
   @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  Map profileInfo;
+
+  @override
+  void initState(){
+   super.initState();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     String fInitial;
     String lInitial;
@@ -85,30 +119,19 @@ class Profile extends StatelessWidget {
     List<Widget> profileSections = <Widget>[];
 
     try {
-      fInitial = firstName != null ? firstName[0] ?? '' : '';
+      fInitial = widget.firstName != null ? widget.firstName[0] ?? '' : '';
     } catch(e) {
       fInitial = '';
     }
 
     try {
-      lInitial = lastName != null ? lastName[0] ?? '' : '';
+      lInitial = widget.lastName != null ? widget.lastName[0] ?? '' : '';
     } catch(e) {
       lInitial = '';
     };
-    
-    profileInformation.forEach((label, value) {
-      print(label);
-      if(value is Map){
-        value.forEach((label, value) {
-          print('$label: $value');
-        });
-      }else if(value is String){
-        print(value);
-      }
-    });
 
     void _buildProfileFields() {
-      profileInformation.forEach((label, value) {
+      profileInfo.forEach((label, value) {
         List<Widget> sectionFields = <Widget>[];
 
         if(value is Map){
@@ -215,8 +238,15 @@ class Profile extends StatelessWidget {
       });
     }
 
-    _buildProfileFields();
-    
+    Future<List<Widget>> getProfileInformation(userId) async {
+      await fetchProfileInformation(userId)
+        .then((result) {
+          profileInfo = result;
+          _buildProfileFields();
+       });
+      return profileSections;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
@@ -226,11 +256,12 @@ class Profile extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Container(
+                width: double.infinity,
                 padding: EdgeInsets.symmetric(vertical: 28.0),
                 child: Column(
                   children: <Widget>[
                     Hero(
-                      tag: heroTag,
+                      tag: widget.heroTag,
                       child: Avatar(
                         backgroundColor: Colors.indigo,
                         maxRadius: 48.0,
@@ -243,7 +274,7 @@ class Profile extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                     ),
                     Text(
-                      '$lastName, $firstName',
+                      '${widget.lastName}, ${widget.firstName}',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 20.0,
@@ -253,9 +284,18 @@ class Profile extends StatelessWidget {
                   ],
                 ),
               ),
-              Column(
-                children: profileSections
-              )
+              FutureBuilder(
+                future: getProfileInformation(widget.heroTag),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if(snapshot.connectionState == ConnectionState.done){
+                    return Column(
+                      children: snapshot.data,
+                    );
+                  }else{
+                    return Text('fetching profile information...');
+                  }
+                },
+              ),
             ],
           ),
         ),
