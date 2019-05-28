@@ -289,7 +289,9 @@ class _HomePageState extends State<HomePage> {
                                         iconPath: 'img/Icons/icon_students_2x.png',
                                         label: 'Profile',
                                         pageBuilder: Profile(
-                                          heroTag: widget.heroTag
+                                          heroTag: widget.heroTag,
+                                          firstName: this.widget.firstName,
+                                          lastName: this.widget.lastName,
                                         ),
                                         buildContext: context,
                                       ),
