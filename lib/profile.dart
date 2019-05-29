@@ -130,6 +130,7 @@ class _ProfileState extends State<Profile> {
 
     void _buildProfileFields() {
       profileInfo.forEach((label, value) {
+        String prevSectionType = 'normal';
         List<Widget> sectionFields = <Widget>[];
 
         if(value is Map){
@@ -142,45 +143,62 @@ class _ProfileState extends State<Profile> {
                 )
               );
             }else if(value is List){
-
+              if(prevSectionType != 'multi-field'){
+                sectionFields.add(
+                    Padding(padding: EdgeInsets.symmetric(vertical: 10.0))
+                );
+              }
+              prevSectionType = 'multi-field';
               sectionFields.add(
-                Padding(padding: EdgeInsets.symmetric(vertical: 10.0))
-              );
-              sectionFields.add(
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-                  child: Text(
-                    label,
-                    softWrap: true,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                    child: Text(
+                      label,
+                      softWrap: true,
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87
+                      ),
                     ),
-                  ),
-                )
+                  )
               );
-
               value.forEach((valueObj) {
                 List<Widget> sectionListFields = <Widget>[];
-
-                valueObj.forEach((objLabel, objValue) {
-                  sectionListFields.add(
-                    Flexible(
-                      flex: objLabel == 'Age' ? 1 : objLabel == 'Relationship' ? 2 : 3,
-                      child: ProfileField(
-                        fieldValue: objValue,
-                        fieldLabel: objLabel,
+                if(valueObj is Map){
+                  valueObj.forEach((objLabel, objValue) {
+                    if(objValue != ''){
+                      sectionListFields.add(
+                        Flexible(
+                          flex: objLabel == 'Age' ? 1 : 3,
+                          child: ProfileField(
+                            fieldValue: objValue,
+                            fieldLabel: objLabel,
+                          ),
+                        )
+                      );
+                    }
+                  });
+                  sectionFields.add(
+                    Flex(
+                      direction: Axis.horizontal,
+                      children: sectionListFields
+                    )
+                  );
+                }else if(valueObj is String){
+                  sectionFields.add(
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                      child: Text(
+                        valueObj,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.black45
+                        ),
                       ),
                     )
                   );
-                });
-                sectionFields.add(
-                  Flex(
-                    direction: Axis.horizontal,
-                    children: sectionListFields
-                  )
-                );
+                }
               });
               sectionFields.add(
                 Padding(padding: EdgeInsets.symmetric(vertical: 10.0))
