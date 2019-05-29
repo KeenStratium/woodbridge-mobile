@@ -25,7 +25,7 @@ class _StudentPickerState extends State<StudentPicker> {
       return StudentAvatarPicker(
         userId: userId,
         isActive: false,
-        onTap: (lname, fname) =>
+        onTap: (lname, fname, schoolLevel) =>
           Navigator.of(context).push(new MaterialPageRoute(
             builder: (BuildContext context) => HomePage(
               child: Avatar(
@@ -38,6 +38,7 @@ class _StudentPickerState extends State<StudentPicker> {
               firstName: fname ?? '',
               lastName: lname ?? '',
               heroTag: userId,
+              schoolLevel: schoolLevel
             ),
           )),
       );

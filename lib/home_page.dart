@@ -8,7 +8,7 @@ import 'activities.dart';
 import 'gallery.dart';
 import 'payment.dart';
 
-List<String> users = <String>['S-1557211347790', 'S-1558317961029', 'S-1558418591682', 'S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
+List<String> users = <String>['S-1557210835494', 'S-1558317961029', 'S-1558418591682', 'S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
 bool showStudentSwitcher = false;
 
 class HomePage extends StatefulWidget {
@@ -16,12 +16,14 @@ class HomePage extends StatefulWidget {
   String firstName;
   String lastName;
   String heroTag;
+  String schoolLevel;
 
   HomePage({
     this.child,
     this.firstName,
     this.lastName,
-    this.heroTag
+    this.heroTag,
+    this.schoolLevel
   });
 
   @override
@@ -299,8 +301,10 @@ class _HomePageState extends State<HomePage> {
                                         iconPath: 'img/Icons/icon_grades.png',
                                         label: 'Grades',
                                         pageBuilder: Grades(
+                                          userId: widget.heroTag,
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
+                                          schoolLevel: this.widget.schoolLevel
                                         ),
                                         buildContext: context,
                                       ),
@@ -428,7 +432,7 @@ class _HomePageState extends State<HomePage> {
                                     return StudentAvatarPicker(
                                       userId: '${userId}',
                                       isActive: userId == widget.heroTag,
-                                      onTap: (lname, fname) {
+                                      onTap: (lname, fname, schoolLevel) {
                                         setState(() {
                                           showStudentSwitcher = false;
                                           widget.child = Avatar(
@@ -440,6 +444,7 @@ class _HomePageState extends State<HomePage> {
                                           widget.firstName = fname ?? '';
                                           widget.lastName = lname ?? '';
                                           widget.heroTag = userId;
+                                          widget.schoolLevel = schoolLevel;
                                         });
                                       }
                                     );
