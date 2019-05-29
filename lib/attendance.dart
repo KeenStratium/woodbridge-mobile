@@ -1,15 +1,102 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'model.dart';
+
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
 
-class Attendance extends StatelessWidget {
+Future<Map> getPresentDaysNo(userId) async {
+  String url = '$baseApi/att/get-present-days-of-student';
+
+  var response = await http.post(url, body: json.encode({
+    'data': userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body)[0];
+}
+
+
+Future<Map> getTotalSchoolDays(userId) async {
+  String url = '$baseApi/att/get-total-school-days';
+
+  var response = await http.get(url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body)[0];
+}
+
+Future<Map> getAbsentDays(userId) async {
+  String url = '$baseApi/att/get-absent-days-of-school?data=$userId';
+
+  var response = await http.get(url,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    });
+
+  return jsonDecode(response.body)[0];
+}
+
+
+class Attendance extends StatefulWidget {
   final String firstName;
   final String lastName;
+  final String userId;
+  int presentDaysNo;
+  double totalSchoolDays;
+  int pastSchoolDays;
 
   Attendance({
     this.firstName,
     this.lastName,
+    this.userId
   });
+
+  @override
+  _AttendanceState createState() => _AttendanceState();
+}
+
+class _AttendanceState extends State<Attendance> {
+
+  void getAttendanceInfo(userId) {
+
+    getPresentDaysNo(userId)
+      .then((result) {
+        setState(() {
+          widget.presentDaysNo = result['presentDays'];
+        });
+      });
+
+    getTotalSchoolDays(userId)
+      .then((result) {
+        setState(() {
+          widget.totalSchoolDays = result['totalDays'];
+        });
+      });
+
+    getAbsentDays(userId)
+      .then((result) {
+        setState(() {
+          widget.pastSchoolDays = result['totalDaysNow'];
+        });
+      });
+  }
+
+  @override
+  void initState(){
+    super.initState();
+
+    getAttendanceInfo(widget.userId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +115,8 @@ class Attendance extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   ProfileHeader(
-                    firstName: this.firstName,
-                    lastName: this.lastName,
+                    firstName: this.widget.firstName,
+                    lastName: this.widget.lastName,
                   ),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 20.0),
@@ -66,7 +153,8 @@ class Attendance extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '38',
+                                      widget.presentDaysNo.toString(),
+                                      overflow: TextOverflow.fade,
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
                                           fontSize: 32.0,
@@ -89,6 +177,7 @@ class Attendance extends StatelessWidget {
                                   children: <Widget>[
                                     Text(
                                       'School Days',
+                                      overflow: TextOverflow.fade,
                                       style: TextStyle(
                                           fontSize: 13.0,
                                           fontWeight: FontWeight.w700,
@@ -96,7 +185,8 @@ class Attendance extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '44',
+                                      widget.totalSchoolDays.ceil().toString(), // TODO: Verify if to use ceil or floor for format
+                                      overflow: TextOverflow.fade,
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
                                           fontSize: 32.0,
@@ -126,7 +216,7 @@ class Attendance extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '6',
+                                      (widget.pastSchoolDays - widget.presentDaysNo).toString(),
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
                                           fontSize: 32.0,

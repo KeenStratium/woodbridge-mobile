@@ -39,12 +39,6 @@ class _ProfileState extends State<Profile> {
   Map profileInfo;
 
   @override
-  void initState(){
-   super.initState();
-
-  }
-
-  @override
   Widget build(BuildContext context) {
     String fInitial;
     String lInitial;

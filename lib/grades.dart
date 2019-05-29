@@ -25,7 +25,7 @@ class Areas {
 
 Future<List> fetchGrades(userId) async {
   String url = '$baseApi/grade/get-grades';
-  print(userId);
+
   var response = await http.post(url, body: json.encode({
     'data': userId
   }),
