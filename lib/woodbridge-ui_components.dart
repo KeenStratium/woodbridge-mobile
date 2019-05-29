@@ -215,15 +215,17 @@ class StudentAvatarPicker extends StatefulWidget{
 class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
   String fname;
   String lname;
+  String schoolLevel; // TODO: Verify if school level is 's_grade_level' or 's_school'
 
   void getStudent(userId) async {
     await _getStudentInfo(userId)
-        .then((data) {
-      setState(() {
-        fname = data['s_fname'] ?? null;
-        lname = data['s_lname'] ?? null;
+      .then((data) {
+        setState(() {
+          fname = data['s_fname'] ?? null;
+          lname = data['s_lname'] ?? null;
+          schoolLevel = data['s_grade_level'];
+        });
       });
-    });
   }
 
   @override
@@ -276,7 +278,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        return widget.onTap(lname, fname);
+                        return widget.onTap(lname, fname, schoolLevel);
                       },
                       child: Container(
                         decoration: BoxDecoration(

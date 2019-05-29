@@ -74,10 +74,8 @@ Map profileInformation = {
 Future<Map> fetchProfileInformation(userId) async {
   String url = '$baseApi/student/get-profile-info';
 
-  print(url);
-
   var response = await http.post(url, body: json.encode({
-    'data': 'S-1557210835494'
+    'data': userId
   }),
       headers: {
         'Accept': 'application/json',
