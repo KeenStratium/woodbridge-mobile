@@ -5,7 +5,18 @@ import 'model.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
+
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:date_utils/date_utils.dart';
+
+final Map<DateTime, List> _holidays = {
+  DateTime(2019, 1, 1): ['New Year\'s Day'],
+  DateTime(2019, 1, 6): ['Epiphany'],
+  DateTime(2019, 2, 14): ['Valentine\'s Day'],
+  DateTime(2019, 4, 21): ['Easter Sunday'],
+  DateTime(2019, 4, 22): ['Easter Monday'],
+};
 
 Future<Map> getPresentDaysNo(userId) async {
   String url = '$baseApi/att/get-present-days-of-student';
@@ -51,9 +62,9 @@ class Attendance extends StatefulWidget {
   final String firstName;
   final String lastName;
   final String userId;
-  int presentDaysNo;
-  double totalSchoolDays;
-  int pastSchoolDays;
+  int presentDaysNo = 0;
+  double totalSchoolDays = 0;
+  int pastSchoolDays = 0;
 
   Attendance({
     this.firstName,
@@ -65,10 +76,15 @@ class Attendance extends StatefulWidget {
   _AttendanceState createState() => _AttendanceState();
 }
 
-class _AttendanceState extends State<Attendance> {
+class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
+  DateTime _selectedDay;
+  Map<DateTime, List> _events;
+  Map<DateTime, List> _visibleEvents;
+  Map<DateTime, List> _visibleHolidays;
+  List _selectedEvents;
+  AnimationController _controller;
 
   void getAttendanceInfo(userId) {
-
     getPresentDaysNo(userId)
       .then((result) {
         setState(() {
@@ -91,10 +107,68 @@ class _AttendanceState extends State<Attendance> {
       });
   }
 
+  void _onDaySelected(DateTime day, List events) {
+    setState(() {
+      _selectedDay = day;
+      _selectedEvents = events;
+    });
+  }
+
+  void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
+    setState(() {
+      _visibleEvents = Map.fromEntries(
+        _events.entries.where(
+              (entry) =>
+          entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
+              entry.key.isBefore(last.add(const Duration(days: 1))),
+        ),
+      );
+
+      _visibleHolidays = Map.fromEntries(
+        _holidays.entries.where(
+              (entry) =>
+          entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
+              entry.key.isBefore(last.add(const Duration(days: 1))),
+        ),
+      );
+    });
+  }
+
   @override
   void initState(){
     super.initState();
 
+    _selectedDay = DateTime.now();
+    _events = {
+      _selectedDay.subtract(Duration(days: 30)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 29)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 28)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 27)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 26)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 23)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 22)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 21)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 20)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 19)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 15)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 14)): ['PRESENT'],
+      _selectedDay.subtract(Duration(days: 16)): ['ABSENT'],
+      _selectedDay.subtract(Duration(days: 10)): ['ABSENT'],
+      _selectedDay.add(Duration(days: 7)): ['PRESENT'],
+      _selectedDay.add(Duration(days: 11)): ['PRESENT'],
+      _selectedDay.add(Duration(days: 22)): ['ABSENT'],
+    };
+
+    _selectedEvents = _events[_selectedDay] ?? [];
+    _visibleEvents = _events;
+    _visibleHolidays = _holidays;
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _controller.forward();
     getAttendanceInfo(widget.userId);
   }
 
@@ -242,26 +316,179 @@ class _AttendanceState extends State<Attendance> {
                   color: Colors.white
                 ),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
-                  child: CalendarCarousel(
-                    weekdayTextStyle: TextStyle(
-                      color: Colors.grey[600]
-                    ),
-                    weekendTextStyle: TextStyle(
-                      color: Colors.redAccent
-                    ),
-                    daysHaveCircularBorder: false,
-                    todayBorderColor: Colors.redAccent,
-                    todayButtonColor: Colors.white,
-                    todayTextStyle: TextStyle(
-                      color: Colors.black87
-                    ),
+                  child: ListView(
+                    children: <Widget>[_buildTableCalendarWithBuilders()],
                   ),
                 ),
               ),
             )
           ],
         )
+      ),
+    );
+  }
+
+  Widget _buildTableCalendarWithBuilders() {
+    return TableCalendar(
+      events: _visibleEvents,
+      holidays: _visibleHolidays,
+      initialCalendarFormat: CalendarFormat.month,
+      formatAnimation: FormatAnimation.slide,
+      startingDayOfWeek: StartingDayOfWeek.sunday,
+      availableGestures: AvailableGestures.all,
+      availableCalendarFormats: const {
+        CalendarFormat.month: '',
+      },
+      calendarStyle: CalendarStyle(
+          outsideDaysVisible: false,
+          weekendStyle: TextStyle().copyWith(color: Colors.red[300]),
+          holidayStyle: TextStyle().copyWith(color: Colors.red[800]),
+          weekdayStyle: TextStyle().copyWith(fontSize: 14.0, fontWeight: FontWeight.w600)
+      ),
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekendStyle: TextStyle().copyWith(color: Colors.red[300]),
+      ),
+      headerStyle: HeaderStyle(
+        centerHeaderTitle: true,
+        formatButtonVisible: false,
+      ),
+      builders: CalendarBuilders(
+        selectedDayBuilder: (context, date, _) {
+          return FadeTransition(
+            opacity: Tween(begin: 0.0, end: 1.0).animate(_controller),
+            child: Container(
+              margin: const EdgeInsets.all(4.0),
+              color: Colors.grey[200],
+              width: 100,
+              height: 100,
+              child: Center(
+                child: Text(
+                  '${date.day}',
+                  style: TextStyle().copyWith(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w600
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        todayDayBuilder: (context, date, _) {
+          return Container(
+            margin: const EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+                border: Border.all(
+                    color: Colors.redAccent
+                )
+            ),
+            width: 100,
+            height: 100,
+            child: Center(
+              child: Text(
+                '${date.day}',
+                style: TextStyle().copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87
+                ),
+              ),
+            ),
+          );
+        },
+        markersBuilder: (context, date, events, holidays) {
+          final children = <Widget>[];
+
+          if (events.isNotEmpty) {
+            children.add(
+              Positioned.fill(
+                top: 0,
+                left: 0,
+                child: _buildEventsMarker(date, events),
+              ),
+            );
+          }
+
+          if (holidays.isNotEmpty) {
+            children.add(
+              Positioned.fill(
+                top: 0,
+                left: 0,
+                child: _buildHolidaysMarker(date),
+              ),
+            );
+          }
+
+          return children;
+        },
+      ),
+      onDaySelected: (date, events) {
+        _onDaySelected(date, events);
+        _controller.forward(from: 0.0);
+      },
+      onVisibleDaysChanged: _onVisibleDaysChanged,
+    );
+  }
+
+  Widget _buildEventsMarker(DateTime date, List events) {
+    Color bgColor;
+    Color fontColor = Colors.white;
+
+    if(Utils.isSameDay(date, _selectedDay)){
+      if(events[0] == 'PRESENT'){
+        bgColor = Colors.green;
+        fontColor = Colors.green[100];
+      }else if(events[0] == 'ABSENT'){
+        bgColor = Colors.red;
+      }
+    }else if(events[0] == 'PRESENT'){
+      bgColor = Colors.green[50];
+      fontColor = Colors.green;
+    }else if(events[0] == 'ABSENT'){
+      bgColor = Colors.red[300];
+    }else {
+      bgColor =  Utils.isSameDay(date, DateTime.now()) ? Colors.brown[300] : Colors.blue[400];
+    }
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      margin: EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: bgColor
+      ),
+      width: 100.0,
+      height: 100.0,
+      child: Center(
+        child: Text(
+          '${date.day}',
+          style: TextStyle().copyWith(
+              color: fontColor,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w600
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHolidaysMarker(date) {
+    return Container(
+      margin: EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+          border: Border.all(
+              color: Colors.deepPurple
+          )
+      ),
+      width: 100.0,
+      height: 100.0,
+      child: Center(
+        child: Text(
+          '${date.day}',
+          style: TextStyle().copyWith(
+              color: Colors.black87,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w600
+          ),
+        ),
       ),
     );
   }
