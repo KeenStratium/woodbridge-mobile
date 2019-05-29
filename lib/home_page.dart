@@ -8,7 +8,7 @@ import 'activities.dart';
 import 'gallery.dart';
 import 'payment.dart';
 
-List<String> users = <String>['S-1557210835494', 'S-1558317961029', 'S-1558418591682', 'S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
+List<String> users = <String>['S-1557210835494', 'S-1557210541856', 'S-1557211347790'];
 bool showStudentSwitcher = false;
 
 class HomePage extends StatefulWidget {

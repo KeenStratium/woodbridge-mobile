@@ -235,12 +235,13 @@ class GradeCard extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(7.0))
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+            padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
             child: Text(
               grade.subject,
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
               style: TextStyle(
                 color: Colors.black87,
                 fontSize: 16.0,
@@ -310,7 +311,7 @@ class GradeCard extends StatelessWidget {
 
 class QuarterGrade extends StatelessWidget {
   final String label;
-  final String value;
+  String value;
 
   QuarterGrade({
     this.label,
@@ -319,6 +320,9 @@ class QuarterGrade extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(value != null){
+      value = value.toUpperCase();
+    }
     return Expanded(
       flex: 1,
       child: Container(
