@@ -314,6 +314,7 @@ class _HomePageState extends State<HomePage> {
                                         pageBuilder: Attendance(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
+                                          userId: this.widget.heroTag
                                         ),
                                         buildContext: context,
                                       ),

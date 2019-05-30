@@ -25,7 +25,7 @@ class Areas {
 
 Future<List> fetchGrades(userId) async {
   String url = '$baseApi/grade/get-grades';
-  print(userId);
+
   var response = await http.post(url, body: json.encode({
     'data': userId
   }),
@@ -74,7 +74,6 @@ class Grades extends StatefulWidget {
 class _GradesState extends State<Grades> {
   @override
   Widget build(BuildContext context) {
-
 
     Future buildGrades(userId) async {
       List<Widget> gradeWidgets = <Widget>[];
