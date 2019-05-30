@@ -32,7 +32,6 @@ Future<Map> getPresentDaysNo(userId) async {
   return jsonDecode(response.body)[0];
 }
 
-
 Future<Map> getTotalSchoolDays(userId) async {
   String url = '$baseApi/att/get-total-school-days';
 
@@ -57,6 +56,34 @@ Future<Map> getAbsentDays(userId) async {
   return jsonDecode(response.body)[0];
 }
 
+Future<List> getAttendanceDays(userId) async {
+  String url = '$baseApi/att/get-student-attendance';
+
+  var response = await http.post(url, body: json.encode({
+      "data": userId
+    }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    });
+
+  return jsonDecode(response.body);
+}
+
+Future<List> getSchoolYearStart(userId) async {
+  String url = '$baseApi/att/get-student-attendance';
+
+  var response = await http.post(url, body: json.encode({
+    "data": userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+
 
 class Attendance extends StatefulWidget {
   final String firstName;
@@ -65,6 +92,8 @@ class Attendance extends StatefulWidget {
   int presentDaysNo = 0;
   double totalSchoolDays = 0;
   int pastSchoolDays = 0;
+
+  int absentDays = 0;
 
   Attendance({
     this.firstName,
@@ -83,28 +112,46 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   Map<DateTime, List> _visibleHolidays;
   List _selectedEvents;
   AnimationController _controller;
+  List<DateTime> schoolDays = <DateTime>[];
+  List<DateTime> presentDays = <DateTime>[];
 
   void getAttendanceInfo(userId) {
-    getPresentDaysNo(userId)
-      .then((result) {
-        setState(() {
-          widget.presentDaysNo = result['presentDays'];
-        });
-      });
-
-    getTotalSchoolDays(userId)
-      .then((result) {
-        setState(() {
+    Future.wait([
+      getPresentDaysNo(userId)
+        .then((result) {
+          setState(() {
+            widget.presentDaysNo = result['presentDays'];
+            widget.absentDays = widget.pastSchoolDays - widget.presentDaysNo;
+          });
+        }),
+      getTotalSchoolDays(userId)
+        .then((result) {
+          setState(() {
           widget.totalSchoolDays = result['totalDays'];
-        });
-      });
-
-    getAbsentDays(userId)
-      .then((result) {
-        setState(() {
-          widget.pastSchoolDays = result['totalDaysNow'];
-        });
-      });
+          });
+        }),
+      getAbsentDays(userId)
+        .then((result) {
+          setState(() {
+            widget.pastSchoolDays = result['totalDaysNow'];
+            widget.absentDays = widget.pastSchoolDays - widget.presentDaysNo;
+          });
+        }),
+      getAttendanceDays(userId)
+        .then((results) {
+          results.forEach((result) {
+            DateTime attendanceDate = DateTime.parse(result['attendance_date']);
+            DateTime attendanceDay = DateTime.utc(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+            presentDays.add(attendanceDay);
+          });
+        })
+    ]).then((results) {
+      DateTime schoolYearStarts = DateTime.utc(2019, 1, 1);
+      DateTime SchoolYearEnd = DateTime.utc(2019, 3, 1); // TODO: Continue here
+      for(int i = widget.totalSchoolDays.floor(); i > 0 ; i--){
+        print(i);
+      }
+    });
   }
 
   void _onDaySelected(DateTime day, List events) {
@@ -259,7 +306,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     Text(
-                                      widget.totalSchoolDays.ceil().toString(), // TODO: Verify if to use ceil or floor for format
+                                      widget.totalSchoolDays.floor().toString(),
                                       overflow: TextOverflow.fade,
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
@@ -290,7 +337,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     Text(
-                                      (widget.pastSchoolDays - widget.presentDaysNo).toString(),
+                                      widget.absentDays.toString(),
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
                                           fontSize: 32.0,

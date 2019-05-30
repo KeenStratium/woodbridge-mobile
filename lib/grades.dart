@@ -75,7 +75,6 @@ class _GradesState extends State<Grades> {
   @override
   Widget build(BuildContext context) {
 
-
     Future buildGrades(userId) async {
       List<Widget> gradeWidgets = <Widget>[];
 
