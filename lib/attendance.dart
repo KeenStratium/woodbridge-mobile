@@ -112,6 +112,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   List<DateTime> specialSchoolDays = <DateTime>[];
   DateTime yearStartDay;
   DateTime yearEndDay;
+  static DateTime currentDate = DateTime.now();
+  DateTime currentDay = DateTime(currentDate.year, currentDate.month, currentDate.day);
   int presentDaysNo = 0;
   double totalSchoolDays = 0;
   int pastSchoolDays = 0;
@@ -431,9 +433,14 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       ),
       builders: CalendarBuilders(
         selectedDayBuilder: (context, date, _) {
+          if(DateTime(date.year, date.month, date.day) == currentDay){
+            if(!_selectedEvents.contains('CURRENT')){
+              _selectedEvents.add('CURRENT');
+            }
+          }
           return FadeTransition(
             opacity: Tween(begin: 0.0, end: 1.0).animate(_controller),
-            child: Container(
+            child: DateTime(date.year, date.month, date.day) != currentDay ? Container(
               margin: const EdgeInsets.all(4.0),
               color: Colors.grey[200],
               width: 100,
@@ -447,29 +454,11 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-            ),
+            ) : _buildEventsMarker(_selectedDay, _selectedEvents),
           );
         },
         todayDayBuilder: (context, date, _) {
-          return Container(
-            margin: const EdgeInsets.all(4.0),
-            decoration: BoxDecoration(
-                border: Border.all(
-                    color: Colors.redAccent
-                )
-            ),
-            width: 100,
-            height: 100,
-            child: Center(
-              child: Text(
-                '${date.day}',
-                style: TextStyle().copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87
-                ),
-              ),
-            ),
-          );
+          return _todayBuilder(date);
         },
         markersBuilder: (context, date, events, holidays) {
           final children = <Widget>[];
@@ -506,22 +495,28 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   }
 
   Widget _buildEventsMarker(DateTime date, List events) {
+    DateTime thisDay = DateTime(date.year, date.month, date.day);
+    DateTime selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
     Color bgColor;
     Color fontColor = Colors.white;
 
-    if(Utils.isSameDay(date, _selectedDay)){
-      if(events[0] == 'PRESENT'){
+    if(thisDay == selectedDay){
+      if(events.contains('PRESENT')){
         bgColor = Colors.green;
         fontColor = Colors.green[100];
-      }else if(events[0] == 'ABSENT'){
+      }else if(events.contains('ABSENT')){
         bgColor = Colors.red;
+      }else if(events.contains('CURRENT')){
+        return _todayBuilder(date);
       }
-    }else if(events[0] == 'PRESENT'){
+    }else if(events.contains('PRESENT')){
       bgColor = Colors.green[50];
       fontColor = Colors.green;
-    }else if(events[0] == 'ABSENT'){
+    }else if(events.contains('ABSENT')){
       bgColor = Colors.red[300];
-    }else {
+    }else if(events.contains('CURRENT')){
+      return _todayBuilder(date);
+    }else{
       bgColor =  Utils.isSameDay(date, DateTime.now()) ? Colors.brown[300] : Colors.blue[400];
     }
 
@@ -564,6 +559,28 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
               color: Colors.black87,
               fontSize: 14.0,
               fontWeight: FontWeight.w600
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _todayBuilder(DateTime date) {
+    return Container(
+      margin: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+          border: Border.all(
+              color: Colors.redAccent
+          )
+      ),
+      width: 100,
+      height: 100,
+      child: Center(
+        child: Text(
+          '${date.day}',
+          style: TextStyle().copyWith(
+              fontWeight: FontWeight.w600,
+              color: Colors.black87
           ),
         ),
       ),
