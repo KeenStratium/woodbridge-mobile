@@ -264,7 +264,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Flexible(
-              flex: 2,
+              flex: 0,
               child: Column(
                 children: <Widget>[
                   ProfileHeader(
@@ -389,14 +389,80 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
               ),
             ),
             Expanded(
-              flex: 3,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white
                 ),
                 child: Container(
                   child: ListView(
-                    children: <Widget>[_buildTableCalendarWithBuilders()],
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.only(right: 4.0),
+                              padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                              decoration: BoxDecoration(
+                                color: Colors.green[50],
+                                border: Border.all(
+                                    color: Colors.green[50]
+                                ),
+                                borderRadius: BorderRadius.all(Radius.circular(5.0))
+                              ),
+                              child: Text(
+                                'Present',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.0
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(right: 4.0),
+                              padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                              decoration: BoxDecoration(
+                                color:  Colors.red[300],
+                                border: Border.all(
+                                  color: Colors.red[300]
+                                ),
+                                borderRadius: BorderRadius.all(Radius.circular(5.0))
+                              ),
+                              child: Text(
+                                'Absent',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14.0
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(right: 4.0),
+                              padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.deepPurple
+                                ),
+                                borderRadius: BorderRadius.all(Radius.circular(5.0))
+                              ),
+                              child: Text(
+                                'Holiday',
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.0
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      _buildTableCalendarWithBuilders()
+                    ],
                   ),
                 ),
               ),
@@ -546,9 +612,9 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     return Container(
       margin: EdgeInsets.all(4.0),
       decoration: BoxDecoration(
-          border: Border.all(
-              color: Colors.deepPurple
-          )
+        border: Border.all(
+          color: Colors.deepPurple
+        )
       ),
       width: 100.0,
       height: 100.0,
@@ -556,9 +622,9 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         child: Text(
           '${date.day}',
           style: TextStyle().copyWith(
-              color: Colors.black87,
-              fontSize: 14.0,
-              fontWeight: FontWeight.w600
+            color: Colors.black87,
+            fontSize: 14.0,
+            fontWeight: FontWeight.w600
           ),
         ),
       ),
