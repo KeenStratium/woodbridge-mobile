@@ -336,42 +336,10 @@ class _ActivitiesState extends State<Activities> {
   void transformActivityList(classId) async {
     await getStudentActivities(classId)
       .then((results) {
+        DateTime currTime = DateTime.now();
+        DateTime currDay = DateTime(currTime.year, currTime.month, currTime.day);
         List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-        for(int i = 0; i < results.length; i++){
-          Map activity = results[i];
-          DateTime date = DateTime.parse(activity['a_start_date']);
-          int monthIndex = date.month - 1;
-          String month = monthNames[monthIndex];
-
-          print(activity['a_title']);
-          print(month);
-
-          ActivityEvent activityEvent = ActivityEvent(
-            title: activity['a_title'],
-            venue: activity['a_location'],
-            time: activity['a_time_start'],
-            day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
-            weekday: weekdayNames[date.weekday - 1]
-          );
-
-          try {
-            if(monthActivities[month].length > 0);
-          } catch(e){
-            monthActivities[month] = [];
-          }
-          monthActivities[month].add(activityEvent);
-          if(activityNames.contains(month) == false){
-            activityNames.add(month);
-          }
-        }
-        try {
-          if(monthActivities['May'].length > 0);
-        } catch(e){
-          monthActivities['May'] = [];
-        }
-        monthActivities['May'].addAll(may);
 
         try {
           if(monthActivities['April'].length > 0);
@@ -381,11 +349,11 @@ class _ActivitiesState extends State<Activities> {
         monthActivities['April'].addAll(june);
 
         try {
-          if(monthActivities['July'].length > 0);
+          if(monthActivities['May'].length > 0);
         } catch(e){
-          monthActivities['July'] = [];
+          monthActivities['May'] = [];
         }
-        monthActivities['July'].addAll(july);
+        monthActivities['May'].addAll(may);
 
         try {
           if(monthActivities['June'].length > 0);
@@ -393,6 +361,42 @@ class _ActivitiesState extends State<Activities> {
           monthActivities['June'] = [];
         }
         monthActivities['June'].addAll(august);
+
+        try {
+          if(monthActivities['July'].length > 0);
+        } catch(e){
+          monthActivities['July'] = [];
+        }
+        monthActivities['July'].addAll(july);
+
+        for(int i = 0; i < results.length; i++){
+          Map activity = results[i];
+          DateTime date = DateTime.parse(activity['a_start_date']);
+          int monthIndex = date.month - 1;
+          String month = monthNames[monthIndex];
+
+          date = date.add(Duration(hours: 8));
+
+          if(date.isAfter(currDay) || date.isAtSameMomentAs(currDay)){
+            ActivityEvent activityEvent = ActivityEvent(
+              title: activity['a_title'],
+              venue: activity['a_location'],
+              time: activity['a_time_start'],
+              day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
+              weekday: weekdayNames[date.weekday - 1]
+            );
+
+            try {
+              if(monthActivities[month].length > 0);
+            } catch(e){
+              monthActivities[month] = [];
+            }
+            monthActivities[month].add(activityEvent);
+            if(activityNames.contains(month) == false){
+              activityNames.add(month);
+            }
+          }
+        }
 
         setState(() {});
     });
