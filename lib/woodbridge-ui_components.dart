@@ -49,11 +49,13 @@ class Avatar extends StatelessWidget {
 class ProfileHeader extends StatelessWidget {
   final String firstName;
   final String lastName;
+  String heroTag;
 
   ProfileHeader({
     Key key,
     this.firstName,
-    this.lastName
+    this.lastName,
+    this.heroTag
   }) : super(key: key);
 
   @override
@@ -68,8 +70,11 @@ class ProfileHeader extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              CircleAvatar(
-                backgroundColor: Colors.tealAccent[700],
+              Hero(
+                tag: heroTag,
+                child: CircleAvatar(
+                  backgroundColor: Colors.indigo,
+                ),
               ),
               SizedBox(
                 width: 8.0,
@@ -77,8 +82,8 @@ class ProfileHeader extends StatelessWidget {
               Text(
                 '${this.firstName} ${this.lastName}',
                 style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w700
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w700
                 ),
               )
             ],

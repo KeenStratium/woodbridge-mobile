@@ -327,6 +327,7 @@ class _HomePageState extends State<HomePage> {
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
                                           classId: this.widget.classId,
+                                          userId: this.widget.heroTag,
                                         ),
                                         buildContext: context,
                                       ),
@@ -336,6 +337,7 @@ class _HomePageState extends State<HomePage> {
                                         pageBuilder: ActivityGallery(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
+                                          userId: this.widget.heroTag,
                                         ),
                                         buildContext: context,
                                       ),
@@ -345,6 +347,7 @@ class _HomePageState extends State<HomePage> {
                                         pageBuilder: PaymentHistory(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
+                                          userId: this.widget.heroTag,
                                         ),
                                         buildContext: context,
                                       ),

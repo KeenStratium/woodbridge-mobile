@@ -27,10 +27,12 @@ List<Payment> payments = <Payment>[
 class PaymentHistory extends StatelessWidget {
   final String firstName;
   final String lastName;
+  final String userId;
 
   PaymentHistory({
     this.firstName,
     this.lastName,
+    this.userId
   });
 
   @override
@@ -47,6 +49,7 @@ class PaymentHistory extends StatelessWidget {
             ProfileHeader(
               firstName: this.firstName,
               lastName: this.lastName,
+              heroTag: this.userId,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -134,7 +137,10 @@ class PaymentHistory extends StatelessWidget {
                           onTap: () {
                             Route route = MaterialPageRoute(
                               builder: (buildContext) => PaymentDetails(
-                                date: payment.label
+                                date: payment.label,
+                                userId: userId,
+                                firstName: firstName,
+                                lastName: lastName,
                               ));
                             Navigator.push(context, route);
                           }
@@ -149,9 +155,12 @@ class PaymentHistory extends StatelessWidget {
                           ),
                           onTap: () {
                             Route route = MaterialPageRoute(
-                                builder: (buildContext) => PaymentDetails(
-                                    date: payment.label
-                                ));
+                              builder: (buildContext) => PaymentDetails(
+                                date: payment.label,
+                                userId: userId,
+                                firstName: firstName,
+                                lastName: lastName,
+                              ));
                             Navigator.push(context, route);
                           }
                         )

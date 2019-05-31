@@ -303,11 +303,13 @@ class Activities extends StatefulWidget {
   final String firstName;
   final String lastName;
   final String classId;
+  final String userId;
 
   Activities({
     this.firstName,
     this.lastName,
-    this.classId
+    this.classId,
+    this.userId
   });
 
   @override
@@ -429,6 +431,7 @@ class _ActivitiesState extends State<Activities> {
             ProfileHeader(
               firstName: this.widget.firstName,
               lastName: this.widget.lastName,
+              heroTag: this.widget.userId,
             ),
             Flexible(
               child: Builder(builder: (BuildContext context) {

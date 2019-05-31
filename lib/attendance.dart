@@ -270,6 +270,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                   ProfileHeader(
                     firstName: this.widget.firstName,
                     lastName: this.widget.lastName,
+                    heroTag: this.widget.userId,
                   ),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 20.0),
