@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
-
 class ActivityEvent {
   String title;
   String venue;
@@ -17,37 +16,6 @@ class ActivityEvent {
 
   ActivityEvent({this.title, this.venue, this.time, this.day, this.weekday});
 }
-
-List<ActivityEvent> may = <ActivityEvent>[
-  ActivityEvent(
-    title: 'Event title 1',
-    venue: 'Multi-purpose Gym Multi-purpose Gym',
-    time: '8:00am',
-    day: '02',
-    weekday: 'Tue'
-  ),
-  ActivityEvent(
-    title: 'Event title 2',
-    venue: 'Carmelite Hall',
-    time: '9:30am',
-    day: '02',
-    weekday: 'Tue'
-  ),
-  ActivityEvent(
-    title: 'Event title 3',
-    venue: 'Multi-purpose Gym',
-    time: '8:00am',
-    day: '04',
-    weekday: 'Thu'
-  ),
-  ActivityEvent(
-    title: 'Event title 4',
-    venue: 'Multi-purpose Gym',
-    time: '1:30pm',
-    day: '04',
-    weekday: 'Fri'
-  ),
-];
 
 List<ActivityEvent> june = <ActivityEvent>[
   ActivityEvent(
@@ -123,6 +91,8 @@ List<ActivityEvent> august = <ActivityEvent>[
 
 Map monthActivities = {};
 
+bool isInitiated = false;
+
 List<String> activityNames = <String>[];
 
 Future<List> getStudentActivities(classId) async {
@@ -138,12 +108,6 @@ Future<List> getStudentActivities(classId) async {
 }
 
 List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
-  monthActivities.forEach((month, activities) {
-    if(!activityNames.contains(month)){
-      activityNames.add(month);
-    }
-  });
-
   return List.generate(count, (sliverIndex) {
     sliverIndex += firstIndex;
     return new SliverStickyHeaderBuilder(
@@ -332,28 +296,14 @@ class Activities extends StatefulWidget {
 }
 
 class _ActivitiesState extends State<Activities> {
-  
+  List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
   void transformActivityList(classId) async {
     await getStudentActivities(classId)
       .then((results) {
         DateTime currTime = DateTime.now();
         DateTime currDay = DateTime(currTime.year, currTime.month, currTime.day);
         List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-        try {
-          if(monthActivities['April'].length > 0);
-        } catch(e){
-          monthActivities['April'] = [];
-        }
-        monthActivities['April'].addAll(june);
-
-        try {
-          if(monthActivities['May'].length > 0);
-        } catch(e){
-          monthActivities['May'] = [];
-        }
-        monthActivities['May'].addAll(may);
 
         try {
           if(monthActivities['June'].length > 0);
@@ -368,6 +318,12 @@ class _ActivitiesState extends State<Activities> {
           monthActivities['July'] = [];
         }
         monthActivities['July'].addAll(july);
+
+        monthActivities.forEach((month, activities) {
+          if(!activityNames.contains(month)){
+            activityNames.add(month);
+          }
+        });
 
         for(int i = 0; i < results.length; i++){
           Map activity = results[i];
@@ -397,23 +353,52 @@ class _ActivitiesState extends State<Activities> {
             }
           }
         }
+        sortActivityNames();
 
         setState(() {});
     });
   }
 
+  void sortActivityNames() {
+    List<int> sortedMonthIndex = <int>[];
+    List<String> sortedMonthNames = <String>[];
+
+    for(int i = 0; i < activityNames.length; i++){
+      String month = activityNames[i];
+      int monthIndex = 0;
+      int largestMonthIndex = 0;
+
+      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
+        if(monthNames[monthIndex] == month){
+          if(monthIndex > largestMonthIndex){
+            largestMonthIndex = monthIndex;
+          }
+          break;
+        }
+      }
+      
+      sortedMonthIndex.add(monthIndex);
+      sortedMonthIndex.sort();
+    }
+    for(int i = 0; i < sortedMonthIndex.length; i++){
+      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
+    }
+    activityNames = sortedMonthNames;
+  }
+
   @override
   void initState(){
     super.initState();
-
-    setState(() {
-      transformActivityList(widget.classId);
-    });
+    if(!isInitiated){
+      setState(() {
+        transformActivityList(widget.classId);
+      });
+    }
+    isInitiated = true;
   }
 
   @override
   Widget build(BuildContext context) {
-        
     return Scaffold(
       appBar: AppBar(
         title: Text('Calendar of Activities'),
