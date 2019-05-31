@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'model.dart';
 
 import 'package:flutter/material.dart';
 
@@ -216,14 +217,18 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
   String fname;
   String lname;
   String schoolLevel; // TODO: Verify if school level is 's_grade_level' or 's_school'
+  String classId;
 
   void getStudent(userId) async {
     await _getStudentInfo(userId)
       .then((data) {
+        Map student = data[0];
+
         setState(() {
-          fname = data['s_fname'] ?? null;
-          lname = data['s_lname'] ?? null;
-          schoolLevel = data['s_grade_level'];
+          fname = student['s_fname'] ?? null;
+          lname = student['s_lname'] ?? null;
+          schoolLevel = student['s_grade_level'];
+          classId = student['class_id'];
         });
       });
   }
@@ -278,7 +283,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        return widget.onTap(lname, fname, schoolLevel);
+                        return widget.onTap(lname, fname, schoolLevel, classId);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -339,8 +344,8 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
   }
 }
 
-Future<Map> _getStudentInfo(userId) async {
-  String url = 'http://54.169.38.97:4200/api/student/get-student';
+Future<List> _getStudentInfo(userId) async {
+  String url = '$baseApi/student/get-student';
 
   var response = await http.post(url, body: json.encode({
     'data': userId
@@ -349,5 +354,5 @@ Future<Map> _getStudentInfo(userId) async {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       });
-  return jsonDecode(response.body)[0];
+  return jsonDecode(response.body);
 }

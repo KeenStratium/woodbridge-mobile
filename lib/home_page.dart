@@ -17,13 +17,15 @@ class HomePage extends StatefulWidget {
   String lastName;
   String heroTag;
   String schoolLevel;
+  String classId;
 
   HomePage({
     this.child,
     this.firstName,
     this.lastName,
     this.heroTag,
-    this.schoolLevel
+    this.schoolLevel,
+    this.classId
   });
 
   @override
@@ -324,6 +326,7 @@ class _HomePageState extends State<HomePage> {
                                         pageBuilder: Activities(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
+                                          classId: this.widget.classId,
                                         ),
                                         buildContext: context,
                                       ),
@@ -433,7 +436,7 @@ class _HomePageState extends State<HomePage> {
                                     return StudentAvatarPicker(
                                       userId: '${userId}',
                                       isActive: userId == widget.heroTag,
-                                      onTap: (lname, fname, schoolLevel) {
+                                      onTap: (lname, fname, schoolLevel, classId) {
                                         setState(() {
                                           showStudentSwitcher = false;
                                           widget.child = Avatar(
@@ -446,6 +449,7 @@ class _HomePageState extends State<HomePage> {
                                           widget.lastName = lname ?? '';
                                           widget.heroTag = userId;
                                           widget.schoolLevel = schoolLevel;
+                                          widget.classId = classId;
                                         });
                                       }
                                     );
