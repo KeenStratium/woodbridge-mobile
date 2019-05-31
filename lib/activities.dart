@@ -95,6 +95,8 @@ bool isInitiated = false;
 
 List<String> activityNames = <String>[];
 
+String oldUserId = '';
+
 Future<List> getStudentActivities(classId) async {
   String url = '$baseApi/act/get-student-activities?data=$classId';
 
@@ -410,11 +412,14 @@ class _ActivitiesState extends State<Activities> {
   @override
   void initState(){
     super.initState();
-    if(!isInitiated){
+    if(!isInitiated || (oldUserId != widget.userId)){
+      monthActivities = {};
+      activityNames = [];
       setState(() {
         transformActivityList(widget.classId);
       });
     }
+    oldUserId = widget.userId;
     isInitiated = true;
   }
 
