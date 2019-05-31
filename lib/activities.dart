@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'model.dart';
+
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
@@ -42,20 +47,6 @@ List<ActivityEvent> may = <ActivityEvent>[
     day: '04',
     weekday: 'Fri'
   ),
-  ActivityEvent(
-    title: 'Event title 5',
-    venue: 'Multi-purpose Gym',
-    time: '1:30pm',
-    day: '04',
-    weekday: 'Fri'
-  ),
-  ActivityEvent(
-    title: 'Event title 6',
-    venue: 'Multi-purpose Gym',
-    time: '1:30pm',
-    day: '04',
-    weekday: 'Fri'
-  ),
 ];
 
 List<ActivityEvent> june = <ActivityEvent>[
@@ -80,51 +71,9 @@ List<ActivityEvent> june = <ActivityEvent>[
       day: '04',
       weekday: 'Thu'
   ),
-  ActivityEvent(
-      title: 'Event title 4',
-      venue: 'Multi-purpose Gym',
-      time: '1:30pm',
-      day: '04',
-      weekday: 'Fri'
-  ),
-  ActivityEvent(
-      title: 'Event title 5',
-      venue: 'Multi-purpose Gym',
-      time: '1:30pm',
-      day: '04',
-      weekday: 'Fri'
-  ),
-  ActivityEvent(
-      title: 'Event title 6',
-      venue: 'Multi-purpose Gym',
-      time: '1:30pm',
-      day: '04',
-      weekday: 'Fri'
-  ),
 ];
 
 List<ActivityEvent> july = <ActivityEvent>[
-  ActivityEvent(
-      title: 'Event title 1',
-      venue: 'Multi-purpose Gym',
-      time: '8:00am',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 2',
-      venue: 'Carmelite Hall',
-      time: '9:30am',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 3',
-      venue: 'Multi-purpose Gym',
-      time: '8:00am',
-      day: '04',
-      weekday: 'Thu'
-  ),
   ActivityEvent(
       title: 'Event title 4',
       venue: 'Multi-purpose Gym',
@@ -170,42 +119,39 @@ List<ActivityEvent> august = <ActivityEvent>[
       day: '04',
       weekday: 'Thu'
   ),
-  ActivityEvent(
-      title: 'Event title 4',
-      venue: 'Multi-purpose Gym',
-      time: '1:30pm',
-      day: '04',
-      weekday: 'Fri'
-  ),
-  ActivityEvent(
-      title: 'Event title 5',
-      venue: 'Multi-purpose Gym',
-      time: '1:30pm',
-      day: '04',
-      weekday: 'Fri'
-  ),
-  ActivityEvent(
-      title: 'Event title 6',
-      venue: 'Multi-purpose Gym',
-      time: '1:30pm',
-      day: '04',
-      weekday: 'Fri'
-  ),
 ];
 
-List<List<ActivityEvent>> monthActivities = <List<ActivityEvent>>[
-  may, june, july, august
-];
+Map monthActivities = {};
+
+List<String> activityNames = <String>[];
+
+Future<List> getStudentActivities(classId) async {
+  String url = '$baseApi/act/get-student-activities?data=$classId';
+
+  var response = await http.get(url,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    });
+
+  return jsonDecode(response.body);
+}
 
 List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
+  monthActivities.forEach((month, activities) {
+    if(!activityNames.contains(month)){
+      activityNames.add(month);
+    }
+  });
+
   return List.generate(count, (sliverIndex) {
     sliverIndex += firstIndex;
     return new SliverStickyHeaderBuilder(
       builder: (context, state) => _buildHeader(context, sliverIndex, state),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate((context, i) =>
-          Container(
-            margin: EdgeInsets.only(top: i == 0 ? 20.0 : 0.00, bottom: i == monthActivities[sliverIndex].length - 1 ? 20.00 : 0.00),
+        delegate: SliverChildBuilderDelegate(
+          (context, i) => Container(
+            margin: EdgeInsets.only(top: i == 0 ? 20.0 : 0.00, bottom: i == monthActivities[activityNames[sliverIndex]].length - 1 ? 20.00 : 0.00),
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Container(
               height: 80.0,
@@ -227,14 +173,14 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
-                            monthActivities[sliverIndex][i].day,
+                            monthActivities[activityNames[sliverIndex]][i].day,
                             style: TextStyle(
                               fontSize: 24.0,
                               color: Theme.of(context).accentColor
                             ),
                           ),
                           Text(
-                            monthActivities[sliverIndex][i].weekday,
+                            monthActivities[activityNames[sliverIndex]][i].weekday,
                             style: TextStyle(
                               fontSize: 14.0,
                               color: Colors.black54
@@ -251,7 +197,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          monthActivities[sliverIndex][i].title,
+                          monthActivities[activityNames[sliverIndex]][i].title,
                           style: TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.w700
@@ -274,7 +220,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
                                     padding: EdgeInsets.symmetric(horizontal: 1.0),
                                   ),
                                   Text(
-                                    monthActivities[sliverIndex][i].time,
+                                    monthActivities[activityNames[sliverIndex]][i].time,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black87,
@@ -311,30 +257,30 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Text(
-                                        monthActivities[sliverIndex][i].venue,
+                                        monthActivities[activityNames[sliverIndex]][i].venue,
                                         overflow: TextOverflow.fade,
                                         softWrap: false,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
                                           color: Colors.black87,
                                           fontSize: 14.0
+                                        ),
                                       ),
-                                ),
                                     ),
                                   ),
-                              ],
-                          ),
+                                ],
+                              ),
                             )
-                        ],
-                      )
-                    ],
-                  ),
-                )
+                          ],
+                        )
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
           ),
-          childCount: monthActivities[sliverIndex].length,
+          childCount: monthActivities[activityNames[sliverIndex]].length,
         ),
       ),
     );
@@ -360,7 +306,7 @@ Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState sta
       )
     ),
     child: new Text(
-      text ?? 'Header #${index+1}',
+      text ?? activityNames[index],
       style: TextStyle(
         color: Colors.black87,
         fontSize: 16.0,
@@ -370,17 +316,100 @@ Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState sta
   );
 }
 
-class Activities extends StatelessWidget {
+class Activities extends StatefulWidget {
   final String firstName;
   final String lastName;
+  final String classId;
 
   Activities({
     this.firstName,
-    this.lastName
+    this.lastName,
+    this.classId
   });
 
   @override
+  _ActivitiesState createState() => _ActivitiesState();
+}
+
+class _ActivitiesState extends State<Activities> {
+  
+  void transformActivityList(classId) async {
+    await getStudentActivities(classId)
+      .then((results) {
+        List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        for(int i = 0; i < results.length; i++){
+          Map activity = results[i];
+          DateTime date = DateTime.parse(activity['a_start_date']);
+          int monthIndex = date.month - 1;
+          String month = monthNames[monthIndex];
+
+          print(activity['a_title']);
+          print(month);
+
+          ActivityEvent activityEvent = ActivityEvent(
+            title: activity['a_title'],
+            venue: activity['a_location'],
+            time: activity['a_time_start'],
+            day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
+            weekday: weekdayNames[date.weekday - 1]
+          );
+
+          try {
+            if(monthActivities[month].length > 0);
+          } catch(e){
+            monthActivities[month] = [];
+          }
+          monthActivities[month].add(activityEvent);
+          if(activityNames.contains(month) == false){
+            activityNames.add(month);
+          }
+        }
+        try {
+          if(monthActivities['May'].length > 0);
+        } catch(e){
+          monthActivities['May'] = [];
+        }
+        monthActivities['May'].addAll(may);
+
+        try {
+          if(monthActivities['April'].length > 0);
+        } catch(e){
+          monthActivities['April'] = [];
+        }
+        monthActivities['April'].addAll(june);
+
+        try {
+          if(monthActivities['July'].length > 0);
+        } catch(e){
+          monthActivities['July'] = [];
+        }
+        monthActivities['July'].addAll(july);
+
+        try {
+          if(monthActivities['June'].length > 0);
+        } catch(e){
+          monthActivities['June'] = [];
+        }
+        monthActivities['June'].addAll(august);
+
+        setState(() {});
+    });
+  }
+
+  @override
+  void initState(){
+    super.initState();
+
+    setState(() {
+      transformActivityList(widget.classId);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+        
     return Scaffold(
       appBar: AppBar(
         title: Text('Calendar of Activities'),
@@ -390,8 +419,8 @@ class Activities extends StatelessWidget {
           direction: Axis.vertical,
           children: <Widget>[
             ProfileHeader(
-              firstName: this.firstName,
-              lastName: this.lastName,
+              firstName: this.widget.firstName,
+              lastName: this.widget.lastName,
             ),
             Flexible(
               child: Builder(builder: (BuildContext context) {
@@ -405,5 +434,4 @@ class Activities extends StatelessWidget {
       ),
     );
   }
-
 }
