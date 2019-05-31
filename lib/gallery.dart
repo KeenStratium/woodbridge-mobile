@@ -79,10 +79,12 @@ class GalleryPreview extends StatelessWidget {
 class ActivityGallery extends StatelessWidget {
   final String firstName;
   final String lastName;
+  final String userId;
 
   ActivityGallery({
     this.firstName,
     this.lastName,
+    this.userId
   });
 
   @override
@@ -98,6 +100,7 @@ class ActivityGallery extends StatelessWidget {
             ProfileHeader(
               firstName: this.firstName,
               lastName: this.lastName,
+              heroTag: this.userId,
             ),
             Expanded(
               child: Container(

@@ -139,6 +139,7 @@ class _GradesState extends State<Grades> {
               ProfileHeader(
                 firstName: this.widget.firstName,
                 lastName: this.widget.lastName,
+                heroTag: this.widget.userId,
               ),
               Expanded(
                 child: ListView(
