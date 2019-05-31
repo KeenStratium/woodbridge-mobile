@@ -21,21 +21,21 @@ List<ActivityEvent> june = <ActivityEvent>[
   ActivityEvent(
       title: 'Event title 1',
       venue: 'Multi-purpose Gym',
-      time: '8:00am',
+      time: '8:00:00',
       day: '02',
       weekday: 'Tue'
   ),
   ActivityEvent(
       title: 'Event title 2',
       venue: 'Carmelite Hall',
-      time: '9:30am',
+      time: '9:30:00',
       day: '02',
       weekday: 'Tue'
   ),
   ActivityEvent(
       title: 'Event title 3',
       venue: 'Multi-purpose Gym',
-      time: '8:00am',
+      time: '8:00:00',
       day: '04',
       weekday: 'Thu'
   ),
@@ -45,21 +45,21 @@ List<ActivityEvent> july = <ActivityEvent>[
   ActivityEvent(
       title: 'Event title 4',
       venue: 'Multi-purpose Gym',
-      time: '1:30pm',
+      time: '15:30:00',
       day: '04',
       weekday: 'Fri'
   ),
   ActivityEvent(
       title: 'Event title 5',
       venue: 'Multi-purpose Gym',
-      time: '1:30pm',
+      time: '15:30:00',
       day: '04',
       weekday: 'Fri'
   ),
   ActivityEvent(
       title: 'Event title 6',
       venue: 'Multi-purpose Gym',
-      time: '1:30pm',
+      time: '13:30:00',
       day: '04',
       weekday: 'Fri'
   ),
@@ -69,21 +69,21 @@ List<ActivityEvent> august = <ActivityEvent>[
   ActivityEvent(
       title: 'Event title 1',
       venue: 'Multi-purpose Gym',
-      time: '8:00am',
+      time: '8:00:00',
       day: '02',
       weekday: 'Tue'
   ),
   ActivityEvent(
       title: 'Event title 2',
       venue: 'Carmelite Hall',
-      time: '9:30am',
+      time: '9:05:00',
       day: '02',
       weekday: 'Tue'
   ),
   ActivityEvent(
       title: 'Event title 3',
       venue: 'Multi-purpose Gym',
-      time: '8:00am',
+      time: '8:00:00',
       day: '04',
       weekday: 'Thu'
   ),
@@ -108,6 +108,25 @@ Future<List> getStudentActivities(classId) async {
 }
 
 List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
+
+  String formatMilitaryTime(time) {
+    String meridiem = 'am';
+    List<String> timeClockStr = time.split(':');
+    int hour = int.parse(timeClockStr[0]);
+    String hourStr;
+    String minuteStr = timeClockStr[1];
+    
+    if(hour > 12){
+      meridiem = 'pm';
+      hour -= 12;
+    }else if(hour == 0){
+      hour = 12;
+    }
+    hourStr = hour.toString();
+
+    return '$hourStr:$minuteStr$meridiem';
+  }
+
   return List.generate(count, (sliverIndex) {
     sliverIndex += firstIndex;
     return new SliverStickyHeaderBuilder(
@@ -184,7 +203,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
                                     padding: EdgeInsets.symmetric(horizontal: 1.0),
                                   ),
                                   Text(
-                                    monthActivities[activityNames[sliverIndex]][i].time,
+                                    formatMilitaryTime(monthActivities[activityNames[sliverIndex]][i].time),
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black87,
