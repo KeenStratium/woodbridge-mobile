@@ -143,9 +143,11 @@ class _GradesState extends State<Grades> {
 
       await fetchMarkingCodes(schoolLevel)
         .then((results) {
-          results.forEach((markingCode) {
+          for(int i = 0; i < results.length; i++){
+            Map markingCode = results[i];
+
             markingCodes.add(
-                Flex(
+              Flex(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   direction: Axis.horizontal,
                   children: <Widget>[
@@ -159,18 +161,18 @@ class _GradesState extends State<Grades> {
                             Text(
                               markingCode['code_abb'],
                               style: TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.w700,
-                                color: Theme.of(context).accentColor
+                                  fontSize: 24.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: Theme.of(context).accentColor
                               ),
                             ),
                             Text(
                               markingCode['code_title'],
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey[600]
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[600]
                               ),
                             )
                           ],
@@ -178,30 +180,32 @@ class _GradesState extends State<Grades> {
                       ),
                     ),
                     Flexible(
-                      flex: 2,
-                      child: Text(
-                        markingCode['code_desc'],
-                        softWrap: true,
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87
-                        ),
-                      )
+                        flex: 2,
+                        child: Text(
+                          markingCode['code_desc'],
+                          softWrap: true,
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87
+                          ),
+                        )
                     )
                   ],
-              )
+                )
             );
-            markingCodes.add(
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 1.0),
-                child: Divider(
-                  height: 16.0,
-                  color: Colors.grey[400]
-                ),
-              )
-            );
-          });
+            if(i != results.length - 1){
+              markingCodes.add(
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 1.0),
+                  child: Divider(
+                    height: 16.0,
+                    color: Colors.grey[400]
+                  ),
+                )
+              );
+            }
+          }
       });
 
       return markingCodes;

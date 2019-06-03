@@ -19,6 +19,7 @@ class Avatar extends StatelessWidget {
   final double maxRadius;
   final String initial;
   final double fontSize;
+  bool enableShadow;
   double minRadius = null;
 
   Avatar({
@@ -26,20 +27,24 @@ class Avatar extends StatelessWidget {
     this.maxRadius,
     this.initial,
     this.fontSize,
-    this.minRadius
+    this.minRadius,
+    this.enableShadow
   });
 
   @override
   Widget build(BuildContext context) {
+    if(enableShadow == null){
+      enableShadow = true;
+    }
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(100.0)),
-        boxShadow: [BoxShadow(
+        boxShadow: enableShadow ? [BoxShadow(
           color: Color.fromRGBO(0, 0, 0, .55),
           blurRadius: 12.0,
           offset: Offset(2.0, 3.0),
           spreadRadius: -1.0
-        )],
+        )] : [],
       ),
       child: CircleAvatar(
         child: Text(
@@ -214,6 +219,7 @@ class accentCtaButton extends FlatButton {
 class StudentAvatarPicker extends StatefulWidget{
   final userId;
   final heroTag;
+  bool enableShadow;
   bool isActive;
   var onTap;
 
@@ -222,7 +228,8 @@ class StudentAvatarPicker extends StatefulWidget{
     this.userId,
     this.onTap,
     this.heroTag,
-    this.isActive
+    this.isActive,
+    this.enableShadow
   }) : super(key: key);
 
   @override
@@ -319,6 +326,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                                 maxRadius: widget.isActive ? 41.0 : 48.0,
                                 fontSize: 24.0,
                                 initial: "$fInitial$lInitial",
+                                enableShadow: widget.enableShadow,
                               ),
                             ),
                           ],

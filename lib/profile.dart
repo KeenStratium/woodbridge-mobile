@@ -213,6 +213,7 @@ class _ProfileState extends State<Profile> {
                         minRadius: 20.0,
                         fontSize: 20.0,
                         initial: "$fInitial$lInitial",
+                        enableShadow: false
                       ),
                     ),
                     Padding(
