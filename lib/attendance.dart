@@ -128,10 +128,12 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         if(schoolDayIndex.weekday <= 5){ // TODO: Include special school days on weekends
           String attendanceStatus = 'ABSENT';
 
-          if(schoolDayIndex == presentDays[presentDaysIndex] && presentDaysIndex < presentDays.length){
-            attendanceStatus = 'PRESENT';
-            if(presentDaysIndex < presentDays.length - 1){
-              presentDaysIndex++;
+          if(presentDays.length > 0){
+            if(schoolDayIndex == presentDays[presentDaysIndex] && presentDaysIndex < presentDays.length){
+              attendanceStatus = 'PRESENT';
+              if(presentDaysIndex < presentDays.length - 1){
+                presentDaysIndex++;
+              }
             }
           }
 
