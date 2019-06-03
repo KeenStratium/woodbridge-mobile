@@ -52,79 +52,85 @@ class _HomePageState extends State<HomePage> {
                     child: Flex(
                       direction: Axis.vertical,
                       children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).accentColor
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-                          child: Column(
-                            children: <Widget>[
-                              Hero(
-                                tag: this.widget.heroTag,
-                                child: this.widget.child
-                              ),
-                              SizedBox(
-                                width: 8.0,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 6.0),
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Material(
-                                    color: Theme.of(context).accentColor,
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          showStudentSwitcher = true;
-                                        });
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            '${this.widget.lastName ?? "Gargar"}, ${this.widget.firstName ?? "Kion Kefir"}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18.0,
-                                              color: Colors.white
+                        Flexible(
+                          flex: 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.fitWidth,
+                                image: AssetImage('img/home_profile_head_cover.png')
+                              )
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                            child: Column(
+                              children: <Widget>[
+                                Hero(
+                                  tag: this.widget.heroTag,
+                                  child: this.widget.child
+                                ),
+                                SizedBox(
+                                  width: 8.0,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 6.0),
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Material(
+                                      color: Color.fromRGBO(255, 255, 255, 0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            showStudentSwitcher = true;
+                                          });
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              '${this.widget.lastName ?? "Gargar"}, ${this.widget.firstName ?? "Kion Kefir"}',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18.0,
+                                                color: Colors.white
+                                              ),
                                             ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 6.0),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_drop_down,
-                                            color: Colors.white,
-                                          )
-                                        ],
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 6.0),
+                                            ),
+                                            Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.white,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 3.0),
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      Text(
-                                        'Kinder-Orchid',
-                                        style: TextStyle(
-                                          color: Colors.white
-                                        ),
-                                      ),
-                                      Text(
-                                        'S.Y. 2018-2019',
-                                        style: TextStyle(
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 3.0),
+                                    ),
+                                    Column(
+                                      children: <Widget>[
+                                        Text(
+                                          'Kinder-Orchid',
+                                          style: TextStyle(
                                             color: Colors.white
+                                          ),
                                         ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ],
+                                        Text(
+                                          'S.Y. 2018-2019',
+                                          style: TextStyle(
+                                              color: Colors.white
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Flexible(
