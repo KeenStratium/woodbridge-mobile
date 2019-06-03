@@ -161,20 +161,32 @@ class _HomePageState extends State<HomePage> {
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: <Widget>[
                                                     Text(
-                                                      'Avg. Grade',
+                                                      'Next Payment',
                                                       style: TextStyle(
                                                           fontSize: 13.0,
                                                           fontWeight: FontWeight.w700,
                                                         color: Colors.black87
                                                       ),
                                                     ),
-                                                    Text(
-                                                      'S',
-                                                      style: TextStyle(
-                                                        color: Theme.of(context).accentColor,
-                                                        fontSize: 32.0,
-                                                        fontWeight: FontWeight.w600
-                                                      ),
+                                                    Column(
+                                                      children: <Widget>[
+                                                        Text(
+                                                          'Sept.',
+                                                          style: TextStyle(
+                                                            color: Colors.black38,
+                                                            fontSize: 12.0,
+                                                            fontWeight: FontWeight.w600
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '13',
+                                                          style: TextStyle(
+                                                            color: Theme.of(context).accentColor,
+                                                            fontSize: 20.0,
+                                                            fontWeight: FontWeight.w600
+                                                          ),
+                                                        ),
+                                                      ],
                                                     )
                                                   ],
                                                 ),
