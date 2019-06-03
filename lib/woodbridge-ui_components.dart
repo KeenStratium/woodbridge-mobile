@@ -31,17 +31,28 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      child: Text(
-        this.initial ?? '',
-        style: TextStyle(
-          fontSize: this.fontSize,
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(100.0)),
+        boxShadow: [BoxShadow(
+          color: Color.fromRGBO(0, 0, 0, .55),
+          blurRadius: 12.0,
+          offset: Offset(2.0, 3.0),
+          spreadRadius: -1.0
+        )],
       ),
-      backgroundColor: this.backgroundColor,
-      foregroundColor: Colors.white,
-      maxRadius: this.maxRadius,
-      minRadius: this.minRadius,
+      child: CircleAvatar(
+        child: Text(
+          this.initial ?? '',
+          style: TextStyle(
+            fontSize: this.fontSize,
+          ),
+        ),
+        backgroundColor: this.backgroundColor,
+        foregroundColor: Colors.white,
+        maxRadius: this.maxRadius,
+        minRadius: this.minRadius,
+      ),
     );
   }
 }
@@ -320,9 +331,9 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
             ),
             Flexible(
               fit: FlexFit.tight,
-              flex: 1,
+              flex: 0,
               child: SizedBox(
-                height: 16.0,
+                height: 8.0,
               ),
             ),
             Flexible(
