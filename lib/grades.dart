@@ -22,6 +22,19 @@ class Areas {
   String location;
 }
 
+Future<List> fetchMarkingCodes(schoolLevel) async {
+  String url = '$baseApi/grade/get-all-marking-code';
+
+  var response = await http.post(url, body: json.encode({
+    'data': schoolLevel
+  }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    });
+
+  return jsonDecode(response.body);
+}
 
 Future<List> fetchGrades(userId) async {
   String url = '$baseApi/grade/get-grades';
@@ -125,6 +138,75 @@ class _GradesState extends State<Grades> {
       return skillWidgets;
     }
 
+    Future buildMarkingCodes(schoolLevel) async {
+      List<Widget> markingCodes = <Widget>[];
+
+      await fetchMarkingCodes(schoolLevel)
+        .then((results) {
+          results.forEach((markingCode) {
+            markingCodes.add(
+                Flex(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  direction: Axis.horizontal,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
+                      child: Container(
+                        width: double.infinity,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              markingCode['code_abb'],
+                              style: TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(context).accentColor
+                              ),
+                            ),
+                            Text(
+                              markingCode['code_title'],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey[600]
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: Text(
+                        markingCode['code_desc'],
+                        softWrap: true,
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87
+                        ),
+                      )
+                    )
+                  ],
+              )
+            );
+            markingCodes.add(
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 1.0),
+                child: Divider(
+                  height: 16.0,
+                  color: Colors.grey[400]
+                ),
+              )
+            );
+          });
+      });
+
+      return markingCodes;
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -144,6 +226,47 @@ class _GradesState extends State<Grades> {
               Expanded(
                 child: ListView(
                   children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(7.0))
+                      ),
+                      margin: EdgeInsets.only(top: 40.0, bottom: 20.0, left: 20.0, right: 20.0),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              'Marking Codes',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                color: Theme.of(context).accentColor,
+                                fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 12.0),
+                              child: Divider(
+                                height: 16.0,
+                                color: Colors.grey[300],
+                              ),
+                            ),
+                            FutureBuilder(
+                              future: buildMarkingCodes(widget.schoolLevel),
+                              builder: (BuildContext context, AsyncSnapshot snapshot){
+                                if(snapshot.connectionState == ConnectionState.done){
+                                  return Column(
+                                    children: snapshot.data,
+                                  );
+                                }else{
+                                  return Text('Fetching marking codes...');
+                                }
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                     Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -192,7 +315,7 @@ class _GradesState extends State<Grades> {
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                           if(snapshot.connectionState == ConnectionState.done){
                             return Column(
-                                children: snapshot.data
+                              children: snapshot.data
                             );
                           }else{
                             return Text('fetching grade information...');
