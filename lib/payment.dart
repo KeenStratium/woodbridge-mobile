@@ -31,21 +31,96 @@ Future<List> fetchStudentPayments(userId) async {
   return jsonDecode(response.body);
 }
 
+Future<List> getSchoolYearInformation() async {
+  String url = '$baseApi/att/get-attendance-setting-information';
+
+  var response = await http.get(url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+
 Future buildStudentPayments(userId) async {
+  List<Payment> paymentsDue = <Payment>[];
+  DateTime yearStartMonth;
+  DateTime yearEndMonth;
+
+  await getSchoolYearInformation()
+    .then((results) {
+      Map schoolYearInformation = results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
+      DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']);
+      DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']);
+
+      DateTime yearStartLocal = yearStart.toLocal();
+      DateTime yearEndLocal = yearEnd.toLocal();
+
+      yearStartMonth = DateTime(yearStartLocal.year, yearStartLocal.month, 1);
+      yearEndMonth = DateTime(yearEndLocal.year, yearEndLocal.month + 1, 0);
+    });
+
   await fetchStudentPayments(userId)
     .then((results) {
+      bool isPaymentRegistered = false;
+      List paymentSettings = [];
+      DateTime latestPaymentDate;
+      int paymentPackage;
+      double kumonRegFee;
+      double mathFee;
+      double readingFee;
+      double tutorialFee;
+
+      if(results.length > 0){ // TODO: Ask what happens when a payment package is changed
+        Map initialPayment = results[0];
+        List note = initialPayment['note'].split(',');
+        List paymentSettingsList = initialPayment['pay_setting_id'].split(',');
+
+        paymentPackage = int.parse(note[0]);
+        kumonRegFee = double.parse(note[1]);
+        mathFee = double.parse(note[2]);
+        readingFee = double.parse(note[3]);
+        tutorialFee = double.parse(note[4]);
+
+        for(int i = 0; i < paymentSettingsList.length; i++){
+          String paymentSetting = paymentSettingsList[i];
+          if(paymentSetting.length > 0){
+            paymentSettings.add(paymentSetting);
+          }
+        }
+
+        isPaymentRegistered = true;
+      }
+
       for(int i = 0; i < results.length; i++){
         Map payment = results[i];
-        print(payment);
-        payments.add(
-          Payment(
-            label: payment['paid_date'],
-            amount: "₱${payment['amount_paid']}"
-          )
-        );
+        if(isPaymentRegistered){
+          payments.add(
+            Payment(
+              label: timeFormat(payment['paid_date']),
+              amount: "₱${payment['amount_paid']}"
+            )
+          );
+        }
       }
+
+      print(payments.)
+      if(payments.length > 0){
+        Payment latestPayment = payments[payments.length - 1];
+        latestPaymentDate = DateTime.parse(latestPayment.label);
+
+        print(latestPaymentDate);
+      }
+
+      print(paymentSettings);
+      print(yearStartMonth);
+      print(yearEndMonth);
+
+
     });
 }
+
 
 class PaymentHistory extends StatefulWidget {
   final String firstName;
@@ -164,7 +239,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                               cells: [
                                 DataCell(
                                   Text(
-                                    timeFormat(payment.label),
+                                    payment.label,
                                     style: TextStyle(
                                       color: Colors.black87,
                                       fontSize: 16.0
