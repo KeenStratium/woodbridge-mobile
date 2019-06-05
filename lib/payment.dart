@@ -12,8 +12,9 @@ class Payment {
   String label;
   String amount;
   DateTime rawDate;
+  var rawPaidDate;
 
-  Payment({this.label, this.amount, this.rawDate});
+  Payment({this.label, this.amount, this.rawDate, this.rawPaidDate});
 }
 
 List<Payment> payments = <Payment>[];
@@ -103,7 +104,8 @@ Future buildStudentPayments(userId) async {
             Payment(
               label: timeFormat(payment['paid_date']),
               amount: "₱${payment['amount_paid']}",
-              rawDate: paymentDate
+              rawDate: paymentDate,
+              rawPaidDate: DateTime.parse(payment['paid_date']).toLocal()
             )
           );
         }
@@ -141,7 +143,7 @@ Future buildStudentPayments(userId) async {
               Payment(
                 label: timeFormat(paymentPeriodIndex.toLocal().toString()),
                 amount: amount,
-                rawDate: paymentPeriodIndex.toLocal()
+                rawDate: paymentPeriodIndex.toLocal(),
               )
             );
 
@@ -169,10 +171,22 @@ Future buildStudentPayments(userId) async {
               Payment(
                 label: timeFormat(paymentPeriodIndex.toLocal().toString()),
                 amount: amount,
-                rawDate: paymentPeriodIndex.toLocal()
+                rawDate: paymentPeriodIndex.toLocal(),
               )
             );
           }
+        }else if (paymentPackage == 1){
+          initialPayments.forEach((payment){
+            payments.add(
+              Payment(
+                label: timeFormat(payment.rawPaidDate.toLocal().toString()),
+                amount: payment.amount,
+                rawDate: payment.rawDate.toLocal(),
+                rawPaidDate: payment.rawPaidDate
+              )
+            );
+            print(payments[0].label);
+          });
         }
       }
     });
