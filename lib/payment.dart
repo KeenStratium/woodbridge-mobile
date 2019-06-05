@@ -148,6 +148,31 @@ Future buildStudentPayments(userId) async {
             paymentPeriodIndex = paymentPeriodIndex.add(Duration(days: 15));
             previousPaymentMonthCntr = paymentPeriodMonthCntr;
           }
+        }else if (paymentPackage == 2){
+          DateTime paymentPeriodIndex = DateTime(yearStartMonth.year, yearStartMonth.month, 1);
+          String amount = 'N/A';
+
+          for(int i = 0; paymentPeriodIndex.isBefore(yearEndMonth) || paymentPeriodIndex.isAtSameMomentAs(yearEndMonth); i++){
+            amount = 'N/A';
+
+            paymentPeriodIndex = paymentPeriodIndex.add(Duration(days: 31));
+            paymentPeriodIndex = DateTime.utc(paymentPeriodIndex.year, paymentPeriodIndex.month, 5, -8);
+
+            if(paymentPeriodIndex.toLocal().isAtSameMomentAs(initialPayments[paymentCounter].rawDate)){
+              amount = initialPayments[paymentCounter].amount;
+              if(paymentCounter < initialPayments.length - 1){
+                paymentCounter++;
+              }
+            }
+
+            payments.add(
+              Payment(
+                label: timeFormat(paymentPeriodIndex.toLocal().toString()),
+                amount: amount,
+                rawDate: paymentPeriodIndex.toLocal()
+              )
+            );
+          }
         }
       }
     });
@@ -174,6 +199,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
   Widget build(BuildContext context) {
 
     payments = [];
+    initialPayments = [];
 
     return Scaffold(
       appBar: AppBar(
