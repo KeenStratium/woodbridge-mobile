@@ -132,10 +132,10 @@ Future buildStudentPayments(userId) async {
               paymentPeriodIndex = DateTime.utc(paymentPeriodIndex.year, paymentPeriodMonthCntr, 15, -8);
             }
 
-            if(paymentPeriodIndex.toLocal().isAtSameMomentAs(initialPayments[paymentCounter].rawDate)){
-              amount = initialPayments[paymentCounter].amount;
-              if(paymentCounter < initialPayments.length - 1){
-                paymentCounter++;
+            if(initialPayments.length > 0){
+              if(paymentPeriodIndex.toLocal().isAtSameMomentAs(initialPayments[0].rawDate)){
+                amount = initialPayments[0].amount;
+                initialPayments.removeAt(0);
               }
             }
 
@@ -154,14 +154,13 @@ Future buildStudentPayments(userId) async {
           DateTime paymentPeriodIndex = DateTime(yearStartMonth.year, yearStartMonth.month, 5);
           String amount = 'N/A';
 
-          print(yearEndMonth);
           for(int i = 0; paymentPeriodIndex.isBefore(yearEndMonth) || paymentPeriodIndex.isAtSameMomentAs(yearEndMonth); i++){
             amount = 'N/A';
 
-            if(paymentPeriodIndex.toLocal().isAtSameMomentAs(initialPayments[paymentCounter].rawDate)){
-              amount = initialPayments[paymentCounter].amount;
-              if(paymentCounter < initialPayments.length - 1){
-                paymentCounter++;
+            if(initialPayments.length > 0){
+              if(paymentPeriodIndex.toLocal().isAtSameMomentAs(initialPayments[0].rawDate)){
+                amount = initialPayments[0].amount;
+                initialPayments.removeAt(0);
               }
             }
 
@@ -186,7 +185,6 @@ Future buildStudentPayments(userId) async {
                 rawPaidDate: payment.rawPaidDate
               )
             );
-            print(payments[0].label);
           });
         }
       }
