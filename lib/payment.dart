@@ -151,14 +151,12 @@ Future buildStudentPayments(userId) async {
             previousPaymentMonthCntr = paymentPeriodMonthCntr;
           }
         }else if (paymentPackage == 2){
-          DateTime paymentPeriodIndex = DateTime(yearStartMonth.year, yearStartMonth.month, 1);
+          DateTime paymentPeriodIndex = DateTime(yearStartMonth.year, yearStartMonth.month, 5);
           String amount = 'N/A';
 
+          print(yearEndMonth);
           for(int i = 0; paymentPeriodIndex.isBefore(yearEndMonth) || paymentPeriodIndex.isAtSameMomentAs(yearEndMonth); i++){
             amount = 'N/A';
-
-            paymentPeriodIndex = paymentPeriodIndex.add(Duration(days: 31));
-            paymentPeriodIndex = DateTime.utc(paymentPeriodIndex.year, paymentPeriodIndex.month, 5, -8);
 
             if(paymentPeriodIndex.toLocal().isAtSameMomentAs(initialPayments[paymentCounter].rawDate)){
               amount = initialPayments[paymentCounter].amount;
@@ -174,6 +172,9 @@ Future buildStudentPayments(userId) async {
                 rawDate: paymentPeriodIndex.toLocal(),
               )
             );
+
+            paymentPeriodIndex = paymentPeriodIndex.add(Duration(days: 31));
+            paymentPeriodIndex = DateTime.utc(paymentPeriodIndex.year, paymentPeriodIndex.month, 5, -8);
           }
         }else if (paymentPackage == 1){
           initialPayments.forEach((payment){
