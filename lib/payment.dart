@@ -11,11 +11,13 @@ import 'services.dart';
 class Payment {
   String label;
   String amount;
+  DateTime rawDate;
 
-  Payment({this.label, this.amount});
+  Payment({this.label, this.amount, this.rawDate});
 }
 
 List<Payment> payments = <Payment>[];
+List<Payment> initialPayments = <Payment>[];
 
 Future<List> fetchStudentPayments(userId) async {
   String url = '$baseApi/pay/get-student-payments';
@@ -58,7 +60,7 @@ Future buildStudentPayments(userId) async {
       DateTime yearEndLocal = yearEnd.toLocal();
 
       yearStartMonth = DateTime(yearStartLocal.year, yearStartLocal.month, 1);
-      yearEndMonth = DateTime(yearEndLocal.year, yearEndLocal.month + 1, 0);
+      yearEndMonth = DateTime(yearEndLocal.year, yearEndLocal.month + 1, 0, 23, 59);
     });
 
   await fetchStudentPayments(userId)
@@ -95,29 +97,59 @@ Future buildStudentPayments(userId) async {
 
       for(int i = 0; i < results.length; i++){
         Map payment = results[i];
+        DateTime paymentDate = DateTime.parse(payment['due_date']).toLocal();
         if(isPaymentRegistered){
-          payments.add(
+          initialPayments.add(
             Payment(
               label: timeFormat(payment['paid_date']),
-              amount: "₱${payment['amount_paid']}"
+              amount: "₱${payment['amount_paid']}",
+              rawDate: paymentDate
             )
           );
         }
       }
 
-      print(payments.)
-      if(payments.length > 0){
-        Payment latestPayment = payments[payments.length - 1];
-        latestPaymentDate = DateTime.parse(latestPayment.label);
+      if(initialPayments.length > 0){
+        Payment latestPayment = initialPayments[initialPayments.length - 1];
+        int paymentCounter = 0;
+        latestPaymentDate = latestPayment.rawDate;
 
-        print(latestPaymentDate);
+        if(paymentPackage == 3){
+          DateTime paymentPeriodIndex = DateTime(yearStartMonth.year, yearStartMonth.month, 1);
+          int previousPaymentMonthCntr = -1;
+          int paymentPeriodMonthCntr;
+          String amount = 'N/A';
+
+          for(int i = 0; paymentPeriodIndex.isBefore(yearEndMonth) || paymentPeriodIndex.isAtSameMomentAs(yearEndMonth); i++){
+            paymentPeriodMonthCntr = paymentPeriodIndex.month;
+            amount = 'N/A';
+
+            if(previousPaymentMonthCntr == paymentPeriodMonthCntr){
+              paymentPeriodIndex = DateTime.utc(paymentPeriodIndex.year, paymentPeriodMonthCntr + 1, 0, -8);
+            }else {
+              paymentPeriodIndex = DateTime.utc(paymentPeriodIndex.year, paymentPeriodMonthCntr, 15, -8);
+            }
+
+            if(paymentPeriodIndex.toLocal().isAtSameMomentAs(initialPayments[paymentCounter].rawDate)){
+              amount = initialPayments[paymentCounter].amount;
+              if(paymentCounter < initialPayments.length - 1){
+                paymentCounter++;
+              }
+            }
+
+            payments.add(
+              Payment(
+                label: timeFormat(paymentPeriodIndex.toLocal().toString()),
+                amount: amount,
+                rawDate: paymentPeriodIndex.toLocal()
+              )
+            );
+
+            paymentPeriodIndex = paymentPeriodIndex.add(Duration(days: 15));
+            previousPaymentMonthCntr = paymentPeriodMonthCntr;
+          }
+        }
       }
-
-      print(paymentSettings);
-      print(yearStartMonth);
-      print(yearEndMonth);
-
-
     });
 }
 
@@ -149,145 +181,184 @@ class _PaymentHistoryState extends State<PaymentHistory> {
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Flex(
-          direction: Axis.vertical,
-          children: <Widget>[
-            ProfileHeader(
-              firstName: this.widget.firstName,
-              lastName: this.widget.lastName,
-              heroTag: this.widget.userId,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Flex(
-                direction: Axis.vertical,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Flex(
-                      direction: Axis.horizontal,
-                      children: <Widget>[
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              DashboardTile(
-                                label: 'BALANCE',
-                                displayPlainValue: true,
-                                value: 'P10,000.00',
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              DashboardTile(
-                                label: 'TOTAL PAYMENT',
-                                displayPlainValue: true,
-                                value: 'P20,000.00',
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  FutureBuilder(
-                    future: buildStudentPayments(widget.userId),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if(snapshot.connectionState == ConnectionState.done){
-                        return DataTable(
-                          columns: <DataColumn>[
-                            DataColumn(
-                                label: Expanded(
-                                  child: Text(
-                                    'DATE OF PAYMENT',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14.0,
-                                      color: Colors.grey[800],
-                                    ),
-                                  ),
+        child: SingleChildScrollView(
+          child: Flex(
+            direction: Axis.vertical,
+            children: <Widget>[
+              ProfileHeader(
+                firstName: this.widget.firstName,
+                lastName: this.widget.lastName,
+                heroTag: this.widget.userId,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Flex(
+                  direction: Axis.vertical,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Flex(
+                        direction: Axis.horizontal,
+                        children: <Widget>[
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                DashboardTile(
+                                  label: 'BALANCE',
+                                  displayPlainValue: true,
+                                  value: 'P10,000.00',
                                 ),
-                                numeric: false,
-                                onSort: (i, j){},
-                                tooltip: 'data of payment'
+                              ],
                             ),
-                            DataColumn(
-                                label: Flexible(
-                                  child: Text(
-                                    'AMOUNT',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14.0,
-                                      color: Colors.grey[800],
-                                    ),
-                                  ),
+                          ),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                DashboardTile(
+                                  label: 'TOTAL PAYMENT',
+                                  displayPlainValue: true,
+                                  value: 'P20,000.00',
                                 ),
-                                numeric: false,
-                                onSort: (i, j){},
-                                tooltip: 'amount'
-                            )
-                          ],
-                          rows: payments.map((payment) {
-                            return DataRow(
-                              cells: [
-                                DataCell(
-                                  Text(
-                                    payment.label,
-                                    style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: 16.0
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Route route = MaterialPageRoute(
-                                      builder: (buildContext) => PaymentDetails(
-                                        date: payment.label,
-                                        userId: widget.userId,
-                                        firstName: widget.firstName,
-                                        lastName: widget.lastName,
-                                      ));
-                                    Navigator.push(context, route);
-                                  }
-                                ),
-                                DataCell(
-                                    Text(
-                                      payment.amount,
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    FutureBuilder(
+                      future: buildStudentPayments(widget.userId),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if(snapshot.connectionState == ConnectionState.done){
+                          return DataTable(
+                            columns: <DataColumn>[
+                              DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'DATE OF PAYMENT',
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w600
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.0,
+                                        color: Colors.grey[800],
+                                      ),
+                                    ),
+                                  ),
+                                  numeric: false,
+                                  onSort: (i, j){},
+                                  tooltip: 'data of payment'
+                              ),
+                              DataColumn(
+                                  label: Flexible(
+                                    child: Text(
+                                      'AMOUNT',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.0,
+                                        color: Colors.grey[800],
+                                      ),
+                                    ),
+                                  ),
+                                  numeric: false,
+                                  onSort: (i, j){},
+                                  tooltip: 'amount'
+                              )
+                            ],
+                            rows: payments.map((payment) {
+                              return DataRow(
+                                cells: [
+                                  DataCell(
+                                    Text(
+                                      payment.label,
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16.0
                                       ),
                                     ),
                                     onTap: () {
                                       Route route = MaterialPageRoute(
-                                          builder: (buildContext) => PaymentDetails(
-                                            date: payment.label,
-                                            userId: widget.userId,
-                                            firstName: widget.firstName,
-                                            lastName: widget.lastName,
-                                          ));
+                                        builder: (buildContext) => PaymentDetails(
+                                          date: payment.label,
+                                          userId: widget.userId,
+                                          firstName: widget.firstName,
+                                          lastName: widget.lastName,
+                                        ));
                                       Navigator.push(context, route);
                                     }
-                                )
-                              ]
-                            );
-                          }).toList()
-                        );
-                      }else{
-                        return Text('Fetching payments...');
-                      }
-                    },
-                  ),
-                ],
+                                  ),
+                                  DataCell(
+                                      Text(
+                                        payment.amount,
+                                        style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w600
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                            builder: (buildContext) => PaymentDetails(
+                                              date: payment.label,
+                                              userId: widget.userId,
+                                              firstName: widget.firstName,
+                                              lastName: widget.lastName,
+                                            ));
+                                        Navigator.push(context, route);
+                                      }
+                                  )
+                                ]
+                              );
+                            }).toList()
+                          );
+                        }else{
+                          return DataTable(
+                            columns: <DataColumn>[
+                              DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'DATE OF PAYMENT',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.0,
+                                        color: Colors.grey[800],
+                                      ),
+                                    ),
+                                  ),
+                                  numeric: false,
+                                  onSort: (i, j){},
+                                  tooltip: 'data of payment'
+                              ),
+                              DataColumn(
+                                  label: Flexible(
+                                    child: Text(
+                                      'AMOUNT',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.0,
+                                        color: Colors.grey[800],
+                                      ),
+                                    ),
+                                  ),
+                                  numeric: false,
+                                  onSort: (i, j){},
+                                  tooltip: 'amount'
+                              )
+                            ],
+                            rows: <DataRow>[]
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         )
       ),
     );
