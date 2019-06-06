@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'enroll_student.dart';
+import 'enroll_package.dart';
 import 'home_page.dart';
 
 List<StudentAvatarPicker> studentAvatarPickers = <StudentAvatarPicker>[];
@@ -19,8 +20,9 @@ class StudentPicker extends StatefulWidget {
 
 class _StudentPickerState extends State<StudentPicker> {
   @override
-
   Widget build(BuildContext context) {
+    studentAvatarPickers = <StudentAvatarPicker>[];
+
     studentAvatarPickers.addAll(widget.users.map((userId) {
       return StudentAvatarPicker(
         userId: userId,
@@ -103,7 +105,7 @@ class _StudentPickerState extends State<StudentPicker> {
                       child: accentCtaButton(
                         label: 'Enroll New Student',
                         onPressed: () {
-                          Route route = MaterialPageRoute(builder: (context) => EnrollStudent());
+                          Route route = MaterialPageRoute(builder: (context) => EnrollPackage());
                           Navigator.push(context, route);
                         },
                       ),

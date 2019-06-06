@@ -62,10 +62,11 @@ flutter:
     - img/Icons/icon_payments_2x.png
     - img/Icons/icon_activities_2x.png
     - img/Icons/icon_attendance_2x.png
-    - img/Icons/icon_students_2x.png
+    - img/Icons/icon_handbook_2x.png
     - img/Icons/icon_grades.png
     - img/Icons/icon_gallery.png
     - img/home_profile_head_cover.png
+    - img/ui_avatar.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
