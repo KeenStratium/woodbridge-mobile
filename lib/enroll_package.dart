@@ -1,0 +1,486 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'model.dart';
+
+import 'package:flutter/material.dart';
+
+class EnrollPackage extends StatefulWidget {
+  @override
+  _EnrollPackageState createState() => _EnrollPackageState();
+}
+
+class _EnrollPackageState extends State<EnrollPackage> {
+  String preSchoolHeader = 'Choose Pre-School';
+  String preSchoolPackageHeader = '';
+  String kumonHeader = 'Choose Kumon';
+  String kumonPackage = '';
+  String preSchoolGradeLevel;
+  List<String> _preschoolLevels = ['Toddler', 'Nursery', 'Pre-Kindergarten', 'Kindergarten'];
+  List<String> _kumonLevels = ['Pre-Kindergarten', 'Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'];
+  String _selectedPackage;
+  String _selectedKumonLevel = 'Choose Kumon';
+  List<bool> isExpandedPanels = [true, false, false];
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Enroll New Student'),
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(bottom: 20.0),
+            width: double.infinity,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 30.0),
+                  child: Text(
+                    'Enrollment Packages',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).accentColor
+                    ),
+                  ),
+                ),
+                ExpansionPanelList(
+                  expansionCallback: (int index, bool isExpanded){
+                    setState(() {
+                      isExpandedPanels[index] = !isExpandedPanels[index];
+                    });
+                  },
+                  children: <ExpansionPanel>[
+                    ExpansionPanel(
+                      headerBuilder: (BuildContext context, bool isExpanded){
+                        return ListTile(
+                          title: Row(
+                            children: <Widget>[
+                              Text(
+                                preSchoolHeader,
+                                style: TextStyle(
+                                  color: _selectedPackage == '' ? Colors.black87 : Colors.grey[700],
+                                  fontSize: 18.0
+                                ),
+                              ),
+                              Padding(padding: EdgeInsets.symmetric(horizontal: 4.0)),
+                              _selectedPackage == '' ? Container() : Text(
+                                _selectedPackage ?? '',
+                                style: TextStyle(
+                                  color: Theme.of(context).accentColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18.0
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      canTapOnHeader: true,
+                      body: Container(
+                        margin: EdgeInsets.symmetric(vertical: 10.0),
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  'Grade Level',
+                                  style: TextStyle(
+                                    fontSize: 16.0
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                ),
+                                DropdownButton(
+                                  hint: Text('Please choose a level'), // Not necessary for Option 1
+                                  value: preSchoolGradeLevel,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      preSchoolGradeLevel = newValue;
+                                      preSchoolHeader = newValue;
+                                    });
+                                  },
+                                  items: _preschoolLevels.map((location) {
+                                    return DropdownMenuItem(
+                                      child: Text(location),
+                                      value: location,
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 20.0),
+                              padding: EdgeInsets.symmetric(vertical: 20.0),
+                              child: Text(
+                                'Choose School Package',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 10.0),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedPackage = 'Full Paid';
+                                    });
+                                  },
+                                  splashColor: Theme.of(context).accentColor,
+                                  child: PackageOptionCard(
+                                    packageName: 'Full Paid',
+                                    uponEnrollmentFee: '₱54,000.00',
+                                    packageDesc: Column(
+                                      children: <Widget>[
+                                        PackageDescLabelField(
+                                          label: 'Total Annual Fee',
+                                          value: '₱56,000.0',
+                                        ),
+                                        PackageDescLabelField(
+                                          label: 'Less 5% discount',
+                                          value: '-₱2,000.00',
+                                        )
+                                      ],
+                                    ),
+                                    isSelected: _selectedPackage == 'Full Paid'
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 10.0),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedPackage = 'Monthly';
+                                    });
+                                  },
+                                  splashColor: Theme.of(context).accentColor,
+                                  child: PackageOptionCard(
+                                      packageName: 'Monthly',
+                                      uponEnrollmentFee: '₱16,300.00',
+                                      packageDesc: Column(
+                                        children: <Widget>[
+                                          PackageDescLabelField(
+                                            label: 'Enrollment Fees',
+                                            value: '₱10,600.0',
+                                          ),
+                                          PackageDescLabelField(
+                                            label: 'July Tuition Fee',
+                                            value: '₱4,300.00',
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                                          ),
+                                          Text(
+                                            'Monthly Tuition Fee From Aug To Apr (Due Every 5th Of The Month)',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.grey[800]
+                                            ),
+                                          ),
+                                          Text(
+                                            '₱4,300.00',
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      isSelected: _selectedPackage == 'Monthly'
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 10.0),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedPackage = 'Installment';
+                                    });
+                                  },
+                                  splashColor: Theme.of(context).accentColor,
+                                  child: PackageOptionCard(
+                                      packageName: 'Installment',
+                                      uponEnrollmentFee: '₱6,950.00',
+                                      packageDesc: Column(
+                                        children: <Widget>[
+                                          PackageDescLabelField(
+                                            label: 'Enrollment Fees',
+                                            value: '₱10,600.0 / 4',
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                                          ),
+                                          PackageDescLabelField(
+                                            label: 'July 15',
+                                            value: '₱2,650.00',
+                                          ),
+                                          PackageDescLabelField(
+                                            label: 'July 31',
+                                            value: '₱6,950.00',
+                                          ),
+                                          PackageDescLabelField(
+                                            label: 'August 15',
+                                            value: '₱2,650.00',
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                                          ),
+                                          Text(
+                                            'Monthly Tuition Fee From Aug To Apr (Due Every 5th Of The Month)',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.grey[800]
+                                            ),
+                                          ),
+                                          Text(
+                                            '₱4,300.00',
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      isSelected: _selectedPackage == 'Installment'
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      isExpanded: isExpandedPanels[0]
+                    ),
+                    ExpansionPanel(
+                      headerBuilder: (BuildContext context, bool isExpanded){
+                        return ListTile(
+                          title: Row(
+                            children: <Widget>[
+                              _selectedKumonLevel == '' ? Text('Kumon') : Container(),
+                              Text(
+                                _selectedKumonLevel,
+                                style: TextStyle(
+                                  color: _selectedKumonLevel == '' ? Colors.black87 : Colors.grey[700],
+                                  fontSize: 18.0
+                                ),
+                              ),
+                              Padding(padding: EdgeInsets.symmetric(horizontal: 4.0)),
+                              kumonPackage == '' ? Container() : Text(
+                                kumonPackage ?? '',
+                                style: TextStyle(
+                                  color: Theme.of(context).accentColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18.0
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      canTapOnHeader: true,
+                      body: Container(
+                        margin: EdgeInsets.symmetric(vertical: 10.0),
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  'Grade Level',
+                                  style: TextStyle(
+                                      fontSize: 16.0
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      isExpanded: isExpandedPanels[1]
+                    ),
+                    ExpansionPanel(
+                        headerBuilder: (BuildContext context, bool isExpanded){
+                          return ListTile(
+                            title: Text(
+                              'Choose Tutorial',
+                              style: TextStyle(
+                                fontSize: 18.0
+                              ),
+                            ),
+                          );
+                        },
+                        canTapOnHeader: true,
+                        body: Text('preschool content'),
+                        isExpanded: isExpandedPanels[2]
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PackageOptionCard extends StatefulWidget {
+  String packageName;
+  String uponEnrollmentFee;
+  Widget packageDesc;
+  bool isSelected;
+
+  PackageOptionCard({
+    this.packageName,
+    this.uponEnrollmentFee,
+    this.packageDesc,
+    this.isSelected
+  });
+
+
+@override
+  _PackageOptionCardState createState() => _PackageOptionCardState();
+}
+
+class _PackageOptionCardState extends State<PackageOptionCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: widget.isSelected ? Theme.of(context).accentColor : Colors.grey[300]
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(7.0))
+      ),
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            decoration: BoxDecoration(
+              color: widget.isSelected ? Theme.of(context).accentColor : Colors.grey[100],
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(6.0), topRight: Radius.circular(6.0))
+            ),
+            child: Text(
+              widget.packageName,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+                color: widget.isSelected ? Colors.white : Colors.grey[800]
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        widget.uponEnrollmentFee,
+                        style: TextStyle(
+                            fontSize: 24.0,
+                            color: Theme.of(context).accentColor,
+                            fontWeight: FontWeight.w600
+                        ),
+                      ),
+                      Text(
+                        'Total Due upon Enrollment',
+                        style: TextStyle(
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.0
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Divider(
+                  color: Colors.grey[350],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: widget.packageDesc,
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PackageDescLabelField extends StatelessWidget {
+  String label;
+  String value;
+
+  PackageDescLabelField({
+    this.label,
+    this.value
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 2.0),
+      child: Flex(
+        direction: Axis.horizontal,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            flex: 3,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.grey[800]
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 2,
+            child: Text(
+              value,
+              softWrap: false,
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800]
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
