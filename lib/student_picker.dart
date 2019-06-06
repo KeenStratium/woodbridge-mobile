@@ -20,8 +20,9 @@ class StudentPicker extends StatefulWidget {
 
 class _StudentPickerState extends State<StudentPicker> {
   @override
-
   Widget build(BuildContext context) {
+    studentAvatarPickers = <StudentAvatarPicker>[];
+
     studentAvatarPickers.addAll(widget.users.map((userId) {
       return StudentAvatarPicker(
         userId: userId,
