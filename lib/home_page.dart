@@ -64,9 +64,20 @@ class _HomePageState extends State<HomePage> {
                             padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
                             child: Column(
                               children: <Widget>[
-                                Hero(
-                                  tag: this.widget.heroTag,
-                                  child: this.widget.child
+                                GestureDetector(
+                                  onTap: () {
+                                    Route route = MaterialPageRoute(
+                                      builder: (buildContext) => Profile(
+                                        heroTag: widget.heroTag,
+                                        firstName: this.widget.firstName,
+                                        lastName: this.widget.lastName,
+                                      ));
+                                    Navigator.push(context, route);
+                                  },
+                                  child: Hero(
+                                    tag: this.widget.heroTag,
+                                    child: this.widget.child
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 8.0,
@@ -308,23 +319,12 @@ class _HomePageState extends State<HomePage> {
                                     padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                                     children: <Widget>[
                                       MenuItem(
-                                        iconPath: 'img/Icons/icon_students_2x.png',
-                                        label: 'Profile',
-                                        pageBuilder: Profile(
-                                          heroTag: widget.heroTag,
+                                        iconPath: 'img/Icons/icon_payments_2x.png',
+                                        label: 'Payments',
+                                        pageBuilder: PaymentHistory(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
-                                        ),
-                                        buildContext: context,
-                                      ),
-                                      MenuItem(
-                                        iconPath: 'img/Icons/icon_grades.png',
-                                        label: 'Grades',
-                                        pageBuilder: Grades(
-                                          userId: widget.heroTag,
-                                          firstName: this.widget.firstName,
-                                          lastName: this.widget.lastName,
-                                          schoolLevel: this.widget.schoolLevel
+                                          userId: this.widget.heroTag,
                                         ),
                                         buildContext: context,
                                       ),
@@ -332,9 +332,20 @@ class _HomePageState extends State<HomePage> {
                                         iconPath: 'img/Icons/icon_attendance_2x.png',
                                         label: 'Attendance',
                                         pageBuilder: Attendance(
-                                          firstName: this.widget.firstName,
-                                          lastName: this.widget.lastName,
-                                          userId: this.widget.heroTag
+                                            firstName: this.widget.firstName,
+                                            lastName: this.widget.lastName,
+                                            userId: this.widget.heroTag
+                                        ),
+                                        buildContext: context,
+                                      ),
+                                      MenuItem(
+                                        iconPath: 'img/Icons/icon_grades.png',
+                                        label: 'Progress',
+                                        pageBuilder: Grades(
+                                            userId: widget.heroTag,
+                                            firstName: this.widget.firstName,
+                                            lastName: this.widget.lastName,
+                                            schoolLevel: this.widget.schoolLevel
                                         ),
                                         buildContext: context,
                                       ),
@@ -351,7 +362,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_gallery.png',
-                                        label: 'Gallery',
+                                        label: 'Photos',
                                         pageBuilder: ActivityGallery(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
@@ -360,12 +371,12 @@ class _HomePageState extends State<HomePage> {
                                         buildContext: context,
                                       ),
                                       MenuItem(
-                                        iconPath: 'img/Icons/icon_payments_2x.png',
-                                        label: 'Payments',
-                                        pageBuilder: PaymentHistory(
+                                        iconPath: 'img/Icons/icon_handbook_2x.png',
+                                        label: 'Handbook',
+                                        pageBuilder: Profile(
+                                          heroTag: widget.heroTag,
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
-                                          userId: this.widget.heroTag,
                                         ),
                                         buildContext: context,
                                       ),
@@ -396,19 +407,25 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(context, route);
                       },
                       icon: Icon(
-                        Icons.notifications_none,
+                        Icons.menu,
                         color: Theme.of(context).accentColor,
                       ),
                     ),
                     backgroundColor: Colors.white,
                     actions: <Widget>[
                       IconButton(
+                        onPressed: () {
+                          Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
+                            firstName: this.widget.firstName,
+                            lastName: this.widget.lastName,
+                          ));
+                          Navigator.push(context, route);
+                        },
                         icon: Icon(
-                          Icons.search,
+                          Icons.notifications_none,
                           color: Theme.of(context).accentColor,
                         ),
-                        onPressed: () {},
-                      )
+                      ),
                     ],
                   ),
                 ),
