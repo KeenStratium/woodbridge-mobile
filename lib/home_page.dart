@@ -428,6 +428,41 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
+                  drawer: Drawer(
+                    child: ListView(
+                      // Important: Remove any padding from the ListView.
+                      padding: EdgeInsets.zero,
+                      children: <Widget>[
+                        DrawerHeader(
+                          child: Text('Profile'),
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                          ),
+                        ),
+                        ListTile(
+                          title: Text('Privacy Policy'),
+                          onTap: () {
+                          },
+                        ),
+                        ListTile(
+                          title: Text("Parent's Handbook Guide"),
+                          onTap: () {
+                          },
+                        ),
+                        ListTile(
+                          title: Text('About Us'),
+                          onTap: () {
+                          },
+                        ),
+                        ListTile(
+                          title: Text('Close'),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               Positioned(
