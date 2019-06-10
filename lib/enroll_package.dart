@@ -12,23 +12,25 @@ class EnrollPackage extends StatefulWidget {
 }
 
 class _EnrollPackageState extends State<EnrollPackage> {
+  List<bool> isExpandedPanels = [true, false, false];
+  // Pre-School
   String preSchoolHeader = 'Choose Pre-School';
   String preSchoolPackageHeader = '';
+  String preSchoolGradeLevel;
+  String _selectedPackage;
+  List<String> _preschoolLevels = ['Toddler', 'Nursery', 'Pre-Kindergarten', 'Kindergarten'];
+  // Kumon
   String kumonHeader = 'Choose Kumon';
   String kumonGradeLevel;
-  String preSchoolGradeLevel;
-  List<String> _preschoolLevels = ['Toddler', 'Nursery', 'Pre-Kindergarten', 'Kindergarten'];
-  List<String> _kumonLevels = ['Pre-Kindergarten', 'Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'];
-  String _selectedPackage;
-  List<String> kumonSelectedPackages = [];
   String kumonSelectedPackage;
-  String tutorialPackage;
-  String tutorialHeader = 'Choose Tutorial';
-  List<bool> isExpandedPanels = [true, false, false];
+  List<String> _kumonLevels = ['Pre-Kindergarten', 'Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'];
+  List<String> kumonSelectedPackages = [];
   List<bool> kumonPackages = [false, false];
+  // Tutorial
+  String tutorialHeader = 'Choose Tutorial';
   String tutorialSelectedPackage;
-  int tutorialRadioValue = -1;
   List<String> tutorialLabels = ['Half (₱1,250.00)', 'Full (₱2,500.00)'];
+  int tutorialRadioValue = -1;
 
   @override
   Widget build(BuildContext context) {
