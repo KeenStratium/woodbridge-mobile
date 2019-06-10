@@ -435,8 +435,20 @@ class _HomePageState extends State<HomePage> {
                         Flexible(
                           flex: 0,
                           child: UserAccountsDrawerHeader(
-                            accountEmail: Text('Kinder-Orchid'),
-                            accountName: Text('Keanu Kent B. Gargar'),
+                            accountEmail: Text(
+                              'Kinder - Orchid',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            accountName: Text(
+                              'Keanu Kent B. Gargar',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w800
+                              ),
+                            ),
                             currentAccountPicture: Avatar(
                               backgroundColor: Colors.indigo,
                               maxRadius: 20.0,
@@ -466,6 +478,10 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       onTap: () {
                                       },
+                                    ),
+                                    Divider(
+                                      color: Colors.grey[400],
+                                      height: 16.0,
                                     ),
                                     ListTile(
                                       leading: Icon(Icons.verified_user),
@@ -508,18 +524,26 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ],
                                 ),
-                                ListTile(
-                                  leading: Icon(Icons.exit_to_app),
-                                  title: Text(
-                                    'Logout',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black87
-                                      )
-                                  ),
-                                  onTap: () {
-                                  },
+                                Column(
+                                  children: <Widget>[
+                                    Divider(
+                                      color: Colors.grey[400],
+                                      height: 16.0,
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.exit_to_app),
+                                      title: Text(
+                                        'Logout',
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                        )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
