@@ -197,11 +197,11 @@ class _EnrollStudentState extends State<EnrollStudent> {
             onPressed: () {
               Route route = MaterialPageRoute(builder: (context) => HomePage(
                 child: Avatar(
-                  backgroundColor: Colors.cyan,
-                  maxRadius: 48.0,
-                  minRadius: 24.0,
-                  initial: 'KE',
-                  fontSize: 24.0,
+                  backgroundColor: Colors.indigo,
+                  maxRadius: 40.0,
+                  minRadius: 20.0,
+                  fontSize: 20.0,
+                  initial: "KG"
                 ),
                 firstName: 'Keanu Kent',
                 lastName: 'Gargar',
