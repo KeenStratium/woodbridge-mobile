@@ -13,12 +13,15 @@ class EnrollPackage extends StatefulWidget {
 
 class _EnrollPackageState extends State<EnrollPackage> {
   List<bool> isExpandedPanels = [true, false, false];
+  double kumonRegFee = 500.00;
+  List note = [];
   // Pre-School
   String preSchoolHeader = 'Choose Pre-School';
   String preSchoolPackageHeader = '';
   String preSchoolGradeLevel;
   String _selectedPackage;
   List<String> _preschoolLevels = ['Toddler', 'Nursery', 'Pre-Kindergarten', 'Kindergarten'];
+  int schoolPackageNum = -1;
   // Kumon
   String kumonHeader = 'Choose Kumon';
   String kumonGradeLevel;
@@ -26,14 +29,26 @@ class _EnrollPackageState extends State<EnrollPackage> {
   List<String> _kumonLevels = ['Pre-Kindergarten', 'Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'];
   List<String> kumonSelectedPackages = [];
   List<bool> kumonPackages = [false, false];
+  List<double> kumonFee = [1800.00, 1800.00];
   // Tutorial
   String tutorialHeader = 'Choose Tutorial';
   String tutorialSelectedPackage;
   List<String> tutorialLabels = ['Half (₱1,250.00)', 'Full (₱2,500.00)'];
+  List<double> tutorialFees = [1250, 2500];
   int tutorialRadioValue = -1;
 
   @override
   Widget build(BuildContext context) {
+    note = [];
+
+    note.add(schoolPackageNum);
+    kumonPackages[0] || kumonPackages[1] ? note.add(kumonRegFee) : note.addAll([0,0,0]);
+    kumonPackages[0] ? note.add(kumonFee[0]) : note.add(0);
+    kumonPackages[1] ? note.add(kumonFee[1]) : note.add(0);
+    tutorialRadioValue >= 0 ? note.add(tutorialFees[tutorialRadioValue]): note.add(0);
+
+    print(note);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -159,6 +174,7 @@ class _EnrollPackageState extends State<EnrollPackage> {
                                   onTap: () {
                                     setState(() {
                                       _selectedPackage = 'Full Paid';
+                                      schoolPackageNum = 1;
                                     });
                                   },
                                   splashColor: Theme.of(context).accentColor,
@@ -191,6 +207,7 @@ class _EnrollPackageState extends State<EnrollPackage> {
                                   onTap: () {
                                     setState(() {
                                       _selectedPackage = 'Monthly';
+                                      schoolPackageNum = 2;
                                     });
                                   },
                                   splashColor: Theme.of(context).accentColor,
@@ -241,6 +258,7 @@ class _EnrollPackageState extends State<EnrollPackage> {
                                   onTap: () {
                                     setState(() {
                                       _selectedPackage = 'Installment';
+                                      schoolPackageNum = 3;
                                     });
                                   },
                                   splashColor: Theme.of(context).accentColor,
