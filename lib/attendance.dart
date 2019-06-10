@@ -6,11 +6,8 @@ import 'model.dart';
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:date_utils/date_utils.dart';
-
-
 
 Future<Map> getPresentDaysNo(userId) async {
   String url = '$baseApi/att/get-present-days-of-student';
@@ -25,7 +22,6 @@ Future<Map> getPresentDaysNo(userId) async {
 
   return jsonDecode(response.body)[0];
 }
-
 Future<Map> getTotalSchoolDays(userId) async {
   String url = '$baseApi/att/get-total-school-days';
 
@@ -37,7 +33,6 @@ Future<Map> getTotalSchoolDays(userId) async {
 
   return jsonDecode(response.body)[0];
 }
-
 Future<Map> getAbsentDays(userId) async {
   String url = '$baseApi/att/get-absent-days-of-school?data=$userId';
 
@@ -49,7 +44,6 @@ Future<Map> getAbsentDays(userId) async {
 
   return jsonDecode(response.body)[0];
 }
-
 Future<List> getAttendanceDays(userId) async {
   String url = '$baseApi/att/get-student-attendance';
 
@@ -63,7 +57,6 @@ Future<List> getAttendanceDays(userId) async {
 
   return jsonDecode(response.body);
 }
-
 Future<List> getSchoolYearInformation() async {
   String url = '$baseApi/att/get-attendance-setting-information';
 

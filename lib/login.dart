@@ -133,7 +133,6 @@ class _LoginPageState extends State<LoginPage> {
                             getData().then((data) {
                               Route route = MaterialPageRoute(
                                   builder: (BuildContext context) {
-                                    print(data);
                                     return StudentPicker(users: data);
                                   });
                               Navigator.push(context, route);

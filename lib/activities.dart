@@ -412,15 +412,13 @@ class _ActivitiesState extends State<Activities> {
   @override
   void initState(){
     super.initState();
-    if(!isInitiated || (oldUserId != widget.userId)){
-      monthActivities = {};
-      activityNames = [];
-      setState(() {
-        transformActivityList(widget.classId);
-      });
-    }
-    oldUserId = widget.userId;
-    isInitiated = true;
+
+    monthActivities = {};
+    activityNames = [];
+
+    setState(() {
+      transformActivityList(widget.classId);
+    });
   }
 
   @override
