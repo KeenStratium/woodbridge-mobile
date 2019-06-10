@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'model.dart';
 
 import 'package:flutter/material.dart';
+import 'woodbridge-ui_components.dart';
 
 class EnrollPackage extends StatefulWidget {
   @override
@@ -15,15 +16,19 @@ class _EnrollPackageState extends State<EnrollPackage> {
   String preSchoolPackageHeader = '';
   String kumonHeader = 'Choose Kumon';
   String kumonGradeLevel;
-  String kumonPackage = '';
   String preSchoolGradeLevel;
   List<String> _preschoolLevels = ['Toddler', 'Nursery', 'Pre-Kindergarten', 'Kindergarten'];
   List<String> _kumonLevels = ['Pre-Kindergarten', 'Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'];
   String _selectedPackage;
   List<String> kumonSelectedPackages = [];
   String kumonSelectedPackage;
+  String tutorialPackage;
+  String tutorialHeader = 'Choose Tutorial';
   List<bool> isExpandedPanels = [true, false, false];
   List<bool> kumonPackages = [false, false];
+  String tutorialSelectedPackage;
+  int tutorialRadioValue = -1;
+  List<String> tutorialLabels = ['Half (₱1,250.00)', 'Full (₱2,500.00)'];
 
   @override
   Widget build(BuildContext context) {
@@ -437,20 +442,75 @@ class _EnrollPackageState extends State<EnrollPackage> {
                       isExpanded: isExpandedPanels[1]
                     ),
                     ExpansionPanel(
-                        headerBuilder: (BuildContext context, bool isExpanded){
-                          return ListTile(
-                            title: Text(
-                              'Choose Tutorial',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.grey[700],
+                      headerBuilder: (BuildContext context, bool isExpanded){
+                        return ListTile(
+                          title: Column(
+                            children: <Widget>[
+                              Container(
+                                child: tutorialSelectedPackage != null ? Text(
+                                  'Tutorial',
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey[600]
+                                  ),
+                                ) : Container(),
+                                width: double.infinity,
                               ),
-                            ),
-                          );
-                        },
-                        canTapOnHeader: true,
-                        body: Text('preschool content'),
-                        isExpanded: isExpandedPanels[2]
+                              Flex(
+                                direction: Axis.horizontal,
+                                children: <Widget>[
+                                  Text(
+                                    tutorialSelectedPackage != null ? '' : tutorialHeader,
+                                    style: TextStyle(
+                                      color: Colors.grey[700],
+                                      fontSize: 18.0
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: tutorialSelectedPackage != null ? Text(
+                                      "$tutorialSelectedPackage",
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18.0
+                                      ),
+                                      softWrap: false,
+                                      overflow: TextOverflow.fade,
+                                    ) : Container(),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      canTapOnHeader: true,
+                      body: Container(
+                        margin: EdgeInsets.symmetric(vertical: 10.0),
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: <Widget>[
+                            InputRadioButton(
+                              radioValue: tutorialRadioValue,
+                              radioValueLabels: tutorialLabels,
+                              label: 'Package',
+                              direction: 'col',
+                              onChangeCallback: (value) {
+                                setState((){
+                                  if(value == 0){
+                                    tutorialSelectedPackage = 'Half';
+                                  }else if(value == 1){
+                                    tutorialSelectedPackage = 'Full';
+                                  }
+                                  tutorialRadioValue = value;
+                                });
+                              }
+                            )
+                          ],
+                        ),
+                      ),
+                      isExpanded: isExpandedPanels[2]
                     )
                   ],
                 )

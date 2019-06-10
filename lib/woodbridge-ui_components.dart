@@ -368,6 +368,86 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
   }
 }
 
+class InputRadioButton extends StatefulWidget {
+  int radioValue;
+  final List<String> radioValueLabels;
+  final String label;
+  String direction;
+  var onChangeCallback;
+
+  InputRadioButton({
+    this.radioValue,
+    this.radioValueLabels,
+    this.label,
+    this.direction,
+    this.onChangeCallback
+  });
+
+  @override
+  _InputRadioButtonState createState() => _InputRadioButtonState();
+}
+
+class _InputRadioButtonState extends State<InputRadioButton> {
+  List<Widget> listWidgets() {
+    List<Widget> radioLabelWidgets = new List();
+
+    for(int i = 0; i < widget.radioValueLabels.length; i++){
+      final String label = widget.radioValueLabels[i];
+
+      radioLabelWidgets.add(
+        Expanded(
+          flex: widget.direction == 'row' ? 1 : 0,
+          child: RadioListTile(
+            onChanged: (value) {
+              setState(() {
+                widget.radioValue = value;
+              });
+              widget.onChangeCallback(value);
+            },
+            value: i,
+            groupValue: widget.radioValue,
+            title: Text(label),
+          ),
+        )
+      );
+    }
+
+    return radioLabelWidgets;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if(widget.direction == null){
+      widget.direction = 'row';
+    }
+    if(widget.onChangeCallback == null){
+      widget.onChangeCallback = (value) {};
+    }
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 12.0),
+            child: Text(
+              '${widget.label}: ',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16.0,
+                color: Colors.black54
+              )
+            ),
+          ),
+          Flex(
+            direction: widget.direction == 'row' ? Axis.horizontal : Axis.vertical,
+            children: listWidgets()
+          ),
+        ],
+      )
+    );
+  }
+}
+
 Future<List> _getStudentInfo(userId) async {
   String url = '$baseApi/student/get-student';
 
