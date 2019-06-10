@@ -429,36 +429,101 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   drawer: Drawer(
-                    child: ListView(
-                      // Important: Remove any padding from the ListView.
-                      padding: EdgeInsets.zero,
+                    child: Flex(
+                      direction: Axis.vertical,
                       children: <Widget>[
-                        DrawerHeader(
-                          child: Text('Profile'),
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
+                        Flexible(
+                          flex: 0,
+                          child: UserAccountsDrawerHeader(
+                            accountEmail: Text('Kinder-Orchid'),
+                            accountName: Text('Keanu Kent B. Gargar'),
+                            currentAccountPicture: Avatar(
+                              backgroundColor: Colors.indigo,
+                              maxRadius: 20.0,
+                              minRadius: 10.0,
+                              fontSize: 18.0,
+                              initial: "KG"
+                            ),
                           ),
                         ),
-                        ListTile(
-                          title: Text('Privacy Policy'),
-                          onTap: () {
-                          },
-                        ),
-                        ListTile(
-                          title: Text("Parent's Handbook Guide"),
-                          onTap: () {
-                          },
-                        ),
-                        ListTile(
-                          title: Text('About Us'),
-                          onTap: () {
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Close'),
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
+                        Flexible(
+                          flex: 1,
+                          child: Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: Icon(Icons.book),
+                                      title: Text(
+                                        "Handbook Guide",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                        )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.verified_user),
+                                      title: Text(
+                                        'Privacy Policy',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87
+                                          )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.account_balance),
+                                      title: Text(
+                                        'Legal Terms',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87
+                                          )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.error),
+                                      title: Text(
+                                        'About Us',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87
+                                          )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.exit_to_app),
+                                  title: Text(
+                                    'Logout',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87
+                                      )
+                                  ),
+                                  onTap: () {
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
