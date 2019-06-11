@@ -16,6 +16,66 @@ import 'payment.dart';
 List<String> users = <String>['S-1559282542934', 'S-1559284284622', 'S-1559286546870'];
 bool showStudentSwitcher = false;
 
+Future<Map> getPresentDaysNo(userId) async {
+  String url = '$baseApi/att/get-present-days-of-student';
+
+  var response = await http.post(url, body: json.encode({
+    'data': userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body)[0];
+}
+Future<Map> getTotalSchoolDays(userId) async {
+  String url = '$baseApi/att/get-total-school-days';
+
+  var response = await http.get(url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body)[0];
+}
+Future<Map> getAbsentDays(userId) async {
+  String url = '$baseApi/att/get-absent-days-of-school?data=$userId';
+
+  var response = await http.get(url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body)[0];
+}
+Future<List> getAttendanceDays(userId) async {
+  String url = '$baseApi/att/get-student-attendance';
+
+  var response = await http.post(url, body: json.encode({
+    "data": userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+Future<List> getSchoolYearInformation() async {
+  String url = '$baseApi/att/get-attendance-setting-information';
+
+  var response = await http.get(url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+
 class HomePage extends StatefulWidget {
   Widget child;
   String firstName;
@@ -45,6 +105,68 @@ class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String schoolYearStart = "2018";
   String schoolYearEnd = "2019";
+
+  List<DateTime> schoolDays = <DateTime>[];
+  List<DateTime> presentDays = <DateTime>[];
+  List<DateTime> noSchoolDays = <DateTime>[];
+  List<DateTime> specialSchoolDays = <DateTime>[];
+
+  DateTime yearStartDay;
+  DateTime yearEndDay;
+
+  int presentDaysNo = 0;
+  double totalSchoolDays = 0;
+  int pastSchoolDays = 0;
+  int absentDays = 0;
+
+  void getAttendanceInfo(userId) {
+    Future.wait([
+      getPresentDaysNo(userId)
+          .then((result) {
+        setState(() {
+          presentDaysNo = result['presentDays'];
+        });
+      }),
+      getTotalSchoolDays(userId)
+          .then((result) {
+        setState(() {
+          totalSchoolDays = result['totalDays'];
+        });
+      }),
+      getAbsentDays(userId)
+          .then((result) {
+        setState(() {
+          pastSchoolDays = result['totalDaysNow'];
+        });
+      }),
+      getAttendanceDays(userId)
+          .then((results) {
+        results.forEach((result) {
+          DateTime attendanceDate = DateTime.parse(result['attendance_date']);
+          DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+          presentDays.add(attendanceDay);
+        });
+      }),
+      getSchoolYearInformation()
+          .then((results) {
+        Map schoolYearInformation = results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
+        DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']);
+        DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']);
+
+        yearStartDay = DateTime(yearStart.year, yearStart.month, yearStart.day);
+        yearEndDay = DateTime(yearEnd.year, yearEnd.month, yearEnd.day);
+      })
+    ]).then((results) {
+
+    });
+  }
+
+  @override
+  void initState(){
+    super.initState();
+
+    getAttendanceInfo(widget.heroTag);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -480,9 +602,19 @@ class _HomePageState extends State<HomePage> {
                                         iconPath: 'img/Icons/icon_attendance_2x.png',
                                         label: 'Attendance',
                                         pageBuilder: Attendance(
-                                            firstName: this.widget.firstName,
-                                            lastName: this.widget.lastName,
-                                            userId: this.widget.heroTag
+                                          firstName: this.widget.firstName,
+                                          lastName: this.widget.lastName,
+                                          userId: this.widget.heroTag,
+                                          schoolDays: this.schoolDays,
+                                          presentDays: this.presentDays,
+                                          noSchoolDays: this.noSchoolDays,
+                                          specialSchoolDays: this.specialSchoolDays,
+                                          yearStartDay: this.yearStartDay,
+                                          yearEndDay: this.yearEndDay,
+                                          presentDaysNo: this.presentDaysNo,
+                                          pastSchoolDays: this.pastSchoolDays,
+                                          absentDays: this.absentDays,
+                                          totalSchoolDays: this.totalSchoolDays,
                                         ),
                                         buildContext: context,
                                       ),
@@ -634,6 +766,7 @@ class _HomePageState extends State<HomePage> {
                                           widget.classId = classId;
                                           widget.gradeLevel = gradeLevel;
                                           widget.gradeSection = gradeSection;
+                                          getAttendanceInfo(widget.heroTag);
                                         });
                                       }
                                     );
