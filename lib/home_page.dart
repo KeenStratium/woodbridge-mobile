@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'model.dart';
+
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'notifications.dart';
@@ -18,6 +23,8 @@ class HomePage extends StatefulWidget {
   String heroTag;
   String schoolLevel;
   String classId;
+  String gradeLevel;
+  String gradeSection;
 
   HomePage({
     this.child,
@@ -25,7 +32,9 @@ class HomePage extends StatefulWidget {
     this.lastName,
     this.heroTag,
     this.schoolLevel,
-    this.classId
+    this.classId,
+    this.gradeLevel,
+    this.gradeSection
   });
 
   @override
@@ -34,6 +43,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  String schoolYearStart = "2018";
+  String schoolYearEnd = "2019";
 
   @override
   Widget build(BuildContext context) {
@@ -193,10 +204,10 @@ class _HomePageState extends State<HomePage> {
                           flex: 0,
                           child: Container(
                             decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.fitWidth,
-                                    image: AssetImage('img/home_profile_head_cover.png')
-                                )
+                              image: DecorationImage(
+                                fit: BoxFit.fitWidth,
+                                image: AssetImage('img/home_profile_head_cover.png')
+                              )
                             ),
                             padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
                             child: Column(
@@ -204,16 +215,16 @@ class _HomePageState extends State<HomePage> {
                                 GestureDetector(
                                   onTap: () {
                                     Route route = MaterialPageRoute(
-                                        builder: (buildContext) => Profile(
-                                          heroTag: widget.heroTag,
-                                          firstName: this.widget.firstName,
-                                          lastName: this.widget.lastName,
-                                        ));
+                                      builder: (buildContext) => Profile(
+                                        heroTag: widget.heroTag,
+                                        firstName: this.widget.firstName,
+                                        lastName: this.widget.lastName,
+                                      ));
                                     Navigator.push(context, route);
                                   },
                                   child: Hero(
-                                      tag: this.widget.heroTag,
-                                      child: this.widget.child
+                                    tag: this.widget.heroTag,
+                                    child: this.widget.child
                                   ),
                                 ),
                                 SizedBox(
@@ -238,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             Text(
-                                              '${this.widget.lastName ?? "Gargar"}, ${this.widget.firstName ?? "Kion Kefir"}',
+                                              '${this.widget.lastName ?? ""}, ${this.widget.firstName ?? ""}',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 18.0,
@@ -262,13 +273,13 @@ class _HomePageState extends State<HomePage> {
                                     Column(
                                       children: <Widget>[
                                         Text(
-                                          'Kinder-Orchid',
+                                          '${widget.gradeLevel} - ${widget.gradeSection}',
                                           style: TextStyle(
                                               color: Colors.white
                                           ),
                                         ),
                                         Text(
-                                          'S.Y. 2018-2019',
+                                          'S.Y. $schoolYearStart-$schoolYearEnd',
                                           style: TextStyle(
                                               color: Colors.white
                                           ),
@@ -304,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                                             borderRadius: BorderRadius.all(Radius.circular(7.0))
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                          padding: EdgeInsets.symmetric(vertical: 12.0),
                                           child: Flex(
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             direction: Axis.horizontal,
@@ -607,7 +618,7 @@ class _HomePageState extends State<HomePage> {
                                     return StudentAvatarPicker(
                                       userId: '${userId}',
                                       isActive: userId == widget.heroTag,
-                                      onTap: (lname, fname, schoolLevel, classId) {
+                                      onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection) {
                                         setState(() {
                                           showStudentSwitcher = false;
                                           widget.child = Avatar(
@@ -621,6 +632,8 @@ class _HomePageState extends State<HomePage> {
                                           widget.heroTag = userId;
                                           widget.schoolLevel = schoolLevel;
                                           widget.classId = classId;
+                                          widget.gradeLevel = gradeLevel;
+                                          widget.gradeSection = gradeSection;
                                         });
                                       }
                                     );
