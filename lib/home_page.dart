@@ -103,8 +103,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  String schoolYearStart = "2018";
-  String schoolYearEnd = "2019";
+  String schoolYearStart;
+  String schoolYearEnd;
 
   List<DateTime> schoolDays = <DateTime>[];
   List<DateTime> presentDays = <DateTime>[];
@@ -122,43 +122,44 @@ class _HomePageState extends State<HomePage> {
   void getAttendanceInfo(userId) {
     Future.wait([
       getPresentDaysNo(userId)
-          .then((result) {
-        setState(() {
-          presentDaysNo = result['presentDays'];
-        });
-      }),
+        .then((result) {
+          setState(() {
+            presentDaysNo = result['presentDays'];
+          });
+        }),
       getTotalSchoolDays(userId)
-          .then((result) {
-        setState(() {
-          totalSchoolDays = result['totalDays'];
-        });
-      }),
+        .then((result) {
+          setState(() {
+            totalSchoolDays = result['totalDays'];
+          });
+        }),
       getAbsentDays(userId)
-          .then((result) {
-        setState(() {
-          pastSchoolDays = result['totalDaysNow'];
-        });
-      }),
+        .then((result) {
+          setState(() {
+            pastSchoolDays = result['totalDaysNow'];
+          });
+        }),
       getAttendanceDays(userId)
-          .then((results) {
-        results.forEach((result) {
-          DateTime attendanceDate = DateTime.parse(result['attendance_date']);
-          DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-          presentDays.add(attendanceDay);
-        });
-      }),
+        .then((results) {
+          results.forEach((result) {
+            DateTime attendanceDate = DateTime.parse(result['attendance_date']);
+            DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+            presentDays.add(attendanceDay);
+          });
+        }),
       getSchoolYearInformation()
-          .then((results) {
-        Map schoolYearInformation = results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
-        DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']);
-        DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']);
+        .then((results) {
+          Map schoolYearInformation = results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
+          DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']);
+          DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']);
 
-        yearStartDay = DateTime(yearStart.year, yearStart.month, yearStart.day);
-        yearEndDay = DateTime(yearEnd.year, yearEnd.month, yearEnd.day);
-      })
-    ]).then((results) {
+          yearStartDay = DateTime(yearStart.year, yearStart.month, yearStart.day);
+          yearEndDay = DateTime(yearEnd.year, yearEnd.month, yearEnd.day);
 
-    });
+          schoolYearStart = yearStartDay.year.toString();
+          schoolYearEnd = yearEndDay.year.toString();
+        })
+    ]);
   }
 
   @override
@@ -508,15 +509,15 @@ class _HomePageState extends State<HomePage> {
                                                             Text(
                                                               'Present',
                                                               style: TextStyle(
-                                                                  color: Colors.green,
-                                                                  fontSize: 16.0,
-                                                                  fontWeight: FontWeight.w700
+                                                                color: Colors.green,
+                                                                fontSize: 16.0,
+                                                                fontWeight: FontWeight.w700
                                                               ),
                                                             ),
                                                           ],
                                                         ),
                                                         Text(
-                                                          '136/138',
+                                                          '$presentDaysNo/${totalSchoolDays.floor()}',
                                                           style: TextStyle(
                                                               color: Colors.black38,
                                                               fontSize: 12.0,
