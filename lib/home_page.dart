@@ -675,7 +675,7 @@ class _HomePageState extends State<HomePage> {
                     title: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("img/mywoodbridge.png")
+                          image: AssetImage("img/woodbridge_logo.png")
                         )
                       ),
                     ),
