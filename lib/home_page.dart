@@ -33,6 +33,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -48,6 +50,141 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               Positioned(
                 child: Scaffold(
+                  key: _scaffoldKey,
+                  drawer: Drawer(
+                    child: Flex(
+                      direction: Axis.vertical,
+                      children: <Widget>[
+                        Flexible(
+                          flex: 0,
+                          child: UserAccountsDrawerHeader(
+                            accountEmail: Text(
+                              'Kinder - Orchid',
+                              style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            accountName: Text(
+                              'Keanu Kent B. Gargar',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w800
+                              ),
+                            ),
+                            otherAccountsPictures: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.close),
+                                color: Color.fromRGBO(255, 255, 255, .75),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                splashColor: Colors.white,
+                              )
+                            ],
+                            currentAccountPicture: Avatar(
+                                backgroundColor: Colors.indigo,
+                                maxRadius: 20.0,
+                                minRadius: 10.0,
+                                fontSize: 18.0,
+                                initial: "KG"
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: Icon(Icons.book),
+                                      title: Text(
+                                          "Handbook Guide",
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.black87
+                                          )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                    Divider(
+                                      color: Colors.grey[400],
+                                      height: 16.0,
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.verified_user),
+                                      title: Text(
+                                          'Privacy Policy',
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.black87
+                                          )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.account_balance),
+                                      title: Text(
+                                          'Legal Terms',
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.black87
+                                          )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.error),
+                                      title: Text(
+                                          'About Us',
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.black87
+                                          )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Divider(
+                                      color: Colors.grey[400],
+                                      height: 16.0,
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.exit_to_app),
+                                      title: Text(
+                                          'Logout',
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.black87
+                                          )
+                                      ),
+                                      onTap: () {
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   body: Container(
                     child: Flex(
                       direction: Axis.vertical,
@@ -56,10 +193,10 @@ class _HomePageState extends State<HomePage> {
                           flex: 0,
                           child: Container(
                             decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fitWidth,
-                                image: AssetImage('img/home_profile_head_cover.png')
-                              )
+                                image: DecorationImage(
+                                    fit: BoxFit.fitWidth,
+                                    image: AssetImage('img/home_profile_head_cover.png')
+                                )
                             ),
                             padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
                             child: Column(
@@ -67,16 +204,16 @@ class _HomePageState extends State<HomePage> {
                                 GestureDetector(
                                   onTap: () {
                                     Route route = MaterialPageRoute(
-                                      builder: (buildContext) => Profile(
-                                        heroTag: widget.heroTag,
-                                        firstName: this.widget.firstName,
-                                        lastName: this.widget.lastName,
-                                      ));
+                                        builder: (buildContext) => Profile(
+                                          heroTag: widget.heroTag,
+                                          firstName: this.widget.firstName,
+                                          lastName: this.widget.lastName,
+                                        ));
                                     Navigator.push(context, route);
                                   },
                                   child: Hero(
-                                    tag: this.widget.heroTag,
-                                    child: this.widget.child
+                                      tag: this.widget.heroTag,
+                                      child: this.widget.child
                                   ),
                                 ),
                                 SizedBox(
@@ -103,9 +240,9 @@ class _HomePageState extends State<HomePage> {
                                             Text(
                                               '${this.widget.lastName ?? "Gargar"}, ${this.widget.firstName ?? "Kion Kefir"}',
                                               style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 18.0,
-                                                color: Colors.white
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18.0,
+                                                  color: Colors.white
                                               ),
                                             ),
                                             Padding(
@@ -127,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                                         Text(
                                           'Kinder-Orchid',
                                           style: TextStyle(
-                                            color: Colors.white
+                                              color: Colors.white
                                           ),
                                         ),
                                         Text(
@@ -157,14 +294,14 @@ class _HomePageState extends State<HomePage> {
                                     padding: EdgeInsets.symmetric(vertical: 12.0),
                                     child: ConstrainedBox(
                                       constraints: BoxConstraints(
-                                        maxWidth: double.infinity,
-                                        maxHeight: 90.0
+                                          maxWidth: double.infinity,
+                                          maxHeight: 90.0
                                       ),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [BrandTheme.cardShadow],
-                                          borderRadius: BorderRadius.all(Radius.circular(7.0))
+                                            color: Colors.white,
+                                            boxShadow: [BrandTheme.cardShadow],
+                                            borderRadius: BorderRadius.all(Radius.circular(7.0))
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -182,7 +319,7 @@ class _HomePageState extends State<HomePage> {
                                                       style: TextStyle(
                                                           fontSize: 13.0,
                                                           fontWeight: FontWeight.w700,
-                                                        color: Colors.black87
+                                                          color: Colors.black87
                                                       ),
                                                     ),
                                                     Column(
@@ -190,17 +327,17 @@ class _HomePageState extends State<HomePage> {
                                                         Text(
                                                           'Sept.',
                                                           style: TextStyle(
-                                                            color: Colors.black38,
-                                                            fontSize: 12.0,
-                                                            fontWeight: FontWeight.w600
+                                                              color: Colors.black38,
+                                                              fontSize: 12.0,
+                                                              fontWeight: FontWeight.w600
                                                           ),
                                                         ),
                                                         Text(
                                                           '13',
                                                           style: TextStyle(
-                                                            color: Theme.of(context).accentColor,
-                                                            fontSize: 20.0,
-                                                            fontWeight: FontWeight.w600
+                                                              color: Theme.of(context).accentColor,
+                                                              fontSize: 20.0,
+                                                              fontWeight: FontWeight.w600
                                                           ),
                                                         ),
                                                       ],
@@ -282,9 +419,9 @@ class _HomePageState extends State<HomePage> {
                                                         Text(
                                                           'Jan',
                                                           style: TextStyle(
-                                                            color: Colors.black38,
-                                                            fontSize: 12.0,
-                                                            fontWeight: FontWeight.w600
+                                                              color: Colors.black38,
+                                                              fontSize: 12.0,
+                                                              fontWeight: FontWeight.w600
                                                           ),
                                                         ),
                                                         Text(
@@ -393,18 +530,14 @@ class _HomePageState extends State<HomePage> {
                   appBar: AppBar(
                     title: Container(
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("img/woodbridge_logo.png")
-                        )
+                          image: DecorationImage(
+                              image: AssetImage("img/woodbridge_logo.png")
+                          )
                       ),
                     ),
                     leading: IconButton(
                       onPressed: () {
-                        Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
-                          firstName: this.widget.firstName,
-                          lastName: this.widget.lastName,
-                        ));
-                        Navigator.push(context, route);
+                        _scaffoldKey.currentState.openDrawer();
                       },
                       icon: Icon(
                         Icons.menu,
@@ -428,42 +561,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                  drawer: Drawer(
-                    child: ListView(
-                      // Important: Remove any padding from the ListView.
-                      padding: EdgeInsets.zero,
-                      children: <Widget>[
-                        DrawerHeader(
-                          child: Text('Profile'),
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                          ),
-                        ),
-                        ListTile(
-                          title: Text('Privacy Policy'),
-                          onTap: () {
-                          },
-                        ),
-                        ListTile(
-                          title: Text("Parent's Handbook Guide"),
-                          onTap: () {
-                          },
-                        ),
-                        ListTile(
-                          title: Text('About Us'),
-                          onTap: () {
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Close'),
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                )
               ),
               Positioned(
                 child: showStudentSwitcher ? Container(
