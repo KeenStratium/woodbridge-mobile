@@ -366,7 +366,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {});
       });
   }
- 
+
   void sortActivityNames() {
     List<int> sortedMonthIndex = <int>[];
     List<String> sortedMonthNames = <String>[];
