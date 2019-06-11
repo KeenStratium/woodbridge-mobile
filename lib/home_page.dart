@@ -674,9 +674,9 @@ class _HomePageState extends State<HomePage> {
                   appBar: AppBar(
                     title: Container(
                       decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage("img/woodbridge_logo.png")
-                          )
+                        image: DecorationImage(
+                          image: AssetImage("img/mywoodbridge.png")
+                        )
                       ),
                     ),
                     leading: IconButton(
