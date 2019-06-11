@@ -73,9 +73,13 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             otherAccountsPictures: <Widget>[
-                              Icon(
-                                  Icons.close,
-                                  color: Color.fromRGBO(255, 255, 255, .75)
+                              IconButton(
+                                icon: Icon(Icons.close),
+                                color: Color.fromRGBO(255, 255, 255, .75),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                splashColor: Colors.white,
                               )
                             ],
                             currentAccountPicture: Avatar(
