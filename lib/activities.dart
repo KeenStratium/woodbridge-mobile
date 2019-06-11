@@ -38,7 +38,6 @@ Future<List> getStudentActivities(classId) async {
 }
 
 List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
-
   String formatMilitaryTime(time) {
     String meridiem = 'am';
     List<String> timeClockStr = time.split(':');
@@ -56,11 +55,6 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
 
     return '$hourStr:$minuteStr$meridiem';
   }
-
-  try {
-    print(activityNames[0]);
-    print(monthActivities[activityNames[0]][0].day);
-  } catch(e){}
 
   return List.generate(count, (sliverIndex) {
     sliverIndex += firstIndex;

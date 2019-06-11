@@ -198,6 +198,8 @@ class _HomePageState extends State<HomePage> {
   String attendanceStatus = '';
   String schoolYearStart;
   String schoolYearEnd;
+  String nextEventMonth;
+  String nextEventDay;
 
   List<DateTime> schoolDays = <DateTime>[];
   List<DateTime> presentDays = <DateTime>[];
@@ -302,6 +304,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void transformActivityList(classId) async {
+    monthActivities = {};
+    activityNames = [];
+
     await getStudentActivities(classId)
       .then((results) {
         DateTime currTime = DateTime.now();
@@ -361,7 +366,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {});
       });
   }
-
+ 
   void sortActivityNames() {
     List<int> sortedMonthIndex = <int>[];
     List<String> sortedMonthNames = <String>[];
@@ -387,6 +392,11 @@ class _HomePageState extends State<HomePage> {
       sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
     }
     activityNames = sortedMonthNames;
+
+    try {
+      nextEventMonth = activityNames[0];
+      nextEventDay = monthActivities[activityNames[0]][0].day;
+    } catch(e){}
   }
 
   @override
@@ -783,7 +793,7 @@ class _HomePageState extends State<HomePage> {
                                                     Column(
                                                       children: <Widget>[
                                                         Text(
-                                                          'Jan',
+                                                          nextEventMonth ?? '',
                                                           style: TextStyle(
                                                               color: Colors.black38,
                                                               fontSize: 12.0,
@@ -791,7 +801,7 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          '01',
+                                                          nextEventDay ?? '',
                                                           style: TextStyle(
                                                               color: Theme.of(context).accentColor,
                                                               fontSize: 20.0,
@@ -999,6 +1009,8 @@ class _HomePageState extends State<HomePage> {
                                           widget.classId = classId;
                                           widget.gradeLevel = gradeLevel;
                                           widget.gradeSection = gradeSection;
+                                          transformActivityList(widget.classId);
+                                          sortActivityNames();
                                           getAttendanceInfo(widget.heroTag);
                                         });
                                       }
