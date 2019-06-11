@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
-import 'enroll_student.dart';
 import 'enroll_package.dart';
 import 'home_page.dart';
 
@@ -27,7 +26,7 @@ class _StudentPickerState extends State<StudentPicker> {
       return StudentAvatarPicker(
         userId: userId,
         isActive: false,
-        onTap: (lname, fname, schoolLevel, classId) =>
+        onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection) =>
           Navigator.of(context).push(new MaterialPageRoute(
             builder: (BuildContext context) => HomePage(
               child: Avatar(
@@ -41,7 +40,9 @@ class _StudentPickerState extends State<StudentPicker> {
               lastName: lname ?? '',
               heroTag: userId,
               schoolLevel: schoolLevel,
-              classId: classId
+              classId: classId,
+              gradeLevel: gradeLevel,
+              gradeSection: gradeSection,
             ),
           )),
       );

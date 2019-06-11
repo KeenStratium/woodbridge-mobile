@@ -9,75 +9,35 @@ import 'woodbridge-ui_components.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:date_utils/date_utils.dart';
 
-Future<Map> getPresentDaysNo(userId) async {
-  String url = '$baseApi/att/get-present-days-of-student';
-
-  var response = await http.post(url, body: json.encode({
-    'data': userId
-  }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
-
-  return jsonDecode(response.body)[0];
-}
-Future<Map> getTotalSchoolDays(userId) async {
-  String url = '$baseApi/att/get-total-school-days';
-
-  var response = await http.get(url,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
-
-  return jsonDecode(response.body)[0];
-}
-Future<Map> getAbsentDays(userId) async {
-  String url = '$baseApi/att/get-absent-days-of-school?data=$userId';
-
-  var response = await http.get(url,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    });
-
-  return jsonDecode(response.body)[0];
-}
-Future<List> getAttendanceDays(userId) async {
-  String url = '$baseApi/att/get-student-attendance';
-
-  var response = await http.post(url, body: json.encode({
-      "data": userId
-    }),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    });
-
-  return jsonDecode(response.body);
-}
-Future<List> getSchoolYearInformation() async {
-  String url = '$baseApi/att/get-attendance-setting-information';
-
-  var response = await http.get(url,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    });
-
-  return jsonDecode(response.body);
-}
-
 class Attendance extends StatefulWidget {
   final String firstName;
   final String lastName;
   final String userId;
+  List<DateTime> schoolDays = <DateTime>[];
+  List<DateTime> presentDays = <DateTime>[];
+  List<DateTime> noSchoolDays = <DateTime>[];
+  List<DateTime> specialSchoolDays = <DateTime>[];
+  DateTime yearStartDay;
+  DateTime yearEndDay;
+  int presentDaysNo = 0;
+  int pastSchoolDays = 0;
+  int absentDays = 0;
+  double totalSchoolDays = 0;
 
   Attendance({
     this.firstName,
     this.lastName,
-    this.userId
+    this.userId,
+    this.schoolDays,
+    this.presentDays,
+    this.noSchoolDays,
+    this.specialSchoolDays,
+    this.yearStartDay,
+    this.yearEndDay,
+    this.presentDaysNo,
+    this.pastSchoolDays,
+    this.absentDays,
+    this.totalSchoolDays,
   });
 
   @override
@@ -94,23 +54,15 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   };
 
   DateTime _selectedDay;
+  DateTime today = DateTime.now();
   Map<DateTime, List> _events;
   Map<DateTime, List> _visibleEvents;
   Map<DateTime, List> _visibleHolidays;
   List _selectedEvents;
   AnimationController _controller;
-  List<DateTime> schoolDays = <DateTime>[];
-  List<DateTime> presentDays = <DateTime>[];
-  List<DateTime> noSchoolDays = <DateTime>[];
-  List<DateTime> specialSchoolDays = <DateTime>[];
-  DateTime yearStartDay;
-  DateTime yearEndDay;
+
   static DateTime currentDate = DateTime.now();
   DateTime currentDay = DateTime(currentDate.year, currentDate.month, currentDate.day);
-  int presentDaysNo = 0;
-  double totalSchoolDays = 0;
-  int pastSchoolDays = 0;
-  int absentDays = 0;
 
   void buildAttendanceCalendarDays(yearStartDay, today, presentDays) {
     DateTime schoolDayIndex = yearStartDay;
@@ -118,7 +70,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
     while(schoolDayIndex != today){
       if(holidayDays[schoolDayIndex] == null){
-        if(schoolDayIndex.weekday <= 5){ // TODO: Include special school days on weekends
+        if(schoolDayIndex.weekday <= 5){
           String attendanceStatus = 'ABSENT';
 
           if(presentDays.length > 0){
@@ -141,53 +93,6 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
       schoolDayIndex = schoolDayIndex.add(Duration(days: 1));
     }
-  }
-
-  void getAttendanceInfo(userId) {
-    Future.wait([
-      getPresentDaysNo(userId)
-        .then((result) {
-          setState(() {
-            presentDaysNo = result['presentDays'];
-          });
-        }),
-      getTotalSchoolDays(userId)
-        .then((result) {
-          setState(() {
-            totalSchoolDays = result['totalDays'];
-          });
-        }),
-      getAbsentDays(userId)
-        .then((result) {
-          setState(() {
-            pastSchoolDays = result['totalDaysNow'];
-          });
-        }),
-      getAttendanceDays(userId)
-        .then((results) {
-          results.forEach((result) {
-            DateTime attendanceDate = DateTime.parse(result['attendance_date']);
-            DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-            presentDays.add(attendanceDay);
-          });
-        }),
-      getSchoolYearInformation()
-        .then((results) {
-          Map schoolYearInformation = results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
-          DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']);
-          DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']);
-
-          yearStartDay = DateTime(yearStart.year, yearStart.month, yearStart.day);
-          yearEndDay = DateTime(yearEnd.year, yearEnd.month, yearEnd.day);
-        })
-    ]).then((results) {
-      DateTime today = DateTime.now();
-
-      setState(() {
-        absentDays = pastSchoolDays - presentDaysNo;
-        buildAttendanceCalendarDays(yearStartDay, DateTime(today.year, today.month, today.day), presentDays);
-      });
-    });
   }
 
   void _onDaySelected(DateTime day, List events) {
@@ -233,7 +138,11 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       _selectedEvents = [];
     }
 
-    getAttendanceInfo(widget.userId);
+    buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day), widget.presentDays);
+
+    setState(() {
+      widget.absentDays = widget.pastSchoolDays - widget.presentDaysNo;
+    });
 
     _visibleEvents = _events;
     _visibleHolidays = holidayDays;
@@ -302,7 +211,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     Text(
-                                      presentDaysNo.toString(),
+                                      widget.presentDaysNo.toString(),
                                       overflow: TextOverflow.fade,
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
@@ -334,7 +243,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     Text(
-                                      totalSchoolDays.floor().toString(),
+                                      widget.totalSchoolDays.floor().toString(),
                                       overflow: TextOverflow.fade,
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
@@ -365,7 +274,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     Text(
-                                      absentDays.toString(),
+                                      widget.absentDays.toString(),
                                       style: TextStyle(
                                           color: Theme.of(context).accentColor,
                                           fontSize: 32.0,
