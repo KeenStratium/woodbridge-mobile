@@ -47,7 +47,6 @@ Future<List> getSchoolYearInformation() async {
 }
 
 Future buildStudentPayments(userId) async {
-  List<Payment> paymentsDue = <Payment>[];
   DateTime yearStartMonth;
   DateTime yearEndMonth;
 
@@ -113,7 +112,6 @@ Future buildStudentPayments(userId) async {
 
       if(initialPayments.length > 0){
         Payment latestPayment = initialPayments[initialPayments.length - 1];
-        int paymentCounter = 0;
         latestPaymentDate = latestPayment.rawDate;
 
         if(paymentPackage == 3){

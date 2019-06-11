@@ -241,6 +241,8 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
   String lname;
   String schoolLevel; // TODO: Verify if school level is 's_grade_level' or 's_school'
   String classId;
+  String gradeLevel;
+  String gradeSection;
 
   void getStudent(userId) async {
     await _getStudentInfo(userId)
@@ -252,6 +254,8 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
           lname = student['s_lname'] ?? null;
           schoolLevel = student['s_grade_level'];
           classId = student['class_id'];
+          gradeLevel = student['s_grade_level'];
+          gradeSection = student['class_name'];
         });
       });
   }
@@ -306,7 +310,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        return widget.onTap(lname, fname, schoolLevel, classId);
+                        return widget.onTap(lname, fname, schoolLevel, classId, gradeLevel, gradeSection);
                       },
                       child: Container(
                         decoration: BoxDecoration(

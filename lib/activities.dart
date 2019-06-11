@@ -17,78 +17,6 @@ class ActivityEvent {
   ActivityEvent({this.title, this.venue, this.time, this.day, this.weekday});
 }
 
-List<ActivityEvent> june = <ActivityEvent>[
-  ActivityEvent(
-      title: 'Event title 1',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 2',
-      venue: 'Carmelite Hall',
-      time: '9:30:00',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 3',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '04',
-      weekday: 'Thu'
-  ),
-];
-
-List<ActivityEvent> july = <ActivityEvent>[
-  ActivityEvent(
-      title: 'Event title 4',
-      venue: 'Multi-purpose Gym',
-      time: '15:30:00',
-      day: '04',
-      weekday: 'Fri'
-  ),
-  ActivityEvent(
-      title: 'Event title 5',
-      venue: 'Multi-purpose Gym',
-      time: '15:30:00',
-      day: '04',
-      weekday: 'Fri'
-  ),
-  ActivityEvent(
-      title: 'Event title 6',
-      venue: 'Multi-purpose Gym',
-      time: '13:30:00',
-      day: '04',
-      weekday: 'Fri'
-  ),
-];
-
-List<ActivityEvent> august = <ActivityEvent>[
-  ActivityEvent(
-      title: 'Event title 1',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 2',
-      venue: 'Carmelite Hall',
-      time: '9:05:00',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 3',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '04',
-      weekday: 'Thu'
-  ),
-];
-
 Map monthActivities = {};
 
 bool isInitiated = false;
@@ -110,7 +38,6 @@ Future<List> getStudentActivities(classId) async {
 }
 
 List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
-
   String formatMilitaryTime(time) {
     String meridiem = 'am';
     List<String> timeClockStr = time.split(':');
@@ -319,108 +246,6 @@ class Activities extends StatefulWidget {
 }
 
 class _ActivitiesState extends State<Activities> {
-  List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-  void transformActivityList(classId) async {
-    await getStudentActivities(classId)
-      .then((results) {
-        DateTime currTime = DateTime.now();
-        DateTime currDay = DateTime(currTime.year, currTime.month, currTime.day);
-        List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-        try {
-          if(monthActivities['June'].length > 0);
-        } catch(e){
-          monthActivities['June'] = [];
-        }
-        monthActivities['June'].addAll(august);
-
-        try {
-          if(monthActivities['July'].length > 0);
-        } catch(e){
-          monthActivities['July'] = [];
-        }
-        monthActivities['July'].addAll(july);
-
-        monthActivities.forEach((month, activities) {
-          if(!activityNames.contains(month)){
-            activityNames.add(month);
-          }
-        });
-
-        for(int i = 0; i < results.length; i++){
-          Map activity = results[i];
-          DateTime date = DateTime.parse(activity['a_start_date']);
-          int monthIndex = date.month - 1;
-          String month = monthNames[monthIndex];
-
-          date = date.add(Duration(hours: 8));
-
-          if(date.isAfter(currDay) || date.isAtSameMomentAs(currDay)){
-            ActivityEvent activityEvent = ActivityEvent(
-              title: activity['a_title'],
-              venue: activity['a_location'],
-              time: activity['a_time_start'],
-              day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
-              weekday: weekdayNames[date.weekday - 1]
-            );
-
-            try {
-              if(monthActivities[month].length > 0);
-            } catch(e){
-              monthActivities[month] = [];
-            }
-            monthActivities[month].add(activityEvent);
-            if(activityNames.contains(month) == false){
-              activityNames.add(month);
-            }
-          }
-        }
-        sortActivityNames();
-
-        setState(() {});
-    });
-  }
-
-  void sortActivityNames() {
-    List<int> sortedMonthIndex = <int>[];
-    List<String> sortedMonthNames = <String>[];
-
-    for(int i = 0; i < activityNames.length; i++){
-      String month = activityNames[i];
-      int monthIndex = 0;
-      int largestMonthIndex = 0;
-
-      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
-        if(monthNames[monthIndex] == month){
-          if(monthIndex > largestMonthIndex){
-            largestMonthIndex = monthIndex;
-          }
-          break;
-        }
-      }
-      
-      sortedMonthIndex.add(monthIndex);
-      sortedMonthIndex.sort();
-    }
-    for(int i = 0; i < sortedMonthIndex.length; i++){
-      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
-    }
-    activityNames = sortedMonthNames;
-  }
-
-  @override
-  void initState(){
-    super.initState();
-
-    monthActivities = {};
-    activityNames = [];
-
-    setState(() {
-      transformActivityList(widget.classId);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
