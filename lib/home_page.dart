@@ -75,6 +75,19 @@ Future<List> getSchoolYearInformation() async {
 
   return jsonDecode(response.body);
 }
+Future<List> getStudentLatestAttendance(userId) async {
+  String url = '$baseApi/att/get-student-latest-attendance';
+
+  var response = await http.post(url, body: json.encode({
+    "data": userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 
 class HomePage extends StatefulWidget {
   Widget child;
@@ -103,6 +116,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Color attendanceStatusColor = Colors.redAccent;
+  Icon attendanceStatusIcon = Icon(
+      Icons.error_outline,
+      color: Colors.redAccent,
+    );
+
+  String attendanceStatus = '';
   String schoolYearStart;
   String schoolYearEnd;
 
@@ -114,8 +134,8 @@ class _HomePageState extends State<HomePage> {
   DateTime yearStartDay;
   DateTime yearEndDay;
 
-  int presentDaysNo = 0;
   double totalSchoolDays = 0;
+  int presentDaysNo = 0;
   int pastSchoolDays = 0;
   int absentDays = 0;
 
@@ -146,6 +166,52 @@ class _HomePageState extends State<HomePage> {
             DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
             presentDays.add(attendanceDay);
           });
+        }),
+      getStudentLatestAttendance(userId)
+        .then((results) {
+          try {
+            if(results.length > 0 || results != null){
+              Map latestAttendance = results[0];
+              DateTime attendanceDate = DateTime.parse(latestAttendance['attendance_date']).toLocal();
+              DateTime today = DateTime.now();
+              DateTime attendanceDay = DateTime.utc(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+              DateTime thisDay = DateTime.utc(today.year, today.month, today.day);
+
+              if(attendanceDay.isAtSameMomentAs(thisDay)){
+                if(latestAttendance['in'] == '1'){
+                  attendanceStatus = 'Present';
+                  attendanceStatusColor = Colors.green;
+                  attendanceStatusIcon = Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  );
+                }else if(today.isBefore(attendanceDate)){
+                  attendanceStatus = 'Soon';
+                  attendanceStatusColor = Theme.of(context).accentColor;
+                  attendanceStatusIcon = Icon(
+                    Icons.brightness_low,
+                    color: Theme.of(context).accentColor,
+                    size: 18.0,
+                  );
+                }else if(today.isAfter(attendanceDate)){
+                  attendanceStatus = 'Absent';
+                }
+              }else{
+                attendanceStatus = 'Absent';
+              }
+            }
+          } catch(e) {
+            attendanceStatus = 'Absent';
+          }
+
+          if(attendanceStatus == 'Absent'){
+            attendanceStatusColor = Colors.redAccent;
+            attendanceStatusIcon = Icon(
+              Icons.error_outline,
+              color: Colors.redAccent,
+              size: 18.0,
+            );
+          }
         }),
       getSchoolYearInformation()
         .then((results) {
@@ -402,7 +468,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Text(
-                                          'S.Y. $schoolYearStart-$schoolYearEnd',
+                                          'S.Y. ${schoolYearStart ?? ""}-${schoolYearEnd ?? ""}',
                                           style: TextStyle(
                                               color: Colors.white
                                           ),
@@ -501,17 +567,18 @@ class _HomePageState extends State<HomePage> {
                                                     Column(
                                                       children: <Widget>[
                                                         Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
                                                           children: <Widget>[
-                                                            Icon(
-                                                              Icons.check,
-                                                              color: Colors.green,
-                                                            ),
-                                                            Text(
-                                                              'Present',
-                                                              style: TextStyle(
-                                                                color: Colors.green,
-                                                                fontSize: 16.0,
-                                                                fontWeight: FontWeight.w700
+                                                            attendanceStatusIcon,
+                                                            Padding(
+                                                              padding: EdgeInsets.only(left: 4.0),
+                                                              child: Text(
+                                                                attendanceStatus,
+                                                                style: TextStyle(
+                                                                  color: attendanceStatusColor,
+                                                                  fontSize: 16.0,
+                                                                  fontWeight: FontWeight.w700
+                                                                ),
                                                               ),
                                                             ),
                                                           ],
