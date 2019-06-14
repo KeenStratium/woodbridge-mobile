@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
 //      print('Invalid credentials');
 //    }
 
-    return ['S-1559282542934', 'S-1559284284622', 'S-1559286546870'];
+    return ['S-1559712276299', 'DASD-2019-396', 'S-1559810733369'];
   }
 
   @override
@@ -143,47 +143,6 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2.0),
-                  child: Text(
-                    'or',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      fontSize: 16.0
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 14.0),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        child: Column(
-                          children: <Widget>[
-                            CtaButton(
-                              label: 'Login with Facebook',
-                              color: facebookBlue,
-                              onPressed: (() {
-                                return null;
-                              }),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0),
-                            ),
-                            CtaButton(
-                              label: 'Login with Google',
-                              color: googleRed,
-                              onPressed: (() {
-                                return null;
-                              }),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                )
               ],
             ),
           ),
