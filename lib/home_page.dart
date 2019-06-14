@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'model.dart';
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
@@ -85,7 +87,7 @@ List<ActivityEvent> august = <ActivityEvent>[
   ),
 ];
 
-List<String> users = <String>['S-1559282542934', 'S-1559284284622', 'S-1559286546870'];
+List<String> users = <String>['S-1559712276299', 'DASD-2019-396', 'S-1559810733369'];
 bool showStudentSwitcher = false;
 
 Future<Map> getPresentDaysNo(userId) async {
@@ -213,6 +215,8 @@ class _HomePageState extends State<HomePage> {
   int presentDaysNo = 0;
   int pastSchoolDays = 0;
   int absentDays = 0;
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   void getAttendanceInfo(userId) {
     Future.wait([
@@ -399,6 +403,40 @@ class _HomePageState extends State<HomePage> {
     } catch(e){}
   }
 
+  void firebaseCloudMessaging_Listeners(String classId) {
+    if (Platform.isIOS) iOS_Permission();
+
+    _firebaseMessaging.getToken().then((token){
+      print(token);
+    });
+
+    _firebaseMessaging.subscribeToTopic(classId);
+    print('subscribed to $classId');
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
+  }
+
+  void iOS_Permission() {
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true)
+    );
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings)
+    {
+      print("Settings registered: $settings");
+    });
+  }
+
   @override
   void initState(){
     super.initState();
@@ -408,6 +446,7 @@ class _HomePageState extends State<HomePage> {
 
     transformActivityList(widget.classId);
     getAttendanceInfo(widget.heroTag);
+    firebaseCloudMessaging_Listeners(widget.classId);
   }
 
   @override

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "396531341034",
+    "firebase_url": "https://woodbridge-notif.firebaseio.com",
+    "project_id": "woodbridge-notif",
+    "storage_bucket": "woodbridge-notif.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396531341034:android:48b720b89cb894cc",
+        "android_client_info": {
+          "package_name": "com.stratiumsoftware.woodbridge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "396531341034-lae0tnaviv3oeqandcsdl18hlammga4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrJUrXdKBxQ3RBxzbimF0quGqn1epYJ3k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396531341034-lae0tnaviv3oeqandcsdl18hlammga4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
