@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'student_picker.dart';
+import 'initial_onboard.dart';
 
 import 'woodbridge-ui_components.dart';
 
@@ -146,6 +147,11 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.push(context, route);
                               }else if(data['status'] == 'initial'){
                                 print('initial login');
+                                Route route = MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                      return InitialOnboard();
+                                    });
+                                Navigator.push(context, route);
                               } else{
                                 print('Please try again.');
                               }
