@@ -43,6 +43,7 @@ class _StudentPickerState extends State<StudentPicker> {
               classId: classId,
               gradeLevel: gradeLevel,
               gradeSection: gradeSection,
+              userIds: users,
             ),
           )),
       );

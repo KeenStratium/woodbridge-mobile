@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'colors.dart';
+import 'model.dart';
 
 import 'package:flutter/services.dart';
 
@@ -21,36 +22,32 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   Future<List> getData() async {
-//    http.Response response = await http.post(Uri.encodeFull('http://54.169.38.97:4200/api/account/login'),
-//      body: json.encode({
-//        'data': {
-//          'uname': _userController.text,
-//          'pass': _passwordController.text
-//        }
-//      }),
-//      headers: {
-//        'Accept': 'application/json',
-//        'Content-Type': 'application/json'
-//      });
-//
-//    var data = await json.decode(response.body);
-//
-//    try {
-//      var userData = await data[0];
-//
-//      if(userData['user_id'].runtimeType == String){
-//        print('is string');
-//        return ['S-1557211347790', 'S-1558317961029', 'S-1558418591682'];
-//      }else{
-//        print('not string');
-//        return userData['user_id'];
-//      }
-//    } catch(e) {
-//      print(e);
-//      print('Invalid credentials');
-//    }
+    http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
+      body: json.encode({
+        'data': {
+          'uname': "Garcia85757" ?? _userController.text,
+          'pass': "woodbridge" ?? _passwordController.text
+        }
+      }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
 
-    return ['S-1559712276299', 'DASD-2019-396', 'S-1559810733369'];
+    var data = await json.decode(response.body);
+
+    try {
+      var userData = await data[0];
+      List<String> userIds = <String>[];
+
+      userIds = userData["student_id"].split(',');
+      return userIds;
+    } catch(e) {
+      print(e);
+      print('Invalid credentials');
+    }
+
+    return ['invalid'];
   }
 
   @override
@@ -131,11 +128,15 @@ class _LoginPageState extends State<LoginPage> {
                           label: 'Log In',
                           onPressed: (() {
                             getData().then((data) {
-                              Route route = MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return StudentPicker(users: data);
-                                  });
-                              Navigator.push(context, route);
+                              if(data[0] != 'invalid'){
+                                Route route = MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                      return StudentPicker(users: data);
+                                    });
+                                Navigator.push(context, route);
+                              }else{
+                                print('Please try again.');
+                              }
                             });
                           }),
                         ),
