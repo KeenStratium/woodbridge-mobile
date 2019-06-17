@@ -172,6 +172,7 @@ class HomePage extends StatefulWidget {
   String classId;
   String gradeLevel;
   String gradeSection;
+  List<String> userIds;
 
   HomePage({
     this.child,
@@ -181,7 +182,8 @@ class HomePage extends StatefulWidget {
     this.schoolLevel,
     this.classId,
     this.gradeLevel,
-    this.gradeSection
+    this.gradeSection,
+    this.userIds
   });
 
   @override
@@ -473,14 +475,14 @@ class _HomePageState extends State<HomePage> {
                           flex: 0,
                           child: UserAccountsDrawerHeader(
                             accountEmail: Text(
-                              'Kinder - Orchid',
+                              '${widget.gradeLevel} - ${widget.gradeSection}',
                               style: TextStyle(
                                   fontSize: 14.0,
                                   fontWeight: FontWeight.w600
                               ),
                             ),
                             accountName: Text(
-                              'Keanu Kent B. Gargar',
+                              '${this.widget.firstName ?? ""} ${this.widget.lastName ?? ""}',
                               style: TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.w800
@@ -496,13 +498,7 @@ class _HomePageState extends State<HomePage> {
                                 splashColor: Colors.white,
                               )
                             ],
-                            currentAccountPicture: Avatar(
-                                backgroundColor: Colors.indigo,
-                                maxRadius: 20.0,
-                                minRadius: 10.0,
-                                fontSize: 18.0,
-                                initial: "KG"
-                            ),
+                            currentAccountPicture: widget.child,
                           ),
                         ),
                         Flexible(
@@ -1028,7 +1024,7 @@ class _HomePageState extends State<HomePage> {
                                   childAspectRatio: .9,
                                   crossAxisCount: 2,
                                   physics: BouncingScrollPhysics(),
-                                  children: users.map((userId) {
+                                  children: widget.userIds.map((userId) {
                                     return StudentAvatarPicker(
                                       userId: '${userId}',
                                       isActive: userId == widget.heroTag,
