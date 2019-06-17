@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  Future<List> getData() async {
+  Future<Map> getData() async {
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
       body: json.encode({
         'data': {
@@ -35,19 +35,29 @@ class _LoginPageState extends State<LoginPage> {
       });
 
     var data = await json.decode(response.body);
+    Map loginStatus = {
+      'status': 'invalid',
+      'ids': []
+    };
 
     try {
       var userData = await data[0];
       List<String> userIds = <String>[];
 
-      userIds = userData["student_id"].split(',');
-      return userIds;
+      if(_passwordController.text == 'woodbridge'){ // TODO: Refactor this along with server to have a unified source of initial password
+        userIds.add('initial');
+        loginStatus['status'] = 'initial';
+      }else{
+        loginStatus['status'] = 'auth';
+      }
+      loginStatus['ids'] = userData["student_id"].split(',');
+      return loginStatus;
     } catch(e) {
       print(e);
       print('Invalid credentials');
     }
 
-    return ['invalid'];
+    return loginStatus;
   }
 
   @override
@@ -128,13 +138,15 @@ class _LoginPageState extends State<LoginPage> {
                           label: 'Log In',
                           onPressed: (() {
                             getData().then((data) {
-                              if(data[0] != 'invalid'){
+                              if(data['status'] == 'auth'){
                                 Route route = MaterialPageRoute(
                                     builder: (BuildContext context) {
-                                      return StudentPicker(users: data);
+                                      return StudentPicker(users: data['ids']);
                                     });
                                 Navigator.push(context, route);
-                              }else{
+                              }else if(data['status'] == 'initial'){
+                                print('initial login');
+                              } else{
                                 print('Please try again.');
                               }
                             });
