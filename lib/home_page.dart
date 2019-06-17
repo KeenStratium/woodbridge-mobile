@@ -87,7 +87,7 @@ List<ActivityEvent> august = <ActivityEvent>[
   ),
 ];
 
-List<String> users = <String>['S-1559712276299', 'DASD-2019-396', 'S-1559810733369'];
+List<String> users = <String>['S-1559712276299', 'DASD-2019-396'];
 bool showStudentSwitcher = false;
 
 Future<Map> getPresentDaysNo(userId) async {
