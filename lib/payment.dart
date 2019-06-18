@@ -74,118 +74,24 @@ Future buildStudentPayments(userId) async {
       double readingFee;
       double tutorialFee;
 
-      if(results.length > 0){ // TODO: Ask what happens when a payment package is changed
-        Map initialPayment = results[0];
-        List note = initialPayment['note'].split(',');
-        List paymentSettingsList = initialPayment['pay_setting_id'].split(',');
+      payments = [];
 
-        paymentPackage = int.parse(note[0]);
-        kumonRegFee = double.parse(note[1]);
-        mathFee = double.parse(note[2]);
-        readingFee = double.parse(note[3]);
-        tutorialFee = double.parse(note[4]);
+      results.forEach((payment) {
+        String amount;
 
-        for(int i = 0; i < paymentSettingsList.length; i++){
-          String paymentSetting = paymentSettingsList[i];
-          if(paymentSetting.length > 0){
-            paymentSettings.add(paymentSetting);
-          }
-        }
+        try {
+          amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
+        } catch(e){}
 
-        isPaymentRegistered = true;
-      }
-
-      for(int i = 0; i < results.length; i++){
-        Map payment = results[i];
-        DateTime paymentDate = DateTime.parse(payment['due_date']).toLocal();
-        if(isPaymentRegistered){
-          initialPayments.add(
-            Payment(
-              label: timeFormat(payment['paid_date']),
-              amount: "₱${payment['amount_paid']}",
-              rawDate: paymentDate,
-              rawPaidDate: DateTime.parse(payment['paid_date']).toLocal()
-            )
-          );
-        }
-      }
-
-      if(initialPayments.length > 0){
-        Payment latestPayment = initialPayments[initialPayments.length - 1];
-        latestPaymentDate = latestPayment.rawDate;
-
-        if(paymentPackage == 3){
-          DateTime paymentPeriodIndex = DateTime(yearStartMonth.year, yearStartMonth.month, 1);
-          int previousPaymentMonthCntr = -1;
-          int paymentPeriodMonthCntr;
-          String amount = 'N/A';
-
-          for(int i = 0; paymentPeriodIndex.isBefore(yearEndMonth) || paymentPeriodIndex.isAtSameMomentAs(yearEndMonth); i++){
-            paymentPeriodMonthCntr = paymentPeriodIndex.month;
-            amount = 'N/A';
-
-            if(previousPaymentMonthCntr == paymentPeriodMonthCntr){
-              paymentPeriodIndex = DateTime.utc(paymentPeriodIndex.year, paymentPeriodMonthCntr + 1, 0, -8);
-            }else {
-              paymentPeriodIndex = DateTime.utc(paymentPeriodIndex.year, paymentPeriodMonthCntr, 15, -8);
-            }
-
-            if(initialPayments.length > 0){
-              if(paymentPeriodIndex.toLocal().isAtSameMomentAs(initialPayments[0].rawDate)){
-                amount = initialPayments[0].amount;
-                initialPayments.removeAt(0);
-              }
-            }
-
-            payments.add(
-              Payment(
-                label: timeFormat(paymentPeriodIndex.toLocal().toString()),
-                amount: amount,
-                rawDate: paymentPeriodIndex.toLocal(),
-              )
-            );
-
-            paymentPeriodIndex = paymentPeriodIndex.add(Duration(days: 15));
-            previousPaymentMonthCntr = paymentPeriodMonthCntr;
-          }
-        }else if (paymentPackage == 2){
-          DateTime paymentPeriodIndex = DateTime(yearStartMonth.year, yearStartMonth.month, 5);
-          String amount = 'N/A';
-
-          for(int i = 0; paymentPeriodIndex.isBefore(yearEndMonth) || paymentPeriodIndex.isAtSameMomentAs(yearEndMonth); i++){
-            amount = 'N/A';
-
-            if(initialPayments.length > 0){
-              if(paymentPeriodIndex.toLocal().isAtSameMomentAs(initialPayments[0].rawDate)){
-                amount = initialPayments[0].amount;
-                initialPayments.removeAt(0);
-              }
-            }
-
-            payments.add(
-              Payment(
-                label: timeFormat(paymentPeriodIndex.toLocal().toString()),
-                amount: amount,
-                rawDate: paymentPeriodIndex.toLocal(),
-              )
-            );
-
-            paymentPeriodIndex = paymentPeriodIndex.add(Duration(days: 31));
-            paymentPeriodIndex = DateTime.utc(paymentPeriodIndex.year, paymentPeriodIndex.month, 5, -8);
-          }
-        }else if (paymentPackage == 1){
-          initialPayments.forEach((payment){
-            payments.add(
-              Payment(
-                label: timeFormat(payment.rawPaidDate.toLocal().toString()),
-                amount: payment.amount,
-                rawDate: payment.rawDate.toLocal(),
-                rawPaidDate: payment.rawPaidDate
-              )
-            );
-          });
-        }
-      }
+        payments.add(
+          Payment(
+            label: timeFormat(DateTime.parse(payment['due_date']).toLocal().toString()),
+            amount: amount,
+            rawDate: DateTime.parse(payment['due_date']).toLocal(),
+            rawPaidDate: DateTime.parse(payment['due_date']).toLocal()
+          )
+        );
+      });
     });
 }
 
@@ -272,36 +178,36 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                           return DataTable(
                             columns: <DataColumn>[
                               DataColumn(
-                                  label: Expanded(
-                                    child: Text(
-                                      'DATE OF PAYMENT',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14.0,
-                                        color: Colors.grey[800],
-                                      ),
+                                label: Expanded(
+                                  child: Text(
+                                    'DATE OF PAYMENT',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14.0,
+                                      color: Colors.grey[800],
                                     ),
                                   ),
-                                  numeric: false,
-                                  onSort: (i, j){},
-                                  tooltip: 'data of payment'
+                                ),
+                                numeric: false,
+                                onSort: (i, j){},
+                                tooltip: 'data of payment'
                               ),
                               DataColumn(
-                                  label: Flexible(
-                                    child: Text(
-                                      'AMOUNT',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14.0,
-                                        color: Colors.grey[800],
-                                      ),
+                                label: Flexible(
+                                  child: Text(
+                                    'AMOUNT',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14.0,
+                                      color: Colors.grey[800],
                                     ),
                                   ),
-                                  numeric: false,
-                                  onSort: (i, j){},
-                                  tooltip: 'amount'
+                                ),
+                                numeric: false,
+                                onSort: (i, j){},
+                                tooltip: 'amount'
                               )
                             ],
                             rows: payments.map((payment) {
@@ -328,7 +234,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                   ),
                                   DataCell(
                                       Text(
-                                        payment.amount,
+                                        payment.amount ?? 'N/A',
                                         style: TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.w600
