@@ -173,7 +173,10 @@ class _LoginPageState extends State<LoginPage> {
                                 print('initial login');
                                 Route route = MaterialPageRoute(
                                     builder: (BuildContext context) {
-                                      return InitialOnboard(pages: guidePages);
+                                      return InitialOnboard(
+                                        pages: guidePages,
+                                        userIds: data['ids'],
+                                      );
                                     });
                                 Navigator.push(context, route);
                               } else{

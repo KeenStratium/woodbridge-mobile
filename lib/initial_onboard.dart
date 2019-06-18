@@ -14,9 +14,11 @@ class InitialOnboard extends StatefulWidget {
   int currentPage = 0;
   int prevPage = 0;
   List<Widget> pages = <Widget>[];
+  List<String> userIds = <String>[];
 
   InitialOnboard({
-    this.pages
+    this.pages,
+    this.userIds
   });
 
   @override
@@ -125,7 +127,11 @@ class _InitialOnboardState extends State<InitialOnboard> {
                     label: buttonLabel,
                     isDisabled: !_enableAgreementBtn,
                     onPressed: (){
-                      return null;
+                      Route route = MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return StudentPicker(users: widget.userIds);
+                          });
+                      Navigator.push(context, route);
                     },
                   ),
                 ],
