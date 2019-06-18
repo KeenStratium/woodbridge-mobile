@@ -16,6 +16,7 @@ import 'activities.dart';
 import 'gallery.dart';
 import 'payment.dart';
 import 'initial_onboard.dart';
+import 'login.dart';
 
 List<ActivityEvent> june = <ActivityEvent>[
   ActivityEvent(
@@ -468,6 +469,11 @@ class _HomePageState extends State<HomePage> {
 
     fetchPdf();
 
+    schoolDays = <DateTime>[];
+    presentDays = <DateTime>[];
+    noSchoolDays = <DateTime>[];
+    specialSchoolDays = <DateTime>[];
+
     transformActivityList(widget.classId);
     getAttendanceInfo(widget.heroTag);
     firebaseCloudMessaging_Listeners(widget.classId);
@@ -615,6 +621,11 @@ class _HomePageState extends State<HomePage> {
                                         )
                                       ),
                                       onTap: () {
+                                        Route route = MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return LoginPage();
+                                            });
+                                        Navigator.push(context, route);
                                       },
                                     ),
                                   ],
@@ -1075,6 +1086,12 @@ class _HomePageState extends State<HomePage> {
                                           widget.classId = classId;
                                           widget.gradeLevel = gradeLevel;
                                           widget.gradeSection = gradeSection;
+
+                                          schoolDays = <DateTime>[];
+                                          presentDays = <DateTime>[];
+                                          noSchoolDays = <DateTime>[];
+                                          specialSchoolDays = <DateTime>[];
+
                                           transformActivityList(widget.classId);
                                           sortActivityNames();
                                           getAttendanceInfo(widget.heroTag);
