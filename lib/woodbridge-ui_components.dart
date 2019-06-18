@@ -164,11 +164,13 @@ class CtaButton extends FlatButton {
   String label;
   var onPressed;
   Color color;
+  bool isDisabled = false;
 
   CtaButton({
     this.onPressed,
     this.label,
-    this.color
+    this.color,
+    this.isDisabled
   });
 
   @override
@@ -176,19 +178,19 @@ class CtaButton extends FlatButton {
     return SizedBox(
       width: double.infinity,
       child: FlatButton(
-        color: color,
+        color: isDisabled ? Colors.grey[200] : color,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(6.0))
         ),
         child: Text(
           label,
           style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.white
+            fontSize: 16.0,
+            color: isDisabled ? Colors.black54 : Colors.white
           ),
         ),
         onPressed: (() {
-          onPressed();
+          isDisabled ? null : onPressed();
         }),
         padding: EdgeInsets.symmetric(vertical: 20.0),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -200,18 +202,24 @@ class CtaButton extends FlatButton {
 class accentCtaButton extends FlatButton {
   String label;
   var onPressed;
+  bool isDisabled;
 
   accentCtaButton({
     this.onPressed,
     this.label,
+    this.isDisabled
   });
 
   @override
   Widget build(BuildContext context) {
+    if(isDisabled == null){
+      isDisabled = false;
+    }
     return CtaButton(
       label: label,
       onPressed: onPressed,
-      color: Theme.of(context).accentColor
+      color: Theme.of(context).accentColor,
+      isDisabled: isDisabled
     );
   }
 }

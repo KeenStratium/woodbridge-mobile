@@ -8,8 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'student_picker.dart';
+import 'initial_onboard.dart';
 
 import 'woodbridge-ui_components.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -20,8 +22,25 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
+  PDFDocument doc;
+  List<Widget> guidePages = <Widget>[];
 
-  Future<List> getData() async {
+  void fetchPdf() async {
+    await initLoadPdf();
+  }
+
+  Future initLoadPdf() async {
+    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
+    int maxPages = doc.count;
+
+    for(int i = 0; i < maxPages; i++){
+      guidePages.add(await doc.get(page: i+1));
+    }
+
+    return guidePages;
+  }
+
+  Future<Map> getData() async {
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
       body: json.encode({
         'data': {
@@ -35,19 +54,35 @@ class _LoginPageState extends State<LoginPage> {
       });
 
     var data = await json.decode(response.body);
+    Map loginStatus = {
+      'status': 'invalid',
+      'ids': []
+    };
 
     try {
       var userData = await data[0];
       List<String> userIds = <String>[];
 
-      userIds = userData["student_id"].split(',');
-      return userIds;
+      if(_passwordController.text == 'woodbridge'){ // TODO: Refactor this along with server to have a unified source of initial password
+        userIds.add('initial');
+        loginStatus['status'] = 'initial';
+      }else{
+        loginStatus['status'] = 'auth';
+      }
+      loginStatus['ids'] = userData["student_id"].split(',');
+      return loginStatus;
     } catch(e) {
       print(e);
       print('Invalid credentials');
     }
 
-    return ['invalid'];
+    return loginStatus;
+  }
+
+  @override initState() {
+    super.initState();
+
+    fetchPdf();
   }
 
   @override
@@ -128,13 +163,23 @@ class _LoginPageState extends State<LoginPage> {
                           label: 'Log In',
                           onPressed: (() {
                             getData().then((data) {
-                              if(data[0] != 'invalid'){
+                              if(data['status'] == 'auth'){
+                                Route route = MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return StudentPicker(users: data['ids']);
+                                  });
+                                Navigator.push(context, route);
+                              }else if(data['status'] == 'initial'){
+                                print('initial login');
                                 Route route = MaterialPageRoute(
                                     builder: (BuildContext context) {
-                                      return StudentPicker(users: data);
+                                      return InitialOnboard(
+                                        pages: guidePages,
+                                        userIds: data['ids'],
+                                      );
                                     });
                                 Navigator.push(context, route);
-                              }else{
+                              } else{
                                 print('Please try again.');
                               }
                             });
