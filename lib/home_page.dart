@@ -1014,6 +1014,7 @@ class _HomePageState extends State<HomePage> {
                           Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
                             firstName: this.widget.firstName,
                             lastName: this.widget.lastName,
+                            userId: this.widget.heroTag,
                           ));
                           Navigator.push(context, route);
                         },

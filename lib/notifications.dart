@@ -10,10 +10,12 @@ final List<Object> _notificationData = [
 class Notifications extends StatelessWidget {
   final String firstName;
   final String lastName;
+  final String userId;
 
   Notifications({
     this.firstName,
     this.lastName,
+    this.userId
   });
 
   @override
@@ -26,8 +28,9 @@ class Notifications extends StatelessWidget {
         child: Column(
           children: <Widget>[
             ProfileHeader(
-              firstName: this.firstName,
-              lastName: this.lastName,
+              firstName: firstName,
+              lastName: lastName,
+              heroTag: userId,
             ),
             Flexible(
               child: ListView(
