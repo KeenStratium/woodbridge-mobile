@@ -29,15 +29,13 @@ class _InitialOnboardState extends State<InitialOnboard> {
   bool _enableAgreementBtn = false;
   String buttonLabel = "Please read the Parent's Handbook Guide";
 
-  Future loadPdf(int pageNumber) async {
+  Widget loadPdf(int pageNumber) {
     return widget.pages[pageNumber];
   }
-
 
   @override
   Widget build(BuildContext context) {
     int maxPage = widget.pages.length;
-    print(_enableAgreementBtn);
 
     if(_enableAgreementBtn == false){
       _enableAgreementBtn = (widget.currentPage == maxPage - 1);
@@ -57,16 +55,7 @@ class _InitialOnboardState extends State<InitialOnboard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: FutureBuilder(
-                future: loadPdf(widget.currentPage),
-                builder: (BuildContext context, AsyncSnapshot snapshot){
-                  if(snapshot.connectionState == ConnectionState.done){
-                    return snapshot.data ?? Container();
-                  }else {
-                    return Center(child: Text('Loading guide...'));
-                  }
-                },
-              ),
+              child: loadPdf(widget.currentPage),
             ),
             Container(
               padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 20.0),
@@ -91,12 +80,10 @@ class _InitialOnboardState extends State<InitialOnboard> {
                                   color: widget.currentPage == 0 ? Colors.grey[400] : Colors.grey[600],
                                 ),
                                 onPressed: (){
-                                  print(widget.currentPage);
                                   widget.currentPage >= 1 ?
-                                  setState(() {
+                                  mounted ? setState(() {
                                     widget.currentPage--;
-                                    widget.prevPage = widget.currentPage;
-                                  }) : null;
+                                  }) : null : null;
                                 },
                               ),
                             ),
@@ -111,10 +98,9 @@ class _InitialOnboardState extends State<InitialOnboard> {
                                 ),
                                 onPressed: (){
                                   widget.currentPage < maxPage - 1 ?
-                                  setState(() {
+                                  mounted ? setState(() {
                                     widget.currentPage++;
-                                    widget.prevPage = widget.currentPage;
-                                  }) : null;
+                                  }) : null : null;
                                 },
                               ),
                             ),
