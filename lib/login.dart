@@ -11,6 +11,7 @@ import 'student_picker.dart';
 import 'initial_onboard.dart';
 
 import 'woodbridge-ui_components.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -21,6 +22,23 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
+  PDFDocument doc;
+  List<Widget> guidePages = <Widget>[];
+
+  void fetchPdf() async {
+    await initLoadPdf();
+  }
+
+  Future initLoadPdf() async {
+    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
+    int maxPages = doc.count;
+
+    for(int i = 0; i < maxPages; i++){
+      guidePages.add(await doc.get(page: i+1));
+    }
+
+    return guidePages;
+  }
 
   Future<Map> getData() async {
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
@@ -59,6 +77,12 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     return loginStatus;
+  }
+
+  @override initState() {
+    super.initState();
+
+    fetchPdf();
   }
 
   @override
@@ -141,15 +165,15 @@ class _LoginPageState extends State<LoginPage> {
                             getData().then((data) {
                               if(data['status'] == 'auth'){
                                 Route route = MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      return StudentPicker(users: data['ids']);
-                                    });
+                                  builder: (BuildContext context) {
+                                    return StudentPicker(users: data['ids']);
+                                  });
                                 Navigator.push(context, route);
                               }else if(data['status'] == 'initial'){
                                 print('initial login');
                                 Route route = MaterialPageRoute(
                                     builder: (BuildContext context) {
-                                      return InitialOnboard();
+                                      return InitialOnboard(pages: guidePages);
                                     });
                                 Navigator.push(context, route);
                               } else{
