@@ -15,10 +15,12 @@ class InitialOnboard extends StatefulWidget {
   int prevPage = 0;
   List<Widget> pages = <Widget>[];
   List<String> userIds = <String>[];
+  bool showAgreementCta;
 
   InitialOnboard({
     this.pages,
-    this.userIds
+    this.userIds,
+    this.showAgreementCta
   });
 
   @override
@@ -36,6 +38,8 @@ class _InitialOnboardState extends State<InitialOnboard> {
   @override
   Widget build(BuildContext context) {
     int maxPage = widget.pages.length;
+    bool nextPageEnabled = true;
+    bool prevPageEnabled = true;
 
     if(_enableAgreementBtn == false){
       _enableAgreementBtn = (widget.currentPage == maxPage - 1);
@@ -46,7 +50,7 @@ class _InitialOnboardState extends State<InitialOnboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome to myWoodbridge'),
+        title: !widget.showAgreementCta ? Text("Parent's Handbook Guide") : Text('Welcome to myWoodbridge'),
       ),
       body: Container(
         width: double.infinity,
@@ -55,7 +59,7 @@ class _InitialOnboardState extends State<InitialOnboard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: loadPdf(widget.currentPage),
+              child: mounted ? loadPdf(widget.currentPage) : Container(),
             ),
             Container(
               padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 20.0),
@@ -109,7 +113,7 @@ class _InitialOnboardState extends State<InitialOnboard> {
                       ),
                     ),
                   ),
-                  accentCtaButton(
+                  widget.showAgreementCta ? accentCtaButton(
                     label: buttonLabel,
                     isDisabled: !_enableAgreementBtn,
                     onPressed: (){
@@ -119,7 +123,7 @@ class _InitialOnboardState extends State<InitialOnboard> {
                           });
                       Navigator.push(context, route);
                     },
-                  ),
+                  ) : Container(),
                 ],
               ),
             ),

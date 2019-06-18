@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'model.dart';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
@@ -14,6 +15,7 @@ import 'attendance.dart';
 import 'activities.dart';
 import 'gallery.dart';
 import 'payment.dart';
+import 'initial_onboard.dart';
 
 List<ActivityEvent> june = <ActivityEvent>[
   ActivityEvent(
@@ -219,6 +221,24 @@ class _HomePageState extends State<HomePage> {
   int absentDays = 0;
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  PDFDocument doc;
+  List<Widget> guidePages = <Widget>[];
+
+  Future initLoadPdf() async {
+    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
+    int maxPages = doc.count;
+
+    for(int i = 0; i < maxPages; i++){
+      guidePages.add(await doc.get(page: i+1));
+    }
+
+    return guidePages;
+  }
+
+  void fetchPdf() async {
+    await initLoadPdf();
+  }
 
   void getAttendanceInfo(userId) {
     Future.wait([
@@ -446,6 +466,8 @@ class _HomePageState extends State<HomePage> {
     monthActivities = {};
     activityNames = [];
 
+    fetchPdf();
+
     transformActivityList(widget.classId);
     getAttendanceInfo(widget.heroTag);
     firebaseCloudMessaging_Listeners(widget.classId);
@@ -511,16 +533,25 @@ class _HomePageState extends State<HomePage> {
                                   children: <Widget>[
                                     ListTile(
                                       leading: Icon(Icons.book),
-                                      title: Text(
-                                          "Handbook Guide",
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black87
-                                          )
-                                      ),
-                                      onTap: () {
+                                      onTap: (){
+                                        Route route = MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return InitialOnboard(
+                                                pages: guidePages,
+                                                userIds: [],
+                                                showAgreementCta: false,
+                                              );
+                                            });
+                                        Navigator.push(context, route);
                                       },
+                                      title: Text(
+                                        "Handbook Guide",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                        )
+                                      ),
                                     ),
                                     Divider(
                                       color: Colors.grey[400],
@@ -529,12 +560,12 @@ class _HomePageState extends State<HomePage> {
                                     ListTile(
                                       leading: Icon(Icons.verified_user),
                                       title: Text(
-                                          'Privacy Policy',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black87
-                                          )
+                                        'Privacy Policy',
+                                        style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87
+                                        )
                                       ),
                                       onTap: () {
                                       },
@@ -542,12 +573,12 @@ class _HomePageState extends State<HomePage> {
                                     ListTile(
                                       leading: Icon(Icons.account_balance),
                                       title: Text(
-                                          'Legal Terms',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black87
-                                          )
+                                        'Legal Terms',
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                        )
                                       ),
                                       onTap: () {
                                       },
@@ -555,12 +586,12 @@ class _HomePageState extends State<HomePage> {
                                     ListTile(
                                       leading: Icon(Icons.error),
                                       title: Text(
-                                          'About Us',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black87
-                                          )
+                                        'About Us',
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                        )
                                       ),
                                       onTap: () {
                                       },
@@ -576,12 +607,12 @@ class _HomePageState extends State<HomePage> {
                                     ListTile(
                                       leading: Icon(Icons.exit_to_app),
                                       title: Text(
-                                          'Logout',
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black87
-                                          )
+                                        'Logout',
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                        )
                                       ),
                                       onTap: () {
                                       },
@@ -931,10 +962,10 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_handbook_2x.png',
                                         label: 'Handbook',
-                                        pageBuilder: Profile(
-                                          heroTag: widget.heroTag,
-                                          firstName: this.widget.firstName,
-                                          lastName: this.widget.lastName,
+                                        pageBuilder: InitialOnboard(
+                                          pages: guidePages,
+                                          userIds: [],
+                                          showAgreementCta: false,
                                         ),
                                         buildContext: context,
                                       ),
