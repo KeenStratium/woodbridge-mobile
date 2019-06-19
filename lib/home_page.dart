@@ -68,17 +68,10 @@ List<ActivityEvent> july = <ActivityEvent>[
 
 List<ActivityEvent> august = <ActivityEvent>[
   ActivityEvent(
-      title: 'Event title 1',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
       title: 'Event title 2',
       venue: 'Carmelite Hall',
       time: '9:05:00',
-      day: '02',
+      day: '03',
       weekday: 'Tue'
   ),
   ActivityEvent(
