@@ -8,6 +8,7 @@ import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
+import 'services.dart';
 import 'notifications.dart';
 import 'profile.dart';
 import 'grades.dart';
@@ -82,6 +83,12 @@ List<ActivityEvent> august = <ActivityEvent>[
       weekday: 'Thu'
   ),
 ];
+
+double totalBalance = 0.00;
+double totalPayments = 0.00;
+
+List<Payment> payments = <Payment>[];
+List<Payment> initialPayments = <Payment>[];
 
 List<String> users = <String>['S-1559712276299', 'DASD-2019-396'];
 bool showStudentSwitcher = false;
@@ -158,6 +165,19 @@ Future<List> getStudentLatestAttendance(userId) async {
 
   return jsonDecode(response.body);
 }
+Future<List> fetchStudentPayments(userId) async {
+  String url = '$baseApi/pay/get-student-payments';
+
+  var response = await http.post(url, body: json.encode({
+    'data': userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 
 class HomePage extends StatefulWidget {
   Widget child;
@@ -187,6 +207,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  StreamController streamController;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   Color attendanceStatusColor = Colors.redAccent;
   Icon attendanceStatusIcon = Icon(
@@ -230,10 +251,11 @@ class _HomePageState extends State<HomePage> {
     return guidePages;
   }
 
+  Map paymentData = {};
+
   void fetchPdf() async {
     await initLoadPdf();
   }
-
   void getAttendanceInfo(userId) {
     Future.wait([
       getPresentDaysNo(userId)
@@ -322,7 +344,6 @@ class _HomePageState extends State<HomePage> {
         })
     ]);
   }
-
   void transformActivityList(classId) async {
     monthActivities = {};
     activityNames = [];
@@ -386,7 +407,6 @@ class _HomePageState extends State<HomePage> {
         setState(() {});
       });
   }
-
   void sortActivityNames() {
     List<int> sortedMonthIndex = <int>[];
     List<String> sortedMonthNames = <String>[];
@@ -418,7 +438,6 @@ class _HomePageState extends State<HomePage> {
       nextEventDay = monthActivities[activityNames[0]][0].day;
     } catch(e){}
   }
-
   void firebaseCloudMessaging_Listeners(String classId) {
     if (Platform.isIOS) iOS_Permission();
 
@@ -441,7 +460,6 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
   void iOS_Permission() {
     _firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true)
@@ -453,27 +471,110 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future buildStudentPayments(userId) async {
+    DateTime yearStartMonth;
+    DateTime yearEndMonth;
+    Completer _completer = Completer();
+
+    await getSchoolYearInformation()
+      .then((results) {
+        Map schoolYearInformation = results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
+        DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']);
+        DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']);
+
+        DateTime yearStartLocal = yearStart.toLocal();
+        DateTime yearEndLocal = yearEnd.toLocal();
+
+        yearStartMonth = DateTime(yearStartLocal.year, yearStartLocal.month, 1);
+        yearEndMonth = DateTime(yearEndLocal.year, yearEndLocal.month + 1, 0, 23, 59);
+      });
+
+    await fetchStudentPayments(userId)
+        .then((results) {
+      bool isPaymentRegistered = false;
+      List paymentSettings = [];
+      DateTime latestPaymentDate;
+      int paymentPackage;
+      double kumonRegFee;
+      double mathFee;
+      double readingFee;
+      double tutorialFee;
+
+      payments = [];
+      totalBalance = 0.00;
+      totalPayments = 0.00;
+
+      results.forEach((payment) {
+        String amount;
+
+        try {
+          amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
+          if(amount == 'N/A' || amount == null){
+            totalBalance += payment['due_amount'];
+          }else {
+            if(payment['amount_paid'] != null){
+              totalPayments += payment['amount_paid'];
+            }
+          }
+        } catch(e){}
+
+        payments.add(
+          Payment(
+            label: timeFormat(DateTime.parse(payment['due_date']).toLocal().toString()),
+            amount: amount,
+            rawDate: DateTime.parse(payment['due_date']).toLocal(),
+            rawPaidDate: DateTime.parse(payment['due_date']).toLocal()
+          )
+        );
+      });
+    });
+    streamController.add({
+      'totalPayments': totalPayments,
+      'totalBalance': totalBalance,
+      'payments': payments
+    });
+    _completer.complete();
+    return _completer.future;
+  }
+
+  @override
+  void dispose() {
+    streamController.close();
+    super.dispose();
+  }
+
   @override
   void initState(){
     super.initState();
+    streamController = StreamController();
 
     monthActivities = {};
     activityNames = [];
 
     fetchPdf();
 
+    payments = [];
+    initialPayments = [];
+
     schoolDays = <DateTime>[];
     presentDays = <DateTime>[];
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
 
+    firebaseCloudMessaging_Listeners(widget.classId);
     transformActivityList(widget.classId);
     getAttendanceInfo(widget.heroTag);
-    firebaseCloudMessaging_Listeners(widget.classId);
+    buildStudentPayments(widget.heroTag);
+    streamController.stream.listen((data){
+      setState(() {
+        paymentData = data;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+
     double height = MediaQuery.of(context).size.height;
     height *= .2;
 
@@ -908,6 +1009,7 @@ class _HomePageState extends State<HomePage> {
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
                                           userId: this.widget.heroTag,
+                                          paymentData: paymentData,
                                         ),
                                         buildContext: context,
                                       ),
@@ -1089,6 +1191,7 @@ class _HomePageState extends State<HomePage> {
                                           transformActivityList(widget.classId);
                                           sortActivityNames();
                                           getAttendanceInfo(widget.heroTag);
+                                          buildStudentPayments(widget.heroTag);
                                         });
                                       }
                                     );
