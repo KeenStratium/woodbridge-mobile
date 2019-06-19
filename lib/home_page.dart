@@ -491,13 +491,20 @@ class _HomePageState extends State<HomePage> {
       totalBalance = 0.00;
       totalPayments = 0.00;
 
+      nextPaymentMonth = null;
+
       results.forEach((payment) {
         String amount;
+        DateTime dueDate = DateTime.parse(payment['due_date']).toLocal();
 
         try {
           amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
           if(amount == 'N/A' || amount == null){
             totalBalance += payment['due_amount'];
+            if(nextPaymentMonth == null){
+              nextPaymentMonth = monthNames[dueDate.month - 1];
+              nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+            }
           }else {
             if(payment['amount_paid'] != null){
               totalPayments += payment['amount_paid'];
@@ -509,11 +516,13 @@ class _HomePageState extends State<HomePage> {
           Payment(
             label: timeFormat(DateTime.parse(payment['due_date']).toLocal().toString()),
             amount: amount,
-            rawDate: DateTime.parse(payment['due_date']).toLocal(),
-            rawPaidDate: DateTime.parse(payment['due_date']).toLocal()
+            rawDate: dueDate,
+            rawPaidDate: dueDate
           )
         );
       });
+      print(nextPaymentMonth);
+      print(nextPaymentDay);
     });
     streamController.add({
       'totalPayments': totalPayments,
@@ -858,7 +867,7 @@ class _HomePageState extends State<HomePage> {
                                                     Column(
                                                       children: <Widget>[
                                                         Text(
-                                                          'Sept.',
+                                                          nextPaymentMonth ?? "",
                                                           style: TextStyle(
                                                               color: Colors.black38,
                                                               fontSize: 12.0,
@@ -866,7 +875,7 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          '13',
+                                                          nextPaymentDay ?? "",
                                                           style: TextStyle(
                                                               color: Theme.of(context).accentColor,
                                                               fontSize: 20.0,
