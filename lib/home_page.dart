@@ -221,6 +221,8 @@ class _HomePageState extends State<HomePage> {
   String schoolYearEnd;
   String nextEventMonth;
   String nextEventDay;
+  String nextPaymentMonth;
+  String nextPaymentDay;
 
   List<DateTime> schoolDays = <DateTime>[];
   List<DateTime> presentDays = <DateTime>[];
@@ -472,22 +474,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future buildStudentPayments(userId) async {
-    DateTime yearStartMonth;
-    DateTime yearEndMonth;
     Completer _completer = Completer();
-
-    await getSchoolYearInformation()
-      .then((results) {
-        Map schoolYearInformation = results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
-        DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']);
-        DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']);
-
-        DateTime yearStartLocal = yearStart.toLocal();
-        DateTime yearEndLocal = yearEnd.toLocal();
-
-        yearStartMonth = DateTime(yearStartLocal.year, yearStartLocal.month, 1);
-        yearEndMonth = DateTime(yearEndLocal.year, yearEndLocal.month + 1, 0, 23, 59);
-      });
 
     await fetchStudentPayments(userId)
         .then((results) {
