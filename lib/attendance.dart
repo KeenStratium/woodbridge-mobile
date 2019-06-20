@@ -157,224 +157,222 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Attendance'),
-        ),
-        resizeToAvoidBottomInset: false,
-        body: Flex(
-          direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Flexible(
-              flex: 0,
-              child: Column(
-                children: <Widget>[
-                  ProfileHeader(
-                    firstName: this.widget.firstName,
-                    lastName: this.widget.lastName,
-                    heroTag: this.widget.userId,
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20.0),
-                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxWidth: double.infinity,
-                          maxHeight: 90.0
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Attendance'),
+      ),
+      resizeToAvoidBottomInset: false,
+      body: Flex(
+        direction: Axis.vertical,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            flex: 0,
+            child: Column(
+              children: <Widget>[
+                ProfileHeader(
+                  firstName: this.widget.firstName,
+                  lastName: this.widget.lastName,
+                  heroTag: this.widget.userId,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxWidth: double.infinity,
+                        maxHeight: 90.0
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [BrandTheme.cardShadow],
+                          borderRadius: BorderRadius.all(Radius.circular(7.0))
                       ),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [BrandTheme.cardShadow],
-                            borderRadius: BorderRadius.all(Radius.circular(7.0))
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          child: Flex(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            direction: Axis.horizontal,
-                            children: <Widget>[
-                              Expanded(
-                                flex: 1,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Days Present',
-                                      style: TextStyle(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87
-                                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Flex(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          direction: Axis.horizontal,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'Days Present',
+                                    style: TextStyle(
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87
                                     ),
-                                    Text(
-                                      widget.presentDaysNo.toString(),
-                                      overflow: TextOverflow.fade,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 32.0,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                height: double.infinity,
-                                width: 1.0,
-                                color: Colors.black12,
-                                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'School Days',
-                                      overflow: TextOverflow.fade,
-                                      style: TextStyle(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87
-                                      ),
+                                  ),
+                                  Text(
+                                    widget.presentDaysNo.toString(),
+                                    overflow: TextOverflow.fade,
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor,
+                                        fontSize: 32.0,
+                                        fontWeight: FontWeight.w600
                                     ),
-                                    Text(
-                                      widget.totalSchoolDays.floor().toString(),
-                                      overflow: TextOverflow.fade,
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 32.0,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
-                              Container(
-                                height: double.infinity,
-                                width: 1.0,
-                                color: Colors.black12,
-                                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Days Absent',
-                                      style: TextStyle(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87
-                                      ),
+                            ),
+                            Container(
+                              height: double.infinity,
+                              width: 1.0,
+                              color: Colors.black12,
+                              margin: EdgeInsets.symmetric(horizontal: 8.0),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'School Days',
+                                    overflow: TextOverflow.fade,
+                                    style: TextStyle(
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87
                                     ),
-                                    Text(
-                                      widget.absentDays.toString(),
-                                      style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 32.0,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  ),
+                                  Text(
+                                    widget.totalSchoolDays.floor().toString(),
+                                    overflow: TextOverflow.fade,
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor,
+                                        fontSize: 32.0,
+                                        fontWeight: FontWeight.w600
+                                    ),
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            Container(
+                              height: double.infinity,
+                              width: 1.0,
+                              color: Colors.black12,
+                              margin: EdgeInsets.symmetric(horizontal: 8.0),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'Days Absent',
+                                    style: TextStyle(
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.absentDays.toString(),
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor,
+                                        fontSize: 32.0,
+                                        fontWeight: FontWeight.w600
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white
+              ),
+              child: Container(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(right: 4.0),
+                            padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                            decoration: BoxDecoration(
+                              color: Colors.green[50],
+                              border: Border.all(
+                                  color: Colors.green[50]
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(5.0))
+                            ),
+                            child: Text(
+                              'Present',
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14.0
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(right: 4.0),
+                            padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                            decoration: BoxDecoration(
+                              color:  Colors.red[300],
+                              border: Border.all(
+                                color: Colors.red[300]
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(5.0))
+                            ),
+                            child: Text(
+                              'Absent',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.0
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(right: 4.0),
+                            padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.deepPurple
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(5.0))
+                            ),
+                            child: Text(
+                              'Holiday',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14.0
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    _buildTableCalendarWithBuilders()
+                  ],
+                ),
               ),
             ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white
-                ),
-                child: Container(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(top: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(right: 4.0),
-                              padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-                              decoration: BoxDecoration(
-                                color: Colors.green[50],
-                                border: Border.all(
-                                    color: Colors.green[50]
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(5.0))
-                              ),
-                              child: Text(
-                                'Present',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14.0
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(right: 4.0),
-                              padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-                              decoration: BoxDecoration(
-                                color:  Colors.red[300],
-                                border: Border.all(
-                                  color: Colors.red[300]
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(5.0))
-                              ),
-                              child: Text(
-                                'Absent',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14.0
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(right: 4.0),
-                              padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.deepPurple
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(5.0))
-                              ),
-                              child: Text(
-                                'Holiday',
-                                style: TextStyle(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14.0
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      _buildTableCalendarWithBuilders()
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ],
-        )
-      ),
+          )
+        ],
+      )
     );
   }
 
