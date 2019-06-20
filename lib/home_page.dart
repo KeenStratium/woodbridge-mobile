@@ -90,7 +90,6 @@ double totalPayments = 0.00;
 List<Payment> payments = <Payment>[];
 List<Payment> initialPayments = <Payment>[];
 
-List<String> users = <String>['S-1559712276299', 'DASD-2019-396'];
 bool showStudentSwitcher = false;
 
 Future<Map> getPresentDaysNo(userId) async {
@@ -521,8 +520,6 @@ class _HomePageState extends State<HomePage> {
           )
         );
       });
-      print(nextPaymentMonth);
-      print(nextPaymentDay);
     });
     streamController.add({
       'totalPayments': totalPayments,

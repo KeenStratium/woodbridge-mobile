@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
       body: json.encode({
         'data': {
-          'uname': "Garcia85757" ?? _userController.text,
+          'uname': "Johnny" ?? _userController.text,
           'pass': "woodbridge" ?? _passwordController.text
         }
       }),

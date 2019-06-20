@@ -6,7 +6,7 @@ import 'home_page.dart';
 List<StudentAvatarPicker> studentAvatarPickers = <StudentAvatarPicker>[];
 
 class StudentPicker extends StatefulWidget {
- List users;
+  List users;
 
   StudentPicker({
     Key key,
@@ -43,7 +43,7 @@ class _StudentPickerState extends State<StudentPicker> {
               classId: classId,
               gradeLevel: gradeLevel,
               gradeSection: gradeSection,
-              userIds: users,
+              userIds: widget.users,
             ),
           )),
       );
