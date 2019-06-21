@@ -19,55 +19,58 @@ import 'payment.dart';
 import 'initial_onboard.dart';
 import 'login.dart';
 
-List<ActivityEvent> june = <ActivityEvent>[
-  ActivityEvent(
-      title: 'Event title 1',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 2',
-      venue: 'Carmelite Hall',
-      time: '9:30:00',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 3',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '04',
-      weekday: 'Thu'
-  ),
-];
-
 List<ActivityEvent> july = <ActivityEvent>[
   ActivityEvent(
-      title: 'Event title 4',
-      venue: 'Multi-purpose Gym',
-      time: '15:30:00',
-      day: '04',
-      weekday: 'Fri'
+      title: 'Opening of Classes',
+      venue: 'Woodbridge Academy',
+      time: '8:00:00',
+      day: '10',
+      weekday: 'Wed'
   ),
   ActivityEvent(
-      title: 'Event title 5',
-      venue: 'Multi-purpose Gym',
-      time: '15:30:00',
-      day: '04',
-      weekday: 'Fri'
+      title: "Parent's Orientation",
+      venue: 'Woodbridge Hall',
+      time: '1:30:00',
+      day: '13',
+      weekday: 'Sat'
   ),
   ActivityEvent(
-      title: 'Event title 6',
-      venue: 'Multi-purpose Gym',
-      time: '13:30:00',
-      day: '04',
-      weekday: 'Fri'
+      title: 'Slumber Day',
+      venue: 'Woodbridge Academy',
+      time: '8:00:00',
+      day: '3-6',
+      weekday: 'Tue'
   ),
 ];
 
 List<ActivityEvent> august = <ActivityEvent>[
+  ActivityEvent(
+      title: 'Start of Linggo ng Lahi',
+      venue: 'Multi-purpose Gym',
+      time: '15:30:00',
+      day: '27',
+      weekday: 'Tue'
+  ),
+];
+
+List<ActivityEvent> september = <ActivityEvent>[
+  ActivityEvent(
+      title: '1st Quarterly SATs (for N, Pre-K, & K)',
+      venue: 'Carmelite Hall',
+      time: '9:00:00',
+      day: '3-6',
+      weekday: 'Tue'
+  ),
+  ActivityEvent(
+      title: "Parent-Teacher's Meeting",
+      venue: 'Multi-purpose Gym',
+      time: '1:00:00',
+      day: '24',
+      weekday: 'Tue'
+  ),
+];
+
+List<ActivityEvent> october = <ActivityEvent>[
   ActivityEvent(
       title: 'Event title 2',
       venue: 'Carmelite Hall',
@@ -379,18 +382,32 @@ class _HomePageState extends State<HomePage> {
         List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
         try {
-          if(monthActivities['June'].length > 0);
-        } catch(e){
-          monthActivities['June'] = [];
-        }
-        monthActivities['June'].addAll(august);
-
-        try {
           if(monthActivities['July'].length > 0);
         } catch(e){
           monthActivities['July'] = [];
         }
         monthActivities['July'].addAll(july);
+
+        try {
+          if(monthActivities['August'].length > 0);
+        } catch(e){
+          monthActivities['August'] = [];
+        }
+        monthActivities['August'].addAll(august);
+
+        try {
+          if(monthActivities['September'].length > 0);
+        } catch(e){
+          monthActivities['September'] = [];
+        }
+        monthActivities['September'].addAll(september);
+
+        try {
+          if(monthActivities['October'].length > 0);
+        } catch(e){
+          monthActivities['October'] = [];
+        }
+        monthActivities['October'].addAll(october);
 
         monthActivities.forEach((month, activities) {
           if(!activityNames.contains(month)){
