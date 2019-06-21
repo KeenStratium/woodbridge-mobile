@@ -11,30 +11,30 @@ class Payment {
 List<Payment> pre_school_payments = <Payment>[
   Payment(
       label: 'TUITION FEE',
-      amount: 'P5,000'
+      amount: '₱4,300.00'
   ),
   Payment(
       label: 'ENROLLMENT FEES',
-      amount: 'P5,000'
+      amount: '₱2,650.00'
   ),
   Payment(
       label: 'OTHERS',
-      amount: 'P2,000'
+      amount: '₱0.00'
   )
 ];
 
 List<Payment> kumon_payments = <Payment>[
   Payment(
       label: 'MATH',
-      amount: 'P5,000'
+      amount: '₱1,800'
   ),
   Payment(
       label: 'READING',
-      amount: 'P5,000'
+      amount: '₱1,800'
   ),
   Payment(
       label: 'REGISTRATION FEE',
-      amount: 'P500'
+      amount: '₱500'
   )
 ];
 
