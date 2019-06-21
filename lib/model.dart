@@ -4,4 +4,5 @@ Map config = {
   'serverPort': '4200'
 };
 
-String baseApi = '${config['protocol']}://${config['serverUrl']}:${config['serverPort']}/api';
+String baseServer = '${config['protocol']}://${config['serverUrl']}:${config['serverPort']}';
+String baseApi = '$baseServer/api';

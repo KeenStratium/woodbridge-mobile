@@ -26,7 +26,7 @@ class _StudentPickerState extends State<StudentPicker> {
       return StudentAvatarPicker(
         userId: userId,
         isActive: false,
-        onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection) =>
+        onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl) =>
           Navigator.of(context).push(new MaterialPageRoute(
             builder: (BuildContext context) => HomePage(
               child: Avatar(
@@ -34,7 +34,8 @@ class _StudentPickerState extends State<StudentPicker> {
                 maxRadius: 40.0,
                 minRadius: 20.0,
                 fontSize: 20.0,
-                initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}"
+                initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}",
+                avatarUrl: avatarUrl,
               ),
               firstName: fname ?? '',
               lastName: lname ?? '',
@@ -44,6 +45,7 @@ class _StudentPickerState extends State<StudentPicker> {
               gradeLevel: gradeLevel,
               gradeSection: gradeSection,
               userIds: widget.users,
+              avatarUrl: avatarUrl,
             ),
           )),
       );
@@ -88,7 +90,7 @@ class _StudentPickerState extends State<StudentPicker> {
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
                               primary: false,
-                              childAspectRatio: .9,
+                              childAspectRatio: .8,
                               crossAxisCount: 2,
                               children: studentAvatarPickers
                             ),

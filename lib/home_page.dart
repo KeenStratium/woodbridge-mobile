@@ -187,6 +187,7 @@ class HomePage extends StatefulWidget {
   String classId;
   String gradeLevel;
   String gradeSection;
+  String avatarUrl;
   List<String> userIds;
 
   HomePage({
@@ -198,7 +199,8 @@ class HomePage extends StatefulWidget {
     this.classId,
     this.gradeLevel,
     this.gradeSection,
-    this.userIds
+    this.userIds,
+    this.avatarUrl
   });
 
   @override
@@ -558,6 +560,9 @@ class _HomePageState extends State<HomePage> {
     transformActivityList(widget.classId);
     getAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
+
+    setAvatarUrl(widget.avatarUrl);
+
     streamController.stream.listen((data){
       setState(() {
         paymentData = data;
@@ -1033,7 +1038,7 @@ class _HomePageState extends State<HomePage> {
                                             userId: widget.heroTag,
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
-                                            schoolLevel: this.widget.schoolLevel
+                                            schoolLevel: this.widget.schoolLevel,
                                         ),
                                         buildContext: context,
                                       ),
@@ -1159,15 +1164,17 @@ class _HomePageState extends State<HomePage> {
                                     return StudentAvatarPicker(
                                       userId: '${userId}',
                                       isActive: userId == widget.heroTag,
-                                      onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection) {
+                                      onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl) {
                                         setState(() {
                                           showStudentSwitcher = false;
                                           widget.child = Avatar(
                                             backgroundColor: Colors.indigo,
-                                            maxRadius: 40.0,
+                                            maxRadius: 41.0,
                                             fontSize: 20.0,
-                                            initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}"
+                                            initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}",
+                                            avatarUrl: avatarUrl,
                                           );
+                                          widget.avatarUrl = avatarUrl;
                                           widget.firstName = fname ?? '';
                                           widget.lastName = lname ?? '';
                                           widget.heroTag = userId;
@@ -1185,6 +1192,8 @@ class _HomePageState extends State<HomePage> {
                                           sortActivityNames();
                                           getAttendanceInfo(widget.heroTag);
                                           buildStudentPayments(widget.heroTag);
+
+                                          setAvatarUrl(avatarUrl);
                                         });
                                       }
                                     );

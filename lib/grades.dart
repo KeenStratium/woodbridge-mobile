@@ -77,7 +77,7 @@ class Grades extends StatefulWidget {
     this.firstName,
     this.lastName,
     this.userId,
-    this.schoolLevel
+    this.schoolLevel,
   });
 
   @override

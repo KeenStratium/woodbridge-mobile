@@ -5,6 +5,16 @@ import 'model.dart';
 
 import 'package:flutter/material.dart';
 
+String _avatarUrl;
+
+void setAvatarUrl(url) {
+  _avatarUrl = url;
+}
+
+String getAvatarUrl() {
+  return _avatarUrl;
+}
+
 class BrandTheme {
   static final BoxShadow cardShadow = BoxShadow(
     color: Color.fromRGBO(0, 0, 0, .25),
@@ -19,7 +29,9 @@ class Avatar extends StatelessWidget {
   final double maxRadius;
   final String initial;
   final double fontSize;
+  final String avatarUrl;
   bool enableShadow;
+  bool hasPhoto = false;
   double minRadius = null;
 
   Avatar({
@@ -28,7 +40,8 @@ class Avatar extends StatelessWidget {
     this.initial,
     this.fontSize,
     this.minRadius,
-    this.enableShadow
+    this.enableShadow,
+    this.avatarUrl
   });
 
   @override
@@ -36,6 +49,10 @@ class Avatar extends StatelessWidget {
     if(enableShadow == null){
       enableShadow = true;
     }
+    if(avatarUrl != null){
+      hasPhoto = true;
+    }
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(100.0)),
@@ -46,7 +63,7 @@ class Avatar extends StatelessWidget {
           spreadRadius: -1.0
         )] : [],
       ),
-      child: CircleAvatar(
+      child: !hasPhoto ? CircleAvatar(
         child: Text(
           this.initial ?? '',
           style: TextStyle(
@@ -57,6 +74,12 @@ class Avatar extends StatelessWidget {
         foregroundColor: Colors.white,
         maxRadius: this.maxRadius,
         minRadius: this.minRadius,
+      ) : CircleAvatar(
+        child: Container(),
+        backgroundColor: Colors.white,
+        maxRadius: this.maxRadius,
+        minRadius: this.minRadius,
+        backgroundImage: NetworkImage(avatarUrl),
       ),
     );
   }
@@ -71,7 +94,7 @@ class ProfileHeader extends StatelessWidget {
     Key key,
     this.firstName,
     this.lastName,
-    this.heroTag
+    this.heroTag,
   }) : super(key: key);
 
   @override
@@ -88,8 +111,10 @@ class ProfileHeader extends StatelessWidget {
             children: <Widget>[
               Hero(
                 tag: heroTag,
-                child: CircleAvatar(
-                  backgroundColor: Colors.indigo,
+                child: Avatar(
+                  enableShadow: false,
+                  avatarUrl: _avatarUrl,
+                  maxRadius: 20.0,
                 ),
               ),
               SizedBox(
@@ -251,6 +276,8 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
   String classId;
   String gradeLevel;
   String gradeSection;
+  String avatarUrlExt;
+  String avatarUrl;
 
   void getStudent(userId) async {
     await _getStudentInfo(userId)
@@ -264,6 +291,10 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
           classId = student['class_id'];
           gradeLevel = student['s_grade_level'];
           gradeSection = student['class_name'];
+          avatarUrlExt = student['s_img'];
+          if(avatarUrlExt != null){
+            avatarUrl = '$baseServer/$avatarUrlExt';
+          }
         });
       });
   }
@@ -296,7 +327,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
     return GestureDetector(
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 7.0, vertical: 7.0),
-        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 6.0),
+        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
         decoration: BoxDecoration(
             color: widget.isActive ? Theme.of(context).accentColor : Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(7.0)),
@@ -304,10 +335,9 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
         ),
         child: Flex(
           direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Flexible(
-              fit: FlexFit.loose,
               flex: 4,
               child: Hero(
                 tag: widget.heroTag ?? widget.userId,
@@ -318,7 +348,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        return widget.onTap(lname, fname, schoolLevel, classId, gradeLevel, gradeSection);
+                        return widget.onTap(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -335,10 +365,11 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                             Center(
                               child: Avatar(
                                 backgroundColor: Colors.indigo,
-                                maxRadius: widget.isActive ? 41.0 : 48.0,
+                                maxRadius: 41.0,
                                 fontSize: 24.0,
                                 initial: "$fInitial$lInitial",
                                 enableShadow: widget.enableShadow,
+                                avatarUrl: avatarUrl,
                               ),
                             ),
                           ],
@@ -353,7 +384,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
               fit: FlexFit.tight,
               flex: 0,
               child: SizedBox(
-                height: 8.0,
+                height: 2.0,
               ),
             ),
             Flexible(
