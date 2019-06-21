@@ -63,9 +63,9 @@ flutter:
     - img/Icons/icon_payments_2x.png
     - img/Icons/icon_activities_2x.png
     - img/Icons/icon_attendance_2x.png
-    - img/Icons/icon_handbook_2x.png
-    - img/Icons/icon_grades.png
-    - img/Icons/icon_gallery.png
+    - img/Icons/icon_grades_2x.png
+    - img/Icons/icon_gallery_2x.png
+    - img/Icons/icon_announcements_2x.png
     - img/home_profile_head_cover.png
     - img/ui_avatar.png
     - img/mywoodbridge.png
