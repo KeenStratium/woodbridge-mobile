@@ -6,6 +6,7 @@ import 'model.dart';
 import 'package:flutter/material.dart';
 
 String _avatarUrl;
+List<String> _topics;
 
 void setAvatarUrl(url) {
   _avatarUrl = url;
@@ -13,6 +14,14 @@ void setAvatarUrl(url) {
 
 String getAvatarUrl() {
   return _avatarUrl;
+}
+
+void setTopics(List<String> topics) {
+  _topics = topics;
+}
+
+List<String> getTopics(){
+  return _topics;
 }
 
 class BrandTheme {
@@ -105,7 +114,7 @@ class ProfileHeader extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white
           ),
-          padding: EdgeInsets.symmetric(vertical: 16.0),
+          padding: EdgeInsets.symmetric(vertical: 10.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[

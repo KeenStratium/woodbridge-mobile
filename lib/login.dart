@@ -92,7 +92,6 @@ class _LoginPageState extends State<LoginPage> {
         return false;
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -144,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                                   controller: _userController,
                                   decoration: InputDecoration(
                                     filled: false,
-                                    labelText: 'Email/Username',
+                                    labelText: 'Username',
                                   ),
                                 ),
                               ),

@@ -597,15 +597,15 @@ class _HomePageState extends State<HomePage> {
                             accountEmail: Text(
                               '${widget.gradeLevel} - ${widget.gradeSection}',
                               style: TextStyle(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w600
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600
                               ),
                             ),
                             accountName: Text(
                               '${this.widget.firstName ?? ""} ${this.widget.lastName ?? ""}',
                               style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w800
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w800
                               ),
                             ),
                             otherAccountsPictures: <Widget>[
