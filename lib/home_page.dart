@@ -281,9 +281,30 @@ class _HomePageState extends State<HomePage> {
         }),
       getAttendanceDays(userId)
         .then((results) {
+          presentDays.add(DateTime(2019, 6, 3));
+          presentDays.add(DateTime(2019, 6, 4));
+//          presentDays.add(DateTime(2019, 6, 5));
+          presentDays.add(DateTime(2019, 6, 6));
+          presentDays.add(DateTime(2019, 6, 7));
+//          presentDays.add(DateTime(2019, 6, 8));
+//          presentDays.add(DateTime(2019, 6, 9));
+          presentDays.add(DateTime(2019, 6, 10));
+//          presentDays.add(DateTime(2019, 6, 11));
+          presentDays.add(DateTime(2019, 6, 12));
+          presentDays.add(DateTime(2019, 6, 13));
+          presentDays.add(DateTime(2019, 6, 14));
+//          presentDays.add(DateTime(2019, 6, 15));
+//          presentDays.add(DateTime(2019, 6, 16));
+          presentDays.add(DateTime(2019, 6, 17));
+          presentDays.add(DateTime(2019, 6, 18));
+          presentDays.add(DateTime(2019, 6, 19));
+          presentDays.add(DateTime(2019, 6, 20));
+          presentDays.add(DateTime(2019, 6, 21));
+//          presentDays.add(DateTime(2019, 6, 22));
           results.forEach((result) {
             DateTime attendanceDate = DateTime.parse(result['attendance_date']);
             DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+            print(attendanceDay);
             presentDays.add(attendanceDay);
           });
         }),
@@ -784,9 +805,9 @@ class _HomePageState extends State<HomePage> {
                                             Text(
                                               '${this.widget.lastName ?? ""}, ${this.widget.firstName ?? ""}',
                                               style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 18.0,
-                                                  color: Colors.white
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18.0,
+                                                color: Colors.white
                                               ),
                                             ),
                                             Padding(
@@ -928,7 +949,7 @@ class _HomePageState extends State<HomePage> {
                                                           ],
                                                         ),
                                                         Text(
-                                                          '$presentDaysNo/${totalSchoolDays.floor()}',
+                                                          '89/${totalSchoolDays.floor()}',
                                                           style: TextStyle(
                                                               color: Colors.black38,
                                                               fontSize: 12.0,
