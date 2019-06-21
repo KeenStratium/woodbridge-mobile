@@ -26,15 +26,15 @@ List<Payment> pre_school_payments = <Payment>[
 List<Payment> kumon_payments = <Payment>[
   Payment(
       label: 'MATH',
-      amount: '₱1,800'
+      amount: '₱1,800.00'
   ),
   Payment(
       label: 'READING',
-      amount: '₱1,800'
+      amount: '₱1,800.00'
   ),
   Payment(
       label: 'REGISTRATION FEE',
-      amount: '₱500'
+      amount: '₱500.00'
   )
 ];
 
@@ -281,7 +281,7 @@ class PaymentDetails extends StatelessWidget {
                           ),
                           Flexible(
                             child: Text(
-                              'P5,000.00',
+                              '₱11,050.00',
                               style: TextStyle(
                                 color: Theme.of(context).accentColor,
                                 fontSize: 24.0,

@@ -210,7 +210,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Text(
-                                    widget.presentDaysNo.toString(),
+                                    '89',
                                     overflow: TextOverflow.fade,
                                     style: TextStyle(
                                         color: Theme.of(context).accentColor,
@@ -273,7 +273,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Text(
-                                    widget.absentDays.toString(),
+                                    '3',
                                     style: TextStyle(
                                         color: Theme.of(context).accentColor,
                                         fontSize: 32.0,

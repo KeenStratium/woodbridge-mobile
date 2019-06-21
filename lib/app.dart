@@ -29,6 +29,7 @@ class WoodbridgeApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Woodbridge',
+      debugShowCheckedModeBanner: false,
       home: LoginPage(),
       initialRoute: '/login',
       onGenerateRoute: _getRoute,
