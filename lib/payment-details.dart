@@ -148,7 +148,7 @@ class PaymentDetails extends StatelessWidget {
                                 DashboardTile(
                                   label: 'MONTH',
                                   displayPlainValue: true,
-                                  value: 'January',
+                                  value: 'July',
                                 ),
                               ],
                             ),
