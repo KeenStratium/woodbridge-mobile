@@ -1032,7 +1032,7 @@ class _HomePageState extends State<HomePage> {
                                         buildContext: context,
                                       ),
                                       MenuItem(
-                                        iconPath: 'img/Icons/icon_grades.png',
+                                        iconPath: 'img/Icons/icon_grades_2x.png',
                                         label: 'Progress',
                                         pageBuilder: Grades(
                                             userId: widget.heroTag,
@@ -1054,7 +1054,7 @@ class _HomePageState extends State<HomePage> {
                                         buildContext: context,
                                       ),
                                       MenuItem(
-                                        iconPath: 'img/Icons/icon_gallery.png',
+                                        iconPath: 'img/Icons/icon_gallery_2x.png',
                                         label: 'Photos',
                                         pageBuilder: ActivityGallery(
                                           firstName: this.widget.firstName,
@@ -1064,8 +1064,8 @@ class _HomePageState extends State<HomePage> {
                                         buildContext: context,
                                       ),
                                       MenuItem(
-                                        iconPath: 'img/Icons/icon_handbook_2x.png',
-                                        label: 'Handbook',
+                                        iconPath: 'img/Icons/icon_announcements_2x.png',
+                                        label: 'Messages',
                                         pageBuilder: InitialOnboard(
                                           pages: guidePages,
                                           userIds: [],
