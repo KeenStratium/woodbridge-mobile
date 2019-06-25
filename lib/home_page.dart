@@ -178,7 +178,7 @@ Future<List> fetchStudentPayments(userId) async {
 
   return jsonDecode(response.body);
 }
-Future addNotificationToken(token, type) async {
+Future addNotificationToken(token) async {
   String url = '$baseApi/account/notif-token-add';
 
   var response = await http.post(url, body: json.encode({
@@ -479,9 +479,9 @@ class _HomePageState extends State<HomePage> {
   void firebaseCloudMessaging_Listeners(String classId) {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
-
     _firebaseMessaging.getToken().then((token){
-      addNotificationToken(token, 'device_token');
+      addNotificationToken(token);
+      addNotificationTopic('all', token, "");
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
         print(topic);
