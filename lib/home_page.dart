@@ -5,6 +5,7 @@ import 'model.dart';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
@@ -177,6 +178,39 @@ Future<List> fetchStudentPayments(userId) async {
 
   return jsonDecode(response.body);
 }
+Future addNotificationToken(token, type) async {
+  String url = '$baseApi/account/notif-token-add';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'uname': getUsername(),
+      'token': token,
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+Future addNotificationTopic(topic, token, s_id) async {
+  String url = '$baseApi/account/add-notif-topic';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'topic': topic,
+      'token': token,
+      's_id': s_id
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 
 class HomePage extends StatefulWidget {
   Widget child;
@@ -209,6 +243,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   StreamController streamController;
+  WidgetsBindingObserver _widgetsBindingObserver;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   Color attendanceStatusColor = Colors.redAccent;
   Icon attendanceStatusIcon = Icon(
@@ -442,14 +477,28 @@ class _HomePageState extends State<HomePage> {
     } catch(e){}
   }
   void firebaseCloudMessaging_Listeners(String classId) {
+    List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
 
     _firebaseMessaging.getToken().then((token){
       print(token);
+      addNotificationToken(token, 'device_token');
+      for(int i = 0; i < topics.length; i++){
+        Map topic = topics[i];
+        print(topic);
+        if(topic['topic'] != null){
+          addNotificationTopic(topic['topic'], token, topic['s_id'])
+            .then((result) {
+              if(result['code'] == 1){
+                _firebaseMessaging.subscribeToTopic(topic['topic']);
+                print('subscribed to ${topic['topic']}');
+              }else if(result['code'] == 2){
+                print('${topic['topic']} already subscribed.');
+              }
+            });
+        }
+      }
     });
-
-    _firebaseMessaging.subscribeToTopic(classId);
-    print('subscribed to $classId');
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -478,50 +527,50 @@ class _HomePageState extends State<HomePage> {
     Completer _completer = Completer();
 
     await fetchStudentPayments(userId)
-        .then((results) {
-      bool isPaymentRegistered = false;
-      List paymentSettings = [];
-      DateTime latestPaymentDate;
-      int paymentPackage;
-      double kumonRegFee;
-      double mathFee;
-      double readingFee;
-      double tutorialFee;
+      .then((results) {
+        bool isPaymentRegistered = false;
+        List paymentSettings = [];
+        DateTime latestPaymentDate;
+        int paymentPackage;
+        double kumonRegFee;
+        double mathFee;
+        double readingFee;
+        double tutorialFee;
 
-      payments = [];
-      totalBalance = 0.00;
-      totalPayments = 0.00;
+        payments = [];
+        totalBalance = 0.00;
+        totalPayments = 0.00;
 
-      nextPaymentMonth = null;
+        nextPaymentMonth = null;
 
-      results.forEach((payment) {
-        String amount;
-        DateTime dueDate = DateTime.parse(payment['due_date']).toLocal();
+        results.forEach((payment) {
+          String amount;
+          DateTime dueDate = DateTime.parse(payment['due_date']).toLocal();
 
-        try {
-          amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
-          if(amount == 'N/A' || amount == null){
-            totalBalance += payment['due_amount'];
-            if(nextPaymentMonth == null){
-              nextPaymentMonth = monthNames[dueDate.month - 1];
-              nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+          try {
+            amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
+            if(amount == 'N/A' || amount == null){
+              totalBalance += payment['due_amount'];
+              if(nextPaymentMonth == null){
+                nextPaymentMonth = monthNames[dueDate.month - 1];
+                nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+              }
+            }else {
+              if(payment['amount_paid'] != null){
+                totalPayments += payment['amount_paid'];
+              }
             }
-          }else {
-            if(payment['amount_paid'] != null){
-              totalPayments += payment['amount_paid'];
-            }
-          }
-        } catch(e){}
+          } catch(e){}
 
-        payments.add(
-          Payment(
-            label: timeFormat(DateTime.parse(payment['due_date']).toLocal().toString()),
-            amount: amount,
-            rawDate: dueDate,
-            rawPaidDate: dueDate
-          )
-        );
-      });
+          payments.add(
+            Payment(
+              label: timeFormat(DateTime.parse(payment['due_date']).toLocal().toString()),
+              amount: amount,
+              rawDate: dueDate,
+              rawPaidDate: dueDate
+            )
+          );
+        });
     });
     streamController.add({
       'totalPayments': totalPayments,
@@ -568,11 +617,14 @@ class _HomePageState extends State<HomePage> {
         paymentData = data;
       });
     });
+
+    SystemChannels.lifecycle.setMessageHandler((msg){
+      debugPrint('SystemChannels> $msg');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
     double height = MediaQuery.of(context).size.height;
     height *= .2;
 

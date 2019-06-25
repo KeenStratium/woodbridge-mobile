@@ -69,6 +69,8 @@ class _LoginPageState extends State<LoginPage> {
       }else{
         loginStatus['status'] = 'auth';
       }
+      
+      setUsername('Johnny');
       loginStatus['ids'] = userData["student_id"].split(',');
       return loginStatus;
     } catch(e) {

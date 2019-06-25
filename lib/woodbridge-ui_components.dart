@@ -6,7 +6,8 @@ import 'model.dart';
 import 'package:flutter/material.dart';
 
 String _avatarUrl;
-List<String> _topics;
+String _username;
+List<Map> _topics = <Map>[];
 
 void setAvatarUrl(url) {
   _avatarUrl = url;
@@ -16,12 +17,29 @@ String getAvatarUrl() {
   return _avatarUrl;
 }
 
-void setTopics(List<String> topics) {
-  _topics = topics;
+void clearTopics(){
+  _topics = <Map>[];
 }
 
-List<String> getTopics(){
+void addTopic(String topic, String id) {
+  _topics.add({
+    's_id': id,
+    'topic': topic
+  });
+  _topics = _topics.toSet().toList();
+  print(_topics);
+}
+
+List<Map> getTopics(){
   return _topics;
+}
+
+void setUsername(String username){
+  _username = username;
+}
+
+String getUsername(){
+  return _username;
 }
 
 class BrandTheme {
@@ -305,6 +323,8 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
             avatarUrl = '$baseServer/$avatarUrlExt';
           }
         });
+
+        addTopic(classId, student['s_id']);
       });
   }
 
