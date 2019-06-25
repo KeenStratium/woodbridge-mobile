@@ -22,6 +22,8 @@ class _StudentPickerState extends State<StudentPicker> {
   Widget build(BuildContext context) {
     studentAvatarPickers = <StudentAvatarPicker>[];
 
+    clearTopics();
+
     studentAvatarPickers.addAll(widget.users.map((userId) {
       return StudentAvatarPicker(
         userId: userId,

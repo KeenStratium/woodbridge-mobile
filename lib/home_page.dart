@@ -481,7 +481,6 @@ class _HomePageState extends State<HomePage> {
     if (Platform.isIOS) iOS_Permission();
 
     _firebaseMessaging.getToken().then((token){
-      print(token);
       addNotificationToken(token, 'device_token');
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
@@ -596,6 +595,7 @@ class _HomePageState extends State<HomePage> {
     activityNames = [];
 
     fetchPdf();
+    clearTopics();
 
     payments = [];
     initialPayments = [];
@@ -1239,6 +1239,8 @@ class _HomePageState extends State<HomePage> {
                                           presentDays = <DateTime>[];
                                           noSchoolDays = <DateTime>[];
                                           specialSchoolDays = <DateTime>[];
+
+                                          clearTopics();
 
                                           transformActivityList(widget.classId);
                                           sortActivityNames();
