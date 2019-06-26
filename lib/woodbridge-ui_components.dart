@@ -27,7 +27,6 @@ void addTopic(String topic, String id) {
     'topic': topic
   });
   _topics = _topics.toSet().toList();
-  print(_topics);
 }
 
 List<Map> getTopics(){
@@ -325,7 +324,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
         });
 
         addTopic(classId, student['s_id']);
-      });
+    });
   }
 
   @override

@@ -178,13 +178,15 @@ Future<List> fetchStudentPayments(userId) async {
 
   return jsonDecode(response.body);
 }
-Future addNotificationToken(token) async {
+Future addNotificationToken(token, topic, studentId) async {
   String url = '$baseApi/account/notif-token-add';
 
   var response = await http.post(url, body: json.encode({
     'data': {
       'uname': getUsername(),
       'token': token,
+      'topic': topic,
+      's_id': studentId
     }
   }),
       headers: {
@@ -480,13 +482,11 @@ class _HomePageState extends State<HomePage> {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
     _firebaseMessaging.getToken().then((token){
-      addNotificationToken(token);
-      addNotificationTopic('all', token, "");
+      addNotificationToken(token, 'all', '');
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
-        print(topic);
         if(topic['topic'] != null){
-          addNotificationTopic(topic['topic'], token, topic['s_id'])
+          addNotificationToken(token, topic['topic'],  topic['s_id'])
             .then((result) {
               if(result['code'] == 1){
                 _firebaseMessaging.subscribeToTopic(topic['topic']);
@@ -595,7 +595,6 @@ class _HomePageState extends State<HomePage> {
     activityNames = [];
 
     fetchPdf();
-    clearTopics();
 
     payments = [];
     initialPayments = [];
@@ -1213,6 +1212,7 @@ class _HomePageState extends State<HomePage> {
                                   crossAxisCount: 2,
                                   physics: BouncingScrollPhysics(),
                                   children: widget.userIds.map((userId) {
+                                    clearTopics();
                                     return StudentAvatarPicker(
                                       userId: '${userId}',
                                       isActive: userId == widget.heroTag,
