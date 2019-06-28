@@ -483,11 +483,11 @@ class _HomePageState extends State<HomePage> {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
     addTopic('all', '');
+    print(topics);
     _firebaseMessaging.getToken().then((token){
       print(token);
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
-        print(topic);
         if(topic['topic'] != null){
           addNotificationToken(token, topic['topic'],  topic['s_id'])
             .then((result) {
@@ -1213,7 +1213,6 @@ class _HomePageState extends State<HomePage> {
                                   crossAxisCount: 2,
                                   physics: BouncingScrollPhysics(),
                                   children: widget.userIds.map((userId) {
-                                    clearTopics();
                                     return StudentAvatarPicker(
                                       userId: '${userId}',
                                       isActive: userId == widget.heroTag,
@@ -1240,8 +1239,6 @@ class _HomePageState extends State<HomePage> {
                                           presentDays = <DateTime>[];
                                           noSchoolDays = <DateTime>[];
                                           specialSchoolDays = <DateTime>[];
-
-                                          clearTopics();
 
                                           transformActivityList(widget.classId);
                                           sortActivityNames();

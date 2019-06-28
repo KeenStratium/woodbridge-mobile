@@ -36,8 +36,12 @@ class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void checkHandbookAgreed() async {
 
+  @override
+  void initState(){
+    super.initState();
+
+    clearTopics();
   }
 
   Future<Map> getData() async {

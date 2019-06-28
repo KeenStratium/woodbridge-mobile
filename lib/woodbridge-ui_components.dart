@@ -321,9 +321,8 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
           if(avatarUrlExt != null){
             avatarUrl = '$baseServer/$avatarUrlExt';
           }
+          addTopic(classId, student['s_id']);
         });
-
-        addTopic(classId, student['s_id']);
     });
   }
 
