@@ -232,8 +232,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 if (_formKey.currentState.validate()) {
                   if(_passwordController.text == _passwordAgainController.text){
                     Scaffold.of(context).showSnackBar(processingSnackBar);
-                    print(widget.userId);
-                    print(_passwordController.text);
                     changePassword(widget.userId, _passwordController.text)
                       .then((resolves) {
                         Scaffold.of(context).showSnackBar(successSnackBar);
@@ -244,6 +242,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   pages: guidePages,
                                   userIds: widget.userIds,
                                   showAgreementCta: true,
+                                  userId: widget.userId,
                                 );
                               });
                           Navigator.push(context, route);

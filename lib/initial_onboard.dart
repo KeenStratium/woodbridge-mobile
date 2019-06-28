@@ -10,17 +10,35 @@ import 'student_picker.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
+Future setHandbookAgreement(userId) async {
+  String url = '$baseApi/account/handbook-onboard-agree';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'user_id': userId
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+
 class InitialOnboard extends StatefulWidget {
   int currentPage = 0;
   int prevPage = 0;
   List<Widget> pages = <Widget>[];
   List<String> userIds = <String>[];
   bool showAgreementCta;
+  String userId;
 
   InitialOnboard({
     this.pages,
     this.userIds,
-    this.showAgreementCta
+    this.showAgreementCta,
+    this.userId
   });
 
   @override
@@ -117,11 +135,14 @@ class _InitialOnboardState extends State<InitialOnboard> {
                     label: buttonLabel,
                     isDisabled: !_enableAgreementBtn,
                     onPressed: (){
-                      Route route = MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return StudentPicker(users: widget.userIds);
-                          });
-                      Navigator.push(context, route);
+                      setHandbookAgreement(widget.userId)
+                        .then((resolves) {
+                          Route route = MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return StudentPicker(users: widget.userIds);
+                              });
+                          Navigator.push(context, route);
+                        });
                     },
                   ) : Container(),
                 ],
