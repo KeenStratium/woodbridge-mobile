@@ -6,6 +6,7 @@ import 'model.dart';
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'services.dart';
 
 class ActivityEvent {
   String title;
@@ -38,24 +39,6 @@ Future<List> getStudentActivities(classId) async {
 }
 
 List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
-  String formatMilitaryTime(time) {
-    String meridiem = 'am';
-    List<String> timeClockStr = time.split(':');
-    int hour = int.parse(timeClockStr[0]);
-    String hourStr;
-    String minuteStr = timeClockStr[1];
-    
-    if(hour > 12){
-      meridiem = 'pm';
-      hour -= 12;
-    }else if(hour == 0){
-      hour = 12;
-    }
-    hourStr = hour.toString();
-
-    return '$hourStr:$minuteStr$meridiem';
-  }
-
   return List.generate(count, (sliverIndex) {
     sliverIndex += firstIndex;
     return new SliverStickyHeaderBuilder(
