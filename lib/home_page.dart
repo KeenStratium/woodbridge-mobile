@@ -767,6 +767,16 @@ class _HomePageState extends State<HomePage> {
                                         )
                                       ),
                                       onTap: () {
+                                        List topics = getTopics();
+                                        print(topics);
+
+                                        for(int i = 0; i < topics.length; i++){
+                                          String topic = topics[i]['topic'];
+
+                                          _firebaseMessaging.unsubscribeFromTopic(topic);
+                                          print('Unsubscribed from ${topic}');
+                                        }
+
                                         Route route = MaterialPageRoute(
                                             builder: (BuildContext context) {
                                               return LoginPage();
