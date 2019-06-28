@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'colors.dart';
 import 'model.dart';
 
 import 'package:flutter/services.dart';
@@ -8,11 +7,25 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'student_picker.dart';
-import 'initial_onboard.dart';
+import 'change-password.dart';
 
 import 'woodbridge-ui_components.dart';
-import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
+Future checkHandbookAgreementStatus(userId) async {
+  String url = '$baseApi/account/handbook-onboard-status';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'user_id': userId
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 
 class LoginPage extends StatefulWidget {
   @override
@@ -22,30 +35,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
-  PDFDocument doc;
-  List<Widget> guidePages = <Widget>[];
 
-  void fetchPdf() async {
-    await initLoadPdf();
-  }
+  void checkHandbookAgreed() async {
 
-  Future initLoadPdf() async {
-    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
-    int maxPages = doc.count;
-
-    for(int i = 0; i < maxPages; i++){
-      guidePages.add(await doc.get(page: i+1));
-    }
-
-    return guidePages;
   }
 
   Future<Map> getData() async {
+    print(_userController.text);
+    print(_passwordController.text);
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
       body: json.encode({
         'data': {
-          'uname': "Johnny" ?? _userController.text,
-          'pass': "woodbridge" ?? _passwordController.text
+          'uname': _userController.text,
+          'pass': _passwordController.text
         }
       }),
       headers: {
@@ -56,7 +58,8 @@ class _LoginPageState extends State<LoginPage> {
     var data = await json.decode(response.body);
     Map loginStatus = {
       'status': 'invalid',
-      'ids': []
+      'ids': [],
+      'user_id': ''
     };
 
     try {
@@ -69,22 +72,24 @@ class _LoginPageState extends State<LoginPage> {
       }else{
         loginStatus['status'] = 'auth';
       }
-      
-      setUsername('Johnny');
+
+      setUsername(_userController.text);
       loginStatus['ids'] = userData["student_id"].split(',');
+      loginStatus['user_id'] = userData["user_id"];
+
       return loginStatus;
     } catch(e) {
+      loginStatus = {
+        'status': 'invalid',
+        'ids': [],
+        'user_id': ''
+      };
+
       print(e);
       print('Invalid credentials');
     }
 
     return loginStatus;
-  }
-
-  @override initState() {
-    super.initState();
-
-    fetchPdf();
   }
 
   @override
@@ -167,23 +172,34 @@ class _LoginPageState extends State<LoginPage> {
                           child: accentCtaButton(
                             label: 'Log In',
                             onPressed: (() {
-                              getData().then((data) {
+                              getData().then((data) async {
                                 if(data['status'] == 'auth'){
                                   Route route = MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      return StudentPicker(users: data['ids']);
-                                    });
-                                  Navigator.push(context, route);
-                                }else if(data['status'] == 'initial'){
-                                  Route route = MaterialPageRoute(
                                       builder: (BuildContext context) {
-                                        return InitialOnboard(
-                                          pages: guidePages,
-                                          userIds: data['ids'],
-                                          showAgreementCta: true,
-                                        );
+                                        return StudentPicker(users: data['ids']);
                                       });
                                   Navigator.push(context, route);
+                                }else if(data['status'] == 'initial'){
+                                  await checkHandbookAgreementStatus(data['user_id'])
+                                    .then((resolves) {
+                                      bool hasAgreed = false;
+
+                                      if(resolves['data'] == 1){
+                                        hasAgreed = true;
+                                      }else{
+                                        hasAgreed = false;
+                                      }
+
+                                      Route route = MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return ChangePassword(
+                                            userId: data['user_id'],
+                                            userIds: data['ids'],
+                                            hasAgreed: hasAgreed
+                                          );
+                                        });
+                                      Navigator.push(context, route);
+                                    });
                                 } else{
                                   print('Please try again.');
                                 }
