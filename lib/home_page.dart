@@ -214,6 +214,21 @@ Future addNotificationTopic(topic, token, s_id) async {
 
   return jsonDecode(response.body);
 }
+Future removeNotificationToken(token) async {
+  String url = '$baseApi/account/notif-token-remove';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'token': token,
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 
 class HomePage extends StatefulWidget {
   Widget child;
@@ -245,6 +260,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String _token;
   StreamController streamController;
   WidgetsBindingObserver _widgetsBindingObserver;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -483,13 +499,15 @@ class _HomePageState extends State<HomePage> {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
     addTopic('all', '');
+    _token = "";
     print(topics);
     _firebaseMessaging.getToken().then((token){
       print(token);
+      _token = token;
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
         if(topic['topic'] != null){
-          addNotificationToken(token, topic['topic'],  topic['s_id'])
+          addNotificationToken(_token, topic['topic'],  topic['s_id'])
             .then((result) {
               if(result['code'] == 1){
                 _firebaseMessaging.subscribeToTopic(topic['topic']);
@@ -770,18 +788,20 @@ class _HomePageState extends State<HomePage> {
                                         List topics = getTopics();
                                         print(topics);
 
-                                        for(int i = 0; i < topics.length; i++){
-                                          String topic = topics[i]['topic'];
+                                        removeNotificationToken(_token)
+                                          .then((resolves) {
+                                            for(int i = 0; i < topics.length; i++){
+                                              String topic = topics[i]['topic'];
 
-                                          _firebaseMessaging.unsubscribeFromTopic(topic);
-                                          print('Unsubscribed from ${topic}');
-                                        }
+                                              _firebaseMessaging.unsubscribeFromTopic(topic);
+                                            }
 
-                                        Route route = MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                              return LoginPage();
-                                            });
-                                        Navigator.push(context, route);
+                                            Route route = MaterialPageRoute(
+                                                builder: (BuildContext context) {
+                                                  return LoginPage();
+                                                });
+                                            Navigator.push(context, route);
+                                          });
                                       },
                                     ),
                                   ],
