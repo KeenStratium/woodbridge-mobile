@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'colors.dart';
 import 'model.dart';
 
 import 'package:flutter/services.dart';
@@ -12,6 +11,21 @@ import 'change-password.dart';
 
 import 'woodbridge-ui_components.dart';
 
+Future checkHandbookAgreementStatus(userId) async {
+  String url = '$baseApi/account/handbook-onboard-status';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'user_id': userId
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 
 class LoginPage extends StatefulWidget {
   @override
@@ -21,6 +35,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  void checkHandbookAgreed() async {
+
+  }
 
   Future<Map> getData() async {
     print(_userController.text);
@@ -154,23 +172,34 @@ class _LoginPageState extends State<LoginPage> {
                           child: accentCtaButton(
                             label: 'Log In',
                             onPressed: (() {
-                              getData().then((data) {
+                              getData().then((data) async {
                                 if(data['status'] == 'auth'){
                                   Route route = MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      return StudentPicker(users: data['ids']);
-                                    });
-                                  Navigator.push(context, route);
-                                }else if(data['status'] == 'initial'){
-                                  print(data['status']);
-                                  Route route = MaterialPageRoute(
                                       builder: (BuildContext context) {
-                                        return ChangePassword(
-                                          userId: data['user_id'],
-                                          userIds: data['ids'],
-                                        );
+                                        return StudentPicker(users: data['ids']);
                                       });
                                   Navigator.push(context, route);
+                                }else if(data['status'] == 'initial'){
+                                  await checkHandbookAgreementStatus(data['user_id'])
+                                    .then((resolves) {
+                                      bool hasAgreed = false;
+
+                                      if(resolves['data'] == 1){
+                                        hasAgreed = true;
+                                      }else{
+                                        hasAgreed = false;
+                                      }
+
+                                      Route route = MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return ChangePassword(
+                                            userId: data['user_id'],
+                                            userIds: data['ids'],
+                                            hasAgreed: hasAgreed
+                                          );
+                                        });
+                                      Navigator.push(context, route);
+                                    });
                                 } else{
                                   print('Please try again.');
                                 }

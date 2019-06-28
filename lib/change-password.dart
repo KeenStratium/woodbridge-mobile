@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 import 'initial_onboard.dart';
+import 'student_picker.dart';
 
 
 Future changePassword(userId, password) async {
@@ -31,10 +32,12 @@ Future changePassword(userId, password) async {
 class ChangePassword extends StatelessWidget {
   String userId;
   List<String> userIds;
+  bool hasAgreed;
 
   ChangePassword({
     this.userId,
-    this.userIds
+    this.userIds,
+    this.hasAgreed
   });
 
   @override
@@ -44,7 +47,7 @@ class ChangePassword extends StatelessWidget {
       appBar: AppBar(
         title: Text('Update Password'),
       ),
-      body: ChangePasswordPage(userId: userId, userIds: userIds)
+      body: ChangePasswordPage(userId: userId, userIds: userIds, hasAgreed: hasAgreed)
     );
   }
 }
@@ -52,10 +55,12 @@ class ChangePassword extends StatelessWidget {
 class ChangePasswordPage extends StatefulWidget {
   String userId;
   List<String> userIds;
+  bool hasAgreed;
 
   ChangePasswordPage({
     this.userId,
-    this.userIds
+    this.userIds,
+    this.hasAgreed
   });
 
   @override
@@ -68,6 +73,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _formKey = GlobalKey<FormState>();
   PDFDocument doc;
   List<Widget> guidePages = <Widget>[];
+  String noticeText;
 
   void fetchPdf() async {
     await initLoadPdf();
@@ -84,10 +90,19 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     return guidePages;
   }
 
+  void checkAgreement() async {
+    if(widget.hasAgreed){
+      noticeText = "Looks like you've forgotten your password, please change it here.";
+    }else {
+      noticeText = "To activate your account, update to a new password.";
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
+    checkAgreement();
     initLoadPdf();
   }
 
@@ -116,7 +131,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         )
                     ),
                     child: Text(
-                      'To activate your account, update to a new password.',
+                      noticeText ?? '',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 16.0,
@@ -233,10 +248,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   if(_passwordController.text == _passwordAgainController.text){
                     Scaffold.of(context).showSnackBar(processingSnackBar);
                     changePassword(widget.userId, _passwordController.text)
-                      .then((resolves) {
+                      .then((resolves) async {
                         Scaffold.of(context).showSnackBar(successSnackBar);
                         Timer(Duration(milliseconds: 250), () {
-                          Route route = MaterialPageRoute(
+                          Route route;
+
+                          if(widget.hasAgreed){
+                            route = MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return StudentPicker(users: widget.userIds);
+                              });
+                          }else{
+                            route = MaterialPageRoute(
                               builder: (BuildContext context) {
                                 return InitialOnboard(
                                   pages: guidePages,
@@ -245,6 +268,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   userId: widget.userId,
                                 );
                               });
+                          }
                           Navigator.push(context, route);
                         });
                       });

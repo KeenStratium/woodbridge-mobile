@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'colors.dart';
 import 'model.dart';
 
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'student_picker.dart';
 
 import 'woodbridge-ui_components.dart';
-import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 Future setHandbookAgreement(userId) async {
   String url = '$baseApi/account/handbook-onboard-agree';
