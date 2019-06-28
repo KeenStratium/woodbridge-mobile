@@ -6,8 +6,37 @@ import 'dart:io';
 
 import 'woodbridge-ui_components.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+
+import 'initial_onboard.dart';
+
+
+Future changePassword(userId, password) async {
+  String url = '$baseApi/account/change-pass';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'user_id': userId,
+      'pass': password,
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 
 class ChangePassword extends StatelessWidget {
+  String userId;
+  List<String> userIds;
+
+  ChangePassword({
+    this.userId,
+    this.userIds
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,12 +44,20 @@ class ChangePassword extends StatelessWidget {
       appBar: AppBar(
         title: Text('Update Password'),
       ),
-      body: ChangePasswordPage()
+      body: ChangePasswordPage(userId: userId, userIds: userIds)
     );
   }
 }
 
 class ChangePasswordPage extends StatefulWidget {
+  String userId;
+  List<String> userIds;
+
+  ChangePasswordPage({
+    this.userId,
+    this.userIds
+  });
+
   @override
   _ChangePasswordPageState createState() => _ChangePasswordPageState();
 }
@@ -29,6 +66,30 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _passwordController = TextEditingController();
   final _passwordAgainController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  PDFDocument doc;
+  List<Widget> guidePages = <Widget>[];
+
+  void fetchPdf() async {
+    await initLoadPdf();
+  }
+
+  Future initLoadPdf() async {
+    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
+    int maxPages = doc.count;
+
+    for(int i = 0; i < maxPages; i++){
+      guidePages.add(await doc.get(page: i+1));
+    }
+
+    return guidePages;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    initLoadPdf();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +141,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 autofocus: true,
                                 controller: _passwordController,
                                 validator: (value) {
+                                  final validCharacters = RegExp(r'^[a-zA-Z0-9_\-=@,\.;]+$');
+
                                   if(value.isEmpty) {
                                     return 'Enter a password';
-                                  }
+                                  };
+                                  if(value == 'woodbridge'){
+                                    return 'Please set a new password';
+                                  };
+                                  if(!validCharacters.hasMatch(value)){
+                                    return 'Avoid using special characters';
+                                  };
                                   return null;
                                 },
                                 decoration: InputDecoration(
@@ -163,12 +232,43 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 if (_formKey.currentState.validate()) {
                   if(_passwordController.text == _passwordAgainController.text){
                     Scaffold.of(context).showSnackBar(processingSnackBar);
-                    Scaffold.of(context).showSnackBar(successSnackBar);
+                    print(widget.userId);
+                    print(_passwordController.text);
+                    changePassword(widget.userId, _passwordController.text)
+                      .then((resolves) {
+                        Scaffold.of(context).showSnackBar(successSnackBar);
+                        Timer(Duration(milliseconds: 250), () {
+                          Route route = MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return InitialOnboard(
+                                  pages: guidePages,
+                                  userIds: widget.userIds,
+                                  showAgreementCta: true,
+                                );
+                              });
+                          Navigator.push(context, route);
+                        });
+                      });
                   }else{
                     Scaffold.of(context).showSnackBar(errorSnackBar);
                   }
+                }else {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Please review fields again before proceeding.',
+                      style: TextStyle(
+                          color: Colors.amberAccent
+                      ),
+                    ),
+                    action: SnackBarAction(
+                      label: 'Okay',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        // Some code to undo the change.
+                      },
+                    ),
+                  ));
                 }
-
                 return null;
               }),
             ),

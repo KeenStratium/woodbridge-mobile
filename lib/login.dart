@@ -11,7 +11,6 @@ import 'student_picker.dart';
 import 'change-password.dart';
 
 import 'woodbridge-ui_components.dart';
-import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -22,23 +21,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
-  PDFDocument doc;
-  List<Widget> guidePages = <Widget>[];
-
-  void fetchPdf() async {
-    await initLoadPdf();
-  }
-
-  Future initLoadPdf() async {
-    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
-    int maxPages = doc.count;
-
-    for(int i = 0; i < maxPages; i++){
-      guidePages.add(await doc.get(page: i+1));
-    }
-
-    return guidePages;
-  }
 
   Future<Map> getData() async {
     print(_userController.text);
@@ -58,7 +40,8 @@ class _LoginPageState extends State<LoginPage> {
     var data = await json.decode(response.body);
     Map loginStatus = {
       'status': 'invalid',
-      'ids': []
+      'ids': [],
+      'user_id': ''
     };
 
     try {
@@ -72,25 +55,23 @@ class _LoginPageState extends State<LoginPage> {
         loginStatus['status'] = 'auth';
       }
 
-      setUsername('Johnny');
+      setUsername(_userController.text);
       loginStatus['ids'] = userData["student_id"].split(',');
+      loginStatus['user_id'] = userData["user_id"];
 
       return loginStatus;
     } catch(e) {
+      loginStatus = {
+        'status': 'invalid',
+        'ids': [],
+        'user_id': ''
+      };
+
       print(e);
       print('Invalid credentials');
     }
 
     return loginStatus;
-  }
-
-  @override initState() {
-    super.initState();
-
-//    _userController.text = 'Johnny';
-//    _passwordController.text = 'woodbridge';
-
-    fetchPdf();
   }
 
   @override
@@ -184,12 +165,10 @@ class _LoginPageState extends State<LoginPage> {
                                   print(data['status']);
                                   Route route = MaterialPageRoute(
                                       builder: (BuildContext context) {
-                                        return ChangePassword();
-//                                        return InitialOnboard(
-//                                          pages: guidePages,
-//                                          userIds: data['ids'],
-//                                          showAgreementCta: true,
-//                                        );
+                                        return ChangePassword(
+                                          userId: data['user_id'],
+                                          userIds: data['ids'],
+                                        );
                                       });
                                   Navigator.push(context, route);
                                 } else{
