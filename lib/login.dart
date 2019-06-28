@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'student_picker.dart';
-import 'initial_onboard.dart';
+import 'change-password.dart';
 
 import 'woodbridge-ui_components.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
@@ -41,11 +41,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<Map> getData() async {
+    print(_userController.text);
+    print(_passwordController.text);
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
       body: json.encode({
         'data': {
-          'uname': "Johnny" ?? _userController.text,
-          'pass': "woodbridge" ?? _passwordController.text
+          'uname': _userController.text,
+          'pass': _passwordController.text
         }
       }),
       headers: {
@@ -69,9 +71,10 @@ class _LoginPageState extends State<LoginPage> {
       }else{
         loginStatus['status'] = 'auth';
       }
-      
+
       setUsername('Johnny');
       loginStatus['ids'] = userData["student_id"].split(',');
+
       return loginStatus;
     } catch(e) {
       print(e);
@@ -83,6 +86,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override initState() {
     super.initState();
+
+//    _userController.text = 'Johnny';
+//    _passwordController.text = 'woodbridge';
 
     fetchPdf();
   }
@@ -175,13 +181,15 @@ class _LoginPageState extends State<LoginPage> {
                                     });
                                   Navigator.push(context, route);
                                 }else if(data['status'] == 'initial'){
+                                  print(data['status']);
                                   Route route = MaterialPageRoute(
                                       builder: (BuildContext context) {
-                                        return InitialOnboard(
-                                          pages: guidePages,
-                                          userIds: data['ids'],
-                                          showAgreementCta: true,
-                                        );
+                                        return ChangePassword();
+//                                        return InitialOnboard(
+//                                          pages: guidePages,
+//                                          userIds: data['ids'],
+//                                          showAgreementCta: true,
+//                                        );
                                       });
                                   Navigator.push(context, route);
                                 } else{
