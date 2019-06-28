@@ -19,6 +19,7 @@ import 'gallery.dart';
 import 'payment.dart';
 import 'initial_onboard.dart';
 import 'login.dart';
+import 'message_board.dart';
 
 List<ActivityEvent> june = <ActivityEvent>[
   ActivityEvent(
@@ -481,10 +482,12 @@ class _HomePageState extends State<HomePage> {
   void firebaseCloudMessaging_Listeners(String classId) {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
+    addTopic('all', '');
     _firebaseMessaging.getToken().then((token){
-      addNotificationToken(token, 'all', '');
+      print(token);
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
+        print(topic);
         if(topic['topic'] != null){
           addNotificationToken(token, topic['topic'],  topic['s_id'])
             .then((result) {
@@ -1117,13 +1120,11 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_announcements_2x.png',
                                         label: 'Messages',
-                                        pageBuilder: InitialOnboard(
-                                          pages: guidePages,
-                                          userIds: [],
-                                          showAgreementCta: false,
+                                        pageBuilder: MessageBoard(
+                                          userId: widget.heroTag,
                                         ),
                                         buildContext: context,
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ),
