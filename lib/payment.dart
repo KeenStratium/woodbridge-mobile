@@ -12,10 +12,10 @@ class Payment {
   String amount;
   double dueAmount;
   DateTime rawDate;
-  var rawPaidDate;
+  String paidDate;
   bool isPaid;
 
-  Payment({this.label, this.amount, this.rawDate, this.rawPaidDate, this.isPaid, this.dueAmount});
+  Payment({this.label, this.amount, this.rawDate, this.paidDate, this.isPaid, this.dueAmount});
 }
 
 class PaymentHistory extends StatefulWidget {
@@ -106,122 +106,168 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                         ],
                       ),
                     ),
-                    DataTable(
-                      columns: <DataColumn>[
-                        DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              'DUE DATE',
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14.0,
-                                color: Colors.grey[800],
-                              ),
-                            ),
-                          ),
-                          numeric: false,
-                          onSort: (i, j){},
-                          tooltip: 'data of payment'
-                        ),
-                        DataColumn(
-                          label: Flexible(
-                            child: Text(
-                              'AMOUNT DUE',
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14.0,
-                                color: Colors.grey[800],
-                              ),
-                            ),
-                          ),
-                          numeric: false,
-                          onSort: (i, j){},
-                          tooltip: 'amount'
-                        ),
-                        DataColumn(
-                          label: Flexible(
-                            child: Text(
-                              'PAYMENT',
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14.0,
-                                color: Colors.grey[800],
-                              ),
-                            ),
-                          ),
-                          numeric: false,
-                          onSort: (i, j){},
-                          tooltip: 'Date of Payment'
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.grey[300]
+                          )
                         )
-                      ],
-                      rows: (widget.paymentData['payments'] as List).map((payment) {
-                        return DataRow(
-                          cells: [
-                            DataCell(
-                              Text(
-                                payment.label,
-                                style: TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 16.0
+                      ),
+                      child: Flex(
+                        direction: Axis.horizontal,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'DATE',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black54
+                                  ),
                                 ),
-                              ),
-                              onTap: () {
-                                Route route = MaterialPageRoute(
-                                  builder: (buildContext) => PaymentDetails(
-                                    date: payment.label,
-                                    userId: widget.userId,
-                                    firstName: widget.firstName,
-                                    lastName: widget.lastName,
-                                  ));
-                                Navigator.push(context, route);
-                              }
+                                Text(
+                                  'DUE',
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black54
+                                  ),
+                                )
+                              ],
                             ),
-                            DataCell(
-                              Text(
-                                payment.amount ?? 'N/A',
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w600
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'DUE',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black54
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                              onTap: () {
-                                Route route = MaterialPageRoute(
-                                  builder: (buildContext) => PaymentDetails(
-                                    date: payment.label,
-                                    userId: widget.userId,
-                                    firstName: widget.firstName,
-                                    lastName: widget.lastName,
-                                  ));
-                                Navigator.push(context, route);
-                              }
+                                Text(
+                                  'AMOUNT',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black54
+                                  ),
+                                )
+                              ],
                             ),
-                            DataCell(
-                              Text(
-                                '213' ?? 'N/A',
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w600
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Text(
+                                  'PAYMENT',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black54
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
+                                Text(
+                                  'DATE',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black54
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    ListView(
+                      shrinkWrap: true,
+                      children: (widget.paymentData['payments'] as List).map((payment) {
+                        return Material(
+                          color: Colors.white,
+                          child: InkWell(
+                            onTap: () {
+                              Route route = MaterialPageRoute(
+                                builder: (buildContext) => PaymentDetails(
+                                  date: payment.label,
+                                  userId: widget.userId,
+                                  firstName: widget.firstName,
+                                  lastName: widget.lastName,
+                                ));
+                              Navigator.push(context, route);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Colors.grey[200]
+                                  )
+                                )
                               ),
-                              onTap: () {
-                                Route route = MaterialPageRoute(
-                                    builder: (buildContext) => PaymentDetails(
-                                      date: payment.label,
-                                      userId: widget.userId,
-                                      firstName: widget.firstName,
-                                      lastName: widget.lastName,
-                                    ));
-                                Navigator.push(context, route);
-                              }
-                            )
-                          ]
+                              padding: EdgeInsets.symmetric(vertical: 16.0),
+                              child: Flex(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                direction: Axis.horizontal,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Text(
+                                      payment.label,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87
+                                      ),
+                                    ),
+                                    flex: 1,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      '₱${payment.dueAmount ?? 'N/A'}',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87
+                                      ),
+                                    ),
+                                    flex: 1
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      payment.paidDate ?? 'Unpaid',
+                                      textAlign: TextAlign.right,
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: payment.paidDate == 'Unpaid' ? Colors.black38 : Colors.black87
+                                      ),
+                                    ),
+                                    flex: 1,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         );
-                      }).toList()
+                      }).toList(),
                     )
                   ],
                 ),

@@ -566,6 +566,7 @@ class _HomePageState extends State<HomePage> {
         results.forEach((payment) {
           String amount;
           DateTime dueDate = DateTime.parse(payment['due_date']).toLocal();
+          String paymentDate = 'Unpaid';
 
           try {
             amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
@@ -582,13 +583,20 @@ class _HomePageState extends State<HomePage> {
             }
           } catch(e){}
 
+          try{
+            String paidDate = payment['paid_date'];
+            if(paidDate != null){
+              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
+            }
+          }catch(e){}
+
           payments.add(
             Payment(
               label: timeFormat(DateTime.parse(payment['due_date']).toLocal().toString(), 'MM/d/y'),
               amount: amount,
               dueAmount: payment['due_amount'] + 0.00 ?? 0,
               rawDate: dueDate,
-              rawPaidDate: dueDate,
+              paidDate: paymentDate,
               isPaid: amount != 'N/A'
             )
           );
