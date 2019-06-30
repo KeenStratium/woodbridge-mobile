@@ -129,7 +129,15 @@ class ProfileHeader extends StatelessWidget {
       children: <Widget>[
         Container(
           decoration: BoxDecoration(
-            color: Colors.white
+            color: Colors.white,
+            border: Border(
+              top: BorderSide(
+                color: Colors.grey[300]
+              ),
+              bottom: BorderSide(
+                  color: Colors.grey[300]
+              )
+            )
           ),
           padding: EdgeInsets.symmetric(vertical: 10.0),
           child: Row(
@@ -156,7 +164,6 @@ class ProfileHeader extends StatelessWidget {
             ],
           ),
         ),
-        Divider(height: 1.0, color: Colors.grey[300]),
       ],
     );
   }
