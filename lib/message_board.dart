@@ -184,7 +184,7 @@ class _BoardState extends State<Board> {
     String timeFormatted;
 
     if(widget.date != null && widget.time != null){
-      dateFormatted = timeFormat(widget.date.toString());
+      dateFormatted = timeFormat(widget.date.toString(), null);
       timeFormatted = formatMilitaryTime(widget.time);
     }
     if(widget.hasResponse == null){

@@ -10,10 +10,12 @@ import 'payment-details.dart';
 class Payment {
   String label;
   String amount;
+  double dueAmount;
   DateTime rawDate;
   var rawPaidDate;
+  bool isPaid;
 
-  Payment({this.label, this.amount, this.rawDate, this.rawPaidDate});
+  Payment({this.label, this.amount, this.rawDate, this.rawPaidDate, this.isPaid, this.dueAmount});
 }
 
 class PaymentHistory extends StatefulWidget {
@@ -105,85 +107,121 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                       ),
                     ),
                     DataTable(
-                        columns: <DataColumn>[
-                          DataColumn(
-                              label: Expanded(
-                                child: Text(
-                                  'DATE OF PAYMENT',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14.0,
-                                    color: Colors.grey[800],
-                                  ),
-                                ),
+                      columns: <DataColumn>[
+                        DataColumn(
+                          label: Expanded(
+                            child: Text(
+                              'DUE DATE',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14.0,
+                                color: Colors.grey[800],
                               ),
-                              numeric: false,
-                              onSort: (i, j){},
-                              tooltip: 'data of payment'
+                            ),
                           ),
-                          DataColumn(
-                              label: Flexible(
-                                child: Text(
-                                  'AMOUNT',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14.0,
-                                    color: Colors.grey[800],
-                                  ),
+                          numeric: false,
+                          onSort: (i, j){},
+                          tooltip: 'data of payment'
+                        ),
+                        DataColumn(
+                          label: Flexible(
+                            child: Text(
+                              'AMOUNT DUE',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14.0,
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                          ),
+                          numeric: false,
+                          onSort: (i, j){},
+                          tooltip: 'amount'
+                        ),
+                        DataColumn(
+                          label: Flexible(
+                            child: Text(
+                              'PAYMENT',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14.0,
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                          ),
+                          numeric: false,
+                          onSort: (i, j){},
+                          tooltip: 'Date of Payment'
+                        )
+                      ],
+                      rows: (widget.paymentData['payments'] as List).map((payment) {
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              Text(
+                                payment.label,
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 16.0
                                 ),
                               ),
-                              numeric: false,
-                              onSort: (i, j){},
-                              tooltip: 'amount'
-                          )
-                        ],
-                        rows: (widget.paymentData['payments'] as List).map((payment) {
-                          return DataRow(
-                              cells: [
-                                DataCell(
-                                    Text(
-                                      payment.label,
-                                      style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 16.0
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      Route route = MaterialPageRoute(
-                                          builder: (buildContext) => PaymentDetails(
-                                            date: payment.label,
-                                            userId: widget.userId,
-                                            firstName: widget.firstName,
-                                            lastName: widget.lastName,
-                                          ));
-                                      Navigator.push(context, route);
-                                    }
+                              onTap: () {
+                                Route route = MaterialPageRoute(
+                                  builder: (buildContext) => PaymentDetails(
+                                    date: payment.label,
+                                    userId: widget.userId,
+                                    firstName: widget.firstName,
+                                    lastName: widget.lastName,
+                                  ));
+                                Navigator.push(context, route);
+                              }
+                            ),
+                            DataCell(
+                              Text(
+                                payment.amount ?? 'N/A',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w600
                                 ),
-                                DataCell(
-                                    Text(
-                                      payment.amount ?? 'N/A',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    onTap: () {
-                                      Route route = MaterialPageRoute(
-                                          builder: (buildContext) => PaymentDetails(
-                                            date: payment.label,
-                                            userId: widget.userId,
-                                            firstName: widget.firstName,
-                                            lastName: widget.lastName,
-                                          ));
-                                      Navigator.push(context, route);
-                                    }
-                                )
-                              ]
-                          );
-                        }).toList()
+                                textAlign: TextAlign.center,
+                              ),
+                              onTap: () {
+                                Route route = MaterialPageRoute(
+                                  builder: (buildContext) => PaymentDetails(
+                                    date: payment.label,
+                                    userId: widget.userId,
+                                    firstName: widget.firstName,
+                                    lastName: widget.lastName,
+                                  ));
+                                Navigator.push(context, route);
+                              }
+                            ),
+                            DataCell(
+                              Text(
+                                '213' ?? 'N/A',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w600
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              onTap: () {
+                                Route route = MaterialPageRoute(
+                                    builder: (buildContext) => PaymentDetails(
+                                      date: payment.label,
+                                      userId: widget.userId,
+                                      firstName: widget.firstName,
+                                      lastName: widget.lastName,
+                                    ));
+                                Navigator.push(context, route);
+                              }
+                            )
+                          ]
+                        );
+                      }).toList()
                     )
                   ],
                 ),
