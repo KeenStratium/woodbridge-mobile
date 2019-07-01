@@ -174,6 +174,7 @@ class DashboardTile extends StatelessWidget {
   final String value;
   final Widget child;
   final bool displayPlainValue;
+  final bool isActive;
 
   DashboardTile({
     Key key,
@@ -182,7 +183,8 @@ class DashboardTile extends StatelessWidget {
     this.child: null,
     // ignore: avoid_init_to_null
     this.value: null,
-    this.displayPlainValue: false
+    this.displayPlainValue: false,
+    this.isActive: true
   }) : super(key: key);
 
   @override
@@ -208,7 +210,7 @@ class DashboardTile extends StatelessWidget {
             style: TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.w700,
-              color: Theme.of(context).accentColor
+              color: isActive ? Theme.of(context).accentColor : Colors.grey[600]
             ),
           ) : this.child,
         ],

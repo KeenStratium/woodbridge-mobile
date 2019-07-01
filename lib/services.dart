@@ -31,3 +31,5 @@ String formatMilitaryTime(time) {
 String localCurrencyFormat(double amount){
   return '₱${amount + 0.00}';
 }
+
+String capitalize(String s) => s[0].toUpperCase() + s.substring(1);

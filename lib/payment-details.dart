@@ -6,12 +6,12 @@ import 'services.dart';
 class Payment {
   String label;
   String amount;
+  bool isPaid;
 
-  Payment({this.label, this.amount});
+  Payment({this.label, this.amount, this.isPaid});
 }
 
 List<Payment> pre_school_payments = <Payment>[];
-
 List<Payment> kumon_payments = <Payment>[];
 
 class PaymentDataView extends StatelessWidget{
@@ -25,6 +25,7 @@ class PaymentDataView extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       margin: EdgeInsets.only(bottom: 20.0),
       child: Column(
@@ -51,6 +52,10 @@ class PaymentDataView extends StatelessWidget{
             itemCount: this.payments.length,
             itemBuilder: (BuildContext context, int index) {
               Payment payment = this.payments[index];
+              bool isPaid = payment.isPaid;
+              if(isPaid == null){
+                isPaid = false;
+              }
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Row(
@@ -69,7 +74,7 @@ class PaymentDataView extends StatelessWidget{
                       style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.w700,
-                        color: Theme.of(context).accentColor
+                        color: isPaid ? Theme.of(context).accentColor : Colors.grey[500]
                       ),
                     ),
                   ]
@@ -94,6 +99,7 @@ class PaymentDetails extends StatelessWidget {
   final double amountPaid;
   final double enrollmentFee;
   final double tuitionFee;
+  final Map paymentType;
 
   PaymentDetails({
     this.date,
@@ -105,7 +111,8 @@ class PaymentDetails extends StatelessWidget {
     this.amountDesc,
     this.enrollmentFee,
     this.tuitionFee,
-    this.paymentDate
+    this.paymentDate,
+    this.paymentType
   });
 
   @override
@@ -129,26 +136,30 @@ class PaymentDetails extends StatelessWidget {
       if(mathFee != null){
         kumon_payments.add( Payment(
           label: 'MATH',
-          amount: localCurrencyFormat(mathFee)
+          amount: localCurrencyFormat(mathFee),
+          isPaid: paymentDate != 'Unpaid'
         ));
       }
       if(readingFee != null){
         kumon_payments.add( Payment(
           label: 'READING',
-          amount: localCurrencyFormat(readingFee)
+          amount: localCurrencyFormat(readingFee),
+          isPaid: paymentDate != 'Unpaid'
         ));
       }
       if(kumonRegFee != null){
         kumon_payments.add( Payment(
           label: 'REGISTRATION FEE',
-          amount: localCurrencyFormat(kumonRegFee)
+          amount: localCurrencyFormat(kumonRegFee),
+          isPaid: paymentDate != 'Unpaid'
         ));
       }
 
       if(enrollmentFee != null){
         pre_school_payments.add( Payment(
             label: 'ENROLLMENT FEES',
-            amount: localCurrencyFormat(enrollmentFee)
+            amount: localCurrencyFormat(enrollmentFee),
+            isPaid: paymentDate != 'Unpaid'
         ));
       }
     }
@@ -156,7 +167,8 @@ class PaymentDetails extends StatelessWidget {
     if(tuitionFee != null){
       pre_school_payments.add( Payment(
           label: 'TUITION FEE',
-          amount: localCurrencyFormat(tuitionFee)
+          amount: localCurrencyFormat(tuitionFee),
+          isPaid: paymentDate != 'Unpaid'
       ));
     }
 
@@ -205,6 +217,7 @@ class PaymentDetails extends StatelessWidget {
                                       label: 'DATE OF PAYMENT',
                                       displayPlainValue: true,
                                       value: paymentDate,
+                                      isActive: paymentDate != 'Unpaid',
                                     ),
                                   ],
                                 ),
@@ -242,7 +255,7 @@ class PaymentDetails extends StatelessWidget {
                         Divider(height: 1.0, color: Colors.grey[300]),
                       ],
                     ),
-                    Column(
+                    paymentDate != 'Unpaid' ? Column(
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -250,72 +263,95 @@ class PaymentDetails extends StatelessWidget {
                             children: <Widget>[
                               Column(
                                 children: <Widget>[
-                                  Text(
-                                    'TYPE',
-                                    style: TextStyle(
-                                        color: Colors.grey[500],
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 12.0
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 6.0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          'TYPE',
+                                          style: TextStyle(
+                                            color: Colors.grey[500],
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12.0
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                                          child: Text(
+                                            capitalize(paymentType['type']),
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.black87
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 3.0),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 3.0),
-                                    child: Text(
-                                      'Check',
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: Colors.black87
-                                      ),
+                                    padding: EdgeInsets.symmetric(vertical: 6.0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          'OFFICIAL RECEIPT',
+                                          style: TextStyle(
+                                            color: Colors.grey[500],
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12.0
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(
+                                                '#',
+                                                style: TextStyle(
+                                                  color: Colors.grey[500]
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 1.0),
+                                              ),
+                                              Text(
+                                                '${paymentType['official_receipt']}',
+                                                style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  color: Colors.black87
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 3.0),
-                                    child: Text(
-                                      '1234567890',
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: Colors.black87
-                                      ),
+                                  paymentType['bank_name'] != null ? Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 6.0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          'BANK',
+                                          style: TextStyle(
+                                              color: Colors.grey[500],
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12.0
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                                          child: Text(
+                                            paymentType['bank_name'] ?? '',
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 3.0),
-                                    child: Text(
-                                      'Bank of the Phillipine Islands',
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: Colors.black87
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10.0),
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text(
-                                    'AUTHORIZED BY',
-                                    style: TextStyle(
-                                        color: Colors.grey[500],
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 12.0
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 3.0),
-                                  ),
-                                  Text(
-                                    'Annabelle G. Lim',
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        color: Colors.black87
-                                    ),
-                                  ),
+                                  ) : Container(),
                                 ],
                               ),
                             ],
@@ -352,6 +388,16 @@ class PaymentDetails extends StatelessWidget {
                           ),
                         )
                       ],
+                    ) : Container(
+                      padding: EdgeInsets.symmetric(vertical: 40.0),
+                      child: Text(
+                        'No payment information yet.',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600
+                        ),
+                      ),
                     ),
                   ],
                 ),
