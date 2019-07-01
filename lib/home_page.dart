@@ -553,15 +553,15 @@ class _HomePageState extends State<HomePage> {
         totalPayments = 0.00;
 
         nextPaymentMonth = null;
+        nextPaymentDay = null;
 
         results.forEach((payment) {
-          String amount;
+          var amount;
           DateTime dueDate = DateTime.parse(payment['due_date']).toLocal();
           String paymentDate = 'Unpaid';
-
           try {
             amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
-            if(amount == 'N/A' || amount == null){
+            if(amount == 'N/A' || amount == null || amount == '0'){
               totalBalance += payment['due_amount'];
               if(nextPaymentMonth == null){
                 nextPaymentMonth = monthNames[dueDate.month - 1];
@@ -572,7 +572,9 @@ class _HomePageState extends State<HomePage> {
                 totalPayments += payment['amount_paid'];
               }
             }
-          } catch(e){}
+          } catch(e){
+            print(e);
+          }
 
           try{
             String paidDate = payment['paid_date'];
