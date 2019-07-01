@@ -97,7 +97,7 @@ class PaymentDetails extends StatelessWidget {
   final String amountDesc;
   final String paymentDate;
   final double amountPaid;
-  final double enrollmentFee;
+  double enrollmentFee;
   final double tuitionFee;
   final Map paymentType;
 
@@ -121,6 +121,7 @@ class PaymentDetails extends StatelessWidget {
     double mathFee;
     double readingFee;
     double tutorialFee = 0.0;
+    int packageNum;
     List payments;
 
     kumon_payments = <Payment>[];
@@ -128,10 +129,16 @@ class PaymentDetails extends StatelessWidget {
 
     if(paymentModes != null){
       payments = paymentModes.split(',');
+      payments[0] != '' ? packageNum = int.parse(payments[0]) : null;
       payments[1] != '' ? kumonRegFee = double.parse(payments[1]) : null;
       payments[2] != '' ? mathFee = double.parse(payments[2]) : null;
       payments[3] != '' ? readingFee = double.parse(payments[3]) : null;
       payments[4] != '' ? tutorialFee = double.parse(payments[4]) : null;
+
+      print(packageNum);
+      if(packageNum == 3){
+        enrollmentFee /= 4;
+      }
 
       if(mathFee != null){
         kumon_payments.add( Payment(
@@ -246,7 +253,8 @@ class PaymentDetails extends StatelessWidget {
                                 title: 'Tutorial',
                                 payments: [Payment(
                                   label: 'REGISTRATION FEE',
-                                  amount: '₱${tutorialFee + 0.00}'
+                                  amount: '₱${tutorialFee + 0.00}',
+                                  isPaid: paymentDate != 'Unpaid'
                                 )],
                               ) : Container()
                             ]
