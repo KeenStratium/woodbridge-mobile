@@ -287,6 +287,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                       tuitionFee: settings['tuition_fee'] + 0.00,
                                       paymentDate: payment.paidDate ?? 'Unpaid',
                                       paymentType: paymentMetaInfo,
+                                      amountDue: payment.dueAmount,
                                     ));
                                     Navigator.push(context, route);
                                   });

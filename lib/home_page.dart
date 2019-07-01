@@ -580,7 +580,6 @@ class _HomePageState extends State<HomePage> {
               paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
             }
           }catch(e){}
-
           payments.add(
             Payment(
               label: timeFormat(DateTime.parse(payment['due_date']).toLocal().toString(), 'MM/d/y'),

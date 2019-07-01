@@ -97,6 +97,7 @@ class PaymentDetails extends StatelessWidget {
   final String amountDesc;
   final String paymentDate;
   final double amountPaid;
+  final double amountDue;
   double enrollmentFee;
   final double tuitionFee;
   final Map paymentType;
@@ -112,7 +113,8 @@ class PaymentDetails extends StatelessWidget {
     this.enrollmentFee,
     this.tuitionFee,
     this.paymentDate,
-    this.paymentType
+    this.paymentType,
+    this.amountDue
   });
 
   @override
@@ -135,7 +137,6 @@ class PaymentDetails extends StatelessWidget {
       payments[3] != '' ? readingFee = double.parse(payments[3]) : null;
       payments[4] != '' ? tutorialFee = double.parse(payments[4]) : null;
 
-      print(packageNum);
       if(packageNum == 3){
         enrollmentFee /= 4;
       }
@@ -169,15 +170,23 @@ class PaymentDetails extends StatelessWidget {
           isPaid: paymentDate != 'Unpaid'
         ));
       }
-    }
-
-    if(tuitionFee != null){
+      if(tuitionFee != null){
+        pre_school_payments.add( Payment(
+          label: 'TUITION FEE',
+          amount: localCurrencyFormat(tuitionFee),
+          isPaid: paymentDate != 'Unpaid'
+        ));
+      }
+    }else{
       pre_school_payments.add( Payment(
-        label: 'TUITION FEE',
-        amount: localCurrencyFormat(tuitionFee),
+        label: amountDesc.toUpperCase(),
+        amount: localCurrencyFormat(amountDue),
         isPaid: paymentDate != 'Unpaid'
       ));
     }
+
+
+
 
     return Scaffold(
       appBar: AppBar(
