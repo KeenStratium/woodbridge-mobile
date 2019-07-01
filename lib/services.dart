@@ -27,3 +27,7 @@ String formatMilitaryTime(time) {
 
   return '$hourStr:$minuteStr$meridiem';
 }
+
+String localCurrencyFormat(double amount){
+  return '₱${amount + 0.00}';
+}

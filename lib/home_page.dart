@@ -548,15 +548,6 @@ class _HomePageState extends State<HomePage> {
 
     await fetchStudentPayments(userId)
       .then((results) {
-        bool isPaymentRegistered = false;
-        List paymentSettings = [];
-        DateTime latestPaymentDate;
-        int paymentPackage;
-        double kumonRegFee;
-        double mathFee;
-        double readingFee;
-        double tutorialFee;
-
         payments = [];
         totalBalance = 0.00;
         totalPayments = 0.00;
@@ -597,7 +588,10 @@ class _HomePageState extends State<HomePage> {
               dueAmount: payment['due_amount'] + 0.00 ?? 0,
               rawDate: dueDate,
               paidDate: paymentDate,
-              isPaid: amount != 'N/A'
+              isPaid: amount != 'N/A',
+              paymentModes: payment['note'],
+              paymentSettingId: payment['pay_setting_id'].split(',')[0],
+              amountDesc: payment['due_desc']
             )
           );
         });

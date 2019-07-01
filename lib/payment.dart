@@ -7,15 +7,44 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
 
+Future<List> fetchPaymentSettings(settingsId) async {
+  String url = '$baseApi/pay/get-payment-settings';
+  print(settingsId);
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'settings_id': [settingsId]
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+
 class Payment {
   String label;
   String amount;
+  String paymentModes;
   double dueAmount;
   DateTime rawDate;
   String paidDate;
+  String paymentSettingId;
+  String amountDesc;
   bool isPaid;
 
-  Payment({this.label, this.amount, this.rawDate, this.paidDate, this.isPaid, this.dueAmount});
+  Payment({
+    this.label,
+    this.amount,
+    this.rawDate,
+    this.paidDate,
+    this.isPaid,
+    this.dueAmount,
+    this.paymentModes,
+    this.paymentSettingId,
+    this.amountDesc
+  });
 }
 
 class PaymentHistory extends StatefulWidget {
@@ -23,6 +52,7 @@ class PaymentHistory extends StatefulWidget {
   final String lastName;
   final String userId;
   final Map paymentData;
+
   List<Payment> payments = <Payment>[];
   double totalPayments = 0.00;
   double totalBalance = 0.00;
@@ -32,7 +62,7 @@ class PaymentHistory extends StatefulWidget {
     this.firstName,
     this.lastName,
     this.userId,
-    this.paymentData
+    this.paymentData,
   });
 
   @override
@@ -203,15 +233,28 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                         return Material(
                           color: Colors.white,
                           child: InkWell(
-                            onTap: () {
-                              Route route = MaterialPageRoute(
-                                builder: (buildContext) => PaymentDetails(
-                                  date: payment.label,
-                                  userId: widget.userId,
-                                  firstName: widget.firstName,
-                                  lastName: widget.lastName,
-                                ));
-                              Navigator.push(context, route);
+                            onTap: () async {
+                              await fetchPaymentSettings(payment.paymentSettingId)
+                                .then((result) {
+                                  Map settings = result[0];
+                                  double totalAnnualFee = settings['total_annual_fee'] + 0.00;
+                                  double totalTuitionFee = settings['total_tuition_fee'] + 0.00;
+
+                                  Route route = MaterialPageRoute(
+                                    builder: (buildContext) => PaymentDetails(
+                                      date: payment.label,
+                                      userId: widget.userId,
+                                      firstName: widget.firstName,
+                                      lastName: widget.lastName,
+                                      paymentModes: payment.paymentModes,
+                                      amountDesc: payment.amountDesc,
+                                      amountPaid: double.parse(payment.amount),
+                                      enrollmentFee: totalAnnualFee - totalTuitionFee,
+                                      tuitionFee: settings['tuition_fee'] + 0.00,
+                                      paymentDate: payment.paidDate ?? 'Unpaid',
+                                    ));
+                                  Navigator.push(context, route);
+                                });
                             },
                             child: Container(
                               decoration: BoxDecoration(
