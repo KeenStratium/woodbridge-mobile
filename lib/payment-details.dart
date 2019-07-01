@@ -164,18 +164,18 @@ class PaymentDetails extends StatelessWidget {
 
       if(enrollmentFee != null){
         pre_school_payments.add( Payment(
-            label: 'ENROLLMENT FEES',
-            amount: localCurrencyFormat(enrollmentFee),
-            isPaid: paymentDate != 'Unpaid'
+          label: 'ENROLLMENT FEES',
+          amount: localCurrencyFormat(enrollmentFee),
+          isPaid: paymentDate != 'Unpaid'
         ));
       }
     }
 
     if(tuitionFee != null){
       pre_school_payments.add( Payment(
-          label: 'TUITION FEE',
-          amount: localCurrencyFormat(tuitionFee),
-          isPaid: paymentDate != 'Unpaid'
+        label: 'TUITION FEE',
+        amount: localCurrencyFormat(tuitionFee),
+        isPaid: paymentDate != 'Unpaid'
       ));
     }
 
