@@ -9,11 +9,13 @@ import 'package:flutter/material.dart';
 class TextNotifications extends StatefulWidget {
   final String msg;
   final String postDate;
+  final String profileAvatar;
 
   TextNotifications({
     Key key,
     this.msg,
     this.postDate,
+    this.profileAvatar
   }) : super (key: key);
 
   @override
@@ -31,6 +33,7 @@ class _TextNotificationsState extends State<TextNotifications> {
         leading: CircleAvatar(
           backgroundColor: Colors.deepOrange,
           radius: 24.0,
+          backgroundImage: NetworkImage(widget.profileAvatar),
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
         title: Text(
@@ -118,6 +121,7 @@ Future buildNotificationList(userId, pageSize, pageNum) async {
             notificationsData.add(TextNotifications(
               msg: studentNotification['notif_desc'],
               postDate: 'about an hour ago',
+              profileAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6"
             ));
           }
           _notifications.add(notificationsData);

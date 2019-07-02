@@ -23,7 +23,7 @@ class Notifications extends StatefulWidget {
     this.lastName,
     this.userId,
     this.notificationTiles,
-    this.pageSize
+    this.pageSize,
   });
 
   @override
