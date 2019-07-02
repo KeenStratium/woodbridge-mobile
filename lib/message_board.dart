@@ -269,10 +269,10 @@ class _BoardState extends State<Board> {
                     borderRadius: BorderRadius.only(topRight: Radius.circular(50.0), bottomRight: Radius.circular(50.0))
                   ),
                   padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 15.0),
-                  margin: EdgeInsets.only(bottom: 20.0, top: 20.0),
+                  margin: EdgeInsets.only(bottom: 6.0, top: 12.0),
                 ) : Container(),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -430,21 +430,6 @@ class _MessageBoardState extends State<MessageBoard> {
           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
           child: Column(
             children: <Widget>[
-              Board(
-                title: 'Class suspension',
-                description: 'No class on all levels tomorrow due to typhoon. Have a safe day parents!',
-                category: 'Announcement',
-                notifId: 1,
-              ),
-              Board(
-                title: 'Class suspension',
-                description: 'No class on all levels tomorrow due to typhoon, please be guided accordingly.',
-                category: 'Appointment',
-                hasResponse: true,
-                responseActions: responseActions,
-                notifId: 9,
-                date: DateTime.now()
-              ),
               FutureBuilder(
                 future: getStudentMessages(widget.userId),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
