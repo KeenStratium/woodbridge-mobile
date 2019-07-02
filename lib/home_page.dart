@@ -337,9 +337,6 @@ class _HomePageState extends State<HomePage> {
     ]);
   }
   void transformActivityList(classId) async {
-    monthActivities = {};
-    activityNames = [];
-
     await getStudentActivities(classId)
       .then((results) {
         DateTime currTime = DateTime.now();
@@ -440,18 +437,6 @@ class _HomePageState extends State<HomePage> {
         }
       }
     });
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
-      },
-    );
   }
   void iOS_Permission() {
     _firebaseMessaging.requestNotificationPermissions(
@@ -569,9 +554,67 @@ class _HomePageState extends State<HomePage> {
       });
     });
 
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+        updateHomeData();
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('updating');
+        updateHomeData();
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        updateHomeData();
+        print('on launch $message');
+      },
+    );
+
     SystemChannels.lifecycle.setMessageHandler((msg){
+      if(msg == 'AppLifecycleState.resumed'){
+        updateHomeData();
+      }
       debugPrint('SystemChannels> $msg');
     });
+  }
+
+  void updateHomeData() async {
+    schoolDays = <DateTime>[];
+    presentDays = <DateTime>[];
+    noSchoolDays = <DateTime>[];
+    specialSchoolDays = <DateTime>[];
+
+    monthActivities = {};
+    activityNames = [];
+
+
+    transformActivityList(widget.classId);
+    sortActivityNames();
+    getAttendanceInfo(widget.heroTag);
+    buildStudentPayments(widget.heroTag);
+
+    print('All data are up-to-date');
+  }
+
+  void userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId){
+    widget.child = Avatar(
+      backgroundColor: Colors.indigo,
+      maxRadius: 41.0,
+      fontSize: 20.0,
+      initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}",
+      avatarUrl: avatarUrl,
+    );
+    widget.avatarUrl = avatarUrl;
+    widget.firstName = fname ?? '';
+    widget.lastName = lname ?? '';
+    widget.heroTag = userId;
+    widget.schoolLevel = schoolLevel;
+    widget.classId = classId;
+    widget.gradeLevel = gradeLevel;
+    widget.gradeSection = gradeSection;
+
+    setAvatarUrl(avatarUrl);
+    updateHomeData();
   }
 
   @override
@@ -1184,33 +1227,8 @@ class _HomePageState extends State<HomePage> {
                                       onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl) {
                                         setState(() {
                                           showStudentSwitcher = false;
-                                          widget.child = Avatar(
-                                            backgroundColor: Colors.indigo,
-                                            maxRadius: 41.0,
-                                            fontSize: 20.0,
-                                            initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}",
-                                            avatarUrl: avatarUrl,
-                                          );
-                                          widget.avatarUrl = avatarUrl;
-                                          widget.firstName = fname ?? '';
-                                          widget.lastName = lname ?? '';
-                                          widget.heroTag = userId;
-                                          widget.schoolLevel = schoolLevel;
-                                          widget.classId = classId;
-                                          widget.gradeLevel = gradeLevel;
-                                          widget.gradeSection = gradeSection;
 
-                                          schoolDays = <DateTime>[];
-                                          presentDays = <DateTime>[];
-                                          noSchoolDays = <DateTime>[];
-                                          specialSchoolDays = <DateTime>[];
-
-                                          transformActivityList(widget.classId);
-                                          sortActivityNames();
-                                          getAttendanceInfo(widget.heroTag);
-                                          buildStudentPayments(widget.heroTag);
-
-                                          setAvatarUrl(avatarUrl);
+                                          userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId);
                                         });
                                       }
                                     );
