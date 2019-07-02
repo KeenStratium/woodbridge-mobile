@@ -8,49 +8,6 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:flutter/services.dart';
 
-Future buildNotificationList(userId, pageSize, pageNum) async {
-  List<Future> futures = <Future>[fetchStudentNotification(userId, pageSize, pageNum)];
-
-  return await Future.wait(futures)
-    .then((result) {
-      List<Widget> _notifications = <Widget>[];
-      Map currentPageData = result[0];
-      List _studentNotifications = currentPageData['data'];
-      bool isSuccess = currentPageData['success'] ?? false;
-      if(isSuccess){
-        for(int i = 0; i < _studentNotifications.length; i++){
-          Map studentNotification = _studentNotifications[i];
-          print(studentNotification['id']);
-          _notifications.add(_TextNotifications(
-            msg: studentNotification['notif_desc'],
-            postDate: 'about an hour ago',
-          ));
-        }
-      }else{
-        return Text('Something went wrong getting you updated. Please try again.');
-      }
-
-      return {'notifications': _notifications};
-    });
-}
-Future fetchStudentNotification(userId, pageSize, pageNum) async {
-  String url = '$baseApi/notif/get-paginated-notifications';
-
-  var response = await http.post(url, body: json.encode({
-    'data': {
-      'page_size': pageSize,
-      'page_num': pageNum,
-      's_id': userId
-    }
-  }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
-
-  return jsonDecode(response.body);
-}
-
 class Notifications extends StatefulWidget {
   final String firstName;
   final String lastName;
@@ -58,12 +15,13 @@ class Notifications extends StatefulWidget {
   int pageNum = 1;
   int pageSize = 3;
   bool completedAllPages = false;
-  List<List<Widget>> notificationTiles = [];
+  List<List<Widget>> notificationTiles;
 
   Notifications({
     this.firstName,
     this.lastName,
-    this.userId
+    this.userId,
+    this.notificationTiles
   });
 
   @override
@@ -71,40 +29,6 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-
-  Future initGetNextPage(pageNum) async {
-    return await buildNotificationList(widget.userId, widget.pageSize, pageNum + 1)
-      .then((data) {
-        widget.notificationTiles.add(data['notifications']);
-      });
-  }
-
-  Future updateNotificationList(pageNum) async {
-    if(!widget.completedAllPages){
-      if(pageNum == 1){
-        await initGetNextPage(pageNum - 1);
-        await initGetNextPage(pageNum);
-      }
-      if(pageNum == widget.notificationTiles.length){
-        print('fetching next data');
-        await initGetNextPage(pageNum);
-        await initGetNextPage(pageNum + 1);
-      }
-      if(widget.notificationTiles[widget.notificationTiles.length-1].length == 0){
-        widget.completedAllPages = true;
-      }
-    }
-
-    return widget.notificationTiles[pageNum-1];
-  }
-
-  @override
-  void initState(){
-    super.initState();
-
-    initGetNextPage(widget.pageNum - 1);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,25 +55,8 @@ class _NotificationsState extends State<Notifications> {
                       heroTag: widget.userId,
                     ),
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: FutureBuilder(
-                      future: updateNotificationList(widget.pageNum),
-                      builder: (BuildContext context, AsyncSnapshot snapshot){
-                        if(snapshot.connectionState == ConnectionState.done){
-                          return ListView(
-                            shrinkWrap: true,
-                            physics: AlwaysScrollableScrollPhysics(),
-                            children: ListTile.divideTiles(
-                              context: context,
-                              tiles: snapshot.data
-                            ).toList(),
-                          );
-                        }else{
-                          return Container();
-                        }
-                      },
-                    ),
+                  Column(
+                    children: widget.notificationTiles[widget.pageNum - 1],
                   ),
                 ],
               ),
@@ -185,9 +92,9 @@ class _NotificationsState extends State<Notifications> {
                   Text(
                     'Page ${widget.pageNum}',
                     style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14.0,
-                        color: Colors.grey[600]
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14.0,
+                      color: Colors.grey[600]
                     ),
                   ),
                   Material(
@@ -198,11 +105,16 @@ class _NotificationsState extends State<Notifications> {
                       tooltip: 'Next',
                       highlightColor: Theme.of(context).accentColor,
                       padding: EdgeInsets.symmetric(horizontal: 30.0),
-                      onPressed: widget.completedAllPages && widget.pageNum + 1 == widget.notificationTiles.length ? null : (){
-                        print(widget.completedAllPages);
-                        setState(() {
-                          widget.pageNum++;
-                        });
+                      onPressed: widget.notificationTiles[widget.pageNum].length == 0 || widget.notificationTiles[widget.pageNum - 1].length == 0 ? null : () async {
+                        widget.pageNum++;
+
+                        if(widget.pageNum == widget.notificationTiles.length){
+                          await buildNotificationList(widget.userId, widget.pageSize, widget.pageNum)
+                            .then((result) {
+                              widget.notificationTiles.addAll(result['notifications']);
+                            });
+                        }
+                        setState(() {});
                       },
                     ),
                   )
@@ -212,58 +124,6 @@ class _NotificationsState extends State<Notifications> {
           ],
         ),
       )
-    );
-  }
-}
-
-class _TextNotifications extends StatefulWidget {
-  final String msg;
-  final String postDate;
-
-  _TextNotifications({
-    Key key,
-    this.msg,
-    this.postDate,
-}) : super (key: key);
-
-  @override
-  __TextNotificationsState createState() => __TextNotificationsState();
-}
-
-class __TextNotificationsState extends State<_TextNotifications> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(246, 246, 246, 1)
-      ),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.deepOrange,
-          radius: 24.0,
-        ),
-        contentPadding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
-        title: Text(
-          widget.msg,
-          maxLines: 3,
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            fontSize: 14.0,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[800]
-          ),
-        ),
-        subtitle: Text(
-          widget.postDate,
-          style: TextStyle(
-            fontSize: 12.0
-          ),
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.more_horiz),
-          onPressed: () {}
-        ),
-      ),
     );
   }
 }

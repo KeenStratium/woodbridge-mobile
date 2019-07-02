@@ -1195,13 +1195,17 @@ class _HomePageState extends State<HomePage> {
                     backgroundColor: Colors.white,
                     actions: <Widget>[
                       IconButton(
-                        onPressed: () {
-                          Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
-                            firstName: this.widget.firstName,
-                            lastName: this.widget.lastName,
-                            userId: this.widget.heroTag,
-                          ));
-                          Navigator.push(context, route);
+                        onPressed: () async {
+                          await buildNotificationList(this.widget.heroTag, 3, 1)
+                            .then((result) {
+                              Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
+                                firstName: this.widget.firstName,
+                                lastName: this.widget.lastName,
+                                userId: this.widget.heroTag,
+                                notificationTiles: result['notifications'],
+                              ));
+                              Navigator.push(context, route);
+                            });
                         },
                         icon: Icon(
                           Icons.notifications_none,
