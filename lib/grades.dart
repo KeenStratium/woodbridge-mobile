@@ -214,7 +214,7 @@ class _GradesState extends State<Grades> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Grades'),
+        title: Text('Progress'),
       ),
       body: SafeArea(
         child: Container(
