@@ -13,7 +13,7 @@ class Notifications extends StatefulWidget {
   final String lastName;
   final String userId;
   int pageNum = 1;
-  int pageSize = 3;
+  int pageSize;
   bool completedAllPages = false;
   List<List<Widget>> notificationTiles;
 
@@ -21,7 +21,8 @@ class Notifications extends StatefulWidget {
     this.firstName,
     this.lastName,
     this.userId,
-    this.notificationTiles
+    this.notificationTiles,
+    this.pageSize
   });
 
   @override
@@ -55,8 +56,13 @@ class _NotificationsState extends State<Notifications> {
                       heroTag: widget.userId,
                     ),
                   ),
-                  Column(
-                    children: widget.notificationTiles[widget.pageNum - 1],
+                  Expanded(
+                    flex: 1,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: widget.notificationTiles[widget.pageNum - 1],
+                      ),
+                    ),
                   ),
                 ],
               ),

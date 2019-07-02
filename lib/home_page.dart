@@ -340,8 +340,6 @@ class _HomePageState extends State<HomePage> {
     monthActivities = {};
     activityNames = [];
 
-    print(classId);
-
     await getStudentActivities(classId)
       .then((results) {
         DateTime currTime = DateTime.now();
@@ -558,8 +556,6 @@ class _HomePageState extends State<HomePage> {
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
 
-    print(widget.classId);
-
     firebaseCloudMessaging_Listeners(widget.classId);
     transformActivityList(widget.classId);
     getAttendanceInfo(widget.heroTag);
@@ -581,6 +577,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
+    int notificationPageSize = 8;
     height *= .2;
 
     return WillPopScope(
@@ -721,8 +718,6 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       onTap: () {
                                         List topics = getTopics();
-                                        print(topics);
-
                                         removeNotificationToken(_token)
                                           .then((resolves) {
                                             for(int i = 0; i < topics.length; i++){
@@ -1121,13 +1116,14 @@ class _HomePageState extends State<HomePage> {
                     actions: <Widget>[
                       IconButton(
                         onPressed: () async {
-                          await buildNotificationList(this.widget.heroTag, 3, 1)
+                          await buildNotificationList(this.widget.heroTag, notificationPageSize, 1)
                             .then((result) {
                               Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
                                 firstName: this.widget.firstName,
                                 lastName: this.widget.lastName,
                                 userId: this.widget.heroTag,
                                 notificationTiles: result['notifications'],
+                                pageSize: notificationPageSize,
                               ));
                               Navigator.push(context, route);
                             });
