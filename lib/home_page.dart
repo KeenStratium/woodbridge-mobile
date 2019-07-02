@@ -21,71 +21,6 @@ import 'initial_onboard.dart';
 import 'login.dart';
 import 'message_board.dart';
 
-List<ActivityEvent> june = <ActivityEvent>[
-  ActivityEvent(
-      title: 'Event title 1',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 2',
-      venue: 'Carmelite Hall',
-      time: '9:30:00',
-      day: '02',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 3',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '04',
-      weekday: 'Thu'
-  ),
-];
-
-List<ActivityEvent> july = <ActivityEvent>[
-  ActivityEvent(
-      title: 'Event title 4',
-      venue: 'Multi-purpose Gym',
-      time: '15:30:00',
-      day: '04',
-      weekday: 'Fri'
-  ),
-  ActivityEvent(
-      title: 'Event title 5',
-      venue: 'Multi-purpose Gym',
-      time: '15:30:00',
-      day: '04',
-      weekday: 'Fri'
-  ),
-  ActivityEvent(
-      title: 'Event title 6',
-      venue: 'Multi-purpose Gym',
-      time: '13:30:00',
-      day: '04',
-      weekday: 'Fri'
-  ),
-];
-
-List<ActivityEvent> august = <ActivityEvent>[
-  ActivityEvent(
-      title: 'Event title 2',
-      venue: 'Carmelite Hall',
-      time: '9:05:00',
-      day: '03',
-      weekday: 'Tue'
-  ),
-  ActivityEvent(
-      title: 'Event title 3',
-      venue: 'Multi-purpose Gym',
-      time: '8:00:00',
-      day: '04',
-      weekday: 'Thu'
-  ),
-];
-
 double totalBalance = 0.00;
 double totalPayments = 0.00;
 
@@ -405,25 +340,13 @@ class _HomePageState extends State<HomePage> {
     monthActivities = {};
     activityNames = [];
 
+    print(classId);
+
     await getStudentActivities(classId)
       .then((results) {
         DateTime currTime = DateTime.now();
         DateTime currDay = DateTime(currTime.year, currTime.month, currTime.day);
         List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-        try {
-          if(monthActivities['June'].length > 0);
-        } catch(e){
-          monthActivities['June'] = [];
-        }
-        monthActivities['June'].addAll(august);
-
-        try {
-          if(monthActivities['July'].length > 0);
-        } catch(e){
-          monthActivities['July'] = [];
-        }
-        monthActivities['July'].addAll(july);
 
         monthActivities.forEach((month, activities) {
           if(!activityNames.contains(month)){
@@ -441,11 +364,11 @@ class _HomePageState extends State<HomePage> {
 
           if(date.isAfter(currDay) || date.isAtSameMomentAs(currDay)){
             ActivityEvent activityEvent = ActivityEvent(
-                title: activity['a_title'],
-                venue: activity['a_location'],
-                time: activity['a_time_start'],
-                day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
-                weekday: weekdayNames[date.weekday - 1]
+              title: activity['a_title'],
+              venue: activity['a_location'],
+              time: activity['a_time_start'],
+              day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
+              weekday: weekdayNames[date.weekday - 1]
             );
 
             try {
@@ -634,6 +557,8 @@ class _HomePageState extends State<HomePage> {
     presentDays = <DateTime>[];
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
+
+    print(widget.classId);
 
     firebaseCloudMessaging_Listeners(widget.classId);
     transformActivityList(widget.classId);

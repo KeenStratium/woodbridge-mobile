@@ -28,7 +28,6 @@ String oldUserId = '';
 
 Future<List> getStudentActivities(classId) async {
   String url = '$baseApi/act/get-student-activities?data=$classId';
-
   var response = await http.get(url,
     headers: {
       'Accept': 'application/json',
