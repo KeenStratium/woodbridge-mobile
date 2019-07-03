@@ -153,3 +153,21 @@ Future fetchStudentNotification(userId, pageSize, pageNum) async {
 
   return jsonDecode(response.body);
 }
+
+Future fetchStudentMessages(userId, pageSize, pageNum) async {
+  String url = '$baseApi/notif/get-paginated-messages';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'page_size': pageSize,
+      'page_num': pageNum,
+      's_id': userId
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}

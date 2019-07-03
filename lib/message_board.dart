@@ -8,24 +8,6 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'services.dart';
 
-Future getStudentMessages(userId) async {
-  String url = '$baseApi/notif/get-paginated-messages';
-
-  var response = await http.post(url, body: json.encode({
-    'data': {
-      'page_size': 10,
-      'page_num': 1,
-      's_id': userId
-    }
-  }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
-
-  return jsonDecode(response.body);
-}
-
 Future respondNotification(userId, notifId, notifResponse) async {
   String url = '$baseApi/notif/respond-student-notif';
 
@@ -412,6 +394,8 @@ class MessageBoard extends StatefulWidget {
 class _MessageBoardState extends State<MessageBoard> {
   List<String> responseActions = ['Going', 'Not going', 'Undecided'];
   List<Widget> boards = <Widget>[];
+  int pageSize = 10;
+  int pageNum = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -427,7 +411,7 @@ class _MessageBoardState extends State<MessageBoard> {
           child: Column(
             children: <Widget>[
               FutureBuilder(
-                future: getStudentMessages(widget.userId),
+                future: fetchStudentMessages(widget.userId, pageSize, pageNum),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if(snapshot.connectionState == ConnectionState.done){
                     List data = snapshot.data['data'];
