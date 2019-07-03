@@ -1,13 +1,6 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'model.dart';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
-import 'package:flutter/services.dart';
-import 'services.dart';
+import 'notification_services.dart';
 
 class Notifications extends StatefulWidget {
   final String firstName;

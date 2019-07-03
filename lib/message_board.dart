@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
-import 'services.dart';
+import 'message_services.dart';
 
 class MessageBoard extends StatefulWidget {
   String userId;

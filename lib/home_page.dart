@@ -6,6 +6,8 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter/services.dart';
+import 'message_services.dart';
+import 'notification_services.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
@@ -197,7 +199,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String _token;
   StreamController streamController;
-  WidgetsBindingObserver _widgetsBindingObserver;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   Color attendanceStatusColor = Colors.redAccent;
   Icon attendanceStatusIcon = Icon(
@@ -1126,11 +1127,9 @@ class _HomePageState extends State<HomePage> {
                                         label: 'Messages',
                                         isCustomOnPressed: true,
                                         customOnPressed: () async {
-                                          print('tapped!');
 
                                           await buildMessageList(widget.heroTag, messagePageSize, 1)
                                             .then((result) {
-                                              print(result);
                                               Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
                                                 userId: widget.heroTag,
                                                 pageSize: messagePageSize,
