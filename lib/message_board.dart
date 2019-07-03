@@ -382,9 +382,19 @@ class _BoardState extends State<Board> {
 
 class MessageBoard extends StatefulWidget {
   String userId;
+  String firstName;
+  String lastName;
+  int pageSize = 10;
+  int pageNum = 1;
+  List<List<Widget>> messageBoardLists;
 
   MessageBoard({
-    this.userId
+    this.userId,
+    this.pageSize,
+    this.pageNum,
+    this.messageBoardLists,
+    this.firstName,
+    this.lastName
   });
 
   @override
@@ -394,8 +404,6 @@ class MessageBoard extends StatefulWidget {
 class _MessageBoardState extends State<MessageBoard> {
   List<String> responseActions = ['Going', 'Not going', 'Undecided'];
   List<Widget> boards = <Widget>[];
-  int pageSize = 10;
-  int pageNum = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -405,63 +413,98 @@ class _MessageBoardState extends State<MessageBoard> {
       appBar: AppBar(
         title: Text('Message Board'),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
-          child: Column(
-            children: <Widget>[
-              FutureBuilder(
-                future: fetchStudentMessages(widget.userId, pageSize, pageNum),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if(snapshot.connectionState == ConnectionState.done){
-                    List data = snapshot.data['data'];
+      body: Flex(
+        direction: Axis.vertical,
+        children: <Widget>[
+          Expanded(
+            child: Flex(
+              direction: Axis.vertical,
+              children: <Widget>[
+                Flexible(
+                  flex: 0,
+                  child: ProfileHeader(
+                    firstName: widget.firstName,
+                    lastName: widget.lastName,
+                    heroTag: widget.userId,
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+                      child: FutureBuilder(
+                        future: fetchStudentMessages(widget.userId, widget.pageSize, widget.pageNum),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          if(snapshot.connectionState == ConnectionState.done){
+                            List data = snapshot.data['data'];
 
-                    for(int i = 0; i < data.length; i++){
-                      Map message = data[i];
-                      DateTime eventDate;
-                      String eventTime;
-                      String response = message['response'];
-                      int activeType = 0;
+                            for(int i = 0; i < data.length; i++){
+                              Map message = data[i];
+                              DateTime eventDate;
+                              String eventTime;
+                              String response = message['response'];
+                              int activeType = 0;
 
-                      for(int i = 0; i < responseActions.length; i++){
-                        if(responseActions[i] == response){
-                          activeType = i + 1;
-                          break;
-                        }
-                      }
+                              for(int i = 0; i < responseActions.length; i++){
+                                if(responseActions[i] == response){
+                                  activeType = i + 1;
+                                  break;
+                                }
+                              }
 
-                      if(message['details'].length > 0){
-                        Map details = message['details'][0];
-                        String date = details['aa_event_date'];
-                        eventTime = details['aa_event_time'];
-                        eventDate = DateTime.parse(date);
-                      }
+                              if(message['details'].length > 0){
+                                Map details = message['details'][0];
+                                String date = details['aa_event_date'];
+                                eventTime = details['aa_event_time'];
+                                eventDate = DateTime.parse(date);
+                              }
 
-                      boards.add(Board(
-                        title: message['notif_subj'],
-                        description: message['notif_desc'],
-                        category: message['category'],
-                        hasResponse: message['category'] == 'appointment',
-                        notifId: message['id'],
-                        date: eventDate,
-                        time: eventTime,
-                        responseActions: responseActions,
-                        activeType: activeType,
-                        userId: widget.userId,
-                      ));
-                    }
+                              boards.add(Board(
+                                title: message['notif_subj'],
+                                description: message['notif_desc'],
+                                category: message['category'],
+                                hasResponse: message['category'] == 'appointment',
+                                notifId: message['id'],
+                                date: eventDate,
+                                time: eventTime,
+                                responseActions: responseActions,
+                                activeType: activeType,
+                                userId: widget.userId,
+                              ));
+                            }
 
-                    return Column(
-                      children: boards,
-                    );
-                  }else{
-                    return Text('fetching messages...');
-                  }
-                },
-              )
-            ],
+                            return Column(
+                              children: boards,
+                            );
+                          }else{
+                            return Text('fetching messages...');
+                          }
+                        },
+                      )
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
+          PaginationControl(
+            pageNum: widget.pageNum,
+            prevCallback: () {
+              setState(() {
+                widget.pageNum--;
+                print(widget.pageNum);
+              });
+            },
+            nextCallback: () async {
+              setState(() {
+                widget.pageNum++;
+                print(widget.pageNum);
+              });
+            },
+            nextDisableCondition: true,
+          )
+        ],
       ),
     );
   }
