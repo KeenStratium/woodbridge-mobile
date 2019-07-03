@@ -621,6 +621,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     int notificationPageSize = 8;
+    int messagePageSize = 8;
     height *= .2;
 
     return WillPopScope(
@@ -1123,15 +1124,24 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_announcements_2x.png',
                                         label: 'Messages',
-                                        pageBuilder: MessageBoard(
-                                          userId: widget.heroTag,
-                                          pageSize: 4,
-                                          pageNum: 1,
-                                          messageBoardLists: [[]],
-                                          firstName: widget.firstName,
-                                          lastName: widget.lastName,
-                                        ),
-                                        buildContext: context,
+                                        isCustomOnPressed: true,
+                                        customOnPressed: () async {
+                                          print('tapped!');
+
+                                          await buildMessageList(widget.heroTag, messagePageSize, 1)
+                                            .then((result) {
+                                              print(result);
+                                              Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
+                                                userId: widget.heroTag,
+                                                pageSize: messagePageSize,
+                                                pageNum: 1,
+                                                messageBoardLists: result['messages'],
+                                                firstName: widget.firstName,
+                                                lastName: widget.lastName,
+                                              ));
+                                              Navigator.push(context, route);
+                                            });
+                                        },
                                       )
                                     ],
                                   ),
@@ -1263,7 +1273,9 @@ class MenuItem extends StatelessWidget {
     this.label,
     this.iconPath,
     this.pageBuilder,
-    this.buildContext
+    this.buildContext,
+    this.isCustomOnPressed,
+    this.customOnPressed
   }) : super(key: key);
 
   final Widget child;
@@ -1271,14 +1283,24 @@ class MenuItem extends StatelessWidget {
   final String label;
   final Widget pageBuilder;
   final BuildContext buildContext;
+  var customOnPressed;
+  bool isCustomOnPressed;
 
   @override
   Widget build(BuildContext context) {
+    if(isCustomOnPressed == null){
+      isCustomOnPressed = false;
+    }
+
     return Material(
       child: InkWell(
         onTap: () {
-          Route route = MaterialPageRoute(builder: (buildContext) => pageBuilder);
-          Navigator.push(buildContext, route);
+          if(isCustomOnPressed){
+            customOnPressed();
+          }else{
+            Route route = MaterialPageRoute(builder: (buildContext) => pageBuilder);
+            Navigator.push(buildContext, route);
+          }
         },
         child: Material(
           child: InkWell(
