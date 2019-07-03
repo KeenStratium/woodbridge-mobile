@@ -29,10 +29,6 @@ Future getStudentMessages(userId) async {
 Future respondNotification(userId, notifId, notifResponse) async {
   String url = '$baseApi/notif/respond-student-notif';
 
-  print(userId);
-  print(notifId);
-  print(notifResponse);
-
   var response = await http.post(url, body: json.encode({
     'data': {
       'notif_id': notifId,

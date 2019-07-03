@@ -95,14 +95,24 @@ String formatMilitaryTime(time) {
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
+List<List<Widget>> transformPaginationListCache(list, pageSize, offsetPage, callback) {
+  List<List<Widget>> paginatedList = <List<Widget>>[];
+  for(int i = 0, n = 0; i < offsetPage; i++){
+    List<Widget> pageList = <Widget>[];
+    for(int o = 0; o < pageSize && n < list.length; o++, n++){
+      var item = list[n];
+      pageList.add(callback(item));
+    }
+    paginatedList.add(pageList);
+  }
+
+  return paginatedList;
+}
+
 Future buildNotificationList(userId, pageSize, pageNum) async {
   int offsetPage = 2;
   int offsetPageSize = pageSize * offsetPage;
   List<Future> futures = <Future>[fetchStudentNotification(userId, offsetPageSize, pageNum)];
-
-  print(userId);
-  print(offsetPageSize);
-  print(pageNum);
 
   return await Future.wait(futures)
     .then((result) {
@@ -111,21 +121,13 @@ Future buildNotificationList(userId, pageSize, pageNum) async {
       List _studentNotifications = currentPageData['data'];
       bool isSuccess = currentPageData['success'] ?? false;
       if(isSuccess){
-        for(int i = 0, n = 0; i < offsetPage; i++){
-          List<Widget> notificationsData = <Widget>[];
-          for(int o = 0; o < pageSize && n < _studentNotifications.length; o++, n++){
-            Map studentNotification = _studentNotifications[n];
-
-            print(studentNotification['id']);
-
-            notificationsData.add(TextNotifications(
-              msg: studentNotification['notif_desc'],
-              postDate: 'about an hour ago',
-              profileAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6"
-            ));
-          }
-          _notifications.add(notificationsData);
-        }
+        _notifications = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item) {
+          return TextNotifications(
+            msg: item['notif_desc'],
+            postDate: 'about an hour ago',
+            profileAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6"
+          );
+        });
       }else{
         return Text('Something went wrong getting you updated. Please try again.');
       }
