@@ -339,7 +339,7 @@ class _HomePageState extends State<HomePage> {
   void transformActivityList(classId) async {
     await getStudentActivities(classId)
       .then((results) {
-        DateTime currTime = DateTime.now();
+        DateTime currTime = DateTime.now().toLocal();
         DateTime currDay = DateTime(currTime.year, currTime.month, currTime.day);
         List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -351,7 +351,7 @@ class _HomePageState extends State<HomePage> {
 
         for(int i = 0; i < results.length; i++){
           Map activity = results[i];
-          DateTime date = DateTime.parse(activity['a_start_date']);
+          DateTime date = DateTime.parse(activity['a_start_date']).toLocal();
           int monthIndex = date.month - 1;
           String month = monthNames[monthIndex];
 
