@@ -38,6 +38,7 @@ class _MessageBoardState extends State<MessageBoard> {
     boards = <Widget>[];
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Message Board'),
       ),
