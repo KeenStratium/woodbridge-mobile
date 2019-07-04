@@ -208,12 +208,12 @@ class _BoardState extends State<Board> {
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(9.0), topRight: Radius.circular(9.0)),
-                  color: widget.category == 'Announcement' ? Color.fromRGBO(212, 153, 83, .08) : Color.fromRGBO(21, 126, 204, .1),
+                  color: widget.category.toLowerCase() == 'announcement' ? Color.fromRGBO(212, 153, 83, .08) : Color.fromRGBO(21, 126, 204, .1),
                 ),
                 child: Text(
-                  this.widget.category,
+                  capitalize(this.widget.category),
                   style: TextStyle(
-                      color: widget.category == 'Announcement' ? Color.fromRGBO(212, 153, 83, 1) : Color.fromRGBO(21, 126, 204, .85),
+                      color: widget.category.toLowerCase() == 'announcement' ? Color.fromRGBO(212, 153, 83, 1) : Color.fromRGBO(21, 126, 204, .85),
                       fontSize: 15.0,
                       fontWeight: FontWeight.w700
                   ),
@@ -234,9 +234,9 @@ class _BoardState extends State<Board> {
                             Text(
                               '${dateFormatted}',
                               style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.grey[600],
-                                  fontSize: 14.0
+                                fontWeight: FontWeight.w700,
+                                color: Colors.grey[600],
+                                fontSize: 14.0
                               ),
                             ),
                             Container(
@@ -244,14 +244,14 @@ class _BoardState extends State<Board> {
                               height: 10.0,
                               margin: EdgeInsets.symmetric(horizontal: 8.0),
                               decoration: BoxDecoration(
-                                  color: Colors.grey[300]
+                                color: Colors.grey[300]
                               ),
                             ),
                             Text(
                               '${timeFormatted}',
                               style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.grey[600],
+                                fontWeight: FontWeight.w700,
+                                color: Colors.grey[600],
                                   fontSize: 14.0
                               ),
                             ),
@@ -272,9 +272,9 @@ class _BoardState extends State<Board> {
                             Text(
                               this.widget.title,
                               style: TextStyle(
-                                  fontSize: 17.0,
-                                  color: Color.fromRGBO(78, 78, 78, 1),
-                                  fontWeight: FontWeight.w700
+                                fontSize: 17.0,
+                                color: Color.fromRGBO(78, 78, 78, 1),
+                                fontWeight: FontWeight.w700
                               ),
                             ),
                             Padding(
@@ -283,9 +283,9 @@ class _BoardState extends State<Board> {
                             Text(
                               this.widget.description,
                               style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: Colors.grey[700],
-                                  fontWeight: FontWeight.w600
+                                fontSize: 16.0,
+                                color: Colors.grey[700],
+                                fontWeight: FontWeight.w600
                               ),
                             )
                           ],

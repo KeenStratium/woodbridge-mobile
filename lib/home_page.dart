@@ -621,7 +621,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     int notificationPageSize = 8;
-    int messagePageSize = 4;
+    int messagePageSize = 8;
     height *= .2;
 
     return WillPopScope(
