@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'model.dart';
-import 'dart:io'; 
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter/services.dart';
+import 'message_services.dart';
+import 'notification_services.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
@@ -197,14 +199,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String _token;
   StreamController streamController;
-  WidgetsBindingObserver _widgetsBindingObserver;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   Color attendanceStatusColor = Colors.redAccent;
   Icon attendanceStatusIcon = Icon(
     Icons.error_outline,
     color: Colors.redAccent,
   );
-  List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   String attendanceStatus = '';
   String schoolYearStart;
@@ -621,6 +621,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     int notificationPageSize = 8;
+    int messagePageSize = 8;
     height *= .2;
 
     return WillPopScope(
@@ -1123,10 +1124,22 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_announcements_2x.png',
                                         label: 'Messages',
-                                        pageBuilder: MessageBoard(
-                                          userId: widget.heroTag,
-                                        ),
-                                        buildContext: context,
+                                        isCustomOnPressed: true,
+                                        customOnPressed: () async {
+
+                                          await buildMessageList(widget.heroTag, messagePageSize, 1)
+                                            .then((result) {
+                                              Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
+                                                userId: widget.heroTag,
+                                                pageSize: messagePageSize,
+                                                pageNum: 1,
+                                                messageBoardLists: result['messages'],
+                                                firstName: widget.firstName,
+                                                lastName: widget.lastName,
+                                              ));
+                                              Navigator.push(context, route);
+                                            });
+                                        },
                                       )
                                     ],
                                   ),
@@ -1258,7 +1271,9 @@ class MenuItem extends StatelessWidget {
     this.label,
     this.iconPath,
     this.pageBuilder,
-    this.buildContext
+    this.buildContext,
+    this.isCustomOnPressed,
+    this.customOnPressed
   }) : super(key: key);
 
   final Widget child;
@@ -1266,14 +1281,24 @@ class MenuItem extends StatelessWidget {
   final String label;
   final Widget pageBuilder;
   final BuildContext buildContext;
+  var customOnPressed;
+  bool isCustomOnPressed;
 
   @override
   Widget build(BuildContext context) {
+    if(isCustomOnPressed == null){
+      isCustomOnPressed = false;
+    }
+
     return Material(
       child: InkWell(
         onTap: () {
-          Route route = MaterialPageRoute(builder: (buildContext) => pageBuilder);
-          Navigator.push(buildContext, route);
+          if(isCustomOnPressed){
+            customOnPressed();
+          }else{
+            Route route = MaterialPageRoute(builder: (buildContext) => pageBuilder);
+            Navigator.push(buildContext, route);
+          }
         },
         child: Material(
           child: InkWell(
