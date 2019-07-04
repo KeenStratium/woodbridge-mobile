@@ -205,7 +205,6 @@ class _HomePageState extends State<HomePage> {
     Icons.error_outline,
     color: Colors.redAccent,
   );
-  List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   String attendanceStatus = '';
   String schoolYearStart;
@@ -622,7 +621,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     int notificationPageSize = 8;
-    int messagePageSize = 8;
+    int messagePageSize = 4;
     height *= .2;
 
     return WillPopScope(

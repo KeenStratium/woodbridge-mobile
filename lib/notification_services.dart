@@ -73,7 +73,7 @@ Future buildNotificationList(userId, pageSize, pageNum) async {
     List _studentNotifications = currentPageData['data'];
     bool isSuccess = currentPageData['success'] ?? false;
     if(isSuccess){
-      _notifications = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item) {
+      _notifications = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item, page, pageItemIndex, index) {
         return TextNotifications(
             msg: item['notif_desc'],
             postDate: 'about an hour ago',

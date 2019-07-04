@@ -128,6 +128,7 @@ class Board extends StatefulWidget {
   String category;
   String time;
   String userId;
+  String timeStamp;
   List<String> responseActions;
   DateTime date;
   bool hasResponse;
@@ -146,7 +147,8 @@ class Board extends StatefulWidget {
     this.responseType,
     this.time,
     this.activeType,
-    this.userId
+    this.userId,
+    this.timeStamp
   });
 
   @override
@@ -176,18 +178,18 @@ class _BoardState extends State<Board> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
           child: Text(
-            '8:59am',
+            widget.timeStamp,
             textAlign: TextAlign.left,
             style: TextStyle(
               fontSize: 12.0,
               fontWeight: FontWeight.w600,
-              color: Colors.grey[400]
+              color: Colors.grey[500]
             ),
           ),
         ),
         Container(
           width: double.infinity,
-          margin: EdgeInsets.only(bottom: 32.0),
+          margin: EdgeInsets.only(bottom: 10.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(9.0)),
               boxShadow: [BoxShadow(
@@ -401,23 +403,51 @@ Future buildMessageList(userId, pageSize, pageNum) async {
   List<String> responseActions = ['Going', 'Not going', 'Undecided'];
 
   return await fetchStudentMessages(userId, offsetPageSize, pageNum)
-      .then((result) {
+    .then((result) {
     List<List<Widget>> _messages = <List<Widget>>[];
     List _studentNotifications;
+    List<DateTime> _timeStampDays = <DateTime>[];
     bool isSuccess = result['success'] ?? false;
     if(isSuccess){
       _studentNotifications = result['data'];
-      _messages = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item) {
+      _messages = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item, page, pageItemIndex, index) {
         Map message = item;
         DateTime eventDate;
+        DateTime timeStamp;
+        DateTime timeStampDay;
+
+        String timeStampHourMinute;
         String eventTime;
         String response = message['response'];
+        String dayName;
+        String month;
+        String day;
+
         int activeType = 0;
+
+        bool isSameDay = false;
 
         for(int i = 0; i < responseActions.length; i++){
           if(responseActions[i] == response){
             activeType = i + 1;
             break;
+          }
+        }
+
+        timeStamp = DateTime.parse(message['notif_timestamp']).toLocal();
+        timeStampHourMinute = formatMilitaryTime('${timeStamp.hour}:${timeStamp.minute}');
+        timeStampDay = DateTime.utc(timeStamp.year, timeStamp.month, timeStamp.day);
+
+        _timeStampDays.add(timeStampDay);
+
+        dayName = dayNames[_timeStampDays[index].weekday - 1];
+        month = monthNames[_timeStampDays[index].month - 1];
+        day = _timeStampDays[index].day.toString();
+
+        if(pageItemIndex > 0){
+          if(_timeStampDays[index].isAtSameMomentAs(_timeStampDays[index - 1])){
+            print('same');
+            isSameDay = true;
           }
         }
 
@@ -430,27 +460,28 @@ Future buildMessageList(userId, pageSize, pageNum) async {
 
         return Column(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 20.0, left: 20.0),
+            pageItemIndex != 0 ? Padding(padding: EdgeInsets.symmetric(vertical: 10.0)) : Container(),
+            isSameDay ? Container() : Container(
+              margin: EdgeInsets.only(top: pageItemIndex != 0 ? 40.0 : 0.0, left: 20.0),
               width: double.infinity,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.grey[200]
                     ),
-                    width: 52.0,
+                    width: 46.0,
                     height: 3.0,
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
                     child: Text(
-                      'Friday, June 14',
+                      '$dayName, $month $day',
                       style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey[500]
+                        color: Colors.grey[700]
                       ),
                     ),
                   ),
@@ -468,6 +499,7 @@ Future buildMessageList(userId, pageSize, pageNum) async {
               responseActions: responseActions,
               activeType: activeType,
               userId: userId,
+              timeStamp: timeStampHourMinute,
             ),
           ],
         );
@@ -475,6 +507,8 @@ Future buildMessageList(userId, pageSize, pageNum) async {
     }else{
       return Text('Something went wrong getting you updated. Please try again.');
     }
+
+    print(_timeStampDays);
 
     return {'messages': _messages};
   });

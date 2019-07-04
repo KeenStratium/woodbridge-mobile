@@ -6,6 +6,9 @@ import 'model.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
+List<String> dayNames = <String>['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
 String localCurrencyFormat(double amount){
   return '₱${amount + 0.00}';
 }
@@ -46,7 +49,7 @@ List<List<Widget>> transformPaginationListCache(list, pageSize, offsetPage, call
     List<Widget> pageList = <Widget>[];
     for(int o = 0; o < pageSize && n < list.length; o++, n++){
       var item = list[n];
-      pageList.add(callback(item));
+      pageList.add(callback(item, i, o, n));
     }
     paginatedList.add(pageList);
   }
