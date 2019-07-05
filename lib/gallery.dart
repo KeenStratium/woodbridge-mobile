@@ -8,12 +8,12 @@ class PhotoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 52.0),
+      margin: EdgeInsets.only(top: 32.0),
       child: Flex(
         direction: Axis.vertical,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 6.0),
+            padding: EdgeInsets.symmetric(horizontal: 28.0, vertical: 6.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -34,37 +34,15 @@ class PhotoCard extends StatelessWidget {
             flex: 0,
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 6.0),
-              padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(11.0),
-                  topRight: Radius.circular(11.0)
-                ),
-                boxShadow: [BoxShadow(
-                  blurRadius: 26.0, 
-                  spreadRadius: -6.0,
-                  color: Color.fromRGBO(0, 0, 0, .12),
-                  offset: Offset(1.0, 3.0)
-                )]
+                borderRadius: BorderRadius.all(Radius.circular(11.0)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(top: 12.0),
-                    child: Text(
-                      '"one love" drawing by kindergarten project. What a phenomenal art!',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).accentColor
-                      )
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 8.0),
+                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -72,41 +50,44 @@ class PhotoCard extends StatelessWidget {
                           'Teacher Lulu',
                           style: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.grey[500],
+                            color: Colors.grey[600],
                             fontWeight: FontWeight.w700
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 0,
-            child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: 200.0),
-                child: Container(
-                alignment: Alignment(1.0, 1.0),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[600],
-                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                  boxShadow: [BoxShadow(
-                    blurRadius: 38.0, 
-                    spreadRadius: -8.0,
-                    color: Color.fromRGBO(0, 0, 0, .65),
-                    offset: Offset(2.0, 5.0)
-                  )]
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(9.0)),
-                  child: Image.network(
-                    'https://imageoptimizer.in/optimize/uploads/p9ygh.jpeg',
-                    fit: BoxFit.fitWidth
+                  Expanded(
+                    flex: 0,
+                    child: ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: 200.0),
+                        child: Container(
+                        alignment: Alignment(1.0, 1.0),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[600],
+                          borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                        ),
+                        child: Image.network(
+                          'https://imageoptimizer.in/optimize/uploads/p9ygh.jpeg',
+                          fit: BoxFit.fitWidth
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                    child: Text(
+                      '"one love" drawing by kindergarten project. What a phenomenal art!',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black87
+                      )
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -133,7 +114,6 @@ class ActivityGallery extends StatelessWidget {
       appBar: AppBar(
         title: Text('Activity Gallery'),
       ),
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Flex(
