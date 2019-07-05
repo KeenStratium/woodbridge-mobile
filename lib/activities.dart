@@ -48,7 +48,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
             margin: EdgeInsets.only(top: i == 0 ? 20.0 : 0.00, bottom: i == monthActivities[activityNames[sliverIndex]].length - 1 ? 20.00 : 0.00),
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Container(
-              height: 80.0,
+              height: 100.0,
               margin: EdgeInsets.symmetric(horizontal: 20.0),
               padding: EdgeInsets.symmetric(vertical: 16.0),
               decoration: BoxDecoration(
@@ -86,15 +86,18 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
                   ),
                   Flexible(
                     flex: 3,
-                    child: Column(
+                    child: Flex(
+                      direction: Axis.vertical,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(
-                          monthActivities[activityNames[sliverIndex]][i].title,
-                          style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w700
+                        Expanded(
+                          child: Text(
+                            monthActivities[activityNames[sliverIndex]][i].title,
+                            style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w700
+                            ),
                           ),
                         ),
                         Flex(
