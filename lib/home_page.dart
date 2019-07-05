@@ -444,9 +444,9 @@ class _HomePageState extends State<HomePage> {
     );
     _firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings settings)
-    {
-      print("Settings registered: $settings");
-    });
+        {
+          print("Settings registered: $settings");
+        });
   }
 
   Future buildStudentPayments(userId) async {

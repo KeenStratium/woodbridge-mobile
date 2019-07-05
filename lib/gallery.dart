@@ -2,78 +2,127 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'GalleryDetail.dart';
 
-class GalleryPreview extends StatelessWidget {
-  final String heroTag;
-  final String imgPath;
-  final String name;
-  final String subName;
-
-  GalleryPreview({
-    this.heroTag,
-    this.imgPath,
-    this.name,
-    this.subName
-  });
+class PhotoCard extends StatelessWidget {
+  GlobalKey stickyKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: new Flex(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: EdgeInsets.only(top: 52.0),
+      child: Flex(
         direction: Axis.vertical,
         children: <Widget>[
-          Hero(
-            tag: this.heroTag,
-            child: Material(
-              child: InkWell(
-                onTap: () =>
-                  Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new GalleryDetail(
-                      galleryName: this.name,
-                      heroTag: this.heroTag,
-                      imgPath: this.imgPath,
-                    ),
-                  )),
-                child: new Image.asset(
-                  this.imgPath,
-                  fit: BoxFit.cover,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 6.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '8:21am',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.grey[500],
+                    fontWeight: FontWeight.w600
+                  ),
                 ),
-              ),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 2.0)),
+              ],
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          Flexible(
+            flex: 0,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(7.0),
+                  topRight: Radius.circular(7.0)
+                ),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 2.0),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 0.0),
                     child: Text(
-                      this.name,
+                      '"one love" drawing by kindergarten project. What a phenomenal art!',
+                      textAlign: TextAlign.left,
                       style: TextStyle(
                         fontSize: 16.0,
-                        fontWeight: FontWeight.w600
-                      ),
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).accentColor
+                      )
                     ),
                   ),
-                  Text(
-                    this.subName,
-                    style: TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w300
+                  Container(
+                    margin: EdgeInsets.only(top: 8.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(7.0),
+                        topRight: Radius.circular(7.0)
+                      )
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'by',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.grey[500],
+                            fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 2.0)),
+                        Text(
+                          'Teacher Lulu',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w700
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          )
+          ),
+          Expanded(
+            flex: 0,
+            child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: 200.0),
+                child: Container(
+                alignment: Alignment(1.0, 1.0),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[600],
+                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                  boxShadow: [BoxShadow(
+                    blurRadius: 38.0, 
+                    spreadRadius: -8.0,
+                    color: Color.fromRGBO(0, 0, 0, .65),
+                    offset: Offset(2.0, 5.0)
+                  )]
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(9.0)),
+                  child: Image.network(
+                    'https://imageoptimizer.in/optimize/uploads/p9ygh.jpeg',
+                    fit: BoxFit.fitWidth
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
-
 }
 
 class ActivityGallery extends StatelessWidget {
@@ -94,51 +143,35 @@ class ActivityGallery extends StatelessWidget {
         title: Text('Activity Gallery'),
       ),
       body: SafeArea(
-        child: Flex(
-          direction: Axis.vertical,
-          children: <Widget>[
-            ProfileHeader(
-              firstName: this.firstName,
-              lastName: this.lastName,
-              heroTag: this.userId,
-            ),
-            Expanded(
-              child: Container(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  scrollDirection: Axis.vertical,
-                  mainAxisSpacing: 1.0,
-                  crossAxisSpacing: 1.0,
-                  children: <Widget>[
-                    GalleryPreview(
-                      heroTag: 'aquaman',
-                      imgPath: 'img/aquaman.jpg',
-                      name: 'Album name 1',
-                      subName: '10 photos'
-                    ),
-                    GalleryPreview(
-                      heroTag: 'venom',
-                      imgPath: 'img/venom.jpg',
-                      name: 'Album name 2',
-                      subName: '8 photos'
-                    ),
-                    GalleryPreview(
-                      heroTag: 'flash',
-                      imgPath: 'img/flash.jpg',
-                      name: 'Album name 3',
-                      subName: '12 photos'
-                    ),
-                    GalleryPreview(
-                      heroTag: 'superman',
-                      imgPath: 'img/superman.jpg',
-                      name: 'Album name 4',
-                      subName: '15 photos'
-                    )
-                  ],
+        child: SingleChildScrollView(
+          child: Flex(
+            direction: Axis.vertical,
+            children: <Widget>[
+              Flexible(
+                flex: 0,
+                child: ProfileHeader(
+                  firstName: this.firstName,
+                  lastName: this.lastName,
+                  heroTag: this.userId,
                 ),
               ),
-            )
-          ],
+              Expanded(
+                flex: 0,
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 40.0),
+                  margin: EdgeInsets.symmetric(horizontal: 6.0),
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: <Widget>[
+                      PhotoCard(),
+                      PhotoCard()
+                    ],
+                  ),
+                )
+              )
+            ],
+          ),
         )
       ),
     );
