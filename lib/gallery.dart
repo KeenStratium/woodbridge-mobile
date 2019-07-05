@@ -33,20 +33,26 @@ class PhotoCard extends StatelessWidget {
           Flexible(
             flex: 0,
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 16.0),
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+              margin: EdgeInsets.symmetric(horizontal: 6.0),
+              padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(7.0),
-                  topRight: Radius.circular(7.0)
+                  topLeft: Radius.circular(11.0),
+                  topRight: Radius.circular(11.0)
                 ),
+                boxShadow: [BoxShadow(
+                  blurRadius: 26.0, 
+                  spreadRadius: -6.0,
+                  color: Color.fromRGBO(0, 0, 0, .12),
+                  offset: Offset(1.0, 3.0)
+                )]
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 0.0),
+                    margin: EdgeInsets.only(top: 12.0),
                     child: Text(
                       '"one love" drawing by kindergarten project. What a phenomenal art!',
                       textAlign: TextAlign.left,
@@ -59,29 +65,14 @@ class PhotoCard extends StatelessWidget {
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 8.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(7.0),
-                        topRight: Radius.circular(7.0)
-                      )
-                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'by',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.grey[500],
-                            fontWeight: FontWeight.w600
-                          ),
-                        ),
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 2.0)),
-                        Text(
                           'Teacher Lulu',
                           style: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.grey[600],
+                            color: Colors.grey[500],
                             fontWeight: FontWeight.w700
                           ),
                         ),
@@ -142,6 +133,7 @@ class ActivityGallery extends StatelessWidget {
       appBar: AppBar(
         title: Text('Activity Gallery'),
       ),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Flex(
