@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
-import 'GalleryDetail.dart';
+import 'package:photo_view/photo_view.dart';
 
 class PhotoCard extends StatelessWidget {
   GlobalKey stickyKey = GlobalKey();
@@ -59,18 +59,31 @@ class PhotoCard extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 0,
-                    child: ConstrainedBox(
+                    child: GestureDetector(
+                       onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HeroPhotoViewWrapper(
+                              imageProvider: NetworkImage('https://imageoptimizer.in/optimize/uploads/p9ygh.jpeg')
+                              )
+                          ));
+                      },
+                      child: ConstrainedBox(
                         constraints: BoxConstraints(minHeight: 200.0),
                         child: Container(
-                        alignment: Alignment(1.0, 1.0),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[600],
-                          borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                        ),
-                        child: Image.network(
-                          'https://imageoptimizer.in/optimize/uploads/p9ygh.jpeg',
-                          fit: BoxFit.fitWidth
+                          alignment: Alignment(1.0, 1.0),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[600],
+                          ),
+                          child: Hero(
+                            tag: "someTag",
+                            child:  Image.network(
+                              'https://imageoptimizer.in/optimize/uploads/p9ygh.jpeg',
+                              fit: BoxFit.fitWidth
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -94,6 +107,37 @@ class PhotoCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class HeroPhotoViewWrapper extends StatelessWidget {
+  const HeroPhotoViewWrapper(
+      {this.imageProvider,
+      this.loadingChild,
+      this.backgroundDecoration,
+      this.minScale,
+      this.maxScale});
+
+  final ImageProvider imageProvider;
+  final Widget loadingChild;
+  final Decoration backgroundDecoration;
+  final dynamic minScale;
+  final dynamic maxScale;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        constraints: BoxConstraints.expand(
+          height: MediaQuery.of(context).size.height,
+        ),
+        child: PhotoView(
+          imageProvider: imageProvider,
+          loadingChild: loadingChild,
+          backgroundDecoration: backgroundDecoration,
+          minScale: minScale,
+          maxScale: maxScale,
+          heroTag: "someTag",
+        ));
   }
 }
 
@@ -137,7 +181,6 @@ class ActivityGallery extends StatelessWidget {
                     physics: NeverScrollableScrollPhysics(),
                     children: <Widget>[
                       PhotoCard(),
-                      PhotoCard()
                     ],
                   ),
                 )
