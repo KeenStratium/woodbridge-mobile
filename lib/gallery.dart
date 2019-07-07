@@ -1,35 +1,49 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'model.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:photo_view/photo_view.dart';
 
+Future getClassImages(classId, pageSize, pageNum) async {
+  String url = '$baseApi/student/get-images-from-class';
+
+  var response = await http.post(url, body: json.encode({
+    'data': classId,
+    'page_size': pageSize,
+    'page_num': pageNum
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+
+List<Widget> _photos = <Widget>[
+  PhotoCard()
+];
+
 class PhotoCard extends StatelessWidget {
-  GlobalKey stickyKey = GlobalKey();
+  final int id;
+  final String imgUrl;
+
+  PhotoCard({
+    this.id,
+    this.imgUrl
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 32.0),
+      margin: EdgeInsets.only(top: 16.0, bottom: 32.0),
       child: Flex(
         direction: Axis.vertical,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 28.0, vertical: 6.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  '8:21am',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.grey[500],
-                    fontWeight: FontWeight.w600
-                  ),
-                ),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 2.0)),
-              ],
-            ),
-          ),
           Flexible(
             flex: 0,
             child: Container(
@@ -47,7 +61,7 @@ class PhotoCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Teacher Lulu',
+                          'June 22, 8:14am',
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Colors.grey[600],
@@ -64,9 +78,10 @@ class PhotoCard extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HeroPhotoViewWrapper(
-                              imageProvider: NetworkImage('https://imageoptimizer.in/optimize/uploads/p9ygh.jpeg')
-                              )
+                            builder: (context) => HeroPhotoViewWrapper(
+                              imageProvider: NetworkImage(imgUrl),
+                              id: this.id
+                            )
                           ));
                       },
                       child: ConstrainedBox(
@@ -78,9 +93,9 @@ class PhotoCard extends StatelessWidget {
                             color: Colors.grey[600],
                           ),
                           child: Hero(
-                            tag: "someTag",
+                            tag: this.id,
                             child:  Image.network(
-                              'https://imageoptimizer.in/optimize/uploads/p9ygh.jpeg',
+                              imgUrl,
                               fit: BoxFit.fitWidth
                             ),
                           ),
@@ -116,13 +131,16 @@ class HeroPhotoViewWrapper extends StatelessWidget {
       this.loadingChild,
       this.backgroundDecoration,
       this.minScale,
-      this.maxScale});
+      this.maxScale,
+      this.id
+      });
 
   final ImageProvider imageProvider;
   final Widget loadingChild;
   final Decoration backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
+  final int id;
 
   @override
   Widget build(BuildContext context) {
@@ -136,15 +154,21 @@ class HeroPhotoViewWrapper extends StatelessWidget {
           backgroundDecoration: backgroundDecoration,
           minScale: minScale,
           maxScale: maxScale,
-          heroTag: "someTag",
+          heroTag: id,
         ));
   }
 }
 
-class ActivityGallery extends StatelessWidget {
+class ActivityGallery extends StatefulWidget {
   final String firstName;
   final String lastName;
   final String userId;
+  final String classId = 'NUR-15560-2019';
+  int pageNum = 1;
+  int pageSize = 2;
+  bool isLastItem = false;
+  bool isLoading = false;
+  bool noMoreImages = false;
 
   ActivityGallery({
     this.firstName,
@@ -153,40 +177,107 @@ class ActivityGallery extends StatelessWidget {
   });
 
   @override
+  _ActivityGalleryState createState() => _ActivityGalleryState();
+}
+
+class _ActivityGalleryState extends State<ActivityGallery> {
+  ScrollController _scrollController = ScrollController();
+  
+  void fetchClassImages(classId, pageSize, pageNum) async {
+    return await getClassImages(classId, pageSize, pageNum)
+      .then((results) {
+        setState(() {
+          if(results.length == 0){
+            widget.noMoreImages = true;
+            print('finished fetching');
+          }else{
+            for(int i = 0; i < results.length; i++){
+              Map photo = results[i];
+              _photos.add(PhotoCard(
+                id: photo['id'],
+                imgUrl: photo['img_url'],
+              ));
+              print(photo['id']);
+            }
+          }
+          widget.isLoading = false;
+        });
+      });
+  }
+
+  void _loadMore() {
+    widget.pageNum++;
+    setState(() {
+      print('loading more,...');
+      fetchClassImages(widget.classId, widget.pageSize, widget.pageNum);
+    });
+  }
+
+  @override
+  void initState(){
+    super.initState();
+
+    _photos = <Widget>[
+      Padding(
+        padding: EdgeInsets.only(bottom: 32.0),
+        child: ProfileHeader(
+          firstName: this.widget.firstName,
+          lastName: this.widget.lastName,
+          heroTag: this.widget.userId,
+        ),
+      ),
+    ];
+
+    setState(() {
+      widget.isLoading = true;
+      fetchClassImages(widget.classId, widget.pageSize, widget.pageNum);
+      widget.pageNum++;
+    });
+
+    _scrollController.addListener(() {
+      if(!widget.noMoreImages){
+        if (_scrollController.position.pixels >=
+          (_scrollController.position.maxScrollExtent) - 100) {
+            if(!widget.isLoading){
+              widget.isLoading = true;
+              _loadMore();
+            }
+          }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Activity Gallery'),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Flex(
-            direction: Axis.vertical,
-            children: <Widget>[
-              Flexible(
-                flex: 0,
-                child: ProfileHeader(
-                  firstName: this.firstName,
-                  lastName: this.lastName,
-                  heroTag: this.userId,
+        child: Flex(
+          direction: Axis.vertical,
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 6.0),
+                child: ListView.builder(
+                  itemCount: _photos.length,
+                  itemBuilder: (context, i){
+                    return _photos[i];
+                  },
+                  controller: _scrollController,
+                  shrinkWrap: true,
                 ),
-              ),
-              Expanded(
-                flex: 0,
-                child: Container(
-                  padding: EdgeInsets.only(bottom: 40.0),
-                  margin: EdgeInsets.symmetric(horizontal: 6.0),
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: <Widget>[
-                      PhotoCard(),
-                    ],
-                  ),
-                )
               )
-            ],
-          ),
+            )
+          ],
         )
       ),
     );
