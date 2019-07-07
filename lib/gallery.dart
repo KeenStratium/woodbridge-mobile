@@ -46,7 +46,8 @@ class PhotoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     militaryTime = '${timeStamp.hour}:${timeStamp.minute}';
     return Container(
-      margin: EdgeInsets.only(top: 16.0, bottom: 32.0),
+      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 10.0),
+      margin: EdgeInsets.only(bottom: 16.0),
       child: Flex(
         direction: Axis.vertical,
         children: <Widget>[
@@ -57,12 +58,18 @@ class PhotoCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(11.0)),
+                 boxShadow: [BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, .2),
+                  blurRadius: 15.0,
+                  offset: Offset(1.0, 3.0),
+                  spreadRadius: -4.0
+                )]
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -194,19 +201,20 @@ class _ActivityGalleryState extends State<ActivityGallery> {
     return await getClassImages(classId, pageSize, pageNum)
       .then((results) {
         setState(() {
+          if(_photos.length != 1){
+            _photos.removeLast();
+          }
           if(results.length == 0){
             widget.noMoreImages = true;
-            print('finished fetching');
           }else{
             for(int i = 0; i < results.length; i++){
               Map photo = results[i];
               _photos.add(PhotoCard(
                 id: photo['id'],
-                imgUrl: photo['img_url'],
+                imgUrl: '${baseServer}/${photo['img_url']}',
                 timeStamp: DateTime.parse(photo['date_posted']).toLocal(),
                 caption: photo['caption']
               ));
-              print(photo['id']);
             }
           }
           widget.isLoading = false;
@@ -217,7 +225,6 @@ class _ActivityGalleryState extends State<ActivityGallery> {
   void _loadMore() {
     widget.pageNum++;
     setState(() {
-      print('loading more,...');
       fetchClassImages(widget.classId, widget.pageSize, widget.pageNum);
     });
   }
@@ -247,6 +254,27 @@ class _ActivityGalleryState extends State<ActivityGallery> {
         if (_scrollController.position.pixels >=
           (_scrollController.position.maxScrollExtent) - 100) {
             if(!widget.isLoading){
+              setState(() {
+                _photos.add(
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
+                    margin: EdgeInsets.only(bottom: 20.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                      color: Colors.white
+                    ),
+                    child: Text(
+                      'Fetching more photos...',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Theme.of(context).accentColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16.0
+                      ),
+                    ),
+                  )
+                );
+              });
               widget.isLoading = true;
               _loadMore();
             }
@@ -274,7 +302,6 @@ class _ActivityGalleryState extends State<ActivityGallery> {
             Expanded(
               flex: 1,
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 6.0),
                 child: ListView.builder(
                   itemCount: _photos.length,
                   itemBuilder: (context, i){
@@ -284,7 +311,7 @@ class _ActivityGalleryState extends State<ActivityGallery> {
                   shrinkWrap: true,
                 ),
               )
-            )
+            ),
           ],
         )
       ),
