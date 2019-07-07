@@ -1118,6 +1118,7 @@ class _HomePageState extends State<HomePage> {
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
                                           userId: this.widget.heroTag,
+                                          classId: this.widget.classId,
                                         ),
                                         buildContext: context,
                                       ),

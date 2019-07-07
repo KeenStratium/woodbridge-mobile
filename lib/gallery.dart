@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'model.dart';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:photo_view/photo_view.dart';
+import 'services.dart';
 
 Future getClassImages(classId, pageSize, pageNum) async {
   String url = '$baseApi/student/get-images-from-class';
@@ -31,14 +31,20 @@ List<Widget> _photos = <Widget>[
 class PhotoCard extends StatelessWidget {
   final int id;
   final String imgUrl;
+  final DateTime timeStamp;
+  final String caption;
+  String militaryTime;
 
   PhotoCard({
     this.id,
-    this.imgUrl
+    this.imgUrl,
+    this.timeStamp,
+    this.caption
   });
 
   @override
   Widget build(BuildContext context) {
+    militaryTime = '${timeStamp.hour}:${timeStamp.minute}';
     return Container(
       margin: EdgeInsets.only(top: 16.0, bottom: 32.0),
       child: Flex(
@@ -61,7 +67,7 @@ class PhotoCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'June 22, 8:14am',
+                          "${timeFormat(this.timeStamp.toString(), "MMMM d")}, ${formatMilitaryTime(militaryTime)}",
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Colors.grey[600],
@@ -106,7 +112,7 @@ class PhotoCard extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
                     child: Text(
-                      '"one love" drawing by kindergarten project. What a phenomenal art!',
+                      this.caption,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontSize: 16.0,
@@ -163,7 +169,7 @@ class ActivityGallery extends StatefulWidget {
   final String firstName;
   final String lastName;
   final String userId;
-  final String classId = 'NUR-15560-2019';
+  final String classId;
   int pageNum = 1;
   int pageSize = 2;
   bool isLastItem = false;
@@ -173,7 +179,8 @@ class ActivityGallery extends StatefulWidget {
   ActivityGallery({
     this.firstName,
     this.lastName,
-    this.userId
+    this.userId,
+    this.classId
   });
 
   @override
@@ -196,6 +203,8 @@ class _ActivityGalleryState extends State<ActivityGallery> {
               _photos.add(PhotoCard(
                 id: photo['id'],
                 imgUrl: photo['img_url'],
+                timeStamp: DateTime.parse(photo['date_posted']).toLocal(),
+                caption: photo['caption']
               ));
               print(photo['id']);
             }
@@ -231,7 +240,6 @@ class _ActivityGalleryState extends State<ActivityGallery> {
     setState(() {
       widget.isLoading = true;
       fetchClassImages(widget.classId, widget.pageSize, widget.pageNum);
-      widget.pageNum++;
     });
 
     _scrollController.addListener(() {

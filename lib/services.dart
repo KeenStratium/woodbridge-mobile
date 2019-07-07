@@ -17,7 +17,7 @@ String timeFormat(unformattedTime, format){
   String time;
   DateFormat formatter = DateFormat(format ?? 'MMMM d, yyyy');
 
-  time = unformattedTime != null ? formatter.format(DateTime.parse(unformattedTime)) : time = '';
+  time = unformattedTime != null ? formatter.format(DateTime.parse(unformattedTime).toLocal()) : time = '';
 
   return time;
 }
