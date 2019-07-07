@@ -18,11 +18,7 @@ class ActivityEvent {
   ActivityEvent({this.title, this.venue, this.time, this.day, this.weekday});
 }
 
-Map monthActivities = {};
-
 bool isInitiated = false;
-
-List<String> activityNames = <String>[];
 
 String oldUserId = '';
 
@@ -37,11 +33,14 @@ Future<List> getStudentActivities(classId) async {
   return jsonDecode(response.body);
 }
 
-List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
+List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActivities, List<String> activityNameList) {
+  int count = monthActivities.length;
+  List<String> activityNames = activityNameList;
+
   return List.generate(count, (sliverIndex) {
     sliverIndex += firstIndex;
     return new SliverStickyHeaderBuilder(
-      builder: (context, state) => _buildHeader(context, sliverIndex, state),
+      builder: (context, state) => _buildHeader(context, sliverIndex, state, activityNames),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, i) => Container(
@@ -184,7 +183,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, int count) {
   });
 }
 
-Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState state, {String text}) {
+Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState state, List<String> activityNames, {String text}) {
   return new Container(
     height: 48.0,
     padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -218,12 +217,16 @@ class Activities extends StatefulWidget {
   final String lastName;
   final String classId;
   final String userId;
+  final Map monthActivities;
+  final List<String> activityNames;
 
   Activities({
     this.firstName,
     this.lastName,
     this.classId,
-    this.userId
+    this.userId,
+    this.monthActivities,
+    this.activityNames
   });
 
   @override
@@ -249,7 +252,7 @@ class _ActivitiesState extends State<Activities> {
             Flexible(
               child: Builder(builder: (BuildContext context) {
                 return new CustomScrollView(
-                  slivers: _buildLists(context, 0, monthActivities.length),
+                  slivers: _buildLists(context, 0, widget.monthActivities, widget.activityNames)
                 );
               }),
             )

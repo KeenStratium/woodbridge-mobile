@@ -206,6 +206,9 @@ class _HomePageState extends State<HomePage> {
     color: Colors.redAccent,
   );
 
+  Map monthActivities = {};
+  List<String> activityNames = [];
+
   String attendanceStatus = '';
   String schoolYearStart;
   String schoolYearEnd;
@@ -343,11 +346,14 @@ class _HomePageState extends State<HomePage> {
         DateTime currDay = DateTime(currTime.year, currTime.month, currTime.day);
         List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-        monthActivities.forEach((month, activities) {
-          if(!activityNames.contains(month)){
-            activityNames.add(month);
-          }
-        });
+        monthActivities = {};
+        activityNames = [];
+
+        // monthActivities.forEach((month, activities) {
+        //   if(!activityNames.contains(month)){
+        //     activityNames.add(month);
+        //   }
+        // });
 
         for(int i = 0; i < results.length; i++){
           Map activity = results[i];
@@ -463,7 +469,10 @@ class _HomePageState extends State<HomePage> {
 
         results.forEach((payment) {
           var amount;
-          DateTime dueDate = DateTime.parse(payment['due_date']).toLocal();
+          DateTime dueDate;
+          if(payment['due_date'] != null){
+            dueDate = DateTime.parse(payment['due_date']).toLocal();
+          }
           String paymentDate = 'Unpaid';
           try {
             amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
@@ -490,7 +499,7 @@ class _HomePageState extends State<HomePage> {
           }catch(e){}
           payments.add(
             Payment(
-              label: timeFormat(DateTime.parse(payment['due_date']).toLocal().toString(), 'MM/d/y'),
+              label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
               amount: amount,
               dueAmount: payment['due_amount'] + 0.00 ?? 0,
               rawDate: dueDate,
@@ -583,9 +592,6 @@ class _HomePageState extends State<HomePage> {
     presentDays = <DateTime>[];
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
-
-    monthActivities = {};
-    activityNames = [];
 
 
     transformActivityList(widget.classId);
@@ -1108,6 +1114,8 @@ class _HomePageState extends State<HomePage> {
                                           lastName: this.widget.lastName,
                                           classId: this.widget.classId,
                                           userId: this.widget.heroTag,
+                                          monthActivities: this.monthActivities,
+                                          activityNames: this.activityNames,
                                         ),
                                         buildContext: context,
                                       ),
