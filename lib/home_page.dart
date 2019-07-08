@@ -6,6 +6,8 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter/services.dart';
+import 'message_services.dart';
+import 'notification_services.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
@@ -197,14 +199,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String _token;
   StreamController streamController;
-  WidgetsBindingObserver _widgetsBindingObserver;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   Color attendanceStatusColor = Colors.redAccent;
   Icon attendanceStatusIcon = Icon(
     Icons.error_outline,
     color: Colors.redAccent,
   );
-  List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  Map monthActivities = {};
+  List<String> activityNames = [];
 
   String attendanceStatus = '';
   String schoolYearStart;
@@ -339,19 +342,22 @@ class _HomePageState extends State<HomePage> {
   void transformActivityList(classId) async {
     await getStudentActivities(classId)
       .then((results) {
-        DateTime currTime = DateTime.now();
+        DateTime currTime = DateTime.now().toLocal();
         DateTime currDay = DateTime(currTime.year, currTime.month, currTime.day);
         List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-        monthActivities.forEach((month, activities) {
-          if(!activityNames.contains(month)){
-            activityNames.add(month);
-          }
-        });
+        monthActivities = {};
+        activityNames = [];
+
+        // monthActivities.forEach((month, activities) {
+        //   if(!activityNames.contains(month)){
+        //     activityNames.add(month);
+        //   }
+        // });
 
         for(int i = 0; i < results.length; i++){
           Map activity = results[i];
-          DateTime date = DateTime.parse(activity['a_start_date']);
+          DateTime date = DateTime.parse(activity['a_start_date']).toLocal();
           int monthIndex = date.month - 1;
           String month = monthNames[monthIndex];
 
@@ -444,9 +450,9 @@ class _HomePageState extends State<HomePage> {
     );
     _firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings settings)
-    {
-      print("Settings registered: $settings");
-    });
+        {
+          print("Settings registered: $settings");
+        });
   }
 
   Future buildStudentPayments(userId) async {
@@ -463,7 +469,10 @@ class _HomePageState extends State<HomePage> {
 
         results.forEach((payment) {
           var amount;
-          DateTime dueDate = DateTime.parse(payment['due_date']).toLocal();
+          DateTime dueDate;
+          if(payment['due_date'] != null){
+            dueDate = DateTime.parse(payment['due_date']).toLocal();
+          }
           String paymentDate = 'Unpaid';
           try {
             amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
@@ -490,7 +499,7 @@ class _HomePageState extends State<HomePage> {
           }catch(e){}
           payments.add(
             Payment(
-              label: timeFormat(DateTime.parse(payment['due_date']).toLocal().toString(), 'MM/d/y'),
+              label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
               amount: amount,
               dueAmount: payment['due_amount'] + 0.00 ?? 0,
               rawDate: dueDate,
@@ -584,9 +593,6 @@ class _HomePageState extends State<HomePage> {
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
 
-    monthActivities = {};
-    activityNames = [];
-
 
     transformActivityList(widget.classId);
     sortActivityNames();
@@ -621,6 +627,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     int notificationPageSize = 8;
+    int messagePageSize = 8;
     height *= .2;
 
     return WillPopScope(
@@ -912,18 +919,22 @@ class _HomePageState extends State<HomePage> {
                                             children: <Widget>[
                                               Expanded(
                                                 flex: 1,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                child: Flex(
+                                                  direction: Axis.vertical,
+                                                  mainAxisAlignment: nextPaymentDay != null && nextPaymentDay != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
                                                   children: <Widget>[
-                                                    Text(
-                                                      'Next Payment',
-                                                      style: TextStyle(
-                                                          fontSize: 13.0,
-                                                          fontWeight: FontWeight.w700,
-                                                          color: Colors.black87
+                                                    Flexible(
+                                                      flex: 0,
+                                                      child: Text(
+                                                        'Next Payment',
+                                                        style: TextStyle(
+                                                            fontSize: 13.0,
+                                                            fontWeight: FontWeight.w700,
+                                                            color: Colors.black87
+                                                        ),
                                                       ),
                                                     ),
-                                                    Column(
+                                                    nextPaymentDay != null && nextPaymentDay != null ? Column(
                                                       children: <Widget>[
                                                         Text(
                                                           nextPaymentMonth ?? "",
@@ -942,6 +953,21 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         ),
                                                       ],
+                                                    ) : Expanded(
+                                                      flex: 1,
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            'All set!',
+                                                            style: TextStyle(
+                                                              color: Colors.green,
+                                                              fontSize: 16.0,
+                                                              fontWeight: FontWeight.w600
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     )
                                                   ],
                                                 ),
@@ -1107,6 +1133,8 @@ class _HomePageState extends State<HomePage> {
                                           lastName: this.widget.lastName,
                                           classId: this.widget.classId,
                                           userId: this.widget.heroTag,
+                                          monthActivities: this.monthActivities,
+                                          activityNames: this.activityNames,
                                         ),
                                         buildContext: context,
                                       ),
@@ -1117,16 +1145,29 @@ class _HomePageState extends State<HomePage> {
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
                                           userId: this.widget.heroTag,
+                                          classId: this.widget.classId,
                                         ),
                                         buildContext: context,
                                       ),
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_announcements_2x.png',
                                         label: 'Messages',
-                                        pageBuilder: MessageBoard(
-                                          userId: widget.heroTag,
-                                        ),
-                                        buildContext: context,
+                                        isCustomOnPressed: true,
+                                        customOnPressed: () async {
+
+                                          await buildMessageList(widget.heroTag, messagePageSize, 1)
+                                            .then((result) {
+                                              Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
+                                                userId: widget.heroTag,
+                                                pageSize: messagePageSize,
+                                                pageNum: 1,
+                                                messageBoardLists: result['messages'],
+                                                firstName: widget.firstName,
+                                                lastName: widget.lastName,
+                                              ));
+                                              Navigator.push(context, route);
+                                            });
+                                        },
                                       )
                                     ],
                                   ),
@@ -1225,11 +1266,9 @@ class _HomePageState extends State<HomePage> {
                                       userId: '${userId}',
                                       isActive: userId == widget.heroTag,
                                       onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl) {
-                                        setState(() {
-                                          showStudentSwitcher = false;
+                                        showStudentSwitcher = false;
 
-                                          userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId);
-                                        });
+                                        userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId);
                                       }
                                     );
                                   }).toList()
@@ -1258,7 +1297,9 @@ class MenuItem extends StatelessWidget {
     this.label,
     this.iconPath,
     this.pageBuilder,
-    this.buildContext
+    this.buildContext,
+    this.isCustomOnPressed,
+    this.customOnPressed
   }) : super(key: key);
 
   final Widget child;
@@ -1266,14 +1307,24 @@ class MenuItem extends StatelessWidget {
   final String label;
   final Widget pageBuilder;
   final BuildContext buildContext;
+  var customOnPressed;
+  bool isCustomOnPressed;
 
   @override
   Widget build(BuildContext context) {
+    if(isCustomOnPressed == null){
+      isCustomOnPressed = false;
+    }
+
     return Material(
       child: InkWell(
         onTap: () {
-          Route route = MaterialPageRoute(builder: (buildContext) => pageBuilder);
-          Navigator.push(buildContext, route);
+          if(isCustomOnPressed){
+            customOnPressed();
+          }else{
+            Route route = MaterialPageRoute(builder: (buildContext) => pageBuilder);
+            Navigator.push(buildContext, route);
+          }
         },
         child: Material(
           child: InkWell(

@@ -527,6 +527,79 @@ class _InputRadioButtonState extends State<InputRadioButton> {
   }
 }
 
+class PaginationControl extends StatefulWidget {
+  int pageNum;
+  var prevCallback;
+  var nextCallback;
+  bool nextDisableCondition;
+
+  PaginationControl({
+    this.pageNum,
+    this.prevCallback,
+    this.nextCallback,
+    this.nextDisableCondition
+  });
+
+  @override
+  _PaginationControlState createState() => _PaginationControlState();
+}
+
+class _PaginationControlState extends State<PaginationControl> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: Colors.grey[300]
+          )
+        )
+      ),
+      padding: EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Material(
+            color: Colors.white,
+            child: IconButton(
+              icon: Icon(Icons.chevron_left),
+              color: Colors.grey[700],
+              tooltip: 'Previous',
+              highlightColor: Theme.of(context).accentColor,
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
+              onPressed: widget.pageNum > 1 ? () {
+                widget.prevCallback();
+              } : null,
+            ),
+          ),
+          Text(
+            'Page ${widget.pageNum}',
+            style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 14.0,
+                color: Colors.grey[600]
+            ),
+          ),
+          Material(
+            color: Colors.white,
+            child: IconButton(
+              icon: Icon(Icons.chevron_right),
+              color: Colors.grey[700],
+              tooltip: 'Next',
+              highlightColor: Theme.of(context).accentColor,
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
+              onPressed: widget.nextDisableCondition ? null : () async {
+                widget.nextCallback();
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 Future<List> _getStudentInfo(userId) async {
   String url = '$baseApi/student/get-student';
 
