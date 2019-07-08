@@ -98,9 +98,10 @@ class PaymentDetails extends StatelessWidget {
   final String paymentDate;
   final double amountPaid;
   final double amountDue;
-  double enrollmentFee;
   final double tuitionFee;
+  final double totalAnnualPackageOneFee;
   final Map paymentType;
+  double enrollmentFee;
 
   PaymentDetails({
     this.date,
@@ -114,7 +115,8 @@ class PaymentDetails extends StatelessWidget {
     this.tuitionFee,
     this.paymentDate,
     this.paymentType,
-    this.amountDue
+    this.amountDue,
+    this.totalAnnualPackageOneFee
   });
 
   @override
@@ -141,14 +143,39 @@ class PaymentDetails extends StatelessWidget {
         enrollmentFee /= 4;
       }
 
-      if(mathFee != null){
+      if(packageNum == 1){
+        if(enrollmentFee != null){
+          pre_school_payments.add( Payment(
+            label: 'ENROLLMENT FEES',
+            amount: localCurrencyFormat(totalAnnualPackageOneFee),
+            isPaid: paymentDate != 'Unpaid'
+          ));
+        }
+      }else {
+        if(enrollmentFee != null){
+          pre_school_payments.add( Payment(
+            label: 'ENROLLMENT FEES',
+            amount: localCurrencyFormat(enrollmentFee),
+            isPaid: paymentDate != 'Unpaid'
+          ));
+        }
+        if(tuitionFee != null){
+          pre_school_payments.add( Payment(
+            label: 'TUITION FEE',
+            amount: localCurrencyFormat(tuitionFee),
+            isPaid: paymentDate != 'Unpaid'
+          ));
+        }
+      }
+
+      if(mathFee != null && mathFee != 0.0){
         kumon_payments.add( Payment(
           label: 'MATH',
           amount: localCurrencyFormat(mathFee),
           isPaid: paymentDate != 'Unpaid'
         ));
       }
-      if(readingFee != null){
+      if(readingFee != null && readingFee != 0.0){
         kumon_payments.add( Payment(
           label: 'READING',
           amount: localCurrencyFormat(readingFee),
@@ -162,21 +189,6 @@ class PaymentDetails extends StatelessWidget {
           isPaid: paymentDate != 'Unpaid'
         ));
       }
-
-      if(enrollmentFee != null){
-        pre_school_payments.add( Payment(
-          label: 'ENROLLMENT FEES',
-          amount: localCurrencyFormat(enrollmentFee),
-          isPaid: paymentDate != 'Unpaid'
-        ));
-      }
-      if(tuitionFee != null){
-        pre_school_payments.add( Payment(
-          label: 'TUITION FEE',
-          amount: localCurrencyFormat(tuitionFee),
-          isPaid: paymentDate != 'Unpaid'
-        ));
-      }
     }else{
       pre_school_payments.add( Payment(
         label: amountDesc.toUpperCase(),
@@ -184,9 +196,6 @@ class PaymentDetails extends StatelessWidget {
         isPaid: paymentDate != 'Unpaid'
       ));
     }
-
-
-
 
     return Scaffold(
       appBar: AppBar(

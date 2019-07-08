@@ -288,6 +288,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                       paymentDate: payment.paidDate ?? 'Unpaid',
                                       paymentType: paymentMetaInfo,
                                       amountDue: payment.dueAmount,
+                                      totalAnnualPackageOneFee: totalAnnualFee - (totalAnnualFee * settings['discount'])
                                     ));
                                     Navigator.push(context, route);
                                   });
