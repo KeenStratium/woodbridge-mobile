@@ -24,9 +24,7 @@ Future getClassImages(classId, pageSize, pageNum) async {
   return jsonDecode(response.body);
 }
 
-List<Widget> _photos = <Widget>[
-  PhotoCard()
-];
+List<Widget> _photos = <Widget>[];
 
 class PhotoCard extends StatelessWidget {
   final int id;

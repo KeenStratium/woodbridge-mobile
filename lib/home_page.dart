@@ -349,12 +349,6 @@ class _HomePageState extends State<HomePage> {
         monthActivities = {};
         activityNames = [];
 
-        // monthActivities.forEach((month, activities) {
-        //   if(!activityNames.contains(month)){
-        //     activityNames.add(month);
-        //   }
-        // });
-
         for(int i = 0; i < results.length; i++){
           Map activity = results[i];
           DateTime date = DateTime.parse(activity['a_start_date']).toLocal();

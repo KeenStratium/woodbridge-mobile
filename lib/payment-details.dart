@@ -182,7 +182,7 @@ class PaymentDetails extends StatelessWidget {
           isPaid: paymentDate != 'Unpaid'
         ));
       }
-      if(kumonRegFee != null){
+      if(kumonRegFee != null && kumonRegFee != 0.0){
         kumon_payments.add( Payment(
           label: 'REGISTRATION FEE',
           amount: localCurrencyFormat(kumonRegFee),
