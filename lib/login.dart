@@ -44,9 +44,22 @@ class _LoginPageState extends State<LoginPage> {
     clearTopics();
   }
 
+  Future getStudents(parentId) async {
+    http.Response response = await http.post(Uri.encodeFull('$baseApi/account/get-parent-student'),
+      body: json.encode({
+        'data': {
+          'parent_id': parentId,
+        }
+      }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+    return await json.decode(response.body);
+  }
+
   Future<Map> getData() async {
-    print(_userController.text);
-    print(_passwordController.text);
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
       body: json.encode({
         'data': {
@@ -68,17 +81,25 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       var userData = await data[0];
+      var studentsData = await getStudents(userData['id']);
+      List studentIds = studentsData['data'];
       List<String> userIds = <String>[];
 
+      for(int i = 0; i < studentIds.length; i++){
+        String userId = studentIds[i];
+
+        userIds.add(userId);
+      }
+
       if(_passwordController.text == 'woodbridge'){ // TODO: Refactor this along with server to have a unified source of initial password
-        userIds.add('initial');
         loginStatus['status'] = 'initial';
       }else{
         loginStatus['status'] = 'auth';
       }
 
       setUsername(_userController.text);
-      loginStatus['ids'] = userData["student_id"].split(',');
+
+      loginStatus['ids'] = userIds;
       loginStatus['user_id'] = userData["user_id"];
 
       return loginStatus;
@@ -178,6 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: (() {
                               getData().then((data) async {
                                 if(data['status'] == 'auth'){
+                                  print(data['ids']);
                                   Route route = MaterialPageRoute(
                                       builder: (BuildContext context) {
                                         return StudentPicker(users: data['ids']);

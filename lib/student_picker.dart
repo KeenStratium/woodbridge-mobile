@@ -6,7 +6,7 @@ import 'home_page.dart';
 List<StudentAvatarPicker> studentAvatarPickers = <StudentAvatarPicker>[];
 
 class StudentPicker extends StatefulWidget {
-  List users;
+  List<String> users;
 
   StudentPicker({
     Key key,
