@@ -328,8 +328,8 @@ class _HomePageState extends State<HomePage> {
       getSchoolYearInformation()
         .then((results) {
           Map schoolYearInformation = results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
-          DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']);
-          DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']);
+          DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']).toLocal();
+          DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']).toLocal();
 
           yearStartDay = DateTime(yearStart.year, yearStart.month, yearStart.day);
           yearEndDay = DateTime(yearEnd.year, yearEnd.month, yearEnd.day);
