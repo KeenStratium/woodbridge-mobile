@@ -324,7 +324,7 @@ class _ActivityGalleryState extends State<ActivityGallery> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Activity Gallery'),
+        title: Text('Photos'),
       ),
       body: SafeArea(
         child: Flex(
