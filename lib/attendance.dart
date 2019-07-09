@@ -68,6 +68,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   List _selectedEvents;
   AnimationController _controller;
 
+  List<Widget> eventsLegend = <Widget>[];
+
   static DateTime currentDate = DateTime.now();
   DateTime currentDay = DateTime(currentDate.year, currentDate.month, currentDate.day);
 
@@ -161,6 +163,82 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
     getHolidayList();
 
+    eventsLegend.addAll([
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 4.0),
+            child: Text(
+              'Legend: ',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[600]
+              ),
+            ),
+          ),
+        ],
+      ),
+      Container(
+        margin: EdgeInsets.only(right: 4.0),
+        padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: Colors.green[50],
+          border: Border.all(
+            color: Colors.green[50]
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(5.0))
+        ),
+        child: Text(
+          'Present',
+          softWrap: false,
+          style: TextStyle(
+            color: Colors.green,
+            fontWeight: FontWeight.w600,
+            fontSize: 14.0
+          ),
+        ),
+      ),
+      Container(
+      margin: EdgeInsets.only(right: 4.0),
+      padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+          color:  Colors.red[300],
+          border: Border.all(
+              color: Colors.red[300]
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(5.0))
+      ),
+      child: Text(
+        'Absent',
+        style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14.0
+        ),
+      ),
+    ),
+      Container(
+        margin: EdgeInsets.only(right: 4.0),
+        padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+            border: Border.all(
+                color: Colors.deepPurple
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(5.0))
+        ),
+        child: Text(
+          'Holiday',
+          softWrap: false,
+          style: TextStyle(
+              color: Colors.deepPurple,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0
+          ),
+        ),
+      )
+    ]);
+
     _selectedDay = DateTime.now();
 
     _events = {
@@ -192,12 +270,6 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if(_selectedEvents.length != 0){
-      print(_selectedEvents);
-    }
-    if(holidayDays[_selectedDay] != null){
-      print(holidayDays[_selectedDay]);
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Attendance'),
@@ -343,66 +415,23 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                   shrinkWrap: true,
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.only(top: 20.0),
+                      height: 30.0,
+                      margin: EdgeInsets.only(top: 20.0, left: 20.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(right: 4.0),
-                            padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              border: Border.all(
-                                  color: Colors.green[50]
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(5.0))
-                            ),
-                            child: Text(
-                              'Present',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14.0
-                              ),
+                          Expanded(
+                            flex: 1,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              physics: AlwaysScrollableScrollPhysics(),
+                              itemCount: eventsLegend.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return eventsLegend[index];
+                              }
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(right: 4.0),
-                            padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-                            decoration: BoxDecoration(
-                              color:  Colors.red[300],
-                              border: Border.all(
-                                color: Colors.red[300]
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(5.0))
-                            ),
-                            child: Text(
-                              'Absent',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14.0
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(right: 4.0),
-                            padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.deepPurple
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(5.0))
-                            ),
-                            child: Text(
-                              'Holiday',
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14.0
-                              ),
-                            ),
-                          )
                         ],
                       ),
                     ),
@@ -498,6 +527,98 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       ),
       onDaySelected: (date, events) {
         _onDaySelected(date, events);
+        List selectedHolidays = holidayDays[_selectedDay];
+        eventsLegend = [];
+        if(_selectedEvents.length != 0){
+          for(int i = 0; i < _selectedEvents.length; i++){
+            String event = _selectedEvents[i];
+
+            if(event == 'ABSENT'){
+              eventsLegend.add(Container(
+                margin: EdgeInsets.only(right: 4.0),
+                padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color:  Colors.red[300],
+                  border: Border.all(
+                      color: Colors.red[300]
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))
+                ),
+                child: Text(
+                  'Absent',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.0
+                  ),
+                ),
+              ));
+            }
+            if(event == 'PRESENT'){
+              eventsLegend.add(Container(
+                margin: EdgeInsets.only(right: 4.0),
+                padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: Colors.green[50],
+                  border: Border.all(
+                    color: Colors.green[50]
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))
+                ),
+                child: Text(
+                  'Present',
+                  softWrap: false,
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.0
+                  ),
+                ),
+              ));
+            }
+          }
+        }
+        if(selectedHolidays != null){
+          eventsLegend.add(Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: 4.0),
+                child: Text(
+                  'Holiday${ selectedHolidays.length > 1 ? 's' : '' }: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[600]
+                  ),
+                ),
+              ),
+            ],
+          ));
+          for(int i = 0; i < selectedHolidays.length; i++){
+            String holiday = selectedHolidays[i];
+
+            eventsLegend.add( Container(
+              margin: EdgeInsets.only(right: 4.0),
+              padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.deepPurple
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(5.0))
+              ),
+              child: Text(
+                holiday,
+                softWrap: false,
+                style: TextStyle(
+                  color: Colors.deepPurple,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0
+                ),
+              ),
+            ));
+          }
+        }
+
         _controller.forward(from: 0.0);
       },
       onVisibleDaysChanged: _onVisibleDaysChanged,
