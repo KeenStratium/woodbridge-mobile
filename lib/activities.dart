@@ -93,6 +93,8 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                         Expanded(
                           child: Text(
                             monthActivities[activityNames[sliverIndex]][i].title,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                             style: TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.w700
