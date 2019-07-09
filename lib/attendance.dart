@@ -251,7 +251,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       _selectedEvents = [];
     }
 
-    buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day), widget.presentDays);
+    buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
 
     setState(() {
       widget.absentDays = widget.pastSchoolDays - widget.presentDaysNo;
@@ -528,8 +528,25 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       onDaySelected: (date, events) {
         _onDaySelected(date, events);
         List selectedHolidays = holidayDays[_selectedDay];
+        List thisEvents = _events[date];
         eventsLegend = [];
         if(_selectedEvents.length != 0){
+          eventsLegend.add(Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: 4.0, left: 4.0),
+                child: Text(
+                  'Status: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[600]
+                  ),
+                ),
+              ),
+            ],
+          ));
+
           for(int i = 0; i < _selectedEvents.length; i++){
             String event = _selectedEvents[i];
 
@@ -554,7 +571,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                 ),
               ));
             }
-            if(event == 'PRESENT'){
+            if(event == 'PRESENT' || (event == 'CURRENT' && thisEvents[0] == 'PRESENT')){
               eventsLegend.add(Container(
                 margin: EdgeInsets.only(right: 4.0),
                 padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
@@ -583,7 +600,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(right: 4.0),
+                padding: EdgeInsets.only(right: 4.0, left: 4.0),
                 child: Text(
                   'Holiday${ selectedHolidays.length > 1 ? 's' : '' }: ',
                   style: TextStyle(
@@ -715,24 +732,6 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildEventList() {
-    return ListView(
-      children: _selectedEvents
-          .map((event) => Container(
-        decoration: BoxDecoration(
-          border: Border.all(width: 0.8),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-        child: ListTile(
-          title: Text(event.toString()),
-          onTap: () => print('$event tapped!'),
-        ),
-      ))
-          .toList(),
     );
   }
 }
