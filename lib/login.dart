@@ -183,6 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: EdgeInsets.symmetric(vertical: 8.0),
                                 child: TextFormField(
                                   controller: _passwordController,
+                                  obscureText: true,
                                   decoration: InputDecoration(
                                     filled: false,
                                     labelText: 'Password',

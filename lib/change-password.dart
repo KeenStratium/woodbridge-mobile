@@ -155,6 +155,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               child: TextFormField(
                                 autofocus: true,
                                 controller: _passwordController,
+                                obscureText: true,
                                 validator: (value) {
                                   final validCharacters = RegExp(r'^[a-zA-Z0-9_\-=@,\.;]+$');
 
@@ -179,6 +180,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: TextFormField(
                                 controller: _passwordAgainController,
+                                obscureText: true,
                                 validator: (value) {
                                   if(value.isEmpty) {
                                     return 'Enter password again';
