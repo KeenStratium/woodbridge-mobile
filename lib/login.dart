@@ -33,9 +33,27 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        body: LoginBody()
+      ),
+    );
+  }
+}
+
+class LoginBody extends StatefulWidget {
+  @override
+  _LoginBodyState createState() => _LoginBodyState();
+}
+
+class _LoginBodyState extends State<LoginBody> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
-
 
   @override
   void initState(){
@@ -46,31 +64,31 @@ class _LoginPageState extends State<LoginPage> {
 
   Future getStudents(parentId) async {
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/get-parent-student'),
-      body: json.encode({
-        'data': {
-          'parent_id': parentId,
-        }
-      }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
+        body: json.encode({
+          'data': {
+            'parent_id': parentId,
+          }
+        }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
 
     return await json.decode(response.body);
   }
 
   Future<Map> getData() async {
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
-      body: json.encode({
-        'data': {
-          'uname': _userController.text,
-          'pass': _passwordController.text
-        }
-      }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
+        body: json.encode({
+          'data': {
+            'uname': _userController.text,
+            'pass': _passwordController.text
+          }
+        }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
 
     var data = await json.decode(response.body);
     Map loginStatus = {
@@ -119,128 +137,152 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
               image: AssetImage("img/background-img.png"),
               fit: BoxFit.cover
-            )
-          ),
-          child: SafeArea(
-            child: Container(
-              alignment: AlignmentDirectional.center,
-              child: Flex(
-                direction: Axis.vertical,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Flexible(
-                    child: FittedBox(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 12.0),
-                        width: 128.0,
-                        height: 128.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
+          )
+      ),
+      child: SafeArea(
+        child: Container(
+          alignment: AlignmentDirectional.center,
+          child: Flex(
+            direction: Axis.vertical,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Flexible(
+                child: FittedBox(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 12.0),
+                    width: 128.0,
+                    height: 128.0,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
                             image: AssetImage("img/woodbridge_logo.png"),
                             fit: BoxFit.cover
-                          )
-                        ),
+                        )
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 28.0, vertical: 14.0),
+                padding: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                    boxShadow: [BrandTheme.cardShadow]
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: TextFormField(
+                              autofocus: true,
+                              controller: _userController,
+                              decoration: InputDecoration(
+                                filled: false,
+                                labelText: 'Username',
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: TextFormField(
+                              controller: _passwordController,
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                filled: false,
+                                labelText: 'Password',
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 28.0, vertical: 14.0),
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                      boxShadow: [BrandTheme.cardShadow]
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 8.0),
-                                child: TextFormField(
-                                  autofocus: true,
-                                  controller: _userController,
-                                  decoration: InputDecoration(
-                                    filled: false,
-                                    labelText: 'Username',
-                                  ),
-                                ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: accentCtaButton(
+                        label: 'Log In',
+                        onPressed: (() async {
+                          final errorSnackBar = SnackBar(
+                            content: Text(
+                              'Invalid login credentials. Please try again.',
+                              style: TextStyle(
+                                  color: Colors.amberAccent
                               ),
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 8.0),
-                                child: TextFormField(
-                                  controller: _passwordController,
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    filled: false,
-                                    labelText: 'Password',
-                                  ),
-                                ),
+                            ),
+                            action: SnackBarAction(
+                              label: 'Okay',
+                              textColor: Colors.white,
+                              onPressed: () {
+
+                              },
+                            ),
+                          );
+                          final processingSnackBar = SnackBar(
+                            content: Text(
+                              'Preparing classroom...',
+                              style: TextStyle(
+                                  color: Colors.blue[200]
                               ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: accentCtaButton(
-                            label: 'Log In',
-                            onPressed: (() {
-                              getData().then((data) async {
-                                if(data['status'] == 'auth'){
-                                  Route route = MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                        return StudentPicker(users: data['ids']);
-                                      });
-                                  Navigator.push(context, route);
-                                }else if(data['status'] == 'initial'){
-                                  await checkHandbookAgreementStatus(data['user_id'])
-                                    .then((resolves) {
-                                      bool hasAgreed = false;
+                            ),
+                            action: SnackBarAction(
+                              label: 'Got it',
+                              textColor: Colors.white,
+                              onPressed: () {
+                              },
+                            ),
+                          );
+                          Scaffold.of(context).showSnackBar(processingSnackBar);
+                          await getData().then((data) async {
+                            if(data['status'] == 'auth'){
+                              Route route = MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return StudentPicker(users: data['ids']);
+                                  });
+                              Navigator.push(context, route);
+                            }else if(data['status'] == 'initial'){
+                              await checkHandbookAgreementStatus(data['user_id'])
+                                  .then((resolves) {
+                                bool hasAgreed = false;
 
-                                      if(resolves['data'] == 1){
-                                        hasAgreed = true;
-                                      }else{
-                                        hasAgreed = false;
-                                      }
-
-                                      Route route = MaterialPageRoute(
-                                        builder: (BuildContext context) {
-                                          return ChangePassword(
-                                            userId: data['user_id'],
-                                            userIds: data['ids'],
-                                            hasAgreed: hasAgreed
-                                          );
-                                        });
-                                      Navigator.push(context, route);
-                                    });
-                                } else{
-                                  print('Please try again.');
+                                if(resolves['data'] == 1){
+                                  hasAgreed = true;
+                                }else{
+                                  hasAgreed = false;
                                 }
+
+                                Route route = MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                      return ChangePassword(
+                                          userId: data['user_id'],
+                                          userIds: data['ids'],
+                                          hasAgreed: hasAgreed
+                                      );
+                                    });
+                                Navigator.push(context, route);
                               });
-                            }),
-                          ),
-                        ),
-                      ],
+                            } else{
+                              Scaffold.of(context).showSnackBar(errorSnackBar);
+                              print('Please try again.');
+                            }
+                          });
+                        }),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
-        )
+        ),
       ),
     );
   }
