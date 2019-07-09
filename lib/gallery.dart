@@ -10,7 +10,6 @@ import 'services.dart';
 
 Future getClassImages(classId, pageSize, pageNum) async {
   String url = '$baseApi/student/get-images-from-class';
-
   var response = await http.post(url, body: json.encode({
     'data': classId,
     'page_size': pageSize,
@@ -207,8 +206,8 @@ class ActivityGallery extends StatefulWidget {
 class _ActivityGalleryState extends State<ActivityGallery> {
   ScrollController _scrollController = ScrollController();
   
-  void fetchClassImages(classId, pageSize, pageNum) async {
-    return await getClassImages(classId, pageSize, pageNum)
+  Future fetchClassImages(classId, pageSize, num) async {
+    return await getClassImages(classId, pageSize, num)
       .then((results) {
         setState(() {
           if(_photos.length != 1){
@@ -220,7 +219,7 @@ class _ActivityGalleryState extends State<ActivityGallery> {
             for(int i = 0; i < results.length; i++){
               Map photo = results[i];
               _photos.add(PhotoCard(
-                id: photo['id'],
+                id: _photos.length,
                 imgUrl: '${baseServer}/${photo['img_url']}',
                 timeStamp: DateTime.parse(photo['date_posted']).toLocal(),
                 caption: photo['caption']
@@ -256,8 +255,30 @@ class _ActivityGalleryState extends State<ActivityGallery> {
 
     setState(() {
       widget.isLoading = true;
-      fetchClassImages(widget.classId, widget.pageSize, widget.pageNum);
+      fetchClassImages(widget.classId, widget.pageSize, widget.pageNum)
+        .then((resolve) {
+          if(_photos.length == 1 && widget.noMoreImages){
+            _photos.add(Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "No photos yet. We'll let you know if we've got something for you.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[500]
+                    ),
+                  ),
+                ],
+              ),
+            ));
+          }
+        });
     });
+
 
     _scrollController.addListener(() {
       if(!widget.noMoreImages){
@@ -311,7 +332,7 @@ class _ActivityGalleryState extends State<ActivityGallery> {
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: !(_photos.length == 1 && widget.noMoreImages) ? Container(
+              child: Container(
                 child: ListView.builder(
                   itemCount: _photos.length,
                   itemBuilder: (context, i){
@@ -319,22 +340,6 @@ class _ActivityGalleryState extends State<ActivityGallery> {
                   },
                   controller: _scrollController,
                   shrinkWrap: true,
-                ),
-              ) : Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "No photos yet. We'll let you know if we've got something for you.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey[500]
-                      ),
-                    ),
-                  ],
                 ),
               )
             ),
