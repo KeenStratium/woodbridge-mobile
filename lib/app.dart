@@ -21,12 +21,10 @@ ThemeData _buildWoodbridgeTheme() {
 class WoodbridgeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.white, // Color for Android
-        statusBarBrightness: Brightness.dark // Dark == white status bar -- for IOS.
+      statusBarColor: Colors.white, // Color for Android
+      statusBarBrightness: Brightness.light // Dark == white status bar -- for IOS.
     ));
-
     return MaterialApp(
       title: 'Woodbridge',
       home: LoginPage(),

@@ -200,7 +200,6 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: (() {
                               getData().then((data) async {
                                 if(data['status'] == 'auth'){
-                                  print(data['ids']);
                                   Route route = MaterialPageRoute(
                                       builder: (BuildContext context) {
                                         return StudentPicker(users: data['ids']);

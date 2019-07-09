@@ -54,70 +54,68 @@ class _StudentPickerState extends State<StudentPicker> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
-        body: SafeArea(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 33.0),
-            alignment: AlignmentDirectional.center,
-            child: Flex(
-              direction: Axis.vertical,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Flex(
-                      direction: Axis.vertical,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 0,
-                          child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 24.0),
-                            child: Text(
-                              'Select Student',
-                              style: TextStyle(
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.w600
-                              )
-                            ),
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 33.0),
+          alignment: AlignmentDirectional.center,
+          child: Flex(
+            direction: Axis.vertical,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Flex(
+                    direction: Axis.vertical,
+                    children: <Widget>[
+                      Flexible(
+                        flex: 0,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 24.0),
+                          child: Text(
+                            'Select Student',
+                            style: TextStyle(
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.w600
+                            )
                           ),
                         ),
-                        Flexible(
-                          flex: 0,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: 360.00
-                            ),
-                            child: GridView.count(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              primary: false,
-                              childAspectRatio: .8,
-                              crossAxisCount: 2,
-                              children: studentAvatarPickers
-                            ),
+                      ),
+                      Flexible(
+                        flex: 0,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 360.00
+                          ),
+                          child: GridView.count(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            primary: false,
+                            childAspectRatio: .8,
+                            crossAxisCount: 2,
+                            children: studentAvatarPickers
                           ),
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 7.0),
+                child: Container(
+                  padding: EdgeInsets.only(top: 8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: accentCtaButton(
+                      label: 'Enroll New Student',
+                      onPressed: () {
+                        Route route = MaterialPageRoute(builder: (context) => EnrollPackage());
+                        Navigator.push(context, route);
+                      },
                     ),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 7.0),
-                  child: Container(
-                    padding: EdgeInsets.only(top: 8.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: accentCtaButton(
-                        label: 'Enroll New Student',
-                        onPressed: () {
-                          Route route = MaterialPageRoute(builder: (context) => EnrollPackage());
-                          Navigator.push(context, route);
-                        },
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
         ),
       ),
