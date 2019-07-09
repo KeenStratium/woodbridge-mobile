@@ -206,8 +206,8 @@ class _HomePageState extends State<HomePage> {
     color: Colors.redAccent,
   );
 
-  Map monthActivities = {};
-  List<String> activityNames = [];
+  Map monthWithYearActivities = {};
+  List<String> activityWithYearNames = [];
 
   String attendanceStatus = '';
   String schoolYearStart;
@@ -345,15 +345,17 @@ class _HomePageState extends State<HomePage> {
         DateTime currTime = DateTime.now().toLocal();
         DateTime currDay = DateTime(currTime.year, currTime.month, currTime.day);
         List<String> weekdayNames = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        Map yearActivities = {};
 
-        monthActivities = {};
-        activityNames = [];
+        monthWithYearActivities = {};
+        activityWithYearNames = [];
 
         for(int i = 0; i < results.length; i++){
           Map activity = results[i];
           DateTime date = DateTime.parse(activity['a_start_date']).toLocal();
           int monthIndex = date.month - 1;
           String month = monthNames[monthIndex];
+          int year = date.year;
 
           date = date.add(Duration(hours: 8));
 
@@ -366,28 +368,48 @@ class _HomePageState extends State<HomePage> {
               weekday: weekdayNames[date.weekday - 1]
             );
 
-            try {
-              if(monthActivities[month].length > 0);
-            } catch(e){
-              monthActivities[month] = [];
+            if(yearActivities[year] == null){
+              yearActivities[year] = {};
+              yearActivities[year][month] = [];
             }
-            monthActivities[month].add(activityEvent);
-            if(activityNames.contains(month) == false){
-              activityNames.add(month);
+            if(yearActivities[year][month] == null){
+              yearActivities[year][month] = [];
             }
+            yearActivities[year][month].add(activityEvent);
           }
         }
-        sortActivityNames();
+
+        yearActivities.keys.forEach((year) {
+          Map monthActivitiesFromYear = yearActivities[year];
+          List monthActivitiesFromYearNames = monthActivitiesFromYear.keys.toList();
+          monthActivitiesFromYearNames = sortActivityNames(monthActivitiesFromYearNames);
+
+          for(int i = 0; i < monthActivitiesFromYearNames.length; i++){
+            String monthActivitiesFromYearName = monthActivitiesFromYearNames[i];
+            String monthYearLabel = '$monthActivitiesFromYearName $year';
+
+            monthWithYearActivities[monthYearLabel] = [];
+            monthWithYearActivities[monthYearLabel].addAll(monthActivitiesFromYear[monthActivitiesFromYearName]);
+          }
+        });
+        List iteratableActivityNames = monthWithYearActivities.keys.toList();
+        for(int i = 0; i < iteratableActivityNames.length; i++){
+          activityWithYearNames.add(iteratableActivityNames[i]);
+        }
+        try {
+          nextEventMonth = activityWithYearNames[0];
+          nextEventDay = monthWithYearActivities[activityWithYearNames[0]][0].day;
+        } catch(e){}
 
         setState(() {});
       });
   }
-  void sortActivityNames() {
+  List<String> sortActivityNames(activityNamesSort) {
     List<int> sortedMonthIndex = <int>[];
     List<String> sortedMonthNames = <String>[];
 
-    for(int i = 0; i < activityNames.length; i++){
-      String month = activityNames[i];
+    for(int i = 0; i < activityNamesSort.length; i++){
+      String month = activityNamesSort[i];
       int monthIndex = 0;
       int largestMonthIndex = 0;
 
@@ -406,12 +428,8 @@ class _HomePageState extends State<HomePage> {
     for(int i = 0; i < sortedMonthIndex.length; i++){
       sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
     }
-    activityNames = sortedMonthNames;
 
-    try {
-      nextEventMonth = activityNames[0];
-      nextEventDay = monthActivities[activityNames[0]][0].day;
-    } catch(e){}
+    return sortedMonthNames;
   }
   void firebaseCloudMessaging_Listeners(String classId) {
     List<Map> topics = getTopics();
@@ -531,8 +549,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     streamController = StreamController();
 
-    monthActivities = {};
-    activityNames = [];
+    monthWithYearActivities = {};
+    activityWithYearNames = [];
 
     fetchPdf();
 
@@ -589,7 +607,6 @@ class _HomePageState extends State<HomePage> {
 
 
     transformActivityList(widget.classId);
-    sortActivityNames();
     getAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
 
@@ -1112,10 +1129,10 @@ class _HomePageState extends State<HomePage> {
                                         iconPath: 'img/Icons/icon_grades_2x.png',
                                         label: 'Progress',
                                         pageBuilder: Grades(
-                                            userId: widget.heroTag,
-                                            firstName: this.widget.firstName,
-                                            lastName: this.widget.lastName,
-                                            schoolLevel: this.widget.schoolLevel,
+                                          userId: widget.heroTag,
+                                          firstName: this.widget.firstName,
+                                          lastName: this.widget.lastName,
+                                          schoolLevel: this.widget.schoolLevel,
                                         ),
                                         buildContext: context,
                                       ),
@@ -1127,8 +1144,8 @@ class _HomePageState extends State<HomePage> {
                                           lastName: this.widget.lastName,
                                           classId: this.widget.classId,
                                           userId: this.widget.heroTag,
-                                          monthActivities: this.monthActivities,
-                                          activityNames: this.activityNames,
+                                          monthActivities: this.monthWithYearActivities,
+                                          activityNames: this.activityWithYearNames,
                                         ),
                                         buildContext: context,
                                       ),

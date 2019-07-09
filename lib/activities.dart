@@ -185,7 +185,10 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
   });
 }
 
-Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState state, List<String> activityNames, {String text}) {
+Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState state, List<String> activityNames) {
+  String month = activityNames[index].split(' ')[0];
+  String year = activityNames[index].split(' ')[1];
+
   return new Container(
     height: 48.0,
     padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -203,13 +206,28 @@ Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState sta
         )
       )
     ),
-    child: new Text(
-      text ?? activityNames[index],
-      style: TextStyle(
-        color: Colors.black87,
-        fontSize: 16.0,
-        fontWeight: FontWeight.w700
-      ),
+    child: Row(
+      children: <Widget>[
+        Text(
+          month,
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 16.0,
+            fontWeight: FontWeight.w700
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2.0),
+        ),
+        Text(
+          year,
+          style: TextStyle(
+            color: Colors.black45,
+            fontSize: 16.0,
+            fontWeight: FontWeight.w500
+          ),
+        ),
+      ],
     ),
   );
 }
