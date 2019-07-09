@@ -36,7 +36,6 @@ class _MessageBoardState extends State<MessageBoard> {
   @override
   Widget build(BuildContext context) {
     boards = <Widget>[];
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -59,14 +58,30 @@ class _MessageBoardState extends State<MessageBoard> {
                 ),
                 Expanded(
                   flex: 1,
-                  child: SingleChildScrollView(
+                  child: widget.messageBoardLists[0].length != 0 ? SingleChildScrollView(
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
                       child: Column(
                         children: widget.messageBoardLists[widget.pageNum - 1],
                       )
                     ),
-                  ),
+                  ) : Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "No messages yet. We'll let you know if we've got something for you.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[500]
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 )
               ],
             ),
@@ -76,7 +91,6 @@ class _MessageBoardState extends State<MessageBoard> {
             prevCallback: () {
               setState(() {
                 widget.pageNum--;
-                print(widget.pageNum);
               });
             },
             nextCallback: () async {
@@ -88,9 +102,7 @@ class _MessageBoardState extends State<MessageBoard> {
                     widget.messageBoardLists.addAll(result['messages']);
                   });
               }
-              setState(() {
-                print(widget.pageNum);
-              });
+              setState(() {});
             },
             nextDisableCondition: widget.messageBoardLists[widget.pageNum].length == 0 || widget.messageBoardLists[widget.pageNum - 1].length == 0,
           )

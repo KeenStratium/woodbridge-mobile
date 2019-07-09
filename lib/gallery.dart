@@ -311,7 +311,7 @@ class _ActivityGalleryState extends State<ActivityGallery> {
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: Container(
+              child: !(_photos.length == 1 && widget.noMoreImages) ? Container(
                 child: ListView.builder(
                   itemCount: _photos.length,
                   itemBuilder: (context, i){
@@ -319,6 +319,22 @@ class _ActivityGalleryState extends State<ActivityGallery> {
                   },
                   controller: _scrollController,
                   shrinkWrap: true,
+                ),
+              ) : Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "No photos yet. We'll let you know if we've got something for you.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[500]
+                      ),
+                    ),
+                  ],
                 ),
               )
             ),

@@ -220,174 +220,171 @@ class _BoardState extends State<Board> {
                 ),
               ),
               Container(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  child: Flex(
-                    direction: Axis.vertical,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      widget.date != null && widget.time != null ? Container(
-                        child: Flex(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          direction: Axis.horizontal,
-                          children: <Widget>[
-                            Text(
-                              '${dateFormatted}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: Colors.grey[600],
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: Flex(
+                  direction: Axis.vertical,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    widget.date != null && widget.time != null ? Container(
+                      child: Flex(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        direction: Axis.horizontal,
+                        children: <Widget>[
+                          Text(
+                            '${dateFormatted}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                              fontSize: 14.0
+                            ),
+                          ),
+                          Container(
+                            width: 1.0,
+                            height: 10.0,
+                            margin: EdgeInsets.symmetric(horizontal: 8.0),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300]
+                            ),
+                          ),
+                          Text(
+                            '${timeFormatted}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
                                 fontSize: 14.0
-                              ),
                             ),
-                            Container(
-                              width: 1.0,
-                              height: 10.0,
-                              margin: EdgeInsets.symmetric(horizontal: 8.0),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300]
-                              ),
-                            ),
-                            Text(
-                              '${timeFormatted}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: Colors.grey[600],
-                                  fontSize: 14.0
-                              ),
-                            ),
-                          ],
-                        ),
-                        decoration: BoxDecoration(
-                            color: Colors.grey[50],
-                            borderRadius: BorderRadius.only(topRight: Radius.circular(50.0), bottomRight: Radius.circular(50.0))
-                        ),
-                        padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 15.0),
-                        margin: EdgeInsets.only(bottom: 6.0, top: 12.0),
-                      ) : Container(),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              this.widget.title,
-                              style: TextStyle(
-                                fontSize: 17.0,
-                                color: Color.fromRGBO(78, 78, 78, 1),
-                                fontWeight: FontWeight.w700
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 3.0),
-                            ),
-                            Text(
-                              this.widget.description,
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.grey[700],
-                                fontWeight: FontWeight.w600
-                              ),
-                            )
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      widget.hasResponse ? Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20.0),
-                        padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
-                        decoration: BoxDecoration(
-
-                        ),
-                        child: Column(
-                          children: <Widget>[
-                            Flex(
-                              direction: Axis.horizontal,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[50],
+                          borderRadius: BorderRadius.only(topRight: Radius.circular(50.0), bottomRight: Radius.circular(50.0))
+                      ),
+                      padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 15.0),
+                      margin: EdgeInsets.only(bottom: 6.0, top: 12.0),
+                    ) : Container(),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            this.widget.title,
+                            style: TextStyle(
+                              fontSize: 17.0,
+                              color: Color.fromRGBO(78, 78, 78, 1),
+                              fontWeight: FontWeight.w700
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 3.0),
+                          ),
+                          Text(
+                            this.widget.description,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.w600
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    widget.hasResponse ? Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
+                      child: Column(
+                        children: <Widget>[
+                          Flex(
+                            direction: Axis.horizontal,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'I am',
+                                style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w700
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 1.0,
+                                  color: Colors.grey[200],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 10.0),
+                            child: Column(
                               children: <Widget>[
-                                Text(
-                                  'I am',
-                                  style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontWeight: FontWeight.w700
-                                  ),
+                                ResponseButton(
+                                  label: 'Going',
+                                  type: 1,
+                                  isActive: widget.activeType == 1,
+                                  onTap: () {
+                                    respondNotification(widget.userId, widget.notifId, 'Going');
+                                    Timer(Duration(milliseconds: 145), () {
+                                      setState(() {
+                                        widget.activeType = 1;
+                                      });
+                                    });
+                                  },
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                  padding: EdgeInsets.symmetric(vertical: 2.0),
                                 ),
-                                Expanded(
-                                  child: Container(
-                                    height: 1.0,
-                                    color: Colors.grey[200],
-                                  ),
+                                Flex(
+                                  direction: Axis.horizontal,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: ResponseButton(
+                                        label: 'Not going',
+                                        type: 2,
+                                        isActive: widget.activeType == 2,
+                                        onTap: () {
+                                          respondNotification(widget.userId, widget.notifId, 'Not going');
+                                          Timer(Duration(milliseconds: 145), () {
+                                            setState(() {
+                                              widget.activeType = 2;
+                                            });
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                    ),
+                                    Expanded(
+                                      child: ResponseButton(
+                                        label: 'Undecided',
+                                        type: 3,
+                                        isActive: widget.activeType == 3,
+                                        onTap: () {
+                                          respondNotification(widget.userId, widget.notifId, 'Undecided');
+                                          Timer(Duration(milliseconds: 145), () {
+                                            setState(() {
+                                              widget.activeType = 3;
+                                            });
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                            Container(
-                              margin: EdgeInsets.symmetric(vertical: 10.0),
-                              child: Column(
-                                children: <Widget>[
-                                  ResponseButton(
-                                    label: 'Going',
-                                    type: 1,
-                                    isActive: widget.activeType == 1,
-                                    onTap: () {
-                                      respondNotification(widget.userId, widget.notifId, 'Going');
-                                      Timer(Duration(milliseconds: 145), () {
-                                        setState(() {
-                                          widget.activeType = 1;
-                                        });
-                                      });
-                                    },
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 2.0),
-                                  ),
-                                  Flex(
-                                    direction: Axis.horizontal,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: ResponseButton(
-                                          label: 'Not going',
-                                          type: 2,
-                                          isActive: widget.activeType == 2,
-                                          onTap: () {
-                                            respondNotification(widget.userId, widget.notifId, 'Not going');
-                                            Timer(Duration(milliseconds: 145), () {
-                                              setState(() {
-                                                widget.activeType = 2;
-                                              });
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                      ),
-                                      Expanded(
-                                        child: ResponseButton(
-                                          label: 'Undecided',
-                                          type: 3,
-                                          isActive: widget.activeType == 3,
-                                          onTap: () {
-                                            respondNotification(widget.userId, widget.notifId, 'Undecided');
-                                            Timer(Duration(milliseconds: 145), () {
-                                              setState(() {
-                                                widget.activeType = 3;
-                                              });
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ) : Container()
-                    ],
-                  )
+                          )
+                        ],
+                      ),
+                    ) : Container()
+                  ],
+                )
               )
             ],
           ),
@@ -446,7 +443,6 @@ Future buildMessageList(userId, pageSize, pageNum) async {
 
         if(pageItemIndex > 0){
           if(_timeStampDays[index].isAtSameMomentAs(_timeStampDays[index - 1])){
-            print('same');
             isSameDay = true;
           }
         }
@@ -507,8 +503,6 @@ Future buildMessageList(userId, pageSize, pageNum) async {
     }else{
       return Text('Something went wrong getting you updated. Please try again.');
     }
-
-    print(_timeStampDays);
 
     return {'messages': _messages};
   });

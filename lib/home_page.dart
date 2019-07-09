@@ -1053,7 +1053,7 @@ class _HomePageState extends State<HomePage> {
                                                           color: Colors.black87
                                                       ),
                                                     ),
-                                                    Column(
+                                                    nextEventMonth != null && nextEventDay != null ? Column(
                                                       children: <Widget>[
                                                         Text(
                                                           nextEventMonth ?? '',
@@ -1072,6 +1072,21 @@ class _HomePageState extends State<HomePage> {
                                                           ),
                                                         ),
                                                       ],
+                                                    ) : Expanded(
+                                                      flex: 1,
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            'Stay tuned.',
+                                                            style: TextStyle(
+                                                                color: Colors.grey[500],
+                                                                fontSize: 14.0,
+                                                                fontWeight: FontWeight.w600
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     )
                                                   ],
                                                 ),

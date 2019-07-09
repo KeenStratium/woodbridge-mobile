@@ -52,9 +52,25 @@ class _NotificationsState extends State<Notifications> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: SingleChildScrollView(
+                    child: widget.notificationTiles[0].length != 0 ? SingleChildScrollView(
                       child: Column(
                         children: widget.notificationTiles[widget.pageNum - 1],
+                      ),
+                    ) : Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "No notifications yet. We'll let you know if we've got something for you.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[500]
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

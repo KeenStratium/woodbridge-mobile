@@ -63,9 +63,9 @@ String epochToHumanTime(epoch) {
   var unitTime = ['sec','min','hr',' day',' week'];
   var sentence = "";
   var majorTime;
-  var minorTime;
+  var minorTime = 0;
   var majorTimeUnit;
-  var minorTimeUnit;
+  var minorTimeUnit = '';
   var i = 0;
   var majorTimePhrase;
   var minorTimePhrase;
@@ -82,11 +82,13 @@ String epochToHumanTime(epoch) {
   minorTime = ((majorTime - majorTime.floor())*currDivisor[i]).floor();
   majorTime = majorTime.floor();
   majorTimeUnit = unitTime[i];
-  minorTimeUnit = unitTime[i-1];
+  if(i > 0){
+    minorTimeUnit = unitTime[i-1];
+  }
 
   majorTimePhrase = "${majorTime}${majorTimeUnit}${majorTime > 1 ? 's' : ''}";
   minorTimePhrase = "${minorTime}${minorTimeUnit}${minorTime > 1 ? 's' : ''}";
 
-  sentence = "${majorTimePhrase}${i > 0 ? ' ' : ''}${ minorTime == 0 ? '' : i == 0 ? '' : minorTimePhrase + ' ' }ago";
+  sentence = "${majorTimePhrase}${i > 0 ? ' ' : ''}${i == 0 ? ' ' : ''}${ minorTime == 0 ? '' : i == 0 ? '' : minorTimePhrase + ' ' }ago";
   return sentence;
 }

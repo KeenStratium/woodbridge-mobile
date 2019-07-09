@@ -270,11 +270,27 @@ class _ActivitiesState extends State<Activities> {
               heroTag: this.widget.userId,
             ),
             Flexible(
-              child: Builder(builder: (BuildContext context) {
+              child: widget.activityNames.length != 0 ? Builder(builder: (BuildContext context) {
                 return new CustomScrollView(
                   slivers: _buildLists(context, 0, widget.monthActivities, widget.activityNames)
                 );
-              }),
+              }) : Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "No activities coming up soon yet. We'll let you know if we've got something for you.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[500]
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             )
           ],
         ),
