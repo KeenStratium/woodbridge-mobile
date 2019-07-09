@@ -9,6 +9,18 @@ import 'woodbridge-ui_components.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:date_utils/date_utils.dart';
 
+Future fetchHolidayList() async {
+  String url = '$baseApi/sett/get-holidays';
+
+  var response = await http.get(url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+
 class Attendance extends StatefulWidget {
   final String firstName;
   final String lastName;
@@ -45,19 +57,14 @@ class Attendance extends StatefulWidget {
 }
 
 class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
-  final Map<DateTime, List> holidayDays = {
-    DateTime(2019, 1, 1): ['New Year\'s Day'],
-    DateTime(2019, 1, 6): ['Epiphany'],
-    DateTime(2019, 2, 14): ['Valentine\'s Day'],
-    DateTime(2019, 4, 21): ['Easter Sunday'],
-    DateTime(2019, 4, 22): ['Easter Monday'],
-  };
-
-  DateTime _selectedDay;
-  DateTime today = DateTime.now();
+  Map<DateTime, List> holidayDays = {};
   Map<DateTime, List> _events;
   Map<DateTime, List> _visibleEvents;
   Map<DateTime, List> _visibleHolidays;
+
+  DateTime _selectedDay;
+  DateTime today = DateTime.now();
+
   List _selectedEvents;
   AnimationController _controller;
 
@@ -122,9 +129,37 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     });
   }
 
+  void getHolidayList() async {
+    await fetchHolidayList()
+      .then((resolve) {
+        for(int i = 0; i < resolve.length; i++){
+          Map holiday = resolve[i];
+          Map<DateTime, List> holidayRange = {};
+          String holidayTitle = holiday['title'];
+          DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
+          DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
+          DateTime holidayIndexDate = startHoliday;
+
+          for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
+            if(holidayDays[holidayIndexDate] == null){
+              holidayDays[holidayIndexDate] = [];
+            }
+            holidayDays[holidayIndexDate].add(holidayTitle);
+          }
+
+          if(holidayDays[holidayIndexDate] == null){
+            holidayDays[holidayIndexDate] = [];
+          }
+          holidayDays[holidayIndexDate].add(holidayTitle);
+        }
+      });
+  }
+
   @override
   void initState(){
     super.initState();
+
+    getHolidayList();
 
     _selectedDay = DateTime.now();
 
@@ -157,6 +192,12 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    if(_selectedEvents.length != 0){
+      print(_selectedEvents);
+    }
+    if(holidayDays[_selectedDay] != null){
+      print(holidayDays[_selectedDay]);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Attendance'),
@@ -365,7 +406,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    _buildTableCalendarWithBuilders()
+                    _buildTableCalendarWithBuilders(),
                   ],
                 ),
               ),
@@ -553,6 +594,24 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildEventList() {
+    return ListView(
+      children: _selectedEvents
+          .map((event) => Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.8),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        child: ListTile(
+          title: Text(event.toString()),
+          onTap: () => print('$event tapped!'),
+        ),
+      ))
+          .toList(),
     );
   }
 }
