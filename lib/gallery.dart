@@ -43,6 +43,10 @@ class PhotoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     militaryTime = '${timeStamp.hour}:${timeStamp.minute}';
+    DateTime now = DateTime.now();
+    int currentEpoch = (now.millisecondsSinceEpoch/1000).floor();
+    var postDateEpoch = (timeStamp.millisecondsSinceEpoch/1000).floor();
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 10.0),
       margin: EdgeInsets.only(bottom: 16.0),
@@ -69,13 +73,21 @@ class PhotoCard extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
+                        Text(
+                          epochToHumanTime(currentEpoch - postDateEpoch),
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w700
+                          ),
+                        ),
                         Text(
                           "${timeFormat(this.timeStamp.toString(), "MMMM d")}, ${formatMilitaryTime(militaryTime)}",
                           style: TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.grey[600],
+                            fontSize: 12.0,
+                            color: Colors.grey[500],
                             fontWeight: FontWeight.w700
                           ),
                         ),
