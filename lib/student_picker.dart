@@ -18,6 +18,8 @@ class StudentPicker extends StatefulWidget {
 }
 
 class _StudentPickerState extends State<StudentPicker> {
+  bool enableEnrollment = false;
+
   @override
   Widget build(BuildContext context) {
     studentAvatarPickers = <StudentAvatarPicker>[];
@@ -107,6 +109,7 @@ class _StudentPickerState extends State<StudentPicker> {
                     width: double.infinity,
                     child: accentCtaButton(
                       label: 'Enroll New Student',
+                      isDisabled: !enableEnrollment,
                       onPressed: () {
                         Route route = MaterialPageRoute(builder: (context) => EnrollPackage());
                         Navigator.push(context, route);
