@@ -33,7 +33,7 @@ class _TextNotificationsState extends State<TextNotifications> {
         leading: CircleAvatar(
           backgroundColor: Colors.deepOrange,
           radius: 24.0,
-          backgroundImage: NetworkImage(widget.profileAvatar),
+          backgroundImage: AssetImage('img/Icons/Icon-180.png'),
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
         title: Text(

@@ -49,17 +49,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - img/aquaman.jpg
-    - img/spiderman.jpg
-    - img/batman.jpg
-    - img/captain.jpg
-    - img/catwoman.jpg
-    - img/flash.jpg
-    - img/hulk.jpg
-    - img/ironman.jpg
-    - img/superman.jpg
-    - img/venom.jpg
-    - img/superman.jpg
     - img/background-img.png
     - img/woodbridge_logo.png
     - img/Icons/icon_payments_2x.png
@@ -68,8 +57,8 @@ flutter:
     - img/Icons/icon_grades_2x.png
     - img/Icons/icon_gallery_2x.png
     - img/Icons/icon_announcements_2x.png
+    - img/Icons/Icon-180.png
     - img/home_profile_head_cover.png
-    - img/ui_avatar.png
     - img/mywoodbridge.png
     - files/TWAMobileParentsGuide.pdf
 
