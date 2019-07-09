@@ -937,165 +937,172 @@ class _HomePageState extends State<HomePage> {
                                             children: <Widget>[
                                               Expanded(
                                                 flex: 1,
-                                                child: Flex(
-                                                  direction: Axis.vertical,
-                                                  mainAxisAlignment: nextPaymentDay != null && nextPaymentDay != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Flexible(
-                                                      flex: 0,
-                                                      child: Text(
-                                                        'Next Payment',
+                                                child: SingleChildScrollView(
+                                                  child: Flex(
+                                                    direction: Axis.vertical,
+                                                    mainAxisAlignment: nextPaymentDay != null && nextPaymentDay != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      Flexible(
+                                                        flex: 0,
+                                                        child: Text(
+                                                          'Next Payment',
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 13.0,
+                                                              fontWeight: FontWeight.w700,
+                                                              color: Colors.black87
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      nextPaymentDay != null && nextPaymentDay != null ? Column(
+                                                        children: <Widget>[
+                                                          Text(
+                                                            nextPaymentMonth ?? "",
+                                                            style: TextStyle(
+                                                                color: Colors.black38,
+                                                                fontSize: 12.0,
+                                                                fontWeight: FontWeight.w600
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            nextPaymentDay ?? "",
+                                                            style: TextStyle(
+                                                                color: Theme.of(context).accentColor,
+                                                                fontSize: 20.0,
+                                                                fontWeight: FontWeight.w600
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ) : Expanded(
+                                                        flex: 1,
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              'All set!',
+                                                              style: TextStyle(
+                                                                color: Colors.green,
+                                                                fontSize: 16.0,
+                                                                fontWeight: FontWeight.w600
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: double.infinity,
+                                                width: 1.0,
+                                                color: Colors.black12,
+                                                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        'Attendance',
                                                         style: TextStyle(
                                                             fontSize: 13.0,
                                                             fontWeight: FontWeight.w700,
                                                             color: Colors.black87
                                                         ),
                                                       ),
-                                                    ),
-                                                    nextPaymentDay != null && nextPaymentDay != null ? Column(
-                                                      children: <Widget>[
-                                                        Text(
-                                                          nextPaymentMonth ?? "",
-                                                          style: TextStyle(
-                                                              color: Colors.black38,
-                                                              fontSize: 12.0,
-                                                              fontWeight: FontWeight.w600
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          nextPaymentDay ?? "",
-                                                          style: TextStyle(
-                                                              color: Theme.of(context).accentColor,
-                                                              fontSize: 20.0,
-                                                              fontWeight: FontWeight.w600
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ) : Expanded(
-                                                      flex: 1,
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                      Column(
                                                         children: <Widget>[
-                                                          Text(
-                                                            'All set!',
-                                                            style: TextStyle(
-                                                              color: Colors.green,
-                                                              fontSize: 16.0,
-                                                              fontWeight: FontWeight.w600
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                height: double.infinity,
-                                                width: 1.0,
-                                                color: Colors.black12,
-                                                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'Attendance',
-                                                      style: TextStyle(
-                                                          fontSize: 13.0,
-                                                          fontWeight: FontWeight.w700,
-                                                          color: Colors.black87
-                                                      ),
-                                                    ),
-                                                    Column(
-                                                      children: <Widget>[
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: <Widget>[
-                                                            attendanceStatusIcon,
-                                                            Padding(
-                                                              padding: EdgeInsets.only(left: 4.0),
-                                                              child: Text(
-                                                                attendanceStatus,
-                                                                style: TextStyle(
-                                                                  color: attendanceStatusColor,
-                                                                  fontSize: 16.0,
-                                                                  fontWeight: FontWeight.w700
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: <Widget>[
+                                                              attendanceStatusIcon,
+                                                              Padding(
+                                                                padding: EdgeInsets.only(left: 4.0),
+                                                                child: Text(
+                                                                  attendanceStatus,
+                                                                  style: TextStyle(
+                                                                    color: attendanceStatusColor,
+                                                                    fontSize: 16.0,
+                                                                    fontWeight: FontWeight.w700
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Text(
-                                                          '$presentDaysNo/${totalSchoolDays.floor()}',
-                                                          style: TextStyle(
-                                                              color: Colors.black38,
-                                                              fontSize: 12.0,
-                                                              fontWeight: FontWeight.w600
+                                                            ],
                                                           ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                height: double.infinity,
-                                                width: 1.0,
-                                                color: Colors.black12,
-                                                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'Next Event',
-                                                      style: TextStyle(
-                                                          fontSize: 13.0,
-                                                          fontWeight: FontWeight.w700,
-                                                          color: Colors.black87
-                                                      ),
-                                                    ),
-                                                    nextEventMonth != null && nextEventDay != null ? Column(
-                                                      children: <Widget>[
-                                                        Text(
-                                                          nextEventMonth ?? '',
-                                                          style: TextStyle(
-                                                              color: Colors.black38,
-                                                              fontSize: 12.0,
-                                                              fontWeight: FontWeight.w600
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          nextEventDay ?? '',
-                                                          style: TextStyle(
-                                                              color: Theme.of(context).accentColor,
-                                                              fontSize: 20.0,
-                                                              fontWeight: FontWeight.w600
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ) : Expanded(
-                                                      flex: 1,
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: <Widget>[
                                                           Text(
-                                                            'Stay tuned.',
+                                                            '$presentDaysNo/${totalSchoolDays.floor()}',
                                                             style: TextStyle(
-                                                                color: Colors.grey[500],
-                                                                fontSize: 14.0,
+                                                                color: Colors.black38,
+                                                                fontSize: 12.0,
                                                                 fontWeight: FontWeight.w600
                                                             ),
                                                           ),
                                                         ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: double.infinity,
+                                                width: 1.0,
+                                                color: Colors.black12,
+                                                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        'Next Event',
+                                                        style: TextStyle(
+                                                            fontSize: 13.0,
+                                                            fontWeight: FontWeight.w700,
+                                                            color: Colors.black87
+                                                        ),
                                                       ),
-                                                    )
-                                                  ],
+                                                      nextEventMonth != null && nextEventDay != null ? Column(
+                                                        children: <Widget>[
+                                                          Text(
+                                                            nextEventMonth ?? '',
+                                                            style: TextStyle(
+                                                                color: Colors.black38,
+                                                                fontSize: 12.0,
+                                                                fontWeight: FontWeight.w600
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            nextEventDay ?? '',
+                                                            style: TextStyle(
+                                                                color: Theme.of(context).accentColor,
+                                                                fontSize: 20.0,
+                                                                fontWeight: FontWeight.w600
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ) : Expanded(
+                                                        flex: 1,
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              'Stay tuned.',
+                                                              style: TextStyle(
+                                                                  color: Colors.grey[500],
+                                                                  fontSize: 14.0,
+                                                                  fontWeight: FontWeight.w600
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               )
                                             ],

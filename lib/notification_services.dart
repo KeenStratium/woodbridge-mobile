@@ -75,8 +75,6 @@ Future buildNotificationList(userId, pageSize, pageNum) async {
         _notifications = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item, page, pageItemIndex, index) {
           var postDateEpoch = (DateTime.parse(item['notif_timestamp']).toLocal().millisecondsSinceEpoch/1000).floor();
 
-          print(currentEpoch - postDateEpoch);
-
           return TextNotifications(
             msg: item['notif_desc'],
             postDate: epochToHumanTime(currentEpoch - postDateEpoch),

@@ -311,27 +311,30 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                           children: <Widget>[
                             Expanded(
                               flex: 1,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'Days Present',
-                                    style: TextStyle(
-                                        fontSize: 13.0,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black87
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Days Present',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    widget.presentDaysNo.toString(),
-                                    overflow: TextOverflow.fade,
-                                    style: TextStyle(
-                                        color: Theme.of(context).accentColor,
-                                        fontSize: 32.0,
-                                        fontWeight: FontWeight.w600
-                                    ),
-                                  )
-                                ],
+                                    Text(
+                                      widget.presentDaysNo.toString(),
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 32.0,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             Container(
@@ -342,28 +345,31 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                             ),
                             Expanded(
                               flex: 1,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'School Days',
-                                    overflow: TextOverflow.fade,
-                                    style: TextStyle(
-                                        fontSize: 13.0,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black87
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'School Days',
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    widget.totalSchoolDays.floor().toString(),
-                                    overflow: TextOverflow.fade,
-                                    style: TextStyle(
-                                        color: Theme.of(context).accentColor,
-                                        fontSize: 32.0,
-                                        fontWeight: FontWeight.w600
-                                    ),
-                                  )
-                                ],
+                                    Text(
+                                      widget.totalSchoolDays.floor().toString(),
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 32.0,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             Container(
@@ -374,26 +380,29 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                             ),
                             Expanded(
                               flex: 1,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'Days Absent',
-                                    style: TextStyle(
-                                        fontSize: 13.0,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black87
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Days Absent',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    widget.absentDays.toString(),
-                                    style: TextStyle(
-                                        color: Theme.of(context).accentColor,
-                                        fontSize: 32.0,
-                                        fontWeight: FontWeight.w600
-                                    ),
-                                  )
-                                ],
+                                    Text(
+                                      widget.absentDays.toString(),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 32.0,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ],
