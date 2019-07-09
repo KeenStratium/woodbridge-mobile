@@ -1,6 +1,6 @@
 Map config = {
   'protocol': 'http',
-  'serverUrl': '54.169.38.97',
+  'serverUrl': '13.229.208.63',
   'serverPort': '4200'
 };
 
