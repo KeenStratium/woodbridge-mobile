@@ -5,6 +5,7 @@ import 'model.dart';
 
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 List<String> dayNames = <String>['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -55,4 +56,37 @@ List<List<Widget>> transformPaginationListCache(list, pageSize, offsetPage, call
   }
 
   return paginatedList;
+}
+
+String epochToHumanTime(epoch) {
+  var currDivisor = [1,60,60,24,7,4];
+  var unitTime = ['sec','min','hr','day','week'];
+  var sentence = "";
+  var majorTime;
+  var minorTime;
+  var majorTimeUnit;
+  var minorTimeUnit;
+  var i = 0;
+  var majorTimePhrase;
+  var minorTimePhrase;
+
+  majorTime = epoch;
+
+  for(int realTime = 1; i < currDivisor.length; i++){
+    majorTime /= currDivisor[i];
+    realTime *= currDivisor[i+1];
+
+    if((epoch) < (realTime)) break;
+  }
+
+  minorTime = ((majorTime - majorTime.floor())*currDivisor[i]).floor();
+  majorTime = majorTime.floor();
+  majorTimeUnit = unitTime[i];
+  minorTimeUnit = unitTime[i-1];
+
+  majorTimePhrase = "${majorTime}${majorTimeUnit}${majorTime > 1 ? 's' : ''}";
+  minorTimePhrase = "${minorTime}${minorTimeUnit}${minorTime > 1 ? 's' : ''}";
+
+  sentence = "${majorTimePhrase}${i > 0 ? ' ' : ''}${ minorTime == 0 ? '' : i == 0 ? '' : minorTimePhrase + ' ' }ago";
+  return sentence;
 }
