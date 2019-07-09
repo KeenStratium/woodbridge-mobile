@@ -27,11 +27,11 @@ class PaymentDataView extends StatelessWidget{
   Widget build(BuildContext context) {
 
     return Container(
-      margin: EdgeInsets.only(bottom: 20.0),
+      margin: EdgeInsets.only(bottom: 10.0),
       child: Column(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
+            padding: this.title != '' ? EdgeInsets.symmetric( vertical: 10.0) : EdgeInsets.symmetric(vertical: 0.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -98,10 +98,10 @@ class PaymentDetails extends StatelessWidget {
   final String paymentDate;
   final double amountPaid;
   final double amountDue;
-  final double tuitionFee;
   final double totalAnnualPackageOneFee;
   final Map paymentType;
   double enrollmentFee;
+  double tuitionFee;
 
   PaymentDetails({
     this.date,
@@ -125,6 +125,9 @@ class PaymentDetails extends StatelessWidget {
     double mathFee;
     double readingFee;
     double tutorialFee = 0.0;
+    double manualTuitionFee;
+    double manualEnrollmentFee;
+    double othersFee;
     int packageNum;
     List payments;
 
@@ -138,13 +141,23 @@ class PaymentDetails extends StatelessWidget {
       payments[2] != '' ? mathFee = double.parse(payments[2]) : null;
       payments[3] != '' ? readingFee = double.parse(payments[3]) : null;
       payments[4] != '' ? tutorialFee = double.parse(payments[4]) : null;
+      try {
+        payments[5] != '' ? manualTuitionFee = double.parse(payments[5]) : null;
+        payments[6] != '' ? manualEnrollmentFee = double.parse(payments[6]) : null;
+        payments[7] != '' ? othersFee = double.parse(payments[7]) : null;
+      }catch(e){}
 
       if(packageNum == 3){
         enrollmentFee /= 4;
       }
 
+      if(packageNum == 0){
+        tuitionFee = manualTuitionFee;
+        enrollmentFee = manualEnrollmentFee;
+      }
+
       if(packageNum == 1){
-        if(enrollmentFee != null){
+        if(enrollmentFee != null && enrollmentFee != 0.0){
           pre_school_payments.add( Payment(
             label: 'ENROLLMENT FEES',
             amount: localCurrencyFormat(totalAnnualPackageOneFee),
@@ -152,18 +165,18 @@ class PaymentDetails extends StatelessWidget {
           ));
         }
       }else {
-        if(enrollmentFee != null){
+        if(enrollmentFee != null && enrollmentFee != 0.0){
           pre_school_payments.add( Payment(
-            label: 'ENROLLMENT FEES',
-            amount: localCurrencyFormat(enrollmentFee),
-            isPaid: paymentDate != 'Unpaid'
+              label: 'ENROLLMENT FEES',
+              amount: localCurrencyFormat(enrollmentFee),
+              isPaid: paymentDate != 'Unpaid'
           ));
         }
-        if(tuitionFee != null){
+        if(tuitionFee != null && tuitionFee != 0.0){
           pre_school_payments.add( Payment(
-            label: 'TUITION FEE',
-            amount: localCurrencyFormat(tuitionFee),
-            isPaid: paymentDate != 'Unpaid'
+              label: 'TUITION FEE',
+              amount: localCurrencyFormat(tuitionFee),
+              isPaid: paymentDate != 'Unpaid'
           ));
         }
       }
@@ -259,20 +272,28 @@ class PaymentDetails extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 20.0),
                           child: Column(
                             children: <Widget>[
-                              PaymentDataView(
+                              pre_school_payments.length > 0 ? PaymentDataView(
                                 title: 'Pre-School',
                                 payments: pre_school_payments
-                              ),
+                              ) : Container(),
                               kumon_payments.length > 0 ? PaymentDataView(
                                   title: 'Kumon',
                                   payments: kumon_payments
                               ) : Container(),
-                              tutorialFee != 0.0 ? PaymentDataView(
+                              tutorialFee != 0.0 && tutorialFee != null ? PaymentDataView(
                                 title: 'Tutorial',
                                 payments: [Payment(
                                   label: 'REGISTRATION FEE',
                                   amount: '₱${tutorialFee + 0.00}',
                                   isPaid: paymentDate != 'Unpaid'
+                                )],
+                              ) : Container(),
+                              othersFee != 0.0 && othersFee != null ? PaymentDataView(
+                                title: '',
+                                payments: [Payment(
+                                    label: 'OTHERS',
+                                    amount: '₱${othersFee + 0.00}',
+                                    isPaid: paymentDate != 'Unpaid'
                                 )],
                               ) : Container()
                             ]
