@@ -605,26 +605,49 @@ class _HomePageState extends State<HomePage> {
   }
 
   void routeNotificationPage(category) async {
-    Widget pageBuilder;
-    if(category == 'activity'){
-      pageBuilder = Activities(
-        firstName: this.widget.firstName,
-        lastName: this.widget.lastName,
-        classId: this.widget.classId,
-        userId: this.widget.heroTag,
-        monthActivities: this.monthWithYearActivities,
-        activityNames: this.activityWithYearNames,
-      );
-    }else if(category == 'photos'){
-      pageBuilder = ActivityGallery(
-        firstName: this.widget.firstName,
-        lastName: this.widget.lastName,
-        userId: this.widget.heroTag,
-        classId: this.widget.classId,
-      );
-    }else if(category == 'messages') {
-      pageBuilder = await buildMessageList(widget.heroTag, messagePageSize, 1)
-        .then((result) {
+    if(category != null){
+      Widget pageBuilder;
+      Route route = MaterialPageRoute(builder: (buildContext) => HomePage(
+        child: Avatar(
+          backgroundColor: Colors.indigo,
+          maxRadius: 40.0,
+          minRadius: 20.0,
+          fontSize: 20.0,
+          initial: "${widget.firstName != null ? widget.lastName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
+          avatarUrl: widget.avatarUrl,
+        ),
+        firstName: widget.firstName ?? '',
+        lastName: widget.lastName ?? '',
+        heroTag: widget.heroTag,
+        schoolLevel: widget.schoolLevel,
+        classId: widget.classId,
+        gradeLevel: widget.gradeLevel,
+        gradeSection: widget.gradeSection,
+        userIds: widget.userIds,
+        avatarUrl: widget.avatarUrl,
+      ));
+      Navigator.push(context, route);
+      print('category');
+      print(category);
+      if(category == 'activity'){
+        pageBuilder = Activities(
+          firstName: this.widget.firstName,
+          lastName: this.widget.lastName,
+          classId: this.widget.classId,
+          userId: this.widget.heroTag,
+          monthActivities: this.monthWithYearActivities,
+          activityNames: this.activityWithYearNames,
+        );
+      }else if(category == 'photos'){
+        pageBuilder = ActivityGallery(
+          firstName: this.widget.firstName,
+          lastName: this.widget.lastName,
+          userId: this.widget.heroTag,
+          classId: this.widget.classId,
+        );
+      }else if(category == 'messages' || category == 'appointment') {
+        pageBuilder = await buildMessageList(widget.heroTag, messagePageSize, 1)
+            .then((result) {
           return MessageBoard(
             userId: widget.heroTag,
             pageSize: messagePageSize,
@@ -634,32 +657,34 @@ class _HomePageState extends State<HomePage> {
             lastName: widget.lastName,
           );
         });
-    }else if(category == 'progress'){
-      pageBuilder = Grades(
-        userId: widget.heroTag,
-        firstName: this.widget.firstName,
-        lastName: this.widget.lastName,
-        schoolLevel: this.widget.schoolLevel,
-      );
-    }else if(category == 'attendance'){
-      pageBuilder = Attendance(
-        firstName: this.widget.firstName,
-        lastName: this.widget.lastName,
-        userId: this.widget.heroTag,
-        schoolDays: this.schoolDays,
-        presentDays: this.presentDays,
-        noSchoolDays: this.noSchoolDays,
-        specialSchoolDays: this.specialSchoolDays,
-        yearStartDay: this.yearStartDay,
-        yearEndDay: this.yearEndDay,
-        presentDaysNo: this.presentDaysNo,
-        pastSchoolDays: this.pastSchoolDays,
-        absentDays: this.absentDays,
-        totalSchoolDays: this.totalSchoolDays,
-      );
+      }else if(category == 'progress'){
+        pageBuilder = Grades(
+          userId: widget.heroTag,
+          firstName: this.widget.firstName,
+          lastName: this.widget.lastName,
+          schoolLevel: this.widget.schoolLevel,
+        );
+      }else if(category == 'attendance'){
+        pageBuilder = Attendance(
+          firstName: this.widget.firstName,
+          lastName: this.widget.lastName,
+          userId: this.widget.heroTag,
+          schoolDays: this.schoolDays,
+          presentDays: this.presentDays,
+          noSchoolDays: this.noSchoolDays,
+          specialSchoolDays: this.specialSchoolDays,
+          yearStartDay: this.yearStartDay,
+          yearEndDay: this.yearEndDay,
+          presentDaysNo: this.presentDaysNo,
+          pastSchoolDays: this.pastSchoolDays,
+          absentDays: this.absentDays,
+          totalSchoolDays: this.totalSchoolDays,
+        );
+      }
+
+      Route routeNew = MaterialPageRoute(builder: (buildContext) => pageBuilder);
+      Navigator.push(context, routeNew);
     }
-    Route route = MaterialPageRoute(builder: (buildContext) => pageBuilder);
-    Navigator.push(context, route);
   }
 
   void updateHomeData() async {
