@@ -235,6 +235,9 @@ class _HomePageState extends State<HomePage> {
   PDFDocument doc;
   List<Widget> guidePages = <Widget>[];
 
+  int notificationPageSize = 8;
+  int messagePageSize = 8;
+
   Future initLoadPdf() async {
     doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
     int maxPages = doc.count;
@@ -583,10 +586,12 @@ class _HomePageState extends State<HomePage> {
       onResume: (Map<String, dynamic> message) async {
         print('updating');
         updateHomeData();
+        routeNotificationPage(message['notif_category']);
         print('on resume $message');
       },
       onLaunch: (Map<String, dynamic> message) async {
         updateHomeData();
+        routeNotificationPage(message['notif_category']);
         print('on launch $message');
       },
     );
@@ -597,6 +602,64 @@ class _HomePageState extends State<HomePage> {
       }
       debugPrint('SystemChannels> $msg');
     });
+  }
+
+  void routeNotificationPage(category) async {
+    Widget pageBuilder;
+    if(category == 'activity'){
+      pageBuilder = Activities(
+        firstName: this.widget.firstName,
+        lastName: this.widget.lastName,
+        classId: this.widget.classId,
+        userId: this.widget.heroTag,
+        monthActivities: this.monthWithYearActivities,
+        activityNames: this.activityWithYearNames,
+      );
+    }else if(category == 'photos'){
+      pageBuilder = ActivityGallery(
+        firstName: this.widget.firstName,
+        lastName: this.widget.lastName,
+        userId: this.widget.heroTag,
+        classId: this.widget.classId,
+      );
+    }else if(category == 'messages') {
+      pageBuilder = await buildMessageList(widget.heroTag, messagePageSize, 1)
+        .then((result) {
+          return MessageBoard(
+            userId: widget.heroTag,
+            pageSize: messagePageSize,
+            pageNum: 1,
+            messageBoardLists: result['messages'],
+            firstName: widget.firstName,
+            lastName: widget.lastName,
+          );
+        });
+    }else if(category == 'progress'){
+      pageBuilder = Grades(
+        userId: widget.heroTag,
+        firstName: this.widget.firstName,
+        lastName: this.widget.lastName,
+        schoolLevel: this.widget.schoolLevel,
+      );
+    }else if(category == 'attendance'){
+      pageBuilder = Attendance(
+        firstName: this.widget.firstName,
+        lastName: this.widget.lastName,
+        userId: this.widget.heroTag,
+        schoolDays: this.schoolDays,
+        presentDays: this.presentDays,
+        noSchoolDays: this.noSchoolDays,
+        specialSchoolDays: this.specialSchoolDays,
+        yearStartDay: this.yearStartDay,
+        yearEndDay: this.yearEndDay,
+        presentDaysNo: this.presentDaysNo,
+        pastSchoolDays: this.pastSchoolDays,
+        absentDays: this.absentDays,
+        totalSchoolDays: this.totalSchoolDays,
+      );
+    }
+    Route route = MaterialPageRoute(builder: (buildContext) => pageBuilder);
+    Navigator.push(context, route);
   }
 
   void updateHomeData() async {
@@ -637,16 +700,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    int notificationPageSize = 8;
-    int messagePageSize = 8;
     height *= .2;
-
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       statusBarColor: Colors.white, // Color for Android
       statusBarBrightness: Brightness.dark // Dark == white status bar -- for IOS.
     ));
-
 
     return SafeArea(
       child: WillPopScope(
@@ -1206,7 +1265,6 @@ class _HomePageState extends State<HomePage> {
                                         label: 'Messages',
                                         isCustomOnPressed: true,
                                         customOnPressed: () async {
-
                                           await buildMessageList(widget.heroTag, messagePageSize, 1)
                                             .then((result) {
                                               Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
