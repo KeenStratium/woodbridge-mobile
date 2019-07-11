@@ -166,18 +166,38 @@ class HeroPhotoViewWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        constraints: BoxConstraints.expand(
-          height: MediaQuery.of(context).size.height,
-        ),
-        child: PhotoView(
-          imageProvider: imageProvider,
-          loadingChild: loadingChild,
-          backgroundDecoration: backgroundDecoration,
-          minScale: minScale,
-          maxScale: maxScale,
-          heroTag: id,
-        ));
+    return Material(
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            child: Container(
+              constraints: BoxConstraints.expand(
+                height: MediaQuery.of(context).size.height,
+              ),
+              child: PhotoView(
+                imageProvider: imageProvider,
+                loadingChild: loadingChild,
+                backgroundDecoration: backgroundDecoration,
+                minScale: minScale,
+                maxScale: maxScale,
+                heroTag: id,
+              )),
+          ),
+          Positioned(
+            child: Container(
+              margin: EdgeInsets.only(top: 40.0),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white, size: 32.0,),
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
