@@ -22,6 +22,8 @@ import 'payment.dart';
 import 'initial_onboard.dart';
 import 'login.dart';
 import 'message_board.dart';
+import 'about_us.dart';
+import 'privacy_policy.dart';
 
 double totalBalance = 0.00;
 double totalPayments = 0.00;
@@ -822,19 +824,11 @@ class _HomePageState extends State<HomePage> {
                                         )
                                       ),
                                       onTap: () {
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.account_balance),
-                                      title: Text(
-                                        'Legal Terms',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87
-                                        )
-                                      ),
-                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return PrivacyPolicy();
+                                            });
+                                        Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -848,6 +842,11 @@ class _HomePageState extends State<HomePage> {
                                         )
                                       ),
                                       onTap: () {
+                                        Route route = MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return AboutUs();
+                                          });
+                                        Navigator.push(context, route);
                                       },
                                     ),
                                   ],
