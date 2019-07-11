@@ -606,8 +606,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+
+
   void routeNotificationPage(category) async {
-    if(category != null){
+    if((category != null) && (['activity','photos','messages','appointment','progress','attendance'].contains(category))){
       Widget pageBuilder;
       Route route = MaterialPageRoute(builder: (buildContext) => HomePage(
         child: Avatar(
@@ -629,8 +631,6 @@ class _HomePageState extends State<HomePage> {
         avatarUrl: widget.avatarUrl,
       ));
       Navigator.push(context, route);
-      print('category');
-      print(category);
       if(category == 'activity'){
         pageBuilder = Activities(
           firstName: this.widget.firstName,
@@ -649,16 +649,16 @@ class _HomePageState extends State<HomePage> {
         );
       }else if(category == 'messages' || category == 'appointment') {
         pageBuilder = await buildMessageList(widget.heroTag, messagePageSize, 1)
-            .then((result) {
-          return MessageBoard(
-            userId: widget.heroTag,
-            pageSize: messagePageSize,
-            pageNum: 1,
-            messageBoardLists: result['messages'],
-            firstName: widget.firstName,
-            lastName: widget.lastName,
-          );
-        });
+          .then((result) {
+            return MessageBoard(
+              userId: widget.heroTag,
+              pageSize: messagePageSize,
+              pageNum: 1,
+              messageBoardLists: result['messages'],
+              firstName: widget.firstName,
+              lastName: widget.lastName,
+            );
+          });
       }else if(category == 'progress'){
         pageBuilder = Grades(
           userId: widget.heroTag,
