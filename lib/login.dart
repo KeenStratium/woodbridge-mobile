@@ -233,6 +233,7 @@ class _LoginBodyState extends State<LoginBody> {
                                   color: Colors.blue[200]
                               ),
                             ),
+                            duration: Duration(milliseconds: 1100),
                             action: SnackBarAction(
                               label: 'Got it',
                               textColor: Colors.white,
@@ -270,6 +271,7 @@ class _LoginBodyState extends State<LoginBody> {
                                 Navigator.push(context, route);
                               });
                             } else{
+                              Scaffold.of(context).hideCurrentSnackBar();
                               Scaffold.of(context).showSnackBar(errorSnackBar);
                               print('Please try again.');
                             }
