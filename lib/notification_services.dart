@@ -10,12 +10,14 @@ class TextNotifications extends StatefulWidget {
   final String msg;
   final String postDate;
   final String profileAvatar;
+  final String title;
 
   TextNotifications({
     Key key,
     this.msg,
     this.postDate,
-    this.profileAvatar
+    this.profileAvatar,
+    this.title
   }) : super (key: key);
 
   @override
@@ -36,15 +38,31 @@ class _TextNotificationsState extends State<TextNotifications> {
           backgroundImage: AssetImage('img/Icons/Icon-180.png'),
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
-        title: Text(
-          widget.msg,
-          maxLines: 3,
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[800]
-          ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              widget.title,
+              style: TextStyle(
+                fontSize: 14.0,
+                color: Colors.black87,
+                fontWeight: FontWeight.w700
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 2.0),
+            ),
+            Text(
+              widget.msg,
+              maxLines: 3,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[800]
+              ),
+            )
+          ],
         ),
         subtitle: Text(
           widget.postDate,
@@ -74,11 +92,11 @@ Future buildNotificationList(userId, pageSize, pageNum) async {
       if(isSuccess){
         _notifications = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item, page, pageItemIndex, index) {
           var postDateEpoch = (DateTime.parse(item['notif_timestamp']).toLocal().millisecondsSinceEpoch/1000).floor();
-
           return TextNotifications(
             msg: item['notif_desc'],
             postDate: epochToHumanTime(currentEpoch - postDateEpoch),
-            profileAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6"
+            profileAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6",
+            title: item['notif_subj']
           );
         });
       }else{
