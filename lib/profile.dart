@@ -122,7 +122,7 @@ class _ProfileState extends State<Profile> {
                         valueObj,
                         style: TextStyle(
                           fontSize: 16.0,
-                          color: Colors.black45
+                          color: Colors.black87
                         ),
                       ),
                     )
@@ -186,6 +186,8 @@ class _ProfileState extends State<Profile> {
     Future<List<Widget>> getProfileInformation(userId) async {
       await fetchProfileInformation(userId)
         .then((result) {
+          print('profile info');
+          print(result);
           profileInfo = result;
           _buildProfileFields();
        });
@@ -270,8 +272,25 @@ class _ProfileFieldState extends State<ProfileField> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(widget.fieldValue, softWrap: true),
-      subtitle: Text(widget.fieldLabel, softWrap: true),
+      title: Padding(
+        padding:  EdgeInsets.only(bottom: 2.0),
+        child: Text(
+          widget.fieldValue,
+          softWrap: true,
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.w600
+          ),
+        ),
+      ),
+      subtitle: Text(
+        widget.fieldLabel,
+        softWrap: true,
+        style: TextStyle(
+          fontSize: 15.0,
+          fontWeight: FontWeight.w600
+        ),
+      ),
     );
   }
 }
