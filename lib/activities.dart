@@ -104,7 +104,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                         Flex(
                           direction: Axis.horizontal,
                           children: <Widget>[
-                            Flexible(
+                            monthActivities[activityNames[sliverIndex]][i].time != null ? Flexible(
                               flex: 0,
                               child: Flex(
                                 direction: Axis.horizontal,
@@ -127,10 +127,10 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                                   ),
                                 ],
                               ),
-                            ),
-                            Padding(
+                            ) : Container(),
+                            monthActivities[activityNames[sliverIndex]][i].time != null ? Padding(
                               padding: EdgeInsets.symmetric(horizontal: 6.0),
-                            ),
+                            ) : Container(),
                             Expanded(
                               flex: 3,
                               child: Flex(
