@@ -423,6 +423,8 @@ Future buildMessageList(userId, pageSize, pageNum) async {
         String dayName;
         String month;
         String day;
+        String boardTitle;
+        String boardDesc;
 
         int activeType = 0;
 
@@ -456,6 +458,11 @@ Future buildMessageList(userId, pageSize, pageNum) async {
           String date = details['aa_event_date'];
           eventTime = details['aa_event_time'];
           eventDate = DateTime.parse(date);
+          boardTitle = details['aa_subj'];
+          boardDesc = details['aa_desc'];
+        }else{
+          boardTitle = message['notif_subj'];
+          boardDesc = message['notif_desc'];
         }
 
         return Column(
@@ -489,8 +496,8 @@ Future buildMessageList(userId, pageSize, pageNum) async {
               ),
             ),
             Board(
-              title: message['notif_subj'],
-              description: message['notif_desc'],
+              title: boardTitle,
+              description: boardDesc,
               category: message['category'],
               hasResponse: message['category'] == 'appointment',
               notifId: message['id'],
