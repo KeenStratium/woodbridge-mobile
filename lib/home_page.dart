@@ -279,7 +279,7 @@ class _HomePageState extends State<HomePage> {
       getAttendanceDays(userId)
         .then((results) {
           results.forEach((result) {
-            DateTime attendanceDate = DateTime.parse(result['attendance_date']);
+            DateTime attendanceDate = DateTime.parse(result['date_marked']).toLocal();
             DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
             presentDays.add(attendanceDay);
           });
@@ -289,7 +289,7 @@ class _HomePageState extends State<HomePage> {
           try {
             if(results.length > 0 || results != null){
               Map latestAttendance = results[0];
-              DateTime attendanceDate = DateTime.parse(latestAttendance['attendance_date']).toLocal();
+              DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
               DateTime today = DateTime.now();
               DateTime attendanceDay = DateTime.utc(attendanceDate.year, attendanceDate.month, attendanceDate.day);
               DateTime thisDay = DateTime.utc(today.year, today.month, today.day);
