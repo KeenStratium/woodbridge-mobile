@@ -161,9 +161,13 @@ class _BoardState extends State<Board> {
     String dateFormatted;
     String timeFormatted;
 
-    if(widget.date != null && widget.time != null){
-      dateFormatted = timeFormat(widget.date.toString(), null);
-      timeFormatted = formatMilitaryTime(widget.time);
+    if(widget.date != null || widget.time != null){
+      if(widget.date != null) {
+        dateFormatted = timeFormat(widget.date.toString(), null);
+      }
+      if(widget.time != null){
+        timeFormatted = formatMilitaryTime(widget.time);
+      }
     }
     if(widget.hasResponse == null){
       widget.hasResponse = false;
@@ -225,7 +229,7 @@ class _BoardState extends State<Board> {
                   direction: Axis.vertical,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    widget.date != null && widget.time != null ? Container(
+                    widget.date != null || widget.time != null ? Container(
                       child: Flex(
                         mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -239,16 +243,16 @@ class _BoardState extends State<Board> {
                               fontSize: 14.0
                             ),
                           ),
-                          Container(
+                          widget.time != null ? Container(
                             width: 1.0,
                             height: 10.0,
                             margin: EdgeInsets.symmetric(horizontal: 8.0),
                             decoration: BoxDecoration(
                               color: Colors.grey[300]
                             ),
-                          ),
+                          ) : Container(),
                           Text(
-                            '${timeFormatted}',
+                            "${timeFormatted ?? ''}",
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               color: Colors.grey[600],
@@ -419,6 +423,8 @@ Future buildMessageList(userId, pageSize, pageNum) async {
         String dayName;
         String month;
         String day;
+        String boardTitle;
+        String boardDesc;
 
         int activeType = 0;
 
@@ -452,6 +458,11 @@ Future buildMessageList(userId, pageSize, pageNum) async {
           String date = details['aa_event_date'];
           eventTime = details['aa_event_time'];
           eventDate = DateTime.parse(date);
+          boardTitle = details['aa_subj'];
+          boardDesc = details['aa_desc'];
+        }else{
+          boardTitle = message['notif_subj'];
+          boardDesc = message['notif_desc'];
         }
 
         return Column(
@@ -485,8 +496,8 @@ Future buildMessageList(userId, pageSize, pageNum) async {
               ),
             ),
             Board(
-              title: message['notif_subj'],
-              description: message['notif_desc'],
+              title: boardTitle,
+              description: boardDesc,
               category: message['category'],
               hasResponse: message['category'] == 'appointment',
               notifId: message['id'],

@@ -96,6 +96,7 @@ class PaymentDetails extends StatelessWidget {
   final String paymentModes;
   final String amountDesc;
   final String paymentDate;
+  final String paymentNote;
   final double amountPaid;
   final double amountDue;
   final double totalAnnualPackageOneFee;
@@ -116,7 +117,8 @@ class PaymentDetails extends StatelessWidget {
     this.paymentDate,
     this.paymentType,
     this.amountDue,
-    this.totalAnnualPackageOneFee
+    this.totalAnnualPackageOneFee,
+    this.paymentNote
   });
 
   @override
@@ -310,6 +312,31 @@ class PaymentDetails extends StatelessWidget {
                             children: <Widget>[
                               Column(
                                 children: <Widget>[
+                                  paymentNote != '' && paymentNote != null ? Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 6.0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          'NOTE',
+                                          style: TextStyle(
+                                              color: Colors.grey[500],
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12.0
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                                          child: Text(
+                                            paymentNote,
+                                            style: TextStyle(
+                                                fontSize: 18.0,
+                                                color: Colors.black87
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ) : Container(),
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: 6.0),
                                     child: Column(

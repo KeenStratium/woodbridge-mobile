@@ -52,6 +52,7 @@ class Payment {
   String paidDate;
   String paymentSettingId;
   String amountDesc;
+  String paymentNote;
   Map paymentType;
   bool isPaid;
 
@@ -65,7 +66,8 @@ class Payment {
     this.paymentModes,
     this.paymentSettingId,
     this.amountDesc,
-    this.paymentType
+    this.paymentType,
+    this.paymentNote
   });
 }
 
@@ -288,7 +290,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                       paymentDate: payment.paidDate ?? 'Unpaid',
                                       paymentType: paymentMetaInfo,
                                       amountDue: payment.dueAmount,
-                                      totalAnnualPackageOneFee: totalAnnualFee - (totalAnnualFee * settings['discount'])
+                                      totalAnnualPackageOneFee: totalAnnualFee - (totalAnnualFee * settings['discount']),
+                                      paymentNote: payment.paymentNote
                                     ));
                                     Navigator.push(context, route);
                                   });
