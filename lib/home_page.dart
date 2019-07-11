@@ -529,7 +529,8 @@ class _HomePageState extends State<HomePage> {
                 'type': payment['pay_type'],
                 'official_receipt': payment['official_receipt'],
                 'bank_abbr': payment['pay_bank']
-              }
+              },
+              paymentNote: payment['description']
             )
           );
         });
@@ -605,8 +606,6 @@ class _HomePageState extends State<HomePage> {
       debugPrint('SystemChannels> $msg');
     });
   }
-
-
 
   void routeNotificationPage(category) async {
     if((category != null) && (['activity','photos','messages','appointment','progress','attendance'].contains(category))){
