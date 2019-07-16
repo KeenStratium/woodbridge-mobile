@@ -8,6 +8,7 @@ import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter/services.dart';
 import 'message_services.dart';
 import 'notification_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
@@ -723,6 +724,14 @@ class _HomePageState extends State<HomePage> {
     updateHomeData();
   }
 
+  void _setLoggedInStatus(bool status) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    print('settings login status');
+    print(status);
+    await prefs.setBool('isLoggedIn', status);
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -868,6 +877,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       onTap: () {
                                         List topics = getTopics();
+                                        _setLoggedInStatus(false);
                                         removeNotificationToken(_token)
                                           .then((resolves) {
                                             for(int i = 0; i < topics.length; i++){
