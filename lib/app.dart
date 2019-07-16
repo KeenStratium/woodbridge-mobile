@@ -53,14 +53,6 @@ Widget homePage = HomePage(
   avatarUrl: avatarUrl,
 );
 
-_setLoggedInStatus(bool status) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  print('settings status');
-  print(status);
-  await prefs.setBool('isLoggedIn', status);
-}
-
 Future<bool> _getLoggedInStatus() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool status = prefs.getBool('isLoggedIn');
@@ -101,18 +93,6 @@ class WoodbridgeApp extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
         theme: _woodbridgeTheme
-    );
-  }
-
-  Route<dynamic> _getRoute(RouteSettings settings) {
-    if(settings.name != '/login') {
-      return null;
-    }
-
-    return MaterialPageRoute<void>(
-      settings: settings,
-      builder: (BuildContext context) => isLoggedIn ? homePage : LoginPage(),
-      fullscreenDialog: true
     );
   }
 }
