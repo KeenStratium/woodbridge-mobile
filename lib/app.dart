@@ -26,7 +26,7 @@ void getUserPreferences() async {
 
   String s_fname = prefs.getString('fname');
   String s_lname = prefs.getString('lname');
-  String s_avatarUrl = null;
+  String s_avatarUrl = prefs.getString('avatarUrl');;
   String s_userId = prefs.getString('userId');
   String s_schoolLevel = prefs.getString('schoolLevel');
   String s_classId = prefs.getString('classId');
@@ -34,17 +34,6 @@ void getUserPreferences() async {
   String s_gradeSection = prefs.getString('gradeSection');
   List<String> s_userIds = prefs.getStringList('userIds');
 
-  print('printing user profile from storage');
-  print(s_fname);
-  print(s_lname);
-  print(s_avatarUrl);
-  print(s_userId);
-  print(s_schoolLevel);
-  print(s_classId);
-  print(s_gradeLevel);
-  print(s_gradeSection);
-  print(s_userIds);
-  print('done!');
   fname = s_fname;
   lname = s_lname;
   avatarUrl = s_avatarUrl;
@@ -117,8 +106,6 @@ class WoodbridgeApp extends StatelessWidget {
           future: _getLoggedInStatus(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if(snapshot.connectionState == ConnectionState.done){
-              print('status');
-              print(snapshot.data);
               return snapshot.data ? homePage : LoginPage();
             }else{
               return Scaffold(

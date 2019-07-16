@@ -549,14 +549,15 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     print('saving user profile data');
-    await prefs.setString('fname', 'Keanu');
-    await prefs.setString('lname', 'Gargar');
-    await prefs.setString('userId', 'GARGAR-2019-984');
-    await prefs.setString('schoolLevel', 'cet');
-    await prefs.setString('classId', 'CET-56389742-2019');
-    await prefs.setString('gradeLevel', 'cet');
-    await prefs.setString('gradeSection', 'Comp. Eng.');
-    await prefs.setStringList('userIds', ['GARGAR-2019-984']);
+    await prefs.setString('fname', widget.firstName);
+    await prefs.setString('lname', widget.lastName);
+    await prefs.setString('userId', widget.heroTag);
+    await prefs.setString('schoolLevel', widget.schoolLevel);
+    await prefs.setString('avatarUrl', widget.avatarUrl);
+    await prefs.setString('classId', widget.classId);
+    await prefs.setString('gradeLevel', widget.gradeLevel);
+    await prefs.setString('gradeSection', widget.gradeSection);
+    await prefs.setStringList('userIds', widget.userIds);
     print('done saving user profile data');
   }
 
