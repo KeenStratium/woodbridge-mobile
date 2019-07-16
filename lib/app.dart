@@ -11,15 +11,50 @@ final ThemeData _woodbridgeTheme = _buildWoodbridgeTheme();
 
 bool isLoggedIn = false;
 
-String fname = 'Keanu';
-String lname = 'Gargar';
-String avatarUrl = null;
-String userId = 'GARGAR-2019-984';
-String schoolLevel = 'cet';
-String classId = 'CET-56389742-2019';
-String gradeLevel = 'cet';
-String gradeSection = 'Comp. Eng.';
-List<String> userIds = ['GARGAR-2019-984'];
+String fname;
+String lname;
+String avatarUrl;
+String userId;
+String schoolLevel;
+String classId;
+String gradeLevel;
+String gradeSection;
+List<String> userIds;
+
+void getUserPreferences() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  String s_fname = prefs.getString('fname');
+  String s_lname = prefs.getString('lname');
+  String s_avatarUrl = null;
+  String s_userId = prefs.getString('userId');
+  String s_schoolLevel = prefs.getString('schoolLevel');
+  String s_classId = prefs.getString('classId');
+  String s_gradeLevel = prefs.getString('gradeLevel');
+  String s_gradeSection = prefs.getString('gradeSection');
+  List<String> s_userIds = prefs.getStringList('userIds');
+
+  print('printing user profile from storage');
+  print(s_fname);
+  print(s_lname);
+  print(s_avatarUrl);
+  print(s_userId);
+  print(s_schoolLevel);
+  print(s_classId);
+  print(s_gradeLevel);
+  print(s_gradeSection);
+  print(s_userIds);
+  print('done!');
+  fname = s_fname;
+  lname = s_lname;
+  avatarUrl = s_avatarUrl;
+  userId = s_userId;
+  schoolLevel = s_schoolLevel;
+  classId = s_classId;
+  gradeLevel = s_gradeLevel;
+  gradeSection = s_gradeSection;
+  userIds = s_userIds;
+}
 
 ThemeData _buildWoodbridgeTheme() {
   return ThemeData(
@@ -59,6 +94,9 @@ Future<bool> _getLoggedInStatus() async {
 
   isLoggedIn = status;
   if(isLoggedIn != null){
+    if(isLoggedIn){
+      getUserPreferences();
+    }
     return status;
   }else {
     return false;
@@ -72,6 +110,7 @@ class WoodbridgeApp extends StatelessWidget {
       statusBarColor: Colors.black, // Color for Android
       statusBarBrightness: Brightness.light // Dark == white status bar -- for IOS.
     ));
+
     return MaterialApp(
         title: 'myWoodbridge',
         home:  FutureBuilder(

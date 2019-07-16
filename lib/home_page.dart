@@ -545,6 +545,21 @@ class _HomePageState extends State<HomePage> {
     return _completer.future;
   }
 
+  void _saveUserProfileData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    print('saving user profile data');
+    await prefs.setString('fname', 'Keanu');
+    await prefs.setString('lname', 'Gargar');
+    await prefs.setString('userId', 'GARGAR-2019-984');
+    await prefs.setString('schoolLevel', 'cet');
+    await prefs.setString('classId', 'CET-56389742-2019');
+    await prefs.setString('gradeLevel', 'cet');
+    await prefs.setString('gradeSection', 'Comp. Eng.');
+    await prefs.setStringList('userIds', ['GARGAR-2019-984']);
+    print('done saving user profile data');
+  }
+
   @override
   void dispose() {
     streamController.close();
@@ -606,6 +621,8 @@ class _HomePageState extends State<HomePage> {
       }
       debugPrint('SystemChannels> $msg');
     });
+
+    _saveUserProfileData();
   }
 
   void routeNotificationPage(category) async {
