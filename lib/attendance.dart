@@ -77,30 +77,32 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     DateTime schoolDayIndex = yearStartDay;
     int presentDaysIndex = 0;
 
-    while(schoolDayIndex != today){
-      if(holidayDays[schoolDayIndex] == null){
-        if(schoolDayIndex.weekday <= 5){
-          String attendanceStatus = 'ABSENT';
+    if(yearStartDay != null) {
+      while(schoolDayIndex != today){
+        if(holidayDays[schoolDayIndex] == null){
+          if(schoolDayIndex.weekday <= 5){
+            String attendanceStatus = 'ABSENT';
 
-          if(presentDays.length > 0){
-            if(schoolDayIndex == presentDays[presentDaysIndex] && presentDaysIndex < presentDays.length){
-              attendanceStatus = 'PRESENT';
-              if(presentDaysIndex < presentDays.length - 1){
-                presentDaysIndex++;
+            if(presentDays.length > 0){
+              if(schoolDayIndex == presentDays[presentDaysIndex] && presentDaysIndex < presentDays.length){
+                attendanceStatus = 'PRESENT';
+                if(presentDaysIndex < presentDays.length - 1){
+                  presentDaysIndex++;
+                }
               }
             }
-          }
 
-          try{
-            if(_events[schoolDayIndex].isEmpty);
-          }catch(e){
-            _events[schoolDayIndex] = [];
+            try{
+              if(_events[schoolDayIndex].isEmpty);
+            }catch(e){
+              _events[schoolDayIndex] = [];
+            }
+            _events[schoolDayIndex].add(attendanceStatus);
           }
-          _events[schoolDayIndex].add(attendanceStatus);
         }
-      }
 
-      schoolDayIndex = schoolDayIndex.add(Duration(days: 1));
+        schoolDayIndex = schoolDayIndex.add(Duration(days: 1));
+      }
     }
   }
 

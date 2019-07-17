@@ -19,6 +19,8 @@ String schoolLevel;
 String classId;
 String gradeLevel;
 String gradeSection;
+String firstInitial;
+String lastInitial;
 List<String> userIds;
 
 void getUserPreferences() async {
@@ -43,6 +45,15 @@ void getUserPreferences() async {
   gradeLevel = s_gradeLevel;
   gradeSection = s_gradeSection;
   userIds = s_userIds;
+
+  try {
+    firstInitial = fname[0];
+    lastInitial = lname[0];
+  } catch(e) {
+    firstInitial = '';
+    lastInitial = '';
+  }
+
 }
 
 ThemeData _buildWoodbridgeTheme() {
@@ -63,7 +74,7 @@ Widget homePage = HomePage(
     maxRadius: 40.0,
     minRadius: 20.0,
     fontSize: 20.0,
-    initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}",
+    initial: "${firstInitial}${lastInitial}",
     avatarUrl: avatarUrl,
   ),
   firstName: fname ?? '',
@@ -106,7 +117,14 @@ class WoodbridgeApp extends StatelessWidget {
           future: _getLoggedInStatus(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if(snapshot.connectionState == ConnectionState.done){
-              return snapshot.data ? homePage : LoginPage();
+              return snapshot.data ? homePage ?? Scaffold(
+                body: Center(
+                  child: Text(
+                    'Loading myWoodbridge',
+                    textDirection: TextDirection.ltr,
+                  ),
+                ),
+              ) : LoginPage();
             }else{
               return Scaffold(
                 body: Center(

@@ -634,8 +634,6 @@ class _HomePageState extends State<HomePage> {
       }
       debugPrint('SystemChannels> $msg');
     });
-
-    _saveUserProfileData();
   }
 
   void routeNotificationPage(category) async {
@@ -774,6 +772,13 @@ class _HomePageState extends State<HomePage> {
       statusBarColor: Colors.black, // Color for Android
       statusBarBrightness: Brightness.dark // Dark == white status bar -- for IOS.
     ));
+
+    if(widget.userIds == null){
+      widget.userIds = [];
+      widget.userIds.add(widget.heroTag);
+    }
+
+    _saveUserProfileData();
 
     return SafeArea(
       child: WillPopScope(
@@ -967,7 +972,7 @@ class _HomePageState extends State<HomePage> {
                                         Navigator.push(context, route);
                                       },
                                       child: Hero(
-                                        tag: this.widget.heroTag,
+                                        tag: this.widget.heroTag ?? '',
                                         child: this.widget.child
                                       ),
                                     ),

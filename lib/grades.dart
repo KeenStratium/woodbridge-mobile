@@ -260,7 +260,7 @@ class _GradesState extends State<Grades> {
                               builder: (BuildContext context, AsyncSnapshot snapshot){
                                 if(snapshot.connectionState == ConnectionState.done){
                                   return Column(
-                                    children: snapshot.data,
+                                    children: snapshot.data ?? <Widget>[Container()],
                                   );
                                 }else{
                                   return Text('Fetching marking codes...');
@@ -291,7 +291,7 @@ class _GradesState extends State<Grades> {
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                           if(snapshot.connectionState == ConnectionState.done){
                             return Column(
-                              children: snapshot.data
+                              children: snapshot.data ?? <Widget>[Container()]
                             );
                           }else{
                             return Text('fetching grade information...');
@@ -319,7 +319,7 @@ class _GradesState extends State<Grades> {
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                           if(snapshot.connectionState == ConnectionState.done){
                             return Column(
-                              children: snapshot.data
+                              children: snapshot.data ?? <Widget>[Container()]
                             );
                           }else{
                             return Text('fetching grade information...');
