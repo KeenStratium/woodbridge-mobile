@@ -440,7 +440,6 @@ class _HomePageState extends State<HomePage> {
   void firebaseCloudMessaging_Listeners(String classId) {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
-    addTopic('all', '');
     _token = "";
     print(topics);
     _firebaseMessaging.getToken().then((token){
@@ -558,6 +557,7 @@ class _HomePageState extends State<HomePage> {
     await prefs.setString('gradeLevel', widget.gradeLevel);
     await prefs.setString('gradeSection', widget.gradeSection);
     await prefs.setStringList('userIds', widget.userIds);
+    await prefs.setStringList('topics', widget.userIds);
     print('done saving user profile data');
   }
 
@@ -569,6 +569,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState(){
+    List topics = getTopics();
+    int topicIndex = 0;
     super.initState();
     streamController = StreamController();
 
@@ -585,6 +587,16 @@ class _HomePageState extends State<HomePage> {
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
 
+    for(int topicIndex = 0; topicIndex < topics.length; topicIndex++){
+      Map topic = topics[topicIndex];
+
+      if(topic['topic'] == 'all'){
+        break;
+      }
+    }
+    if(topicIndex == topics.length){
+      addTopic('all', '');
+    }
     firebaseCloudMessaging_Listeners(widget.classId);
     transformActivityList(widget.classId);
     getAttendanceInfo(widget.heroTag);
@@ -611,7 +623,7 @@ class _HomePageState extends State<HomePage> {
       },
       onLaunch: (Map<String, dynamic> message) async {
         updateHomeData();
-        routeNotificationPage(message['notif_category']);
+//        routeNotificationPage(message['notif_category']);
         print('on launch $message');
       },
     );
@@ -745,6 +757,9 @@ class _HomePageState extends State<HomePage> {
   void _setLoggedInStatus(bool status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    if(status == false){
+      await prefs.clear();
+    }
     print('settings login status');
     print(status);
     await prefs.setBool('isLoggedIn', status);
@@ -755,8 +770,8 @@ class _HomePageState extends State<HomePage> {
     double height = MediaQuery.of(context).size.height;
     height *= .2;
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: Colors.white, // Color for Android
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
+      statusBarColor: Colors.black, // Color for Android
       statusBarBrightness: Brightness.dark // Dark == white status bar -- for IOS.
     ));
 
@@ -769,679 +784,701 @@ class _HomePageState extends State<HomePage> {
           child: Stack(
             children: <Widget>[
               Positioned(
-                child: Scaffold(
-                  key: _scaffoldKey,
-                  drawer: Drawer(
-                    child: Flex(
-                      direction: Axis.vertical,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 0,
-                          child: UserAccountsDrawerHeader(
-                            accountEmail: Text(
-                              '${widget.gradeLevel} - ${widget.gradeSection}',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w600
-                              ),
-                            ),
-                            accountName: Text(
-                              '${this.widget.firstName ?? ""} ${this.widget.lastName ?? ""}',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w800
-                              ),
-                            ),
-                            otherAccountsPictures: <Widget>[
-                              IconButton(
-                                icon: Icon(Icons.close),
-                                color: Color.fromRGBO(255, 255, 255, .75),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                splashColor: Colors.white,
-                              )
-                            ],
-                            currentAccountPicture: widget.child,
-                          ),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: Container(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    ListTile(
-                                      leading: Icon(Icons.book),
-                                      onTap: (){
-                                        Route route = MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                              return InitialOnboard(
-                                                pages: guidePages,
-                                                userIds: [],
-                                                showAgreementCta: false,
-                                              );
-                                            });
-                                        Navigator.push(context, route);
-                                      },
-                                      title: Text(
-                                        "Handbook Guide",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87
-                                        )
-                                      ),
-                                    ),
-                                    Divider(
-                                      color: Colors.grey[400],
-                                      height: 16.0,
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.verified_user),
-                                      title: Text(
-                                        'Privacy Policy',
-                                        style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black87
-                                        )
-                                      ),
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                              return PrivacyPolicy();
-                                            });
-                                        Navigator.push(context, route);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.error),
-                                      title: Text(
-                                        'About Us',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87
-                                        )
-                                      ),
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(
-                                          builder: (BuildContext context) {
-                                            return AboutUs();
-                                          });
-                                        Navigator.push(context, route);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Divider(
-                                      color: Colors.grey[400],
-                                      height: 16.0,
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.exit_to_app),
-                                      title: Text(
-                                        'Logout',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87
-                                        )
-                                      ),
-                                      onTap: () {
-                                        List topics = getTopics();
-                                        _setLoggedInStatus(false);
-                                        removeNotificationToken(_token)
-                                          .then((resolves) {
-                                            for(int i = 0; i < topics.length; i++){
-                                              String topic = topics[i]['topic'];
-
-                                              _firebaseMessaging.unsubscribeFromTopic(topic);
-                                            }
-
-                                            Route route = MaterialPageRoute(
-                                                builder: (BuildContext context) {
-                                                  return LoginPage();
-                                                });
-                                            Navigator.push(context, route);
-                                          });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  body: Container(
-                    child: Flex(
-                      direction: Axis.vertical,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fitWidth,
-                                image: AssetImage('img/home_profile_head_cover.png')
-                              )
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-                            child: Column(
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: () {
-                                    Route route = MaterialPageRoute(
-                                      builder: (buildContext) => Profile(
-                                        heroTag: widget.heroTag,
-                                        firstName: this.widget.firstName,
-                                        lastName: this.widget.lastName,
-                                      ));
-                                    Navigator.push(context, route);
-                                  },
-                                  child: Hero(
-                                    tag: this.widget.heroTag,
-                                    child: this.widget.child
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 8.0,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 6.0),
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Material(
-                                      color: Color.fromRGBO(255, 255, 255, 0),
-                                      child: InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            showStudentSwitcher = true;
-                                          });
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              '${this.widget.lastName ?? ""}, ${this.widget.firstName ?? ""}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 18.0,
-                                                  color: Colors.white
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 6.0),
-                                            ),
-                                            Icon(
-                                              Icons.arrow_drop_down,
-                                              color: Colors.white,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 3.0),
-                                    ),
-                                    Column(
-                                      children: <Widget>[
-                                        Text(
-                                          '${widget.gradeLevel} - ${widget.gradeSection}',
-                                          style: TextStyle(
-                                              color: Colors.white
-                                          ),
-                                        ),
-                                        Text(
-                                          'S.Y. ${schoolYearStart ?? ""}-${schoolYearEnd ?? ""}',
-                                          style: TextStyle(
-                                              color: Colors.white
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: Flex(
-                              direction: Axis.vertical,
-                              children: <Widget>[
-                                Flexible(
-                                  flex: 4,
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(horizontal: 20.0),
-                                    padding: EdgeInsets.symmetric(vertical: 12.0),
-                                    child: ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                          maxWidth: double.infinity,
-                                          maxHeight: 90.0
-                                      ),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [BrandTheme.cardShadow],
-                                            borderRadius: BorderRadius.all(Radius.circular(7.0))
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 12.0),
-                                          child: Flex(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            direction: Axis.horizontal,
-                                            children: <Widget>[
-                                              Expanded(
-                                                flex: 1,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Flex(
-                                                      direction: Axis.vertical,
-                                                      mainAxisAlignment: nextPaymentDay != null && nextPaymentDay != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
-                                                      children: <Widget>[
-                                                        Flexible(
-                                                          flex: 1,
-                                                          child: Text(
-                                                            'Next Payment',
-                                                            overflow: TextOverflow.fade,
-                                                            textAlign: TextAlign.center,
-                                                            maxLines: 2,
-                                                            softWrap: true,
-                                                            style: TextStyle(
-                                                                fontSize: 13.0,
-                                                                fontWeight: FontWeight.w700,
-                                                                color: Colors.black87
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        nextPaymentDay != null && nextPaymentDay != null ? Column(
-                                                          children: <Widget>[
-                                                            Text(
-                                                              nextPaymentMonth ?? "",
-                                                              style: TextStyle(
-                                                                  color: Colors.black38,
-                                                                  fontSize: 12.0,
-                                                                  fontWeight: FontWeight.w600
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              nextPaymentDay ?? "",
-                                                              style: TextStyle(
-                                                                  color: Theme.of(context).accentColor,
-                                                                  fontSize: 20.0,
-                                                                  fontWeight: FontWeight.w600
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ) : Expanded(
-                                                          flex: 1,
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: <Widget>[
-                                                              Text(
-                                                                'All set!',
-                                                                style: TextStyle(
-                                                                  color: Colors.green,
-                                                                  fontSize: 16.0,
-                                                                  fontWeight: FontWeight.w600
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                height: double.infinity,
-                                                width: 1.0,
-                                                color: Colors.black12,
-                                                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Column(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          'Attendance',
-                                                          style: TextStyle(
-                                                              fontSize: 13.0,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: Colors.black87
-                                                          ),
-                                                        ),
-                                                        Column(
-                                                          children: <Widget>[
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: <Widget>[
-                                                                attendanceStatusIcon,
-                                                                Padding(
-                                                                  padding: EdgeInsets.only(left: 4.0),
-                                                                  child: Text(
-                                                                    attendanceStatus,
-                                                                    style: TextStyle(
-                                                                      color: attendanceStatusColor,
-                                                                      fontSize: 16.0,
-                                                                      fontWeight: FontWeight.w700
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Text(
-                                                              '$presentDaysNo/${totalSchoolDays.floor()}',
-                                                              style: TextStyle(
-                                                                  color: Colors.black38,
-                                                                  fontSize: 12.0,
-                                                                  fontWeight: FontWeight.w600
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                height: double.infinity,
-                                                width: 1.0,
-                                                color: Colors.black12,
-                                                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                                              ),
-                                              Flexible(
-                                                flex: 1,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Column(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          'Next Event',
-                                                          style: TextStyle(
-                                                              fontSize: 13.0,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: Colors.black87
-                                                          ),
-                                                        ),
-                                                        nextEventMonth != null && nextEventDay != null ? Column(
-                                                          children: <Widget>[
-                                                            Text(
-                                                              nextEventMonth ?? '',
-                                                              style: TextStyle(
-                                                                  color: Colors.black38,
-                                                                  fontSize: 12.0,
-                                                                  fontWeight: FontWeight.w600
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              nextEventDay ?? '',
-                                                              style: TextStyle(
-                                                                  color: Theme.of(context).accentColor,
-                                                                  fontSize: 20.0,
-                                                                  fontWeight: FontWeight.w600
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ) : Expanded(
-                                                          flex: 1,
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: <Widget>[
-                                                              Text(
-                                                                'Stay tuned.',
-                                                                style: TextStyle(
-                                                                    color: Colors.grey[500],
-                                                                    fontSize: 14.0,
-                                                                    fontWeight: FontWeight.w600
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 6,
-                                  child: GridView.count(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 12.0,
-                                    mainAxisSpacing: 12.0,
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    scrollDirection: Axis.vertical,
-                                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                                    children: <Widget>[
-                                      MenuItem(
-                                        iconPath: 'img/Icons/icon_payments_2x.png',
-                                        label: 'Payments',
-                                        pageBuilder: PaymentHistory(
-                                          firstName: this.widget.firstName,
-                                          lastName: this.widget.lastName,
-                                          userId: this.widget.heroTag,
-                                          paymentData: paymentData,
-                                        ),
-                                        buildContext: context,
-                                      ),
-                                      MenuItem(
-                                        iconPath: 'img/Icons/icon_attendance_2x.png',
-                                        label: 'Attendance',
-                                        pageBuilder: Attendance(
-                                          firstName: this.widget.firstName,
-                                          lastName: this.widget.lastName,
-                                          userId: this.widget.heroTag,
-                                          schoolDays: this.schoolDays,
-                                          presentDays: this.presentDays,
-                                          noSchoolDays: this.noSchoolDays,
-                                          specialSchoolDays: this.specialSchoolDays,
-                                          yearStartDay: this.yearStartDay,
-                                          yearEndDay: this.yearEndDay,
-                                          presentDaysNo: this.presentDaysNo,
-                                          pastSchoolDays: this.pastSchoolDays,
-                                          absentDays: this.absentDays,
-                                          totalSchoolDays: this.totalSchoolDays,
-                                        ),
-                                        buildContext: context,
-                                      ),
-                                      MenuItem(
-                                        iconPath: 'img/Icons/icon_grades_2x.png',
-                                        label: 'Progress',
-                                        pageBuilder: Grades(
-                                          userId: widget.heroTag,
-                                          firstName: this.widget.firstName,
-                                          lastName: this.widget.lastName,
-                                          schoolLevel: this.widget.schoolLevel,
-                                        ),
-                                        buildContext: context,
-                                      ),
-                                      MenuItem(
-                                        iconPath: 'img/Icons/icon_activities_2x.png',
-                                        label: 'Activities',
-                                        pageBuilder: Activities(
-                                          firstName: this.widget.firstName,
-                                          lastName: this.widget.lastName,
-                                          classId: this.widget.classId,
-                                          userId: this.widget.heroTag,
-                                          monthActivities: this.monthWithYearActivities,
-                                          activityNames: this.activityWithYearNames,
-                                        ),
-                                        buildContext: context,
-                                      ),
-                                      MenuItem(
-                                        iconPath: 'img/Icons/icon_gallery_2x.png',
-                                        label: 'Photos',
-                                        pageBuilder: ActivityGallery(
-                                          firstName: this.widget.firstName,
-                                          lastName: this.widget.lastName,
-                                          userId: this.widget.heroTag,
-                                          classId: this.widget.classId,
-                                        ),
-                                        buildContext: context,
-                                      ),
-                                      MenuItem(
-                                        iconPath: 'img/Icons/icon_announcements_2x.png',
-                                        label: 'Messages',
-                                        isCustomOnPressed: true,
-                                        customOnPressed: () async {
-                                          await buildMessageList(widget.heroTag, messagePageSize, 1)
-                                            .then((result) {
-                                              Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
-                                                userId: widget.heroTag,
-                                                pageSize: messagePageSize,
-                                                pageNum: 1,
-                                                messageBoardLists: result['messages'],
-                                                firstName: widget.firstName,
-                                                lastName: widget.lastName,
-                                              ));
-                                              Navigator.push(context, route);
-                                            });
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  appBar: AppBar(
-                    title: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("img/woodbridge_logo.png")
-                        )
-                      ),
-                    ),
-                    leading: IconButton(
-                      onPressed: () {
-                        _scaffoldKey.currentState.openDrawer();
-                      },
-                      icon: Icon(
-                        Icons.menu,
-                        color: Theme.of(context).accentColor,
-                      ),
-                    ),
-                    backgroundColor: Colors.white,
-                    actions: <Widget>[
-                      IconButton(
-                        onPressed: () async {
-                          await buildNotificationList(this.widget.heroTag, notificationPageSize, 1)
-                            .then((result) {
-                              Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
-                                firstName: this.widget.firstName,
-                                lastName: this.widget.lastName,
-                                userId: this.widget.heroTag,
-                                notificationTiles: result['notifications'],
-                                pageSize: notificationPageSize,
-                              ));
-                              Navigator.push(context, route);
-                            });
-                        },
-                        icon: Icon(
-                          Icons.notifications_none,
-                          color: Theme.of(context).accentColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ),
-              Positioned(
-                child: showStudentSwitcher ? Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(22, 86, 135, .88)
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Container(
-                      margin: EdgeInsets.only(top: height),
+                child: SafeArea(
+                  child: Scaffold(
+                    key: _scaffoldKey,
+                    drawer: Drawer(
                       child: Flex(
                         direction: Axis.vertical,
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20.0),
-                            child: Text(
-                              'Select Student',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.w600
+                          Flexible(
+                            flex: 0,
+                            child: UserAccountsDrawerHeader(
+                              accountEmail: Text(
+                                '${widget.gradeLevel} - ${widget.gradeSection}',
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w600
+                                ),
                               ),
+                              accountName: Text(
+                                '${this.widget.firstName ?? ""} ${this.widget.lastName ?? ""}',
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w800
+                                ),
+                              ),
+                              otherAccountsPictures: <Widget>[
+                                IconButton(
+                                  icon: Icon(Icons.close),
+                                  color: Color.fromRGBO(255, 255, 255, .75),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  splashColor: Colors.white,
+                                )
+                              ],
+                              currentAccountPicture: widget.child,
                             ),
                           ),
-                          Expanded(
-                            flex: 0,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxWidth: 360.00
-                              ),
-                              child: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 20.0),
-                                child: GridView.count(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  primary: false,
-                                  childAspectRatio: .9,
-                                  crossAxisCount: 2,
-                                  physics: BouncingScrollPhysics(),
-                                  children: widget.userIds.map((userId) {
-                                    return StudentAvatarPicker(
-                                      userId: '${userId}',
-                                      isActive: userId == widget.heroTag,
-                                      onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl) {
-                                        showStudentSwitcher = false;
+                          Flexible(
+                            flex: 1,
+                            child: Container(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      ListTile(
+                                        leading: Icon(Icons.book),
+                                        onTap: (){
+                                          Route route = MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                                return InitialOnboard(
+                                                  pages: guidePages,
+                                                  userIds: [],
+                                                  showAgreementCta: false,
+                                                );
+                                              });
+                                          Navigator.push(context, route);
+                                        },
+                                        title: Text(
+                                          "Parent's Guide",
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87
+                                          )
+                                        ),
+                                      ),
+                                      Divider(
+                                        color: Colors.grey[400],
+                                        height: 16.0,
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.verified_user),
+                                        title: Text(
+                                          'Privacy Policy',
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.black87
+                                          )
+                                        ),
+                                        onTap: () {
+                                          Route route = MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                                return PrivacyPolicy();
+                                              });
+                                          Navigator.push(context, route);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.error),
+                                        title: Text(
+                                          'About Us',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87
+                                          )
+                                        ),
+                                        onTap: () {
+                                          Route route = MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return AboutUs();
+                                            });
+                                          Navigator.push(context, route);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: <Widget>[
+                                      Divider(
+                                        color: Colors.grey[400],
+                                        height: 16.0,
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.exit_to_app),
+                                        title: Text(
+                                          'Logout',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87
+                                          )
+                                        ),
+                                        onTap: () {
+                                          List topics = getTopics();
+                                          _setLoggedInStatus(false);
+                                          removeNotificationToken(_token)
+                                            .then((resolves) {
+                                              for(int i = 0; i < topics.length; i++){
+                                                String topic = topics[i]['topic'];
 
-                                        userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId);
-                                      }
-                                    );
-                                  }).toList()
-                                ),
+                                                _firebaseMessaging.unsubscribeFromTopic(topic);
+                                              }
+
+                                              Route route = MaterialPageRoute(
+                                                  builder: (BuildContext context) {
+                                                    return LoginPage();
+                                                  });
+                                              Navigator.push(context, route);
+                                            });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                  )
-                ) : Container(),
+                    body: Container(
+                      child: Flex(
+                        direction: Axis.vertical,
+                        children: <Widget>[
+                          Flexible(
+                            flex: 2,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.fitWidth,
+                                  image: AssetImage('img/home_profile_head_cover.png')
+                                )
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                              child: Flex(
+                                direction: Axis.vertical,
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 3,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                          builder: (buildContext) => Profile(
+                                            heroTag: widget.heroTag,
+                                            firstName: this.widget.firstName,
+                                            lastName: this.widget.lastName,
+                                          ));
+                                        Navigator.push(context, route);
+                                      },
+                                      child: Hero(
+                                        tag: this.widget.heroTag,
+                                        child: this.widget.child
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 8.0,
+                                  ),
+                                  Flexible(
+                                    flex: 0,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Material(
+                                          color: Color.fromRGBO(255, 255, 255, 0),
+                                          child: InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                showStudentSwitcher = true;
+                                              });
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Text(
+                                                  '${this.widget.lastName ?? ""}, ${this.widget.firstName ?? ""}',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 18.0,
+                                                      color: Colors.white
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 6.0),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_drop_down,
+                                                  color: Colors.white,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              'S.Y. ${schoolYearStart ?? ""}-${schoolYearEnd ?? ""}',
+                                              style: TextStyle(
+                                                  color: Colors.white
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 3.0),
+                                            ),
+                                            Text(
+                                              '${widget.gradeSection}',
+                                              style: TextStyle(
+                                                  color: Colors.white
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Flex(
+                                direction: Axis.vertical,
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 4,
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(horizontal: 20.0),
+                                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                            maxWidth: double.infinity,
+                                            maxHeight: 90.0
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [BrandTheme.cardShadow],
+                                              borderRadius: BorderRadius.all(Radius.circular(7.0))
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 12.0),
+                                            child: Flex(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              direction: Axis.horizontal,
+                                              children: <Widget>[
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: OverflowBox(
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: <Widget>[
+                                                        Flex(
+                                                          direction: Axis.vertical,
+                                                          mainAxisAlignment: nextPaymentDay != null && nextPaymentDay != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Expanded(
+                                                              flex: 1,
+                                                              child: Text(
+                                                                'Next Payment',
+                                                                overflow: TextOverflow.fade,
+                                                                textAlign: TextAlign.center,
+                                                                maxLines: 2,
+                                                                softWrap: true,
+                                                                style: TextStyle(
+                                                                    fontSize: 12.0,
+                                                                    fontWeight: FontWeight.w700,
+                                                                    color: Colors.black87
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            nextPaymentDay != null && nextPaymentDay != null ? Column(
+                                                              children: <Widget>[
+                                                                Text(
+                                                                  nextPaymentMonth ?? "",
+                                                                  style: TextStyle(
+                                                                      color: Colors.black38,
+                                                                      fontSize: 12.0,
+                                                                      fontWeight: FontWeight.w600
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  nextPaymentDay ?? "",
+                                                                  style: TextStyle(
+                                                                      color: Theme.of(context).accentColor,
+                                                                      fontSize: 20.0,
+                                                                      fontWeight: FontWeight.w600
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ) : Expanded(
+                                                              flex: 1,
+                                                              child: Column(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: <Widget>[
+                                                                  Text(
+                                                                    'All set!',
+                                                                    style: TextStyle(
+                                                                      color: Colors.green,
+                                                                      fontSize: 16.0,
+                                                                      fontWeight: FontWeight.w600
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  height: double.infinity,
+                                                  width: 1.0,
+                                                  color: Colors.black12,
+                                                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                                                ),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      SingleChildScrollView(
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              'Attendance',
+                                                              style: TextStyle(
+                                                                  fontSize: 13.0,
+                                                                  fontWeight: FontWeight.w700,
+                                                                  color: Colors.black87
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets.only(top: 5.0),
+                                                              child: Column(
+                                                                children: <Widget>[
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: <Widget>[
+                                                                      attendanceStatusIcon,
+                                                                      Padding(
+                                                                        padding: EdgeInsets.only(left: 4.0),
+                                                                        child: Text(
+                                                                          attendanceStatus,
+                                                                          style: TextStyle(
+                                                                            color: attendanceStatusColor,
+                                                                            fontSize: 16.0,
+                                                                            fontWeight: FontWeight.w700
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  Text(
+                                                                    '$presentDaysNo/${totalSchoolDays.floor()}',
+                                                                    overflow: TextOverflow.fade,
+                                                                    style: TextStyle(
+                                                                        color: Colors.black38,
+                                                                        fontSize: 12.0,
+                                                                        fontWeight: FontWeight.w600
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  height: double.infinity,
+                                                  width: 1.0,
+                                                  color: Colors.black12,
+                                                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                                                ),
+                                                Flexible(
+                                                  flex: 1,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            'Next Event',
+                                                            style: TextStyle(
+                                                                fontSize: 12.0,
+                                                                fontWeight: FontWeight.w700,
+                                                                color: Colors.black87
+                                                            ),
+                                                          ),
+                                                          nextEventMonth != null && nextEventDay != null ? Column(
+                                                            children: <Widget>[
+                                                              Text(
+                                                                nextEventMonth ?? '',
+                                                                style: TextStyle(
+                                                                    color: Colors.black38,
+                                                                    fontSize: 12.0,
+                                                                    fontWeight: FontWeight.w600
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                nextEventDay ?? '',
+                                                                style: TextStyle(
+                                                                    color: Theme.of(context).accentColor,
+                                                                    fontSize: 20.0,
+                                                                    fontWeight: FontWeight.w600
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ) : Expanded(
+                                                            flex: 1,
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: <Widget>[
+                                                                Text(
+                                                                  'Stay tuned.',
+                                                                  style: TextStyle(
+                                                                      color: Colors.grey[500],
+                                                                      fontSize: 14.0,
+                                                                      fontWeight: FontWeight.w600
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 8,
+                                    child: GridView.count(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 12.0,
+                                      mainAxisSpacing: 12.0,
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      scrollDirection: Axis.vertical,
+                                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                      children: <Widget>[
+                                        MenuItem(
+                                          iconPath: 'img/Icons/icon_payments_2x.png',
+                                          label: 'Payments',
+                                          pageBuilder: PaymentHistory(
+                                            firstName: this.widget.firstName,
+                                            lastName: this.widget.lastName,
+                                            userId: this.widget.heroTag,
+                                            paymentData: paymentData,
+                                          ),
+                                          buildContext: context,
+                                        ),
+                                        MenuItem(
+                                          iconPath: 'img/Icons/icon_attendance_2x.png',
+                                          label: 'Attendance',
+                                          pageBuilder: Attendance(
+                                            firstName: this.widget.firstName,
+                                            lastName: this.widget.lastName,
+                                            userId: this.widget.heroTag,
+                                            schoolDays: this.schoolDays,
+                                            presentDays: this.presentDays,
+                                            noSchoolDays: this.noSchoolDays,
+                                            specialSchoolDays: this.specialSchoolDays,
+                                            yearStartDay: this.yearStartDay,
+                                            yearEndDay: this.yearEndDay,
+                                            presentDaysNo: this.presentDaysNo,
+                                            pastSchoolDays: this.pastSchoolDays,
+                                            absentDays: this.absentDays,
+                                            totalSchoolDays: this.totalSchoolDays,
+                                          ),
+                                          buildContext: context,
+                                        ),
+                                        MenuItem(
+                                          iconPath: 'img/Icons/icon_grades_2x.png',
+                                          label: 'Progress',
+                                          pageBuilder: Grades(
+                                            userId: widget.heroTag,
+                                            firstName: this.widget.firstName,
+                                            lastName: this.widget.lastName,
+                                            schoolLevel: this.widget.schoolLevel,
+                                          ),
+                                          buildContext: context,
+                                        ),
+                                        MenuItem(
+                                          iconPath: 'img/Icons/icon_activities_2x.png',
+                                          label: 'Activities',
+                                          pageBuilder: Activities(
+                                            firstName: this.widget.firstName,
+                                            lastName: this.widget.lastName,
+                                            classId: this.widget.classId,
+                                            userId: this.widget.heroTag,
+                                            monthActivities: this.monthWithYearActivities,
+                                            activityNames: this.activityWithYearNames,
+                                          ),
+                                          buildContext: context,
+                                        ),
+                                        MenuItem(
+                                          iconPath: 'img/Icons/icon_gallery_2x.png',
+                                          label: 'Photos',
+                                          pageBuilder: ActivityGallery(
+                                            firstName: this.widget.firstName,
+                                            lastName: this.widget.lastName,
+                                            userId: this.widget.heroTag,
+                                            classId: this.widget.classId,
+                                          ),
+                                          buildContext: context,
+                                        ),
+                                        MenuItem(
+                                          iconPath: 'img/Icons/icon_announcements_2x.png',
+                                          label: 'Messages',
+                                          isCustomOnPressed: true,
+                                          customOnPressed: () async {
+                                            await buildMessageList(widget.heroTag, messagePageSize, 1)
+                                              .then((result) {
+                                                Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
+                                                  userId: widget.heroTag,
+                                                  pageSize: messagePageSize,
+                                                  pageNum: 1,
+                                                  messageBoardLists: result['messages'],
+                                                  firstName: widget.firstName,
+                                                  lastName: widget.lastName,
+                                                ));
+                                                Navigator.push(context, route);
+                                              });
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    appBar: AppBar(
+                      title: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("img/woodbridge_logo.png")
+                          )
+                        ),
+                      ),
+                      leading: IconButton(
+                        onPressed: () {
+                          _scaffoldKey.currentState.openDrawer();
+                        },
+                        icon: Icon(
+                          Icons.menu,
+                          color: Theme.of(context).accentColor,
+                        ),
+                      ),
+                      backgroundColor: Colors.white,
+                      actions: <Widget>[
+                        IconButton(
+                          onPressed: () async {
+                            await buildNotificationList(this.widget.heroTag, notificationPageSize, 1)
+                              .then((result) {
+                                Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
+                                  firstName: this.widget.firstName,
+                                  lastName: this.widget.lastName,
+                                  userId: this.widget.heroTag,
+                                  notificationTiles: result['notifications'],
+                                  pageSize: notificationPageSize,
+                                ));
+                                Navigator.push(context, route);
+                              });
+                          },
+                          icon: Icon(
+                            Icons.notifications_none,
+                            color: Theme.of(context).accentColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ),
+              Positioned(
+                child: SafeArea(
+                  child: showStudentSwitcher ? Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(22, 86, 135, .88)
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Container(
+                        margin: EdgeInsets.only(top: height),
+                        child: Flex(
+                          direction: Axis.vertical,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20.0),
+                              child: Text(
+                                'Select Student',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24.0,
+                                  fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 0,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 360.00
+                                ),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 20.0),
+                                  child: GridView.count(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    primary: false,
+                                    childAspectRatio: .9,
+                                    crossAxisCount: 2,
+                                    physics: BouncingScrollPhysics(),
+                                    children: widget.userIds.map((userId) {
+                                      return StudentAvatarPicker(
+                                        userId: '${userId}',
+                                        isActive: userId == widget.heroTag,
+                                        onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl) {
+                                          showStudentSwitcher = false;
+
+                                          userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId);
+                                        }
+                                      );
+                                    }).toList()
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ) : Container(),
+                ),
               ),
             ],
           ),

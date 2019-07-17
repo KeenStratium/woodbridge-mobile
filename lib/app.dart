@@ -109,9 +109,11 @@ class WoodbridgeApp extends StatelessWidget {
               return snapshot.data ? homePage : LoginPage();
             }else{
               return Scaffold(
-                body: Text(
-                  'Loading myWoodbridge',
-                  textDirection: TextDirection.ltr,
+                body: Center(
+                  child: Text(
+                    'Loading myWoodbridge',
+                    textDirection: TextDirection.ltr,
+                  ),
                 ),
               );
             }
