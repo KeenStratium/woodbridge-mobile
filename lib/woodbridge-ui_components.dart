@@ -83,10 +83,10 @@ class Avatar extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(100.0)),
         boxShadow: enableShadow ? [BoxShadow(
-          color: Color.fromRGBO(0, 0, 0, .55),
-          blurRadius: 12.0,
-          offset: Offset(2.0, 3.0),
-          spreadRadius: -1.0
+          color: Color.fromRGBO(0, 0, 0, .15),
+          blurRadius: 6.0,
+          offset: Offset(0.0, 1.0),
+          spreadRadius: 0.0
         )] : [],
       ),
       child: !hasPhoto ? CircleAvatar(

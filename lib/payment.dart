@@ -255,7 +255,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                       ListView(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        children: (widget.paymentData['payments'] as List).map((payment) {
+                        children: widget.paymentData['payments'] != null ? (widget.paymentData['payments'] as List).map((payment) {
                           return Material(
                             color: Colors.white,
                             child: InkWell(
@@ -350,7 +350,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                               ),
                             ),
                           );
-                        }).toList(),
+                        }).toList() : <Widget>[Container()],
                       )
                     ],
                   ),
