@@ -399,13 +399,16 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                               ),
                             ) : Container(),
                             Center(
-                              child: Avatar(
-                                backgroundColor: Colors.indigo,
-                                maxRadius: 41.0,
-                                fontSize: 24.0,
-                                initial: "$fInitial$lInitial",
-                                enableShadow: widget.enableShadow,
-                                avatarUrl: avatarUrl,
+                              child: AspectRatio(
+                                aspectRatio: 1.0,
+                                child: Avatar(
+                                  backgroundColor: Colors.indigo,
+                                  maxRadius: 41.0,
+                                  fontSize: 24.0,
+                                  initial: "$fInitial$lInitial",
+                                  enableShadow: widget.enableShadow,
+                                  avatarUrl: avatarUrl,
+                                ),
                               ),
                             ),
                           ],
