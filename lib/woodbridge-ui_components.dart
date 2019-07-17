@@ -79,33 +79,36 @@ class Avatar extends StatelessWidget {
       hasPhoto = true;
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(100.0)),
-        boxShadow: enableShadow ? [BoxShadow(
-          color: Color.fromRGBO(0, 0, 0, .15),
-          blurRadius: 6.0,
-          offset: Offset(0.0, 1.0),
-          spreadRadius: 0.0
-        )] : [],
-      ),
-      child: !hasPhoto ? CircleAvatar(
-        child: Text(
-          this.initial ?? '',
-          style: TextStyle(
-            fontSize: this.fontSize,
-          ),
+    return AspectRatio(
+      aspectRatio: 1.0,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(100.0)),
+          boxShadow: enableShadow ? [BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, .15),
+            blurRadius: 6.0,
+            offset: Offset(0.0, 1.0),
+            spreadRadius: 0.0
+          )] : [],
         ),
-        backgroundColor: this.backgroundColor,
-        foregroundColor: Colors.white,
-        maxRadius: this.maxRadius,
-        minRadius: this.minRadius,
-      ) : CircleAvatar(
-        child: Container(),
-        backgroundColor: Colors.white,
-        maxRadius: this.maxRadius,
-        minRadius: this.minRadius,
-        backgroundImage: NetworkImage(avatarUrl),
+        child: !hasPhoto ? CircleAvatar(
+          child: Text(
+            this.initial ?? '',
+            style: TextStyle(
+              fontSize: this.fontSize,
+            ),
+          ),
+          backgroundColor: this.backgroundColor,
+          foregroundColor: Colors.white,
+          maxRadius: this.maxRadius,
+          minRadius: this.minRadius,
+        ) : CircleAvatar(
+          child: Container(),
+          backgroundColor: Colors.white,
+          maxRadius: this.maxRadius,
+          minRadius: this.minRadius,
+          backgroundImage: NetworkImage(avatarUrl),
+        ),
       ),
     );
   }
@@ -394,7 +397,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                           children: <Widget>[
                             widget.isActive ? Center(
                               child: CircleAvatar(
-                                maxRadius: 46.0,
+                                maxRadius: 41.0,
                                 backgroundColor: Colors.white,
                               ),
                             ) : Container(),

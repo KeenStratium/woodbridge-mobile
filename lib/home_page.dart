@@ -642,7 +642,7 @@ class _HomePageState extends State<HomePage> {
       Route route = MaterialPageRoute(builder: (buildContext) => HomePage(
         child: Avatar(
           backgroundColor: Colors.indigo,
-          maxRadius: 48.0,
+          maxRadius: 54.0,
           minRadius: 20.0,
           fontSize: 20.0,
           initial: "${widget.firstName != null ? widget.lastName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
@@ -734,7 +734,7 @@ class _HomePageState extends State<HomePage> {
   void userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId){
     widget.child = Avatar(
       backgroundColor: Colors.indigo,
-      maxRadius: 48.0,
+      maxRadius: 54.0,
       fontSize: 20.0,
       initial: "${fname != null ? fname[0] : ''}${lname != null ? lname[0] : ''}",
       avatarUrl: avatarUrl,
@@ -955,37 +955,34 @@ class _HomePageState extends State<HomePage> {
                                   image: AssetImage('img/home_profile_head_cover.png')
                                 )
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
                               child: Flex(
                                 direction: Axis.vertical,
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Flexible(
-                                    flex: 3,
-                                    child: AspectRatio(
-                                      aspectRatio: 1.0,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Route route = MaterialPageRoute(
-                                            builder: (buildContext) => Profile(
-                                              heroTag: widget.heroTag,
-                                              firstName: this.widget.firstName,
-                                              lastName: this.widget.lastName,
-                                            ));
-                                          Navigator.push(context, route);
-                                        },
-                                        child: Hero(
-                                          tag: this.widget.heroTag ?? '',
-                                          child: this.widget.child
-                                        ),
+                                    flex: 5,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                          builder: (buildContext) => Profile(
+                                            heroTag: widget.heroTag,
+                                            firstName: this.widget.firstName,
+                                            lastName: this.widget.lastName,
+                                          ));
+                                        Navigator.push(context, route);
+                                      },
+                                      child: Hero(
+                                        tag: this.widget.heroTag ?? '',
+                                        child: this.widget.child
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 8.0,
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 4.0),
                                   ),
-                                  Flexible(
-                                    flex: 0,
+                                  Expanded(
+                                    flex: 3,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.center,
