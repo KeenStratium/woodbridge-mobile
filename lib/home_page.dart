@@ -547,7 +547,6 @@ class _HomePageState extends State<HomePage> {
   void _saveUserProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print('saving user profile data');
     await prefs.setString('fname', widget.firstName);
     await prefs.setString('lname', widget.lastName);
     await prefs.setString('userId', widget.heroTag);
@@ -558,7 +557,6 @@ class _HomePageState extends State<HomePage> {
     await prefs.setString('gradeSection', widget.gradeSection);
     await prefs.setStringList('userIds', widget.userIds);
     await prefs.setStringList('topics', widget.userIds);
-    print('done saving user profile data');
   }
 
   @override
@@ -676,17 +674,11 @@ class _HomePageState extends State<HomePage> {
           classId: this.widget.classId,
         );
       }else if(category == 'messages' || category == 'appointment') {
-        pageBuilder = await buildMessageList(widget.heroTag, messagePageSize, 1)
-          .then((result) {
-            return MessageBoard(
-              userId: widget.heroTag,
-              pageSize: messagePageSize,
-              pageNum: 1,
-              messageBoardLists: result['messages'],
-              firstName: widget.firstName,
-              lastName: widget.lastName,
-            );
-          });
+        pageBuilder =  MessageBoard(
+          userId: widget.heroTag,
+          firstName: widget.firstName,
+          lastName: widget.lastName,
+        );
       }else if(category == 'progress'){
         pageBuilder = Grades(
           userId: widget.heroTag,
@@ -1357,21 +1349,12 @@ class _HomePageState extends State<HomePage> {
                                         MenuItem(
                                           iconPath: 'img/Icons/icon_announcements_2x.png',
                                           label: 'Messages',
-                                          isCustomOnPressed: true,
-                                          customOnPressed: () async {
-                                            await buildMessageList(widget.heroTag, messagePageSize, 1)
-                                              .then((result) {
-                                                Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
-                                                  userId: widget.heroTag,
-                                                  pageSize: messagePageSize,
-                                                  pageNum: 1,
-                                                  messageBoardLists: result['messages'],
-                                                  firstName: widget.firstName,
-                                                  lastName: widget.lastName,
-                                                ));
-                                                Navigator.push(context, route);
-                                              });
-                                          },
+                                          pageBuilder: MessageBoard(
+                                            userId: widget.heroTag,
+                                            firstName: widget.firstName,
+                                            lastName: widget.lastName,
+                                          ),
+                                          buildContext: context,
                                         )
                                       ],
                                     ),
@@ -1404,17 +1387,12 @@ class _HomePageState extends State<HomePage> {
                       actions: <Widget>[
                         IconButton(
                           onPressed: () async {
-                            await buildNotificationList(this.widget.heroTag, notificationPageSize, 1)
-                              .then((result) {
-                                Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
-                                  firstName: this.widget.firstName,
-                                  lastName: this.widget.lastName,
-                                  userId: this.widget.heroTag,
-                                  notificationTiles: result['notifications'],
-                                  pageSize: notificationPageSize,
-                                ));
-                                Navigator.push(context, route);
-                              });
+                            Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
+                              firstName: this.widget.firstName,
+                              lastName: this.widget.lastName,
+                              userId: this.widget.heroTag,
+                            ));
+                            Navigator.push(context, route);
                           },
                           icon: Icon(
                             Icons.notifications_none,

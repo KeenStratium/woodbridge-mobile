@@ -80,7 +80,7 @@ Future buildNotificationList(userId, pageSize, pageNum) async {
   int offsetPageSize = pageSize * offsetPage;
   List<Future> futures = <Future>[fetchStudentNotification(userId, offsetPageSize, pageNum)];
 
-  return await Future.wait(futures)
+  return Future.wait(futures)
     .then((result) {
       List<List<Widget>> _notifications = <List<Widget>>[];
       Map currentPageData = result[0];
