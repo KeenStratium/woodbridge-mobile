@@ -271,18 +271,19 @@ class _LoginBodyState extends State<LoginBody> {
                                 }
 
                                 Route route = MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      return ChangePassword(
-                                          userId: data['user_id'],
-                                          userIds: data['ids'],
-                                          hasAgreed: hasAgreed
-                                      );
-                                    });
+                                  builder: (BuildContext context) {
+                                    return ChangePassword(
+                                      userId: data['user_id'],
+                                      userIds: data['ids'],
+                                      hasAgreed: hasAgreed
+                                    );
+                                  });
                                 Navigator.push(context, route);
                               });
                             } else{
                               Scaffold.of(context).hideCurrentSnackBar();
                               Scaffold.of(context).showSnackBar(errorSnackBar);
+                              _passwordController.text = '';
                               print('Please try again.');
                             }
                           });
