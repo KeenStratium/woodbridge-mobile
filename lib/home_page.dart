@@ -302,6 +302,7 @@ class _HomePageState extends State<HomePage> {
                   attendanceStatusIcon = Icon(
                     Icons.check,
                     color: Colors.green,
+                    size: 18.0,
                   );
                 }else if(today.isBefore(attendanceDate)){
                   attendanceStatus = 'Soon';
@@ -1069,6 +1070,7 @@ class _HomePageState extends State<HomePage> {
                                             padding: EdgeInsets.symmetric(vertical: 12.0),
                                             child: Flex(
                                               crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.max,
                                               direction: Axis.horizontal,
                                               children: <Widget>[
                                                 Expanded(
@@ -1150,48 +1152,64 @@ class _HomePageState extends State<HomePage> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: <Widget>[
                                                       SingleChildScrollView(
-                                                        child: Column(
+                                                        child: Flex(
+                                                          direction: Axis.vertical,
                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                           children: <Widget>[
                                                             Text(
                                                               'Attendance',
+                                                              overflow: TextOverflow.fade,
                                                               style: TextStyle(
-                                                                  fontSize: 13.0,
+                                                                  fontSize: 12.0,
                                                                   fontWeight: FontWeight.w700,
                                                                   color: Colors.black87
                                                               ),
                                                             ),
-                                                            Padding(
-                                                              padding: EdgeInsets.only(top: 5.0),
-                                                              child: Column(
-                                                                children: <Widget>[
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: <Widget>[
-                                                                      attendanceStatusIcon,
-                                                                      Padding(
-                                                                        padding: EdgeInsets.only(left: 4.0),
-                                                                        child: Text(
-                                                                          attendanceStatus,
-                                                                          style: TextStyle(
-                                                                            color: attendanceStatusColor,
-                                                                            fontSize: 16.0,
-                                                                            fontWeight: FontWeight.w700
+                                                            Flexible(
+                                                              flex: 0,
+                                                              child: Padding(
+                                                                padding: EdgeInsets.only(top: 8.0),
+                                                                child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: <Widget>[
+                                                                    Flex(
+                                                                      direction: Axis.horizontal,
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      children: <Widget>[
+                                                                        Flexible(
+                                                                          flex: 0,
+                                                                          child: Container(
+                                                                            child: attendanceStatusIcon
+                                                                          )
+                                                                        ),
+                                                                        Expanded(
+                                                                          flex: 0,
+                                                                          child: Padding(
+                                                                            padding: EdgeInsets.only(left: 2.0),
+                                                                            child: Text(
+                                                                              attendanceStatus,
+                                                                              overflow: TextOverflow.fade,
+                                                                              style: TextStyle(
+                                                                                color: attendanceStatusColor,
+                                                                                fontSize: 15.0,
+                                                                                fontWeight: FontWeight.w700
+                                                                              ),
+                                                                            ),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Text(
-                                                                    '$presentDaysNo/${totalSchoolDays.floor()}',
-                                                                    overflow: TextOverflow.fade,
-                                                                    style: TextStyle(
-                                                                        color: Colors.black38,
-                                                                        fontSize: 12.0,
-                                                                        fontWeight: FontWeight.w600
+                                                                      ],
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                    Text(
+                                                                      '$presentDaysNo/${totalSchoolDays.floor()}',
+                                                                      overflow: TextOverflow.fade,
+                                                                      style: TextStyle(
+                                                                          color: Colors.black38,
+                                                                          fontSize: 12.0,
+                                                                          fontWeight: FontWeight.w600
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             )
                                                           ],
@@ -1368,9 +1386,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                     appBar: AppBar(
                       title: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 14.0, vertical: 6.0),
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage("img/woodbridge_logo.png")
+                            image: AssetImage("img/mywoodbridge.png")
                           )
                         ),
                       ),
