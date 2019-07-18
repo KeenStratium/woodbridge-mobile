@@ -79,36 +79,33 @@ class Avatar extends StatelessWidget {
       hasPhoto = true;
     }
 
-    return AspectRatio(
-      aspectRatio: 1.0,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(100.0)),
-          boxShadow: enableShadow ? [BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, .15),
-            blurRadius: 6.0,
-            offset: Offset(0.0, 1.0),
-            spreadRadius: 0.0
-          )] : [],
-        ),
-        child: !hasPhoto ? CircleAvatar(
-          child: Text(
-            this.initial ?? '',
-            style: TextStyle(
-              fontSize: this.fontSize,
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(100.0)),
+        boxShadow: enableShadow ? [BoxShadow(
+          color: Color.fromRGBO(0, 0, 0, .15),
+          blurRadius: 6.0,
+          offset: Offset(0.0, 1.0),
+          spreadRadius: 0.0
+        )] : [],
+      ),
+      child: !hasPhoto ? CircleAvatar(
+        child: Text(
+          this.initial ?? '',
+          style: TextStyle(
+            fontSize: this.fontSize,
           ),
-          backgroundColor: this.backgroundColor,
-          foregroundColor: Colors.white,
-          maxRadius: this.maxRadius,
-          minRadius: this.minRadius,
-        ) : CircleAvatar(
-          child: Container(),
-          backgroundColor: Colors.white,
-          maxRadius: this.maxRadius,
-          minRadius: this.minRadius,
-          backgroundImage: NetworkImage(avatarUrl),
         ),
+        backgroundColor: this.backgroundColor,
+        foregroundColor: Colors.white,
+        maxRadius: this.maxRadius,
+        minRadius: this.minRadius,
+      ) : CircleAvatar(
+        child: Container(),
+        backgroundColor: Colors.white,
+        maxRadius: this.maxRadius,
+        minRadius: this.minRadius,
+        backgroundImage: NetworkImage(avatarUrl),
       ),
     );
   }
