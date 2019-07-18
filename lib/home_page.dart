@@ -972,9 +972,12 @@ class _HomePageState extends State<HomePage> {
                                           ));
                                         Navigator.push(context, route);
                                       },
-                                      child: Hero(
-                                        tag: this.widget.heroTag ?? '',
-                                        child: this.widget.child
+                                      child: AspectRatio(
+                                        aspectRatio: 1.0,
+                                        child: Hero(
+                                          tag: this.widget.heroTag ?? '',
+                                          child: this.widget.child
+                                        ),
                                       ),
                                     ),
                                   ),
