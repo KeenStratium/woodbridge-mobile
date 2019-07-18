@@ -674,17 +674,11 @@ class _HomePageState extends State<HomePage> {
           classId: this.widget.classId,
         );
       }else if(category == 'messages' || category == 'appointment') {
-        pageBuilder = await buildMessageList(widget.heroTag, messagePageSize, 1)
-          .then((result) {
-            return MessageBoard(
-              userId: widget.heroTag,
-              pageSize: messagePageSize,
-              pageNum: 1,
-              messageBoardLists: result['messages'],
-              firstName: widget.firstName,
-              lastName: widget.lastName,
-            );
-          });
+        pageBuilder =  MessageBoard(
+          userId: widget.heroTag,
+          firstName: widget.firstName,
+          lastName: widget.lastName,
+        );
       }else if(category == 'progress'){
         pageBuilder = Grades(
           userId: widget.heroTag,
@@ -1355,21 +1349,12 @@ class _HomePageState extends State<HomePage> {
                                         MenuItem(
                                           iconPath: 'img/Icons/icon_announcements_2x.png',
                                           label: 'Messages',
-                                          isCustomOnPressed: true,
-                                          customOnPressed: () async {
-                                            buildMessageList(widget.heroTag, messagePageSize, 1)
-                                              .then((result) {
-                                                Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
-                                                  userId: widget.heroTag,
-                                                  pageSize: messagePageSize,
-                                                  pageNum: 1,
-                                                  messageBoardLists: result['messages'],
-                                                  firstName: widget.firstName,
-                                                  lastName: widget.lastName,
-                                                ));
-                                                Navigator.push(context, route);
-                                              });
-                                          },
+                                          pageBuilder: MessageBoard(
+                                            userId: widget.heroTag,
+                                            firstName: widget.firstName,
+                                            lastName: widget.lastName,
+                                          ),
+                                          buildContext: context,
                                         )
                                       ],
                                     ),
