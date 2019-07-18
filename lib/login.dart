@@ -4,6 +4,7 @@ import 'model.dart';
 
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -55,12 +56,15 @@ class LoginBody extends StatefulWidget {
 class _LoginBodyState extends State<LoginBody> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
+  PDFDocument doc;
+  List<Widget> guidePages = <Widget>[];
 
   @override
   void initState(){
     super.initState();
 
     clearTopics();
+    fetchPdf();
   }
 
   _setLoggedInStatus(bool status) async {
@@ -144,8 +148,31 @@ class _LoginBodyState extends State<LoginBody> {
     return loginStatus;
   }
 
+  void fetchPdf() async {
+    await initLoadPdf();
+  }
+
+  Future initLoadPdf() async {
+    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
+    int maxPages = doc.count;
+
+    for(int i = 0; i < maxPages; i++){
+      Widget page = await doc.get(page: i+1);
+      print(page);
+      guidePages.add(page);
+    }
+
+
+    print('pages: ');
+    print(guidePages);
+
+    return guidePages;
+  }
+
   @override
   Widget build(BuildContext context) {
+    _userController.text = 'GARGAR-2019-984';
+    _passwordController.text = 'woodbridge';
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -220,7 +247,6 @@ class _LoginBodyState extends State<LoginBody> {
                       child: accentCtaButton(
                         label: 'Log In',
                         onPressed: (() async {
-                          _setLoggedInStatus(true);
                           final errorSnackBar = SnackBar(
                             content: Text(
                               'Invalid login credentials. Please try again.',
@@ -254,6 +280,7 @@ class _LoginBodyState extends State<LoginBody> {
                           Scaffold.of(context).showSnackBar(processingSnackBar);
                           await getData().then((data) async {
                             if(data['status'] == 'auth'){
+                              _setLoggedInStatus(true);
                               Route route = MaterialPageRoute(
                                   builder: (BuildContext context) {
                                     return StudentPicker(users: data['ids']);
@@ -261,29 +288,32 @@ class _LoginBodyState extends State<LoginBody> {
                               Navigator.push(context, route);
                             }else if(data['status'] == 'initial'){
                               await checkHandbookAgreementStatus(data['user_id'])
-                                  .then((resolves) {
-                                bool hasAgreed = false;
+                                .then((resolves) {
+                                  bool hasAgreed = false;
 
-                                if(resolves['data'] == 1){
-                                  hasAgreed = true;
-                                }else{
-                                  hasAgreed = false;
-                                }
+                                  if(resolves['data'] == 1){
+                                    hasAgreed = true;
+                                  }else{
+                                    hasAgreed = false;
+                                  }
 
-                                Route route = MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return ChangePassword(
-                                      userId: data['user_id'],
-                                      userIds: data['ids'],
-                                      hasAgreed: hasAgreed
-                                    );
-                                  });
-                                Navigator.push(context, route);
+                                  print('final pages: ');
+                                  print(guidePages);
+
+                                  Route route = MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                        return ChangePassword(
+                                            userId: data['user_id'],
+                                            userIds: data['ids'],
+                                            hasAgreed: hasAgreed,
+                                            guidePages: guidePages
+                                        );
+                                      });
+                                  Navigator.push(context, route);
                               });
                             } else{
                               Scaffold.of(context).hideCurrentSnackBar();
                               Scaffold.of(context).showSnackBar(errorSnackBar);
-                              _passwordController.text = '';
                               print('Please try again.');
                             }
                           });

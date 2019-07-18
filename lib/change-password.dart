@@ -6,7 +6,6 @@ import 'dart:io';
 
 import 'woodbridge-ui_components.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 import 'initial_onboard.dart';
 import 'student_picker.dart';
@@ -33,11 +32,13 @@ class ChangePassword extends StatelessWidget {
   String userId;
   List<String> userIds;
   bool hasAgreed;
+  List<Widget> guidePages = <Widget>[];
 
   ChangePassword({
     this.userId,
     this.userIds,
-    this.hasAgreed
+    this.hasAgreed,
+    this.guidePages
   });
 
   @override
@@ -47,7 +48,7 @@ class ChangePassword extends StatelessWidget {
       appBar: AppBar(
         title: Text('Update Password'),
       ),
-      body: ChangePasswordPage(userId: userId, userIds: userIds, hasAgreed: hasAgreed)
+      body: ChangePasswordPage(userId: userId, userIds: userIds, hasAgreed: hasAgreed, guidePages: guidePages,)
     );
   }
 }
@@ -56,11 +57,13 @@ class ChangePasswordPage extends StatefulWidget {
   String userId;
   List<String> userIds;
   bool hasAgreed;
+  List<Widget> guidePages = <Widget>[];
 
   ChangePasswordPage({
     this.userId,
     this.userIds,
-    this.hasAgreed
+    this.hasAgreed,
+    this.guidePages
   });
 
   @override
@@ -71,24 +74,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _passwordController = TextEditingController();
   final _passwordAgainController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  PDFDocument doc;
-  List<Widget> guidePages = <Widget>[];
+
   String noticeText;
-
-  void fetchPdf() async {
-    await initLoadPdf();
-  }
-
-  Future initLoadPdf() async {
-    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
-    int maxPages = doc.count;
-
-    for(int i = 0; i < maxPages; i++){
-      guidePages.add(await doc.get(page: i+1));
-    }
-
-    return guidePages;
-  }
 
   void checkAgreement() async {
     if(widget.hasAgreed){
@@ -103,7 +90,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.initState();
 
     checkAgreement();
-    initLoadPdf();
   }
 
   @override
@@ -264,7 +250,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                             route = MaterialPageRoute(
                               builder: (BuildContext context) {
                                 return InitialOnboard(
-                                  pages: guidePages,
+                                  pages: widget.guidePages,
                                   userIds: widget.userIds,
                                   showAgreementCta: true,
                                   userId: widget.userId,
