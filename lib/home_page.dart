@@ -1387,17 +1387,12 @@ class _HomePageState extends State<HomePage> {
                       actions: <Widget>[
                         IconButton(
                           onPressed: () async {
-                            buildNotificationList(this.widget.heroTag, notificationPageSize, 1)
-                              .then((result) {
-                                Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
-                                  firstName: this.widget.firstName,
-                                  lastName: this.widget.lastName,
-                                  userId: this.widget.heroTag,
-                                  notificationTiles: result['notifications'],
-                                  pageSize: notificationPageSize,
-                                ));
-                                Navigator.push(context, route);
-                              });
+                            Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
+                              firstName: this.widget.firstName,
+                              lastName: this.widget.lastName,
+                              userId: this.widget.heroTag,
+                            ));
+                            Navigator.push(context, route);
                           },
                           icon: Icon(
                             Icons.notifications_none,
