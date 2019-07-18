@@ -547,7 +547,6 @@ class _HomePageState extends State<HomePage> {
   void _saveUserProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print('saving user profile data');
     await prefs.setString('fname', widget.firstName);
     await prefs.setString('lname', widget.lastName);
     await prefs.setString('userId', widget.heroTag);
@@ -558,7 +557,6 @@ class _HomePageState extends State<HomePage> {
     await prefs.setString('gradeSection', widget.gradeSection);
     await prefs.setStringList('userIds', widget.userIds);
     await prefs.setStringList('topics', widget.userIds);
-    print('done saving user profile data');
   }
 
   @override
@@ -1359,7 +1357,7 @@ class _HomePageState extends State<HomePage> {
                                           label: 'Messages',
                                           isCustomOnPressed: true,
                                           customOnPressed: () async {
-                                            await buildMessageList(widget.heroTag, messagePageSize, 1)
+                                            buildMessageList(widget.heroTag, messagePageSize, 1)
                                               .then((result) {
                                                 Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
                                                   userId: widget.heroTag,
@@ -1404,7 +1402,7 @@ class _HomePageState extends State<HomePage> {
                       actions: <Widget>[
                         IconButton(
                           onPressed: () async {
-                            await buildNotificationList(this.widget.heroTag, notificationPageSize, 1)
+                            buildNotificationList(this.widget.heroTag, notificationPageSize, 1)
                               .then((result) {
                                 Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
                                   firstName: this.widget.firstName,
