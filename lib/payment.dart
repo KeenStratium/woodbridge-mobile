@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'model.dart';
+import 'services.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
@@ -140,7 +141,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                   DashboardTile(
                                     label: 'BALANCE',
                                     displayPlainValue: true,
-                                    value: '₱${widget.paymentData['totalBalance'] ?? "0.00"}',
+                                    value: widget.paymentData['totalBalance'] != null ? localCurrencyFormat(widget.paymentData['totalBalance']) : "0.00",
                                   )
                                 ],
                               ),
@@ -153,7 +154,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                   DashboardTile(
                                     label: 'TOTAL PAYMENTS',
                                     displayPlainValue: true,
-                                    value: '₱${widget.paymentData['totalPayments'] ?? "0.00"}',
+                                    value: widget.paymentData['totalPayments'] != null ? localCurrencyFormat(widget.paymentData['totalPayments']) : "0.00",
                                   ),
                                 ],
                               ),
@@ -323,7 +324,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                     ),
                                     Expanded(
                                       child: Text(
-                                        '₱${payment.dueAmount ?? 'N/A'}',
+                                        payment.dueAmount != null ? localCurrencyFormat(payment.dueAmount) : 'N/A',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 15.0,
