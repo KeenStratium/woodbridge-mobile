@@ -1,10 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'woodbridge-ui_components.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login.dart';
+import 'home_page.dart';
 import 'colors.dart';
 
 final ThemeData _woodbridgeTheme = _buildWoodbridgeTheme();
+
+bool isLoggedIn = false;
+
+String fname;
+String lname;
+String avatarUrl;
+String userId;
+String schoolLevel;
+String classId;
+String gradeLevel;
+String gradeSection;
+String firstInitial;
+String lastInitial;
+List<String> userIds;
+
+void getUserPreferences() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  String s_fname = prefs.getString('fname');
+  String s_lname = prefs.getString('lname');
+  String s_avatarUrl = prefs.getString('avatarUrl');;
+  String s_userId = prefs.getString('userId');
+  String s_schoolLevel = prefs.getString('schoolLevel');
+  String s_classId = prefs.getString('classId');
+  String s_gradeLevel = prefs.getString('gradeLevel');
+  String s_gradeSection = prefs.getString('gradeSection');
+  List<String> s_userIds = prefs.getStringList('userIds');
+
+  fname = s_fname;
+  lname = s_lname;
+  avatarUrl = s_avatarUrl;
+  userId = s_userId;
+  schoolLevel = s_schoolLevel;
+  classId = s_classId;
+  gradeLevel = s_gradeLevel;
+  gradeSection = s_gradeSection;
+  userIds = s_userIds;
+
+  try {
+    firstInitial = fname[0];
+    lastInitial = lname[0];
+  } catch(e) {
+    firstInitial = '';
+    lastInitial = '';
+  }
+
+}
 
 ThemeData _buildWoodbridgeTheme() {
   return ThemeData(
@@ -18,32 +68,77 @@ ThemeData _buildWoodbridgeTheme() {
   );
 }
 
+Widget homePage = HomePage(
+  child: Avatar(
+    backgroundColor: Colors.indigo,
+    maxRadius: 40.0,
+    minRadius: 20.0,
+    fontSize: 20.0,
+    initial: "${firstInitial}${lastInitial}",
+    avatarUrl: avatarUrl,
+  ),
+  firstName: fname ?? '',
+  lastName: lname ?? '',
+  heroTag: userId,
+  schoolLevel: schoolLevel,
+  classId: classId,
+  gradeLevel: gradeLevel,
+  gradeSection: gradeSection,
+  userIds: userIds,
+  avatarUrl: avatarUrl,
+);
+
+Future<bool> _getLoggedInStatus() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool status = prefs.getBool('isLoggedIn');
+
+  isLoggedIn = status;
+  if(isLoggedIn != null){
+    if(isLoggedIn){
+      getUserPreferences();
+    }
+    return status;
+  }else {
+    return false;
+  }
+}
+
 class WoodbridgeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: Colors.white, // Color for Android
+      statusBarColor: Colors.black, // Color for Android
       statusBarBrightness: Brightness.light // Dark == white status bar -- for IOS.
     ));
+
     return MaterialApp(
-      title: 'Woodbridge',
-      home: LoginPage(),
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
-      onGenerateRoute: _getRoute,
-      theme: _woodbridgeTheme
-    );
-  }
-
-  Route<dynamic> _getRoute(RouteSettings settings) {
-    if(settings.name != '/login') {
-      return null;
-    }
-
-    return MaterialPageRoute<void>(
-      settings: settings,
-      builder: (BuildContext context) => LoginPage(),
-      fullscreenDialog: true
+        title: 'myWoodbridge',
+        home:  FutureBuilder(
+          future: _getLoggedInStatus(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if(snapshot.connectionState == ConnectionState.done){
+              return snapshot.data ? homePage ?? Scaffold(
+                body: Center(
+                  child: Text(
+                    'Loading myWoodbridge',
+                    textDirection: TextDirection.ltr,
+                  ),
+                ),
+              ) : LoginPage();
+            }else{
+              return Scaffold(
+                body: Center(
+                  child: Text(
+                    'Loading myWoodbridge',
+                    textDirection: TextDirection.ltr,
+                  ),
+                ),
+              );
+            }
+          },
+        ),
+        debugShowCheckedModeBanner: false,
+        theme: _woodbridgeTheme
     );
   }
 }

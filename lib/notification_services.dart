@@ -42,7 +42,7 @@ class _TextNotificationsState extends State<TextNotifications> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              widget.title,
+              capitalize(widget.title),
               style: TextStyle(
                 fontSize: 14.0,
                 color: Colors.black87,
@@ -50,7 +50,7 @@ class _TextNotificationsState extends State<TextNotifications> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 2.0),
+              padding: EdgeInsets.symmetric(vertical: 1.0),
             ),
             Text(
               widget.msg,

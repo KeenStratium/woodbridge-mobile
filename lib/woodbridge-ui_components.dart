@@ -83,10 +83,10 @@ class Avatar extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(100.0)),
         boxShadow: enableShadow ? [BoxShadow(
-          color: Color.fromRGBO(0, 0, 0, .55),
-          blurRadius: 12.0,
-          offset: Offset(2.0, 3.0),
-          spreadRadius: -1.0
+          color: Color.fromRGBO(0, 0, 0, .15),
+          blurRadius: 6.0,
+          offset: Offset(0.0, 1.0),
+          spreadRadius: 0.0
         )] : [],
       ),
       child: !hasPhoto ? CircleAvatar(
@@ -394,18 +394,21 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                           children: <Widget>[
                             widget.isActive ? Center(
                               child: CircleAvatar(
-                                maxRadius: 46.0,
+                                maxRadius: 41.0,
                                 backgroundColor: Colors.white,
                               ),
                             ) : Container(),
                             Center(
-                              child: Avatar(
-                                backgroundColor: Colors.indigo,
-                                maxRadius: 41.0,
-                                fontSize: 24.0,
-                                initial: "$fInitial$lInitial",
-                                enableShadow: widget.enableShadow,
-                                avatarUrl: avatarUrl,
+                              child: AspectRatio(
+                                aspectRatio: 1.0,
+                                child: Avatar(
+                                  backgroundColor: Colors.indigo,
+                                  maxRadius: 41.0,
+                                  fontSize: 24.0,
+                                  initial: "$fInitial$lInitial",
+                                  enableShadow: widget.enableShadow,
+                                  avatarUrl: avatarUrl,
+                                ),
                               ),
                             ),
                           ],

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'model.dart';
 
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -60,6 +61,14 @@ class _LoginBodyState extends State<LoginBody> {
     super.initState();
 
     clearTopics();
+  }
+
+  _setLoggedInStatus(bool status) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    print('settings status');
+    print(status);
+    await prefs.setBool('isLoggedIn', status);
   }
 
   Future getStudents(parentId) async {
@@ -211,6 +220,7 @@ class _LoginBodyState extends State<LoginBody> {
                       child: accentCtaButton(
                         label: 'Log In',
                         onPressed: (() async {
+                          _setLoggedInStatus(true);
                           final errorSnackBar = SnackBar(
                             content: Text(
                               'Invalid login credentials. Please try again.',
