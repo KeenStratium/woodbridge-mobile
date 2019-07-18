@@ -114,10 +114,10 @@ class _InitialOnboardState extends State<InitialOnboard> {
                               child: IconButton(
                                 icon: Icon(
                                   Icons.chevron_right,
-                                  color: widget.currentPage == maxPage - 1 ? Colors.grey[400] : _enableAgreementBtn ? Colors.grey[600] : Theme.of(context).accentColor,
+                                  color: widget.currentPage == 14 - 1 ? Colors.grey[400] : _enableAgreementBtn ? Colors.grey[600] : Theme.of(context).accentColor,
                                 ),
                                 onPressed: (){
-                                  widget.currentPage < maxPage - 1 ?
+                                  widget.currentPage < 14 - 1 ?
                                   mounted ? setState(() {
                                     widget.currentPage++;
                                   }) : null : null;
