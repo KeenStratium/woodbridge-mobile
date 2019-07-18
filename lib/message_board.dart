@@ -12,7 +12,7 @@ class MessageBoard extends StatefulWidget {
   String userId;
   String firstName;
   String lastName;
-  int pageSize = 10;
+  int pageSize = 6;
   int pageNum = 1;
   List<List<Widget>> messageBoardLists = <List<Widget>>[];
   bool hasInitiated = false;
@@ -30,7 +30,6 @@ class MessageBoard extends StatefulWidget {
 class _MessageBoardState extends State<MessageBoard> {
   List<String> responseActions = ['Going', 'Not going', 'Undecided'];
   List<Widget> boards = <Widget>[];
-  int messagePageSize = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +51,7 @@ class _MessageBoardState extends State<MessageBoard> {
             ),
           ),
           FutureBuilder(
-            future: !widget.hasInitiated ? buildMessageList(widget.userId, messagePageSize, widget.pageNum, widget.hasInitiated) : Future.value(<Widget>[Container()]),
+            future: !widget.hasInitiated ? buildMessageList(widget.userId, widget.pageSize, widget.pageNum, widget.hasInitiated) : Future.value(<Widget>[Container()]),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if(snapshot.connectionState == ConnectionState.done || widget.hasInitiated){
                 if(!widget.hasInitiated){
@@ -100,12 +99,11 @@ class _MessageBoardState extends State<MessageBoard> {
                           nextCallback: () async {
                             widget.pageNum++;
 
-                            if(widget.pageNum == widget.messageBoardLists.length){
-                              print(widget.hasInitiated);
+                            if(widget.pageNum == widget.messageBoardLists.length) {
                               await buildMessageList(widget.userId, widget.pageSize, widget.pageNum, widget.hasInitiated)
-                                  .then((result) {
-                                widget.messageBoardLists.addAll(result['messages']);
-                              });
+                                .then((result) {
+                                  widget.messageBoardLists.addAll(result['messages']);
+                                });
                             }
                             setState(() {});
                           },

@@ -402,7 +402,6 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
   int offsetPage = 2;
   int offsetPageSize = pageSize * offsetPage;
   List<String> responseActions = ['Going', 'Not going', 'Undecided'];
-
     return await fetchStudentMessages(userId, offsetPageSize, pageNum)
       .then((result) {
         List<List<Widget>> _messages = <List<Widget>>[];
