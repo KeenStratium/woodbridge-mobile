@@ -589,7 +589,7 @@ class _HomePageState extends State<HomePage> {
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
 
-    for(int topicIndex = 0; topicIndex < topics.length; topicIndex++){
+    for(topicIndex = 0; topicIndex < topics.length; topicIndex++){
       Map topic = topics[topicIndex];
 
       if(topic['topic'] == 'all'){
