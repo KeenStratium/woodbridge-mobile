@@ -571,6 +571,9 @@ class _HomePageState extends State<HomePage> {
     List topics = getTopics();
     int topicIndex = 0;
     super.initState();
+
+    _setLoggedInStatus(true);
+
     streamController = StreamController();
 
     monthWithYearActivities = {};
@@ -751,8 +754,6 @@ class _HomePageState extends State<HomePage> {
     if(status == false){
       await prefs.clear();
     }
-    print('settings login status');
-    print(status);
     await prefs.setBool('isLoggedIn', status);
   }
 

@@ -68,12 +68,6 @@ class _LoginBodyState extends State<LoginBody> {
     fetchPdf();
   }
 
-  _setLoggedInStatus(bool status) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await prefs.setBool('isLoggedIn', status);
-  }
-
   Future getStudents(parentId) async {
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/get-parent-student'),
         body: json.encode({
@@ -274,7 +268,6 @@ class _LoginBodyState extends State<LoginBody> {
                           Scaffold.of(context).showSnackBar(processingSnackBar);
                           await getData().then((data) async {
                             if(data['status'] == 'auth'){
-                              _setLoggedInStatus(true);
                               Route route = MaterialPageRoute(
                                   builder: (BuildContext context) {
                                     return StudentPicker(users: data['ids']);

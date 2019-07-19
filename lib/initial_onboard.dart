@@ -3,17 +3,10 @@ import 'dart:convert';
 import 'model.dart';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'student_picker.dart';
 
 import 'woodbridge-ui_components.dart';
-
-_setLoggedInStatus(bool status) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  await prefs.setBool('isLoggedIn', status);
-}
 
 Future setHandbookAgreement(userId) async {
   String url = '$baseApi/account/handbook-onboard-agree';
@@ -140,7 +133,6 @@ class _InitialOnboardState extends State<InitialOnboard> {
                     onPressed: (){
                       setHandbookAgreement(widget.userId)
                         .then((resolves) {
-                          _setLoggedInStatus(true);
                           Route route = MaterialPageRoute(
                               builder: (BuildContext context) {
                                 return StudentPicker(users: widget.userIds);
