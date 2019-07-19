@@ -58,6 +58,7 @@ class _LoginBodyState extends State<LoginBody> {
   final _passwordController = TextEditingController();
   PDFDocument doc;
   List<Widget> guidePages = <Widget>[];
+  int maxPagesCount;
 
   @override
   void initState(){
@@ -70,8 +71,6 @@ class _LoginBodyState extends State<LoginBody> {
   _setLoggedInStatus(bool status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print('settings status');
-    print(status);
     await prefs.setBool('isLoggedIn', status);
   }
 
@@ -155,24 +154,19 @@ class _LoginBodyState extends State<LoginBody> {
   Future initLoadPdf() async {
     doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
     int maxPages = doc.count;
+    maxPagesCount = maxPages;
 
     for(int i = 0; i < maxPages; i++){
       Widget page = await doc.get(page: i+1);
-      print(page);
-      guidePages.add(page);
+      setState(() {
+        guidePages.add(page);
+      });
     }
-
-
-    print('pages: ');
-    print(guidePages);
-
     return guidePages;
   }
 
   @override
   Widget build(BuildContext context) {
-    _userController.text = 'GARGAR-2019-984';
-    _passwordController.text = 'woodbridge';
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -297,24 +291,21 @@ class _LoginBodyState extends State<LoginBody> {
                                     hasAgreed = false;
                                   }
 
-                                  print('final pages: ');
-                                  print(guidePages);
-
                                   Route route = MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                        return ChangePassword(
-                                            userId: data['user_id'],
-                                            userIds: data['ids'],
-                                            hasAgreed: hasAgreed,
-                                            guidePages: guidePages
-                                        );
-                                      });
+                                    builder: (BuildContext context) {
+                                      return ChangePassword(
+                                        userId: data['user_id'],
+                                        userIds: data['ids'],
+                                        hasAgreed: hasAgreed,
+                                        guidePages: guidePages,
+                                        maxPageCount: maxPagesCount,
+                                      );
+                                    });
                                   Navigator.push(context, route);
                               });
                             } else{
                               Scaffold.of(context).hideCurrentSnackBar();
                               Scaffold.of(context).showSnackBar(errorSnackBar);
-                              print('Please try again.');
                             }
                           });
                         }),

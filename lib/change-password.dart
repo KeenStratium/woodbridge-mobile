@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'model.dart';
-import 'dart:io';
 
 import 'woodbridge-ui_components.dart';
 import 'package:flutter/material.dart';
 
 import 'initial_onboard.dart';
 import 'student_picker.dart';
-
 
 Future changePassword(userId, password) async {
   String url = '$baseApi/account/change-pass';
@@ -33,12 +31,14 @@ class ChangePassword extends StatelessWidget {
   List<String> userIds;
   bool hasAgreed;
   List<Widget> guidePages = <Widget>[];
+  final int maxPageCount;
 
   ChangePassword({
     this.userId,
     this.userIds,
     this.hasAgreed,
-    this.guidePages
+    this.guidePages,
+    this.maxPageCount
   });
 
   @override
@@ -48,7 +48,7 @@ class ChangePassword extends StatelessWidget {
       appBar: AppBar(
         title: Text('Update Password'),
       ),
-      body: ChangePasswordPage(userId: userId, userIds: userIds, hasAgreed: hasAgreed, guidePages: guidePages,)
+      body: ChangePasswordPage(userId: userId, userIds: userIds, hasAgreed: hasAgreed, guidePages: guidePages, maxPageCount: maxPageCount,)
     );
   }
 }
@@ -58,12 +58,16 @@ class ChangePasswordPage extends StatefulWidget {
   List<String> userIds;
   bool hasAgreed;
   List<Widget> guidePages = <Widget>[];
+  final int maxPageCount;
+  bool hasFinishedLoading = false;
+  bool updateInitialTapped = false;
 
   ChangePasswordPage({
     this.userId,
     this.userIds,
     this.hasAgreed,
-    this.guidePages
+    this.guidePages,
+    this.maxPageCount
   });
 
   @override
@@ -71,9 +75,10 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  final _passwordController = TextEditingController();
-  final _passwordAgainController = TextEditingController();
+  var _passwordController = TextEditingController();
+  var _passwordAgainController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
 
   String noticeText;
 
@@ -88,7 +93,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   void initState() {
     super.initState();
-
     checkAgreement();
   }
 
@@ -110,19 +114,19 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     margin: EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
                     padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                     decoration: BoxDecoration(
-                        color: Color.fromRGBO(255, 248, 225, 1),
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        border: Border.all(
-                            color: Colors.amber[300]
-                        )
+                      color: Color.fromRGBO(255, 248, 225, 1),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      border: Border.all(
+                        color: Colors.amber[300]
+                      )
                     ),
                     child: Text(
                       noticeText ?? '',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w700,
-                          color: Color.fromRGBO(0, 0, 0, .6)
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w700,
+                        color: Color.fromRGBO(0, 0, 0, .6)
                       ),
                     ),
                   ),
@@ -191,7 +195,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           Container(
             margin: EdgeInsets.symmetric(vertical: 10.0),
             child: accentCtaButton(
-              label: 'Update password',
+              label: !widget.updateInitialTapped  || widget.hasFinishedLoading ? 'Update password' : widget.updateInitialTapped && widget.hasFinishedLoading ? 'Updated!' : 'Updating...',
+              isDisabled: widget.updateInitialTapped  && !widget.hasFinishedLoading,
               onPressed: (() {
                 final errorSnackBar = SnackBar(
                   content: Text(
@@ -216,6 +221,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     ),
                   ),
                 );
+                final handbookSnackbar = SnackBar(
+                  content: Text(
+                    "Fetching parent's guide...",
+                    style: TextStyle(
+                        color: Colors.blue[200]
+                    ),
+                  ),
+                );
                 final successSnackBar = SnackBar(
                   content: Text(
                     'Successfully updated your password!',
@@ -235,31 +248,53 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 if (_formKey.currentState.validate()) {
                   if(_passwordController.text == _passwordAgainController.text){
                     Scaffold.of(context).showSnackBar(processingSnackBar);
-                    changePassword(widget.userId, _passwordController.text)
+                    changePassword(widget.userId, _passwordAgainController.text)
                       .then((resolves) async {
-                        Scaffold.of(context).showSnackBar(successSnackBar);
-                        Timer(Duration(milliseconds: 250), () {
                           Route route;
 
+                          Scaffold.of(context).showSnackBar(successSnackBar);
+                          Scaffold.of(context).showSnackBar(handbookSnackbar);
                           if(widget.hasAgreed){
                             route = MaterialPageRoute(
                               builder: (BuildContext context) {
                                 return StudentPicker(users: widget.userIds);
                               });
                           }else{
-                            route = MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return InitialOnboard(
-                                  pages: widget.guidePages,
-                                  userIds: widget.userIds,
-                                  showAgreementCta: true,
-                                  userId: widget.userId,
-                                );
-                              });
+                            setState(() {
+                              widget.updateInitialTapped = true;
+                            });
+
+                            void loopTimer() async {
+                              var future = new Future.delayed(const Duration(milliseconds: 100));
+                              if(widget.guidePages.length >= (14 - 1)){
+                                setState(() {
+                                  widget.hasFinishedLoading = true;
+                                  widget.updateInitialTapped = true;
+                                });
+                                if (widget.hasFinishedLoading) {
+                                  Timer(Duration(milliseconds: 200), () {
+                                    route = MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                        return InitialOnboard(
+                                          pages: widget.guidePages,
+                                          userIds: widget.userIds,
+                                          showAgreementCta: true,
+                                          userId: widget.userId,
+                                        );
+                                      });
+                                    Navigator.push(context, route);
+                                  });
+                                }
+                              }else{
+                                await future.then((result) {
+                                  loopTimer();
+                                });
+                              }
+                            }
+
+                            loopTimer();
                           }
-                          Navigator.push(context, route);
                         });
-                      });
                   }else{
                     Scaffold.of(context).showSnackBar(errorSnackBar);
                   }

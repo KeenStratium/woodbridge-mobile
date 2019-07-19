@@ -3,10 +3,17 @@ import 'dart:convert';
 import 'model.dart';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'student_picker.dart';
 
 import 'woodbridge-ui_components.dart';
+
+_setLoggedInStatus(bool status) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  await prefs.setBool('isLoggedIn', status);
+}
 
 Future setHandbookAgreement(userId) async {
   String url = '$baseApi/account/handbook-onboard-agree';
@@ -54,8 +61,6 @@ class _InitialOnboardState extends State<InitialOnboard> {
   @override
   Widget build(BuildContext context) {
     int maxPage = widget.pages.length;
-    bool nextPageEnabled = true;
-    bool prevPageEnabled = true;
 
     if(_enableAgreementBtn == false){
       _enableAgreementBtn = (widget.currentPage == maxPage - 1);
@@ -114,10 +119,10 @@ class _InitialOnboardState extends State<InitialOnboard> {
                               child: IconButton(
                                 icon: Icon(
                                   Icons.chevron_right,
-                                  color: widget.currentPage == 14 - 1 ? Colors.grey[400] : _enableAgreementBtn ? Colors.grey[600] : Theme.of(context).accentColor,
+                                  color: widget.currentPage == maxPage - 1 ? Colors.grey[400] : _enableAgreementBtn ? Colors.grey[600] : Theme.of(context).accentColor,
                                 ),
                                 onPressed: (){
-                                  widget.currentPage < 14 - 1 ?
+                                  widget.currentPage < maxPage - 1 ?
                                   mounted ? setState(() {
                                     widget.currentPage++;
                                   }) : null : null;
@@ -135,6 +140,7 @@ class _InitialOnboardState extends State<InitialOnboard> {
                     onPressed: (){
                       setHandbookAgreement(widget.userId)
                         .then((resolves) {
+                          _setLoggedInStatus(true);
                           Route route = MaterialPageRoute(
                               builder: (BuildContext context) {
                                 return StudentPicker(users: widget.userIds);
