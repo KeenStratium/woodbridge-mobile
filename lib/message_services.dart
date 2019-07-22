@@ -296,34 +296,41 @@ class _BoardState extends State<Board> {
                       ),
                     ),
                     widget.activeType == 3 ? Container(
+                      margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                      padding: EdgeInsets.only(bottom: 12.0, left: 10.0, right: 10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.amber[100],
+                        borderRadius: BorderRadius.all(Radius.circular(7.0))
+                      ),
                       width: double.infinity,
                       child: Column(
                         children: <Widget>[
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
                             width: double.infinity,
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom: BorderSide(
-                                        color: Colors.grey[300]
+                                        color: Colors.amber[400]
                                     )
                                 )
                             ),
                             child: Text(
                               'How to reschedule',
                               style: TextStyle(
-                                  color: Colors.amber[700],
-                                  fontWeight: FontWeight.w600
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16.0
                               ),
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
                             child: Text(
                               "Please contact (433-3851) or go to the admin office to reschedule with your preferred time and choose a response accordingly afterwards.",
                               style: TextStyle(
                                   color: Colors.grey[700],
-                                  fontSize: 15.0,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.w700
                               ),
                             ),
