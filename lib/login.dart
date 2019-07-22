@@ -278,7 +278,7 @@ class _LoginBodyState extends State<LoginBody> {
                                 .then((resolves) {
                                   bool hasAgreed = false;
 
-                                  if(resolves['data'] == 1){
+                                  if(resolves['data'] == 1 || resolves['data'] == '1'){
                                     hasAgreed = true;
                                   }else{
                                     hasAgreed = false;

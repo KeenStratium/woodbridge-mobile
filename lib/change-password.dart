@@ -251,15 +251,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     changePassword(widget.userId, _passwordAgainController.text)
                       .then((resolves) async {
                           Route route;
-
                           Scaffold.of(context).showSnackBar(successSnackBar);
-                          Scaffold.of(context).showSnackBar(handbookSnackbar);
                           if(widget.hasAgreed){
                             route = MaterialPageRoute(
                               builder: (BuildContext context) {
                                 return StudentPicker(users: widget.userIds);
                               });
+                            Navigator.push(context, route);
                           }else{
+                            Scaffold.of(context).showSnackBar(handbookSnackbar);
                             setState(() {
                               widget.updateInitialTapped = true;
                             });
