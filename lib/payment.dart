@@ -267,6 +267,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                     var bankResult = results[0]['data'];
                                     var paymentMetaInfo = payment.paymentType;
                                     Map settings = paymentResults[0];
+                                    int installment = settings['installment'];
 
                                     if(results[0]['success']){
                                       paymentMetaInfo['bank_name'] = bankResult['bank_name'];
@@ -292,7 +293,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                       paymentType: paymentMetaInfo,
                                       amountDue: payment.dueAmount,
                                       totalAnnualPackageOneFee: totalAnnualFee - (totalAnnualFee * settings['discount']),
-                                      paymentNote: payment.paymentNote
+                                      paymentNote: payment.paymentNote,
+                                      installment: installment,
                                     ));
                                     Navigator.push(context, route);
                                   });

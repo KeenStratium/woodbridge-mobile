@@ -101,6 +101,7 @@ class PaymentDetails extends StatelessWidget {
   final double amountDue;
   final double totalAnnualPackageOneFee;
   final Map paymentType;
+  final int installment;
   double enrollmentFee;
   double tuitionFee;
 
@@ -118,7 +119,8 @@ class PaymentDetails extends StatelessWidget {
     this.paymentType,
     this.amountDue,
     this.totalAnnualPackageOneFee,
-    this.paymentNote
+    this.paymentNote,
+    this.installment
   });
 
   @override
@@ -150,7 +152,7 @@ class PaymentDetails extends StatelessWidget {
       }catch(e){}
 
       if(packageNum == 3){
-        enrollmentFee /= 4;
+        enrollmentFee /= installment;
       }
 
       if(packageNum == 0){
