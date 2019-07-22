@@ -6,8 +6,6 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter/services.dart';
-import 'message_services.dart';
-import 'notification_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
@@ -618,14 +616,12 @@ class _HomePageState extends State<HomePage> {
         updateHomeData();
       },
       onResume: (Map<String, dynamic> message) async {
-        print('updating');
         updateHomeData();
         routeNotificationPage(message['notif_category']);
         print('on resume $message');
       },
       onLaunch: (Map<String, dynamic> message) async {
         updateHomeData();
-//        routeNotificationPage(message['notif_category']);
         print('on launch $message');
       },
     );
@@ -746,6 +742,7 @@ class _HomePageState extends State<HomePage> {
 
     setAvatarUrl(avatarUrl);
     updateHomeData();
+    _saveUserProfileData();
   }
 
   void _setLoggedInStatus(bool status) async {
@@ -772,7 +769,10 @@ class _HomePageState extends State<HomePage> {
       widget.userIds.add(widget.heroTag);
     }
 
-    _saveUserProfileData();
+    setModuleUnreadCount('appointment', 3);
+    setModuleUnreadCount('photo_update', 2);
+    print(getModuleUnreadCount('appointment'));
+    print(getAllUnreadCount());
 
     return SafeArea(
       child: WillPopScope(
@@ -1496,6 +1496,16 @@ class _HomePageState extends State<HomePage> {
 }
 
 class MenuItem extends StatelessWidget {
+  final Widget child;
+  final String iconPath;
+  final String label;
+  final Widget pageBuilder;
+  final BuildContext buildContext;
+  var customOnPressed;
+  bool isCustomOnPressed;
+  String unread_name;
+  int unreadCount = 0;
+
   MenuItem({
     Key key,
     this.child,
@@ -1507,16 +1517,20 @@ class MenuItem extends StatelessWidget {
     this.customOnPressed
   }) : super(key: key);
 
-  final Widget child;
-  final String iconPath;
-  final String label;
-  final Widget pageBuilder;
-  final BuildContext buildContext;
-  var customOnPressed;
-  bool isCustomOnPressed;
-
   @override
   Widget build(BuildContext context) {
+    label == 'Progress' ? unread_name = 'progress' : null;
+    label == 'Activities' ? unread_name = 'activities' : null;
+    label == 'Photos' ? unread_name = 'photo_update' : null;
+    label == 'Attendance' ? unread_name = 'student_present' : null;
+
+    if(label == 'Messages'){
+      unreadCount = getModuleUnreadCount('appointment') + getModuleUnreadCount('announcement');
+    }else{
+      unreadCount = getModuleUnreadCount(unread_name);
+    }
+
+
     if(isCustomOnPressed == null){
       isCustomOnPressed = false;
     }
@@ -1531,9 +1545,9 @@ class MenuItem extends StatelessWidget {
             Navigator.push(buildContext, route);
           }
         },
-        child: Material(
-          child: InkWell(
-            child: Container(
+        child: Stack(
+          children: <Widget>[
+            Container(
               padding: EdgeInsets.symmetric(vertical: 4.0),
               decoration: BoxDecoration(
                 boxShadow: [BrandTheme.cardShadow],
@@ -1567,7 +1581,31 @@ class MenuItem extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+            unreadCount > 0 ? Positioned(
+              right: 8,
+              top: 8,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(24.0)
+                ),
+                constraints: BoxConstraints(
+                  minWidth: 22,
+                  minHeight: 14,
+                ),
+                child: Text(
+                  '$unreadCount',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ) : Container()
+          ],
         ),
       ),
     );

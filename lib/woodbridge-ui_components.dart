@@ -8,6 +8,31 @@ import 'package:flutter/material.dart';
 String _avatarUrl;
 String _username;
 List<Map> _topics = <Map>[];
+Map _moduleUnreadCount = {};
+
+void setModuleUnreadCount(String moduleName, int count){
+  if(_moduleUnreadCount[moduleName] == null){
+    _moduleUnreadCount[moduleName] = 0;
+  }
+
+  _moduleUnreadCount[moduleName] = count;
+}
+
+void setAllUnreadCount(Map unread) {
+  _moduleUnreadCount = unread;
+}
+
+void clearAllUnreadCount() {
+  _moduleUnreadCount = {};
+}
+
+int getModuleUnreadCount(String moduleName) {
+  return _moduleUnreadCount[moduleName] ?? 0;
+}
+
+Map getAllUnreadCount() {
+  return _moduleUnreadCount;
+}
 
 void setAvatarUrl(url) {
   _avatarUrl = url;
