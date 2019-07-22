@@ -63,10 +63,10 @@ class _ResponseButtonState extends State<ResponseButton> {
       iconColor = Colors.red[300];
       icon = Icons.block;
     }else {
-      borderColor = Colors.grey[300];
-      labelColor = Colors.grey[700];
-      iconColor = Colors.grey[500];
-      icon = Icons.sentiment_neutral;
+      borderColor = Colors.amber[200];
+      labelColor = Colors.amber[700];
+      iconColor = Colors.amber[500];
+      icon = Icons.av_timer;
     }
 
     if(widget.isActive == null) {
@@ -295,6 +295,42 @@ class _BoardState extends State<Board> {
                         ],
                       ),
                     ),
+                    widget.activeType == 3 ? Container(
+                      width: double.infinity,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.grey[300]
+                                    )
+                                )
+                            ),
+                            child: Text(
+                              'How to reschedule',
+                              style: TextStyle(
+                                  color: Colors.amber[700],
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                            child: Text(
+                              "Please contact (433-3851) or go to the admin office to reschedule with your preferred time and choose a response accordingly afterwards.",
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w700
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ) : Container(),
                     widget.hasResponse ? Container(
                       margin: EdgeInsets.symmetric(horizontal: 20.0),
                       padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
@@ -366,11 +402,11 @@ class _BoardState extends State<Board> {
                                     ),
                                     Expanded(
                                       child: ResponseButton(
-                                        label: 'Undecided',
+                                        label: 'Reschedule',
                                         type: 3,
                                         isActive: widget.activeType == 3,
                                         onTap: () {
-                                          respondNotification(widget.userId, widget.notifId, 'Undecided');
+                                          respondNotification(widget.userId, widget.notifId, 'Reschedule');
                                           Timer(Duration(milliseconds: 145), () {
                                             setState(() {
                                               widget.activeType = 3;
@@ -389,7 +425,7 @@ class _BoardState extends State<Board> {
                     ) : Container()
                   ],
                 )
-              )
+              ),
             ],
           ),
         ),
@@ -401,7 +437,7 @@ class _BoardState extends State<Board> {
 Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
   int offsetPage = 2;
   int offsetPageSize = pageSize * offsetPage;
-  List<String> responseActions = ['Going', 'Not going', 'Undecided'];
+  List<String> responseActions = ['Going', 'Not going', 'Reschedule'];
     return await fetchStudentMessages(userId, offsetPageSize, pageNum)
       .then((result) {
         List<List<Widget>> _messages = <List<Widget>>[];
