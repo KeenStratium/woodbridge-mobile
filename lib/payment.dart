@@ -25,7 +25,7 @@ Future<List> fetchPaymentSettings(settingsId) async {
 Future fetchBankInfo(bankAbbr) async {
   String url = '$baseApi/pay/get-bank-info';
 
-  if(bankAbbr != null){
+  if(bankAbbr != null && bankAbbr != ''){
     var response = await http.post(url, body: json.encode({
       'data': {
         'bank_abbr': bankAbbr
