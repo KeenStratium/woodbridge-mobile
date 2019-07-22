@@ -6,8 +6,6 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter/services.dart';
-import 'message_services.dart';
-import 'notification_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
@@ -119,6 +117,19 @@ Future<List> fetchStudentPayments(userId) async {
 
   return jsonDecode(response.body);
 }
+Future<Map> getStudentUnseenNotifications(userId) async {
+  String url = '$baseApi/notif/get-student-unseen-notifs';
+
+  var response = await http.post(url, body: json.encode({
+    "data": userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 Future addNotificationToken(token, topic, studentId) async {
   String url = '$baseApi/account/notif-token-add';
 
@@ -160,6 +171,21 @@ Future removeNotificationToken(token) async {
   var response = await http.post(url, body: json.encode({
     'data': {
       'token': token,
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+Future seenNotification(notifId) async {
+  String url = '$baseApi/notif/seen-student-notif';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'notif_id': notifId
     }
   }),
       headers: {
@@ -411,33 +437,6 @@ class _HomePageState extends State<HomePage> {
         setState(() {});
       });
   }
-  List<String> sortActivityNames(activityNamesSort) {
-    List<int> sortedMonthIndex = <int>[];
-    List<String> sortedMonthNames = <String>[];
-
-    for(int i = 0; i < activityNamesSort.length; i++){
-      String month = activityNamesSort[i];
-      int monthIndex = 0;
-      int largestMonthIndex = 0;
-
-      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
-        if(monthNames[monthIndex] == month){
-          if(monthIndex > largestMonthIndex){
-            largestMonthIndex = monthIndex;
-          }
-          break;
-        }
-      }
-
-      sortedMonthIndex.add(monthIndex);
-      sortedMonthIndex.sort();
-    }
-    for(int i = 0; i < sortedMonthIndex.length; i++){
-      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
-    }
-
-    return sortedMonthNames;
-  }
   void firebaseCloudMessaging_Listeners(String classId) {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
@@ -472,6 +471,42 @@ class _HomePageState extends State<HomePage> {
           print("Settings registered: $settings");
         });
   }
+  Future setUnreadNotif(String userId) async {
+    return await getStudentUnseenNotifications(userId)
+      .then((results) {
+        if(results['success']){
+          setAllUnreadCount(results['data']);
+        }
+      });
+  }
+  List<String> sortActivityNames(activityNamesSort) {
+    List<int> sortedMonthIndex = <int>[];
+    List<String> sortedMonthNames = <String>[];
+
+    for(int i = 0; i < activityNamesSort.length; i++){
+      String month = activityNamesSort[i];
+      int monthIndex = 0;
+      int largestMonthIndex = 0;
+
+      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
+        if(monthNames[monthIndex] == month){
+          if(monthIndex > largestMonthIndex){
+            largestMonthIndex = monthIndex;
+          }
+          break;
+        }
+      }
+
+      sortedMonthIndex.add(monthIndex);
+      sortedMonthIndex.sort();
+    }
+    for(int i = 0; i < sortedMonthIndex.length; i++){
+      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
+    }
+
+    return sortedMonthNames;
+  }
+
 
   Future buildStudentPayments(userId) async {
     Completer _completer = Completer();
@@ -618,14 +653,12 @@ class _HomePageState extends State<HomePage> {
         updateHomeData();
       },
       onResume: (Map<String, dynamic> message) async {
-        print('updating');
         updateHomeData();
         routeNotificationPage(message['notif_category']);
         print('on resume $message');
       },
       onLaunch: (Map<String, dynamic> message) async {
         updateHomeData();
-//        routeNotificationPage(message['notif_category']);
         print('on launch $message');
       },
     );
@@ -636,9 +669,37 @@ class _HomePageState extends State<HomePage> {
       }
       debugPrint('SystemChannels> $msg');
     });
+
+    setUnreadNotif(widget.heroTag);
   }
 
   void routeNotificationPage(category) async {
+    String unread_name;
+    List unreadNotifIds = [];
+
+    setUnreadNotif(widget.heroTag)
+      .then((resolve) {
+        category == 'progress' ? unread_name = 'grade_update' : null;
+        category == 'activities' ? unread_name = 'activities' : null;
+        category == 'photos' ? unread_name = 'photo_update' : null;
+        category == 'attendance' ? unread_name = 'student_present' : null;
+
+        if(category == 'messages' || category == 'appointment'){
+          unreadNotifIds.addAll(getModuleUnreadNotifIds('announcement'));
+          unreadNotifIds.addAll(getModuleUnreadNotifIds('appointment'));
+          setCategorySeen('appointment');
+          setCategorySeen('announcement');
+        }else{
+          unreadNotifIds.addAll(getModuleUnreadNotifIds(unread_name));
+          setCategorySeen(unread_name);
+        }
+
+        for(int i = 0; i < unreadNotifIds.length; i++){
+          int id = unreadNotifIds[i];
+          seenNotification(id);
+        }
+      });
+
     if((category != null) && (['activity','photos','messages','appointment','progress','attendance'].contains(category))){
       Widget pageBuilder;
       Route route = MaterialPageRoute(builder: (buildContext) => HomePage(
@@ -647,7 +708,7 @@ class _HomePageState extends State<HomePage> {
           maxRadius: 54.0,
           minRadius: 20.0,
           fontSize: 20.0,
-          initial: "${widget.firstName != null ? widget.lastName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
+          initial: "${widget.firstName != null ? widget.firstName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
           avatarUrl: widget.avatarUrl,
         ),
         firstName: widget.firstName ?? '',
@@ -723,6 +784,7 @@ class _HomePageState extends State<HomePage> {
     transformActivityList(widget.classId);
     getAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
+    setUnreadNotif(widget.heroTag);
 
     print('All data are up-to-date');
   }
@@ -746,6 +808,7 @@ class _HomePageState extends State<HomePage> {
 
     setAvatarUrl(avatarUrl);
     updateHomeData();
+    _saveUserProfileData();
   }
 
   void _setLoggedInStatus(bool status) async {
@@ -771,8 +834,6 @@ class _HomePageState extends State<HomePage> {
       widget.userIds = [];
       widget.userIds.add(widget.heroTag);
     }
-
-    _saveUserProfileData();
 
     return SafeArea(
       child: WillPopScope(
@@ -1496,6 +1557,17 @@ class _HomePageState extends State<HomePage> {
 }
 
 class MenuItem extends StatelessWidget {
+  final Widget child;
+  final String iconPath;
+  final String label;
+  final Widget pageBuilder;
+  final BuildContext buildContext;
+  var customOnPressed;
+  bool isCustomOnPressed;
+  String unread_name;
+  int unreadCount = 0;
+  List unreadNotifIds = [];
+
   MenuItem({
     Key key,
     this.child,
@@ -1507,16 +1579,22 @@ class MenuItem extends StatelessWidget {
     this.customOnPressed
   }) : super(key: key);
 
-  final Widget child;
-  final String iconPath;
-  final String label;
-  final Widget pageBuilder;
-  final BuildContext buildContext;
-  var customOnPressed;
-  bool isCustomOnPressed;
-
   @override
   Widget build(BuildContext context) {
+    label == 'Progress' ? unread_name = 'grade_update' : null;
+    label == 'Activities' ? unread_name = 'activities' : null;
+    label == 'Photos' ? unread_name = 'photo_update' : null;
+    label == 'Attendance' ? unread_name = 'student_present' : null;
+
+    if(label == 'Messages'){
+      unreadCount = getModuleUnreadCount('appointment') + getModuleUnreadCount('announcement');
+      unreadNotifIds.addAll(getModuleUnreadNotifIds('appointment'));
+      unreadNotifIds.addAll(getModuleUnreadNotifIds('announcement'));
+    }else{
+      unreadCount = getModuleUnreadCount(unread_name);
+      unreadNotifIds.addAll(getModuleUnreadNotifIds(unread_name));
+    }
+
     if(isCustomOnPressed == null){
       isCustomOnPressed = false;
     }
@@ -1524,6 +1602,17 @@ class MenuItem extends StatelessWidget {
     return Material(
       child: InkWell(
         onTap: () {
+          for(int i = 0; i < unreadNotifIds.length; i++){
+            int id = unreadNotifIds[i];
+
+            seenNotification(id);
+          }
+          if(label == 'Messages') {
+            setCategorySeen('appointment');
+            setCategorySeen('announcement');
+          }else{
+            setCategorySeen(unread_name);
+          }
           if(isCustomOnPressed){
             customOnPressed();
           }else{
@@ -1531,9 +1620,9 @@ class MenuItem extends StatelessWidget {
             Navigator.push(buildContext, route);
           }
         },
-        child: Material(
-          child: InkWell(
-            child: Container(
+        child: Stack(
+          children: <Widget>[
+            Container(
               padding: EdgeInsets.symmetric(vertical: 4.0),
               decoration: BoxDecoration(
                 boxShadow: [BrandTheme.cardShadow],
@@ -1567,7 +1656,31 @@ class MenuItem extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+            unreadCount > 0 ? Positioned(
+              right: 8,
+              top: 8,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(24.0)
+                ),
+                constraints: BoxConstraints(
+                  minWidth: 20,
+                  minHeight: 14,
+                ),
+                child: Text(
+                  '$unreadCount',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ) : Container()
+          ],
         ),
       ),
     );
