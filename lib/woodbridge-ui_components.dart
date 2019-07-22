@@ -10,7 +10,7 @@ String _username;
 List<Map> _topics = <Map>[];
 Map _moduleUnreadCount = {};
 
-void setModuleUnreadCount(String moduleName, int count){
+void setModuleUnreadCount(String moduleName, int count, List<int> notifIds){
   if(_moduleUnreadCount[moduleName] == null){
     _moduleUnreadCount[moduleName] = 0;
   }
@@ -26,8 +26,20 @@ void clearAllUnreadCount() {
   _moduleUnreadCount = {};
 }
 
+void setCategorySeen(String moduleName) {
+  _moduleUnreadCount.remove(moduleName);
+}
+
 int getModuleUnreadCount(String moduleName) {
-  return _moduleUnreadCount[moduleName] ?? 0;
+  var  _module = _moduleUnreadCount[moduleName] ?? {};
+
+  return _module['count'] ?? 0;
+}
+
+List getModuleUnreadNotifIds(String moduleName) {
+  var  _module = _moduleUnreadCount[moduleName] ?? {};
+
+  return _module['notif_ids'] ?? [];
 }
 
 Map getAllUnreadCount() {
