@@ -141,6 +141,19 @@ Future<Map> getStudentUnseenNotifications(userId) async {
 
   return jsonDecode(response.body);
 }
+Future getClassDetails(classId) async {
+  String url = '$baseApi/classroom/get-class-details';
+
+  var response = await http.post(url, body: json.encode({
+    'data': classId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 Future addNotificationToken(token, topic, studentId) async {
   String url = '$baseApi/account/notif-token-add';
 
@@ -441,39 +454,45 @@ class _HomePageState extends State<HomePage> {
                 Map latestAttendance = results[0];
                 DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
                 DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-                if(resolve[thisDay] != null){
-                  attendanceStatus = 'No class';
-                  attendanceStatusColor = Colors.deepPurple[400];
-                  attendanceStatusIcon = Icon(
-                    Icons.home,
-                    color: Colors.deepPurple[600],
-                    size: 18.0,
-                  );
-                }else{
-                  if(attendanceDay.isAtSameMomentAs(thisDay)){
-                    if(latestAttendance['in'] == '1'){
-                      attendanceStatus = 'Present';
-                      attendanceStatusColor = Colors.green;
+                DateTime thisTime = DateTime(today.year, today.month, today.day, today.hour, today.minute);
+
+                getClassDetails(widget.classId)
+                  .then((classDetails) {
+                    Map classDetail = classDetails[0];
+                    List startTime = classDetail['class_start_schedule'].split(':');
+                    DateTime classStart = DateTime(today.year, today.month, today.day, int.parse(startTime[0]), int.parse(startTime[1]));
+                    if(resolve[thisDay] != null){
+                      attendanceStatus = 'No class';
+                      attendanceStatusColor = Colors.deepPurple[400];
                       attendanceStatusIcon = Icon(
-                        Icons.check,
-                        color: Colors.green,
+                        Icons.home,
+                        color: Colors.deepPurple[600],
                         size: 18.0,
                       );
-                    }else if(today.isBefore(attendanceDate)){
-                      attendanceStatus = 'Soon';
-                      attendanceStatusColor = Theme.of(context).accentColor;
-                      attendanceStatusIcon = Icon(
-                        Icons.brightness_low,
-                        color: Theme.of(context).accentColor,
-                        size: 18.0,
-                      );
-                    }else if(today.isAfter(attendanceDate)){
-                      attendanceStatus = 'Absent';
+                    }else{
+                      if(attendanceDay.isAtSameMomentAs(thisDay)){
+                        if(latestAttendance['in'] == '1'){
+                          attendanceStatus = 'Present';
+                          attendanceStatusColor = Colors.green;
+                          attendanceStatusIcon = Icon(
+                            Icons.check,
+                            color: Colors.green,
+                            size: 18.0,
+                          );
+                        }
+                      }else if(thisTime.isBefore(classStart)){
+                        attendanceStatus = formatMilitaryTime(classDetail['class_start_schedule']);
+                        attendanceStatusColor = Theme.of(context).accentColor;
+                        attendanceStatusIcon = Icon(
+                          Icons.group,
+                          color: Colors.orangeAccent,
+                          size: 18.0,
+                        );
+                      } else{
+                        attendanceStatus = 'Absent';
+                      }
                     }
-                  }else{
-                    attendanceStatus = 'Absent';
-                  }
-                }
+                });
               }
             } catch(e) {
               attendanceStatus = 'Absent';
@@ -1671,7 +1690,6 @@ class MenuItem extends StatelessWidget {
         onTap: () {
           for(int i = 0; i < unreadNotifIds.length; i++){
             int id = unreadNotifIds[i];
-
             seenNotification(id);
           }
           if(label == 'Messages') {
