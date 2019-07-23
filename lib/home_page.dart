@@ -316,12 +316,74 @@ class _HomePageState extends State<HomePage> {
             holidayDays[holidayIndexDate] = [];
           }
           holidayDays[holidayIndexDate].add(holidayTitle);
+
         }
-      });
+        return Future.value(holidayDays);
+    });
   }
   void getAttendanceInfo(userId) {
     Future.wait([
-    getHolidayList(),
+    getHolidayList()
+      .then((resolve) async {
+        return await getStudentLatestAttendance(userId)
+          .then((results) {
+            try {
+              if(results.length > 0 || results != null){
+                Map latestAttendance = results[0];
+                DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
+                DateTime today = DateTime.now();
+                DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+                DateTime thisDay = DateTime(today.year, today.month, today.day);
+                if(resolve[thisDay] != null){
+                  attendanceStatus = 'No class';
+                  attendanceStatusColor = Colors.deepPurple[400];
+                  attendanceStatusIcon = Icon(
+                    Icons.home,
+                    color: Colors.deepPurple[600],
+                    size: 18.0,
+                  );
+                }else{
+                  if(attendanceDay.isAtSameMomentAs(thisDay)){
+                    if(latestAttendance['in'] == '1'){
+                      attendanceStatus = 'Present';
+                      attendanceStatusColor = Colors.green;
+                      attendanceStatusIcon = Icon(
+                        Icons.check,
+                        color: Colors.green,
+                        size: 18.0,
+                      );
+                    }else if(today.isBefore(attendanceDate)){
+                      attendanceStatus = 'Soon';
+                      attendanceStatusColor = Theme.of(context).accentColor;
+                      attendanceStatusIcon = Icon(
+                        Icons.brightness_low,
+                        color: Theme.of(context).accentColor,
+                        size: 18.0,
+                      );
+                    }else if(today.isAfter(attendanceDate)){
+                      attendanceStatus = 'Absent';
+                    }
+                  }else{
+                    attendanceStatus = 'Absent';
+                  }
+                }
+              }
+            } catch(e) {
+              attendanceStatus = 'Absent';
+            }
+
+            if(attendanceStatus == 'Absent'){
+              attendanceStatusColor = Colors.redAccent;
+              attendanceStatusIcon = Icon(
+                Icons.error_outline,
+                color: Colors.redAccent,
+                size: 18.0,
+              );
+            }
+
+            setState(() {});
+          });
+      }),
     getPresentDaysNo(userId)
         .then((result) {
           setState(() {
@@ -348,53 +410,6 @@ class _HomePageState extends State<HomePage> {
             presentDays.add(attendanceDay);
           });
         }),
-      getStudentLatestAttendance(userId)
-        .then((results) {
-          try {
-            if(results.length > 0 || results != null){
-              Map latestAttendance = results[0];
-              DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
-              DateTime today = DateTime.now();
-              DateTime attendanceDay = DateTime.utc(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-              DateTime thisDay = DateTime.utc(today.year, today.month, today.day);
-
-              if(attendanceDay.isAtSameMomentAs(thisDay)){
-                if(latestAttendance['in'] == '1'){
-                  attendanceStatus = 'Present';
-                  attendanceStatusColor = Colors.green;
-                  attendanceStatusIcon = Icon(
-                    Icons.check,
-                    color: Colors.green,
-                    size: 18.0,
-                  );
-                }else if(today.isBefore(attendanceDate)){
-                  attendanceStatus = 'Soon';
-                  attendanceStatusColor = Theme.of(context).accentColor;
-                  attendanceStatusIcon = Icon(
-                    Icons.brightness_low,
-                    color: Theme.of(context).accentColor,
-                    size: 18.0,
-                  );
-                }else if(today.isAfter(attendanceDate)){
-                  attendanceStatus = 'Absent';
-                }
-              }else{
-                attendanceStatus = 'Absent';
-              }
-            }
-          } catch(e) {
-            attendanceStatus = 'Absent';
-          }
-
-          if(attendanceStatus == 'Absent'){
-            attendanceStatusColor = Colors.redAccent;
-            attendanceStatusIcon = Icon(
-              Icons.error_outline,
-              color: Colors.redAccent,
-              size: 18.0,
-            );
-          }
-        }),
       getSchoolYearInformation()
         .then((results) {
           Map schoolYearInformation = results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
@@ -419,6 +434,7 @@ class _HomePageState extends State<HomePage> {
 
         monthWithYearActivities = {};
         activityWithYearNames = [];
+        holidayDays = {};
 
         for(int i = 0; i < results.length; i++){
           Map activity = results[i];
@@ -804,6 +820,7 @@ class _HomePageState extends State<HomePage> {
           pastSchoolDays: this.pastSchoolDays,
           absentDays: this.absentDays,
           totalSchoolDays: this.totalSchoolDays,
+          holidayDays: this.holidayDays,
         );
       }
 
@@ -1272,9 +1289,13 @@ class _HomePageState extends State<HomePage> {
                                                                 child: Column(
                                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                                   children: <Widget>[
+                                                                    attendanceStatus == 'No class' ? Padding(
+                                                                      padding: EdgeInsets.symmetric(vertical: 4.0)
+                                                                    ) : Container(),
                                                                     Flex(
                                                                       direction: Axis.horizontal,
                                                                       mainAxisAlignment: MainAxisAlignment.center,
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: <Widget>[
                                                                         Flexible(
                                                                           flex: 0,
@@ -1299,7 +1320,7 @@ class _HomePageState extends State<HomePage> {
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                    Text(
+                                                                    attendanceStatus != 'No class' ? Text(
                                                                       '$presentDaysNo/${totalSchoolDays.floor()}',
                                                                       overflow: TextOverflow.fade,
                                                                       style: TextStyle(
@@ -1307,7 +1328,7 @@ class _HomePageState extends State<HomePage> {
                                                                           fontSize: 12.0,
                                                                           fontWeight: FontWeight.w600
                                                                       ),
-                                                                    ),
+                                                                    ) : Container(),
                                                                   ],
                                                                 ),
                                                               ),
