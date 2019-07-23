@@ -45,6 +45,17 @@ Future<Map> getPresentDaysNo(userId) async {
 
   return jsonDecode(response.body)[0];
 }
+Future fetchHolidayList() async {
+  String url = '$baseApi/sett/get-holidays';
+
+  var response = await http.get(url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 Future<Map> getTotalSchoolDays(userId) async {
   String url = '$baseApi/att/get-total-school-days';
 
@@ -237,6 +248,7 @@ class _HomePageState extends State<HomePage> {
 
   Map monthWithYearActivities = {};
   List<String> activityWithYearNames = [];
+  Map<DateTime, List> holidayDays = {};
 
   String attendanceStatus = '';
   String schoolYearStart;
@@ -283,9 +295,34 @@ class _HomePageState extends State<HomePage> {
   void fetchPdf() async {
     await initLoadPdf();
   }
+  Future getHolidayList() async {
+    return await fetchHolidayList()
+      .then((resolve) {
+        for(int i = 0; i < resolve.length; i++){
+          Map holiday = resolve[i];
+          String holidayTitle = holiday['title'];
+          DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
+          DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
+          DateTime holidayIndexDate = startHoliday;
+
+          for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
+            if(holidayDays[holidayIndexDate] == null){
+              holidayDays[holidayIndexDate] = [];
+            }
+            holidayDays[holidayIndexDate].add(holidayTitle);
+          }
+
+          if(holidayDays[holidayIndexDate] == null){
+            holidayDays[holidayIndexDate] = [];
+          }
+          holidayDays[holidayIndexDate].add(holidayTitle);
+        }
+      });
+  }
   void getAttendanceInfo(userId) {
     Future.wait([
-      getPresentDaysNo(userId)
+    getHolidayList(),
+    getPresentDaysNo(userId)
         .then((result) {
           setState(() {
             presentDaysNo = result['presentDays'];
@@ -613,6 +650,7 @@ class _HomePageState extends State<HomePage> {
 
     monthWithYearActivities = {};
     activityWithYearNames = [];
+    holidayDays = {};
 
     fetchPdf();
 
@@ -1388,6 +1426,7 @@ class _HomePageState extends State<HomePage> {
                                             pastSchoolDays: this.pastSchoolDays,
                                             absentDays: this.absentDays,
                                             totalSchoolDays: this.totalSchoolDays,
+                                            holidayDays: this.holidayDays
                                           ),
                                           buildContext: context,
                                         ),
