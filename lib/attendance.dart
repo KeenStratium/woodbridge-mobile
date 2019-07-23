@@ -491,9 +491,9 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       onDaySelected: (date, events) {
         _onDaySelected(date, events);
         List selectedHolidays = widget.holidayDays[_selectedDay];
-        List thisEvents = _events[date];
+        List thisEvents = _events[date] ?? [''];
         eventsLegend = [];
-        if(_selectedEvents.length != 0){
+        if(_selectedEvents.length != 0 && thisEvents[0] != ''){
           eventsLegend.add(Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
