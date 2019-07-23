@@ -35,7 +35,6 @@ Future<List> fetchMarkingCodes(schoolLevel) async {
 
   return jsonDecode(response.body);
 }
-
 Future<List> fetchGrades(userId) async {
   String url = '$baseApi/grade/get-grades';
 
@@ -49,7 +48,6 @@ Future<List> fetchGrades(userId) async {
 
   return jsonDecode(response.body);
 }
-
 Future<List> fetchPsychSkills(userId, schoolLevel) async {
   String url = '$baseApi/grade/get-skills-mobile';
 
