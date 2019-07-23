@@ -211,10 +211,6 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
     buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
 
-    setState(() {
-      widget.absentDays = widget.pastSchoolDays - widget.presentDaysNo;
-    });
-
     _visibleEvents = _events;
     _visibleHolidays = widget.holidayDays;
 

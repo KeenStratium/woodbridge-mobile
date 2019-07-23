@@ -289,37 +289,144 @@ class _HomePageState extends State<HomePage> {
 
     return guidePages;
   }
+  Future getHolidayList() async {
+    return await fetchHolidayList()
+        .then((resolve) {
+      for(int i = 0; i < resolve.length; i++){
+        Map holiday = resolve[i];
+        String holidayTitle = holiday['title'];
+        DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
+        DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
+        DateTime holidayIndexDate = startHoliday;
+
+        for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
+          if(holidayDays[holidayIndexDate] == null){
+            holidayDays[holidayIndexDate] = [];
+          }
+          holidayDays[holidayIndexDate].add(holidayTitle);
+        }
+
+        if(holidayDays[holidayIndexDate] == null){
+          holidayDays[holidayIndexDate] = [];
+        }
+        holidayDays[holidayIndexDate].add(holidayTitle);
+
+      }
+      return Future.value(holidayDays);
+    });
+  }
+  Future setUnreadNotif(String userId) async {
+    return await getStudentUnseenNotifications(userId)
+        .then((results) {
+      if(results['success']){
+        setAllUnreadCount(results['data']);
+      }
+    });
+  }
+  Future buildStudentPayments(userId) async {
+    Completer _completer = Completer();
+
+    await fetchStudentPayments(userId)
+        .then((results) {
+      payments = [];
+      totalBalance = 0.00;
+      totalPayments = 0.00;
+
+      nextPaymentMonth = null;
+      nextPaymentDay = null;
+
+      results.forEach((payment) {
+        var amount;
+        DateTime dueDate;
+        if(payment['due_date'] != null){
+          dueDate = DateTime.parse(payment['due_date']).toLocal();
+        }
+        String paymentDate = 'Unpaid';
+        try {
+          amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
+          if(amount == 'N/A' || amount == null || amount == '0'){
+            totalBalance += payment['due_amount'];
+            if(nextPaymentMonth == null){
+              nextPaymentMonth = monthNames[dueDate.month - 1];
+              nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+            }
+          }else {
+            if(payment['amount_paid'] != null){
+              totalPayments += payment['amount_paid'];
+            }
+          }
+        } catch(e){
+          print(e);
+        }
+
+        try{
+          String paidDate = payment['paid_date'];
+          if(paidDate != null){
+            paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
+          }
+        }catch(e){}
+        payments.add(
+            Payment(
+                label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
+                amount: amount,
+                dueAmount: payment['due_amount'] + 0.00 ?? 0,
+                rawDate: dueDate,
+                paidDate: paymentDate,
+                isPaid: amount != 'N/A',
+                paymentModes: payment['note'],
+                paymentSettingId: payment['pay_setting_id'].split(',')[0],
+                amountDesc: payment['due_desc'],
+                paymentType: {
+                  'type': payment['pay_type'],
+                  'official_receipt': payment['official_receipt'],
+                  'bank_abbr': payment['pay_bank']
+                },
+                paymentNote: payment['description']
+            )
+        );
+      });
+    });
+    streamController.add({
+      'totalPayments': totalPayments,
+      'totalBalance': totalBalance,
+      'payments': payments
+    });
+    _completer.complete();
+    return _completer.future;
+  }
+  List<String> sortActivityNames(activityNamesSort) {
+    List<int> sortedMonthIndex = <int>[];
+    List<String> sortedMonthNames = <String>[];
+
+    for(int i = 0; i < activityNamesSort.length; i++){
+      String month = activityNamesSort[i];
+      int monthIndex = 0;
+      int largestMonthIndex = 0;
+
+      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
+        if(monthNames[monthIndex] == month){
+          if(monthIndex > largestMonthIndex){
+            largestMonthIndex = monthIndex;
+          }
+          break;
+        }
+      }
+
+      sortedMonthIndex.add(monthIndex);
+      sortedMonthIndex.sort();
+    }
+    for(int i = 0; i < sortedMonthIndex.length; i++){
+      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
+    }
+
+    return sortedMonthNames;
+  }
+
 
   Map paymentData = {};
 
   void fetchPdf() async {
     await initLoadPdf();
-  }
-  Future getHolidayList() async {
-    return await fetchHolidayList()
-      .then((resolve) {
-        for(int i = 0; i < resolve.length; i++){
-          Map holiday = resolve[i];
-          String holidayTitle = holiday['title'];
-          DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
-          DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
-          DateTime holidayIndexDate = startHoliday;
-
-          for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
-            if(holidayDays[holidayIndexDate] == null){
-              holidayDays[holidayIndexDate] = [];
-            }
-            holidayDays[holidayIndexDate].add(holidayTitle);
-          }
-
-          if(holidayDays[holidayIndexDate] == null){
-            holidayDays[holidayIndexDate] = [];
-          }
-          holidayDays[holidayIndexDate].add(holidayTitle);
-
-        }
-        return Future.value(holidayDays);
-    });
   }
   void getAttendanceInfo(userId) {
     Future.wait([
@@ -327,13 +434,13 @@ class _HomePageState extends State<HomePage> {
       .then((resolve) async {
         return await getStudentLatestAttendance(userId)
           .then((results) {
+            DateTime today = DateTime.now();
+            DateTime thisDay = DateTime(today.year, today.month, today.day);
             try {
               if(results.length > 0 || results != null){
                 Map latestAttendance = results[0];
                 DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
                 DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-                DateTime today = DateTime.now();
-                DateTime thisDay = DateTime(today.year, today.month, today.day);
                 if(resolve[thisDay] != null){
                   attendanceStatus = 'No class';
                   attendanceStatusColor = Colors.deepPurple[400];
@@ -384,17 +491,19 @@ class _HomePageState extends State<HomePage> {
             getTotalSchoolDays(userId)
               .then((result) {
                 setState(() {
+                  absentDays = pastSchoolDays - presentDaysNo;
                   totalSchoolDays = result['totalDays'];
                   resolve.forEach((key, value) {
                     DateTime holidayDay = key;
                     if(holidayDay.weekday <= 5) {
                       totalSchoolDays--;
+                      if(holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)){
+                        absentDays--;
+                      }
                     };
                   });
                 });
               });
-
-            setState(() {});
           });
       }),
       getPresentDaysNo(userId)
@@ -531,115 +640,6 @@ class _HomePageState extends State<HomePage> {
           print("Settings registered: $settings");
         });
   }
-  Future setUnreadNotif(String userId) async {
-    return await getStudentUnseenNotifications(userId)
-      .then((results) {
-        if(results['success']){
-          setAllUnreadCount(results['data']);
-        }
-      });
-  }
-  List<String> sortActivityNames(activityNamesSort) {
-    List<int> sortedMonthIndex = <int>[];
-    List<String> sortedMonthNames = <String>[];
-
-    for(int i = 0; i < activityNamesSort.length; i++){
-      String month = activityNamesSort[i];
-      int monthIndex = 0;
-      int largestMonthIndex = 0;
-
-      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
-        if(monthNames[monthIndex] == month){
-          if(monthIndex > largestMonthIndex){
-            largestMonthIndex = monthIndex;
-          }
-          break;
-        }
-      }
-
-      sortedMonthIndex.add(monthIndex);
-      sortedMonthIndex.sort();
-    }
-    for(int i = 0; i < sortedMonthIndex.length; i++){
-      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
-    }
-
-    return sortedMonthNames;
-  }
-
-
-  Future buildStudentPayments(userId) async {
-    Completer _completer = Completer();
-
-    await fetchStudentPayments(userId)
-      .then((results) {
-        payments = [];
-        totalBalance = 0.00;
-        totalPayments = 0.00;
-
-        nextPaymentMonth = null;
-        nextPaymentDay = null;
-
-        results.forEach((payment) {
-          var amount;
-          DateTime dueDate;
-          if(payment['due_date'] != null){
-            dueDate = DateTime.parse(payment['due_date']).toLocal();
-          }
-          String paymentDate = 'Unpaid';
-          try {
-            amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
-            if(amount == 'N/A' || amount == null || amount == '0'){
-              totalBalance += payment['due_amount'];
-              if(nextPaymentMonth == null){
-                nextPaymentMonth = monthNames[dueDate.month - 1];
-                nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
-              }
-            }else {
-              if(payment['amount_paid'] != null){
-                totalPayments += payment['amount_paid'];
-              }
-            }
-          } catch(e){
-            print(e);
-          }
-
-          try{
-            String paidDate = payment['paid_date'];
-            if(paidDate != null){
-              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
-            }
-          }catch(e){}
-          payments.add(
-            Payment(
-              label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
-              amount: amount,
-              dueAmount: payment['due_amount'] + 0.00 ?? 0,
-              rawDate: dueDate,
-              paidDate: paymentDate,
-              isPaid: amount != 'N/A',
-              paymentModes: payment['note'],
-              paymentSettingId: payment['pay_setting_id'].split(',')[0],
-              amountDesc: payment['due_desc'],
-              paymentType: {
-                'type': payment['pay_type'],
-                'official_receipt': payment['official_receipt'],
-                'bank_abbr': payment['pay_bank']
-              },
-              paymentNote: payment['description']
-            )
-          );
-        });
-    });
-    streamController.add({
-      'totalPayments': totalPayments,
-      'totalBalance': totalBalance,
-      'payments': payments
-    });
-    _completer.complete();
-    return _completer.future;
-  }
-
   void _saveUserProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
