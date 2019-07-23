@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
 
@@ -115,7 +116,6 @@ class Avatar extends StatelessWidget {
     if(avatarUrl != null){
       hasPhoto = true;
     }
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(100.0)),
@@ -142,7 +142,7 @@ class Avatar extends StatelessWidget {
         backgroundColor: Colors.white,
         maxRadius: this.maxRadius,
         minRadius: this.minRadius,
-        backgroundImage: NetworkImage(avatarUrl),
+        backgroundImage: CachedNetworkImageProvider(avatarUrl),
       ),
     );
   }
