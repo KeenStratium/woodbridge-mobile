@@ -45,6 +45,17 @@ Future<Map> getPresentDaysNo(userId) async {
 
   return jsonDecode(response.body)[0];
 }
+Future fetchHolidayList() async {
+  String url = '$baseApi/sett/get-holidays';
+
+  var response = await http.get(url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 Future<Map> getTotalSchoolDays(userId) async {
   String url = '$baseApi/att/get-total-school-days';
 
@@ -237,6 +248,7 @@ class _HomePageState extends State<HomePage> {
 
   Map monthWithYearActivities = {};
   List<String> activityWithYearNames = [];
+  Map<DateTime, List> holidayDays = {};
 
   String attendanceStatus = '';
   String schoolYearStart;
@@ -277,6 +289,139 @@ class _HomePageState extends State<HomePage> {
 
     return guidePages;
   }
+  Future getHolidayList() async {
+    return await fetchHolidayList()
+        .then((resolve) {
+      for(int i = 0; i < resolve.length; i++){
+        Map holiday = resolve[i];
+        String holidayTitle = holiday['title'];
+        DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
+        DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
+        DateTime holidayIndexDate = startHoliday;
+
+        for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
+          if(holidayDays[holidayIndexDate] == null){
+            holidayDays[holidayIndexDate] = [];
+          }
+          holidayDays[holidayIndexDate].add(holidayTitle);
+        }
+
+        if(holidayDays[holidayIndexDate] == null){
+          holidayDays[holidayIndexDate] = [];
+        }
+        holidayDays[holidayIndexDate].add(holidayTitle);
+
+      }
+      return Future.value(holidayDays);
+    });
+  }
+  Future setUnreadNotif(String userId) async {
+    return await getStudentUnseenNotifications(userId)
+        .then((results) {
+      if(results['success']){
+        setAllUnreadCount(results['data']);
+      }
+    });
+  }
+  Future buildStudentPayments(userId) async {
+    Completer _completer = Completer();
+
+    await fetchStudentPayments(userId)
+        .then((results) {
+      payments = [];
+      totalBalance = 0.00;
+      totalPayments = 0.00;
+
+      nextPaymentMonth = null;
+      nextPaymentDay = null;
+
+      results.forEach((payment) {
+        var amount;
+        DateTime dueDate;
+        if(payment['due_date'] != null){
+          dueDate = DateTime.parse(payment['due_date']).toLocal();
+        }
+        String paymentDate = 'Unpaid';
+        try {
+          amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
+          if(amount == 'N/A' || amount == null || amount == '0'){
+            totalBalance += payment['due_amount'];
+            if(nextPaymentMonth == null){
+              nextPaymentMonth = monthNames[dueDate.month - 1];
+              nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+            }
+          }else {
+            if(payment['amount_paid'] != null){
+              totalPayments += payment['amount_paid'];
+            }
+          }
+        } catch(e){
+          print(e);
+        }
+
+        try{
+          String paidDate = payment['paid_date'];
+          if(paidDate != null){
+            paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
+          }
+        }catch(e){}
+        payments.add(
+            Payment(
+                label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
+                amount: amount,
+                dueAmount: payment['due_amount'] + 0.00 ?? 0,
+                rawDate: dueDate,
+                paidDate: paymentDate,
+                isPaid: amount != 'N/A',
+                paymentModes: payment['note'],
+                paymentSettingId: payment['pay_setting_id'].split(',')[0],
+                amountDesc: payment['due_desc'],
+                paymentType: {
+                  'type': payment['pay_type'],
+                  'official_receipt': payment['official_receipt'],
+                  'bank_abbr': payment['pay_bank']
+                },
+                paymentNote: payment['description']
+            )
+        );
+      });
+    });
+    streamController.add({
+      'totalPayments': totalPayments,
+      'totalBalance': totalBalance,
+      'payments': payments
+    });
+    _completer.complete();
+    return _completer.future;
+  }
+  List<String> sortActivityNames(activityNamesSort) {
+    List<int> sortedMonthIndex = <int>[];
+    List<String> sortedMonthNames = <String>[];
+
+    for(int i = 0; i < activityNamesSort.length; i++){
+      String month = activityNamesSort[i];
+      int monthIndex = 0;
+      int largestMonthIndex = 0;
+
+      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
+        if(monthNames[monthIndex] == month){
+          if(monthIndex > largestMonthIndex){
+            largestMonthIndex = monthIndex;
+          }
+          break;
+        }
+      }
+
+      sortedMonthIndex.add(monthIndex);
+      sortedMonthIndex.sort();
+    }
+    for(int i = 0; i < sortedMonthIndex.length; i++){
+      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
+    }
+
+    return sortedMonthNames;
+  }
+
 
   Map paymentData = {};
 
@@ -285,16 +430,86 @@ class _HomePageState extends State<HomePage> {
   }
   void getAttendanceInfo(userId) {
     Future.wait([
+    getHolidayList()
+      .then((resolve) async {
+        return await getStudentLatestAttendance(userId)
+          .then((results) {
+            DateTime today = DateTime.now();
+            DateTime thisDay = DateTime(today.year, today.month, today.day);
+            try {
+              if(results.length > 0 || results != null){
+                Map latestAttendance = results[0];
+                DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
+                DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+                if(resolve[thisDay] != null){
+                  attendanceStatus = 'No class';
+                  attendanceStatusColor = Colors.deepPurple[400];
+                  attendanceStatusIcon = Icon(
+                    Icons.home,
+                    color: Colors.deepPurple[600],
+                    size: 18.0,
+                  );
+                }else{
+                  if(attendanceDay.isAtSameMomentAs(thisDay)){
+                    if(latestAttendance['in'] == '1'){
+                      attendanceStatus = 'Present';
+                      attendanceStatusColor = Colors.green;
+                      attendanceStatusIcon = Icon(
+                        Icons.check,
+                        color: Colors.green,
+                        size: 18.0,
+                      );
+                    }else if(today.isBefore(attendanceDate)){
+                      attendanceStatus = 'Soon';
+                      attendanceStatusColor = Theme.of(context).accentColor;
+                      attendanceStatusIcon = Icon(
+                        Icons.brightness_low,
+                        color: Theme.of(context).accentColor,
+                        size: 18.0,
+                      );
+                    }else if(today.isAfter(attendanceDate)){
+                      attendanceStatus = 'Absent';
+                    }
+                  }else{
+                    attendanceStatus = 'Absent';
+                  }
+                }
+              }
+            } catch(e) {
+              attendanceStatus = 'Absent';
+            }
+
+            if(attendanceStatus == 'Absent'){
+              attendanceStatusColor = Colors.redAccent;
+              attendanceStatusIcon = Icon(
+                Icons.error_outline,
+                color: Colors.redAccent,
+                size: 18.0,
+              );
+            }
+
+            getTotalSchoolDays(userId)
+              .then((result) {
+                setState(() {
+                  absentDays = pastSchoolDays - presentDaysNo;
+                  totalSchoolDays = result['totalDays'];
+                  resolve.forEach((key, value) {
+                    DateTime holidayDay = key;
+                    if(holidayDay.weekday <= 5) {
+                      totalSchoolDays--;
+                      if(holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)){
+                        absentDays--;
+                      }
+                    };
+                  });
+                });
+              });
+          });
+      }),
       getPresentDaysNo(userId)
         .then((result) {
           setState(() {
             presentDaysNo = result['presentDays'];
-          });
-        }),
-      getTotalSchoolDays(userId)
-        .then((result) {
-          setState(() {
-            totalSchoolDays = result['totalDays'];
           });
         }),
       getAbsentDays(userId)
@@ -310,53 +525,6 @@ class _HomePageState extends State<HomePage> {
             DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
             presentDays.add(attendanceDay);
           });
-        }),
-      getStudentLatestAttendance(userId)
-        .then((results) {
-          try {
-            if(results.length > 0 || results != null){
-              Map latestAttendance = results[0];
-              DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
-              DateTime today = DateTime.now();
-              DateTime attendanceDay = DateTime.utc(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-              DateTime thisDay = DateTime.utc(today.year, today.month, today.day);
-
-              if(attendanceDay.isAtSameMomentAs(thisDay)){
-                if(latestAttendance['in'] == '1'){
-                  attendanceStatus = 'Present';
-                  attendanceStatusColor = Colors.green;
-                  attendanceStatusIcon = Icon(
-                    Icons.check,
-                    color: Colors.green,
-                    size: 18.0,
-                  );
-                }else if(today.isBefore(attendanceDate)){
-                  attendanceStatus = 'Soon';
-                  attendanceStatusColor = Theme.of(context).accentColor;
-                  attendanceStatusIcon = Icon(
-                    Icons.brightness_low,
-                    color: Theme.of(context).accentColor,
-                    size: 18.0,
-                  );
-                }else if(today.isAfter(attendanceDate)){
-                  attendanceStatus = 'Absent';
-                }
-              }else{
-                attendanceStatus = 'Absent';
-              }
-            }
-          } catch(e) {
-            attendanceStatus = 'Absent';
-          }
-
-          if(attendanceStatus == 'Absent'){
-            attendanceStatusColor = Colors.redAccent;
-            attendanceStatusIcon = Icon(
-              Icons.error_outline,
-              color: Colors.redAccent,
-              size: 18.0,
-            );
-          }
         }),
       getSchoolYearInformation()
         .then((results) {
@@ -382,6 +550,7 @@ class _HomePageState extends State<HomePage> {
 
         monthWithYearActivities = {};
         activityWithYearNames = [];
+        holidayDays = {};
 
         for(int i = 0; i < results.length; i++){
           Map activity = results[i];
@@ -471,115 +640,6 @@ class _HomePageState extends State<HomePage> {
           print("Settings registered: $settings");
         });
   }
-  Future setUnreadNotif(String userId) async {
-    return await getStudentUnseenNotifications(userId)
-      .then((results) {
-        if(results['success']){
-          setAllUnreadCount(results['data']);
-        }
-      });
-  }
-  List<String> sortActivityNames(activityNamesSort) {
-    List<int> sortedMonthIndex = <int>[];
-    List<String> sortedMonthNames = <String>[];
-
-    for(int i = 0; i < activityNamesSort.length; i++){
-      String month = activityNamesSort[i];
-      int monthIndex = 0;
-      int largestMonthIndex = 0;
-
-      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
-        if(monthNames[monthIndex] == month){
-          if(monthIndex > largestMonthIndex){
-            largestMonthIndex = monthIndex;
-          }
-          break;
-        }
-      }
-
-      sortedMonthIndex.add(monthIndex);
-      sortedMonthIndex.sort();
-    }
-    for(int i = 0; i < sortedMonthIndex.length; i++){
-      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
-    }
-
-    return sortedMonthNames;
-  }
-
-
-  Future buildStudentPayments(userId) async {
-    Completer _completer = Completer();
-
-    await fetchStudentPayments(userId)
-      .then((results) {
-        payments = [];
-        totalBalance = 0.00;
-        totalPayments = 0.00;
-
-        nextPaymentMonth = null;
-        nextPaymentDay = null;
-
-        results.forEach((payment) {
-          var amount;
-          DateTime dueDate;
-          if(payment['due_date'] != null){
-            dueDate = DateTime.parse(payment['due_date']).toLocal();
-          }
-          String paymentDate = 'Unpaid';
-          try {
-            amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
-            if(amount == 'N/A' || amount == null || amount == '0'){
-              totalBalance += payment['due_amount'];
-              if(nextPaymentMonth == null){
-                nextPaymentMonth = monthNames[dueDate.month - 1];
-                nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
-              }
-            }else {
-              if(payment['amount_paid'] != null){
-                totalPayments += payment['amount_paid'];
-              }
-            }
-          } catch(e){
-            print(e);
-          }
-
-          try{
-            String paidDate = payment['paid_date'];
-            if(paidDate != null){
-              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
-            }
-          }catch(e){}
-          payments.add(
-            Payment(
-              label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
-              amount: amount,
-              dueAmount: payment['due_amount'] + 0.00 ?? 0,
-              rawDate: dueDate,
-              paidDate: paymentDate,
-              isPaid: amount != 'N/A',
-              paymentModes: payment['note'],
-              paymentSettingId: payment['pay_setting_id'].split(',')[0],
-              amountDesc: payment['due_desc'],
-              paymentType: {
-                'type': payment['pay_type'],
-                'official_receipt': payment['official_receipt'],
-                'bank_abbr': payment['pay_bank']
-              },
-              paymentNote: payment['description']
-            )
-          );
-        });
-    });
-    streamController.add({
-      'totalPayments': totalPayments,
-      'totalBalance': totalBalance,
-      'payments': payments
-    });
-    _completer.complete();
-    return _completer.future;
-  }
-
   void _saveUserProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -613,6 +673,7 @@ class _HomePageState extends State<HomePage> {
 
     monthWithYearActivities = {};
     activityWithYearNames = [];
+    holidayDays = {};
 
     fetchPdf();
 
@@ -766,6 +827,7 @@ class _HomePageState extends State<HomePage> {
           pastSchoolDays: this.pastSchoolDays,
           absentDays: this.absentDays,
           totalSchoolDays: this.totalSchoolDays,
+          holidayDays: this.holidayDays,
         );
       }
 
@@ -1234,9 +1296,13 @@ class _HomePageState extends State<HomePage> {
                                                                 child: Column(
                                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                                   children: <Widget>[
+                                                                    attendanceStatus == 'No class' ? Padding(
+                                                                      padding: EdgeInsets.symmetric(vertical: 4.0)
+                                                                    ) : Container(),
                                                                     Flex(
                                                                       direction: Axis.horizontal,
                                                                       mainAxisAlignment: MainAxisAlignment.center,
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: <Widget>[
                                                                         Flexible(
                                                                           flex: 0,
@@ -1261,7 +1327,7 @@ class _HomePageState extends State<HomePage> {
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                    Text(
+                                                                    attendanceStatus != 'No class' ? Text(
                                                                       '$presentDaysNo/${totalSchoolDays.floor()}',
                                                                       overflow: TextOverflow.fade,
                                                                       style: TextStyle(
@@ -1269,7 +1335,7 @@ class _HomePageState extends State<HomePage> {
                                                                           fontSize: 12.0,
                                                                           fontWeight: FontWeight.w600
                                                                       ),
-                                                                    ),
+                                                                    ) : Container(),
                                                                   ],
                                                                 ),
                                                               ),
@@ -1388,6 +1454,7 @@ class _HomePageState extends State<HomePage> {
                                             pastSchoolDays: this.pastSchoolDays,
                                             absentDays: this.absentDays,
                                             totalSchoolDays: this.totalSchoolDays,
+                                            holidayDays: this.holidayDays
                                           ),
                                           buildContext: context,
                                         ),
