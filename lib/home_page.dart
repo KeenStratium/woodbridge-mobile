@@ -331,8 +331,8 @@ class _HomePageState extends State<HomePage> {
               if(results.length > 0 || results != null){
                 Map latestAttendance = results[0];
                 DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
-                DateTime today = DateTime.now();
                 DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+                DateTime today = DateTime.now();
                 DateTime thisDay = DateTime(today.year, today.month, today.day);
                 if(resolve[thisDay] != null){
                   attendanceStatus = 'No class';
@@ -381,19 +381,26 @@ class _HomePageState extends State<HomePage> {
               );
             }
 
+            getTotalSchoolDays(userId)
+              .then((result) {
+                setState(() {
+                  totalSchoolDays = result['totalDays'];
+                  resolve.forEach((key, value) {
+                    DateTime holidayDay = key;
+                    if(holidayDay.weekday <= 5) {
+                      totalSchoolDays--;
+                    };
+                  });
+                });
+              });
+
             setState(() {});
           });
       }),
-    getPresentDaysNo(userId)
+      getPresentDaysNo(userId)
         .then((result) {
           setState(() {
             presentDaysNo = result['presentDays'];
-          });
-        }),
-      getTotalSchoolDays(userId)
-        .then((result) {
-          setState(() {
-            totalSchoolDays = result['totalDays'];
           });
         }),
       getAbsentDays(userId)
