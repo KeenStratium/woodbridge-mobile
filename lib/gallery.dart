@@ -6,6 +6,7 @@ import 'model.dart';
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'services.dart';
 
 Future getClassImages(classId, pageSize, pageNum) async {
@@ -101,7 +102,7 @@ class PhotoCard extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => HeroPhotoViewWrapper(
-                              imageProvider: NetworkImage(imgUrl),
+                              imageProvider: CachedNetworkImageProvider(imgUrl),
                               id: this.id
                             )
                           ));
@@ -116,8 +117,8 @@ class PhotoCard extends StatelessWidget {
                           ),
                           child: Hero(
                             tag: this.id,
-                            child:  Image.network(
-                              imgUrl,
+                            child:  CachedNetworkImage(
+                              imageUrl: imgUrl,
                               fit: BoxFit.fitWidth
                             ),
                           ),
