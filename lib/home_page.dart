@@ -523,8 +523,6 @@ class _HomePageState extends State<HomePage> {
                           DateTime holidayDay = key;
                           if(holidayDay.weekday <= 5) {
                             totalSchoolDays--;
-                            print(holidayDay);
-                            print(thisDay);
                             if((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) && !presentDays.contains(holidayDay)){
                               absentDays--;
                             }
