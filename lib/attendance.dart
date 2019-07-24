@@ -108,7 +108,6 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   Future buildAttendanceCalendarDays(yearStartDay, today, presentDays) {
     DateTime schoolDayIndex = yearStartDay;
     int presentDaysIndex = 0;
-
     if(yearStartDay != null) {
       while(schoolDayIndex != today){
         if(widget.holidayDays[schoolDayIndex] == null){
@@ -254,10 +253,13 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     };
 
     try {
+      _selectedEvents = [];
       _selectedEvents = _events[_selectedDay] ?? [];
     } catch(e) {
       _selectedEvents = [];
     }
+
+    _visibleEvents = _events;
 
     _controller = AnimationController(
       vsync: this,
@@ -444,11 +446,10 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                       ),
                     ),
                     FutureBuilder(
-                      future: getHolidayList(),
+                      future: !widget.hasInitiated ? getHolidayList() : Future.value(_visibleHolidays),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if((snapshot.connectionState == ConnectionState.done) || widget.hasInitiated) {
                           widget.hasInitiated = true;
-                          _visibleEvents = _events;
                           _visibleHolidays = snapshot.data;
                           return _buildTableCalendarWithBuilders();
                         }else {
@@ -555,6 +556,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         List selectedHolidays = widget.holidayDays[_selectedDay];
         List thisEvents = _events[date] ?? [''];
         eventsLegend = [];
+
         if(_selectedEvents.length != 0 && thisEvents[0] != ''){
           eventsLegend.add(Column(
             mainAxisAlignment: MainAxisAlignment.center,
