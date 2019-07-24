@@ -304,37 +304,37 @@ class _HomePageState extends State<HomePage> {
   }
   Future getHolidayList() async {
     return await fetchHolidayList()
-        .then((resolve) {
-      for(int i = 0; i < resolve.length; i++){
-        Map holiday = resolve[i];
-        String holidayTitle = holiday['title'];
-        DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
-        DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
-        DateTime holidayIndexDate = startHoliday;
+      .then((resolve) {
+        for(int i = 0; i < resolve.length; i++){
+          Map holiday = resolve[i];
+          String holidayTitle = holiday['title'];
+          DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
+          DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
+          DateTime holidayIndexDate = startHoliday;
 
-        for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
+          for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
+            if(holidayDays[holidayIndexDate] == null){
+              holidayDays[holidayIndexDate] = [];
+            }
+            holidayDays[holidayIndexDate].add(holidayTitle);
+          }
+
           if(holidayDays[holidayIndexDate] == null){
             holidayDays[holidayIndexDate] = [];
           }
           holidayDays[holidayIndexDate].add(holidayTitle);
         }
-
-        if(holidayDays[holidayIndexDate] == null){
-          holidayDays[holidayIndexDate] = [];
-        }
-        holidayDays[holidayIndexDate].add(holidayTitle);
-
-      }
-      return Future.value(holidayDays);
-    });
+        return Future.value(holidayDays);
+      });
   }
   Future setUnreadNotif(String userId) async {
     return await getStudentUnseenNotifications(userId)
-        .then((results) {
-      if(results['success']){
-        setAllUnreadCount(results['data']);
-      }
-    });
+      .then((results) {
+        if(results['success']){
+          setAllUnreadCount(results['data']);
+          setState(() {});
+        }
+      });
   }
   Future buildStudentPayments(userId) async {
     Completer _completer = Completer();
@@ -441,90 +441,92 @@ class _HomePageState extends State<HomePage> {
   void fetchPdf() async {
     await initLoadPdf();
   }
-  void getAttendanceInfo(userId) {
-    Future.wait([
-    getHolidayList()
-      .then((resolve) async {
-        return await getStudentLatestAttendance(userId)
-          .then((results) {
-            DateTime today = DateTime.now();
-            DateTime thisDay = DateTime(today.year, today.month, today.day);
-            try {
-              if(results.length > 0 || results != null){
-                Map latestAttendance = results[0];
-                DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
-                DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-                DateTime thisTime = DateTime(today.year, today.month, today.day, today.hour, today.minute);
+  Future getAttendanceInfo(userId) async {
+    return await Future.wait([
+      getHolidayList()
+        .then((resolve) async {
+          return await getStudentLatestAttendance(userId)
+            .then((results) async {
+              DateTime today = DateTime.now();
+              DateTime thisDay = DateTime(today.year, today.month, today.day);
+              try {
+                if(results.length > 0 || results != null){
+                  Map latestAttendance = results[0];
+                  DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
+                  DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+                  DateTime thisTime = DateTime(today.year, today.month, today.day, today.hour, today.minute);
 
-                getClassDetails(widget.classId)
-                  .then((classDetails) {
-                    Map classDetail = classDetails[0];
-                    List startTime = classDetail['class_start_schedule'].split(':');
-                    DateTime classStart = DateTime(today.year, today.month, today.day, int.parse(startTime[0]), int.parse(startTime[1]));
-                    if(resolve[thisDay] != null){
-                      attendanceStatus = 'No class';
-                      attendanceStatusColor = Colors.deepPurple[400];
-                      attendanceStatusIcon = Icon(
-                        Icons.home,
-                        color: Colors.deepPurple[600],
-                        size: 18.0,
-                      );
-                    }else{
-                      if(attendanceDay.isAtSameMomentAs(thisDay)){
-                        if(latestAttendance['in'] == '1'){
-                          attendanceStatus = 'Present';
-                          attendanceStatusColor = Colors.green;
-                          attendanceStatusIcon = Icon(
-                            Icons.check,
-                            color: Colors.green,
-                            size: 18.0,
-                          );
-                        }
-                      }else if(thisTime.isBefore(classStart)){
-                        attendanceStatus = formatMilitaryTime(classDetail['class_start_schedule']);
-                        attendanceStatusColor = Theme.of(context).accentColor;
+                  getClassDetails(widget.classId)
+                    .then((classDetails) {
+                      Map classDetail = classDetails[0];
+                      List startTime = classDetail['class_start_schedule'].split(':');
+                      DateTime classStart = DateTime(today.year, today.month, today.day, int.parse(startTime[0]), int.parse(startTime[1]));
+                      if(resolve[thisDay] != null){
+                        attendanceStatus = 'No class';
+                        attendanceStatusColor = Colors.deepPurple[400];
                         attendanceStatusIcon = Icon(
-                          Icons.group,
-                          color: Colors.orangeAccent,
+                          Icons.home,
+                          color: Colors.deepPurple[600],
                           size: 18.0,
                         );
-                      } else{
-                        attendanceStatus = 'Absent';
+                      }else{
+                        if(attendanceDay.isAtSameMomentAs(thisDay)){
+                          if(latestAttendance['in'] == '1'){
+                            attendanceStatus = 'Present';
+                            attendanceStatusColor = Colors.green;
+                            attendanceStatusIcon = Icon(
+                              Icons.check,
+                              color: Colors.green,
+                              size: 18.0,
+                            );
+                          }
+                        }else if(thisTime.isBefore(classStart)){
+                          attendanceStatus = formatMilitaryTime(classDetail['class_start_schedule']);
+                          attendanceStatusColor = Theme.of(context).accentColor;
+                          attendanceStatusIcon = Icon(
+                            Icons.group,
+                            color: Colors.orangeAccent,
+                            size: 18.0,
+                          );
+                        } else{
+                          attendanceStatus = 'Absent';
+                        }
                       }
-                    }
-                });
+                    });
+                }
+              } catch(e) {
+                attendanceStatus = 'Absent';
               }
-            } catch(e) {
-              attendanceStatus = 'Absent';
-            }
 
-            if(attendanceStatus == 'Absent'){
-              attendanceStatusColor = Colors.redAccent;
-              attendanceStatusIcon = Icon(
-                Icons.error_outline,
-                color: Colors.redAccent,
-                size: 18.0,
-              );
-            }
+              if(attendanceStatus == 'Absent'){
+                attendanceStatusColor = Colors.redAccent;
+                attendanceStatusIcon = Icon(
+                  Icons.error_outline,
+                  color: Colors.redAccent,
+                  size: 18.0,
+                );
+              }
 
-            getTotalSchoolDays(userId)
-              .then((result) {
-                setState(() {
-                  absentDays = pastSchoolDays - presentDaysNo;
-                  totalSchoolDays = result['totalDays'];
-                  resolve.forEach((key, value) {
-                    DateTime holidayDay = key;
-                    if(holidayDay.weekday <= 5) {
-                      totalSchoolDays--;
-                      if(holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)){
-                        absentDays--;
-                      }
-                    };
+              await getTotalSchoolDays(userId)
+                .then((result) {
+                  setState(() {
+                    absentDays = pastSchoolDays - presentDaysNo;
+                    totalSchoolDays = result['totalDays'];
+                    resolve.forEach((key, value) {
+                      DateTime holidayDay = key;
+                      if(holidayDay.weekday <= 5) {
+                        totalSchoolDays--;
+                        if(holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)){
+                          absentDays--;
+                        }
+                      };
+                    });
                   });
-                });
               });
-          });
-      }),
+
+              return;
+            });
+        }),
       getPresentDaysNo(userId)
         .then((result) {
           setState(() {
@@ -673,6 +675,9 @@ class _HomePageState extends State<HomePage> {
     await prefs.setStringList('userIds', widget.userIds);
     await prefs.setStringList('topics', widget.userIds);
   }
+  void fetchAttendanceInfo(userId) async {
+    await getAttendanceInfo(userId);
+  }
 
   @override
   void dispose() {
@@ -714,9 +719,10 @@ class _HomePageState extends State<HomePage> {
     if(topicIndex == topics.length){
       addTopic('all', '');
     }
+
     firebaseCloudMessaging_Listeners(widget.classId);
     transformActivityList(widget.classId);
-    getAttendanceInfo(widget.heroTag);
+    fetchAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
 
     setAvatarUrl(widget.avatarUrl);
@@ -863,7 +869,7 @@ class _HomePageState extends State<HomePage> {
 
 
     transformActivityList(widget.classId);
-    getAttendanceInfo(widget.heroTag);
+    fetchAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
     setUnreadNotif(widget.heroTag);
 

@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'model.dart';
+
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
@@ -56,6 +61,43 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
   static DateTime currentDate = DateTime.now();
   DateTime currentDay = DateTime(currentDate.year, currentDate.month, currentDate.day);
+
+  Future fetchHolidayList() async {
+    String url = '$baseApi/sett/get-holidays';
+
+    var response = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+
+    return jsonDecode(response.body);
+  }
+  Future getHolidayList() async {
+    return await fetchHolidayList()
+      .then((resolve) {
+        for(int i = 0; i < resolve.length; i++){
+          Map holiday = resolve[i];
+          String holidayTitle = holiday['title'];
+          DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
+          DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
+          DateTime holidayIndexDate = startHoliday;
+
+          for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
+            if(widget.holidayDays[holidayIndexDate] == null){
+              widget.holidayDays[holidayIndexDate] = [];
+            }
+            widget.holidayDays[holidayIndexDate].add(holidayTitle);
+          }
+
+          if(widget.holidayDays[holidayIndexDate] == null){
+            widget.holidayDays[holidayIndexDate] = [];
+          }
+          widget.holidayDays[holidayIndexDate].add(holidayTitle);
+        }
+        return Future.value(widget.holidayDays);
+      });
+  }
 
   void buildAttendanceCalendarDays(yearStartDay, today, presentDays) {
     DateTime schoolDayIndex = yearStartDay;
@@ -120,6 +162,12 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   @override
   void initState(){
     super.initState();
+
+    getHolidayList()
+      .then((holidays) {
+        buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
+        setState(() {});
+      });
 
     eventsLegend.addAll([
       Column(
@@ -208,8 +256,6 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     } catch(e) {
       _selectedEvents = [];
     }
-
-    buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
 
     _visibleEvents = _events;
     _visibleHolidays = widget.holidayDays;
