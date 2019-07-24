@@ -109,7 +109,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     DateTime schoolDayIndex = yearStartDay;
     int presentDaysIndex = 0;
     if(yearStartDay != null) {
-      while(schoolDayIndex != today){
+      while(schoolDayIndex.isBefore(today)){
         if(widget.holidayDays[schoolDayIndex] == null){
           if(schoolDayIndex.weekday <= 5){
             String attendanceStatus = 'ABSENT';
@@ -247,6 +247,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     ]);
 
     _selectedDay = DateTime.now();
+    _selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
 
     _events = {
       _selectedDay: [],
@@ -557,7 +558,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         List thisEvents = _events[date] ?? [''];
         eventsLegend = [];
 
-        if(_selectedEvents.length != 0 && thisEvents[0] != ''){
+        if(_selectedEvents.length != 0 && thisEvents[0] != '' && (thisEvents.length > 0 && thisEvents[0] != 'CURRENT')){
           eventsLegend.add(Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
