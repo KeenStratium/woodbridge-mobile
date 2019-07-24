@@ -111,10 +111,10 @@ class _NotificationsState extends State<Notifications> {
                           ),
                         );
                       }else{
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 128.0),
-                          child: Center(
-                            child: Text('Fetching notifications for you...'),
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 64.0),
+                            child: CircularProgressIndicator(),
                           ),
                         );
                       }

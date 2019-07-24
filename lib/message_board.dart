@@ -111,7 +111,10 @@ class _MessageBoardState extends State<MessageBoard> {
                 );
               }else{
                 return Center(
-                  child: Text('Fetching messages for you...'),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 64.0),
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               }
             }),
