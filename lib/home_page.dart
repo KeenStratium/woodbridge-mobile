@@ -508,20 +508,30 @@ class _HomePageState extends State<HomePage> {
               }
 
               await getTotalSchoolDays(userId)
-                .then((result) {
-                  setState(() {
-                    absentDays = pastSchoolDays - presentDaysNo;
-                    totalSchoolDays = result['totalDays'];
-                    resolve.forEach((key, value) {
-                      DateTime holidayDay = key;
-                      if(holidayDay.weekday <= 5) {
-                        totalSchoolDays--;
-                        if(holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)){
-                          absentDays--;
-                        }
-                      };
+                .then((result) async {
+                  await getAttendanceDays(userId)
+                    .then((presents) {
+                      presents.forEach((result) {
+                        DateTime attendanceDate = DateTime.parse(result['date_marked']).toLocal();
+                        DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+                        presentDays.add(attendanceDay);
+                      });
+                      setState(() {
+                        absentDays = pastSchoolDays - presentDaysNo;
+                        totalSchoolDays = result['totalDays'];
+                        resolve.forEach((key, value) {
+                          DateTime holidayDay = key;
+                          if(holidayDay.weekday <= 5) {
+                            totalSchoolDays--;
+                            print(holidayDay);
+                            print(thisDay);
+                            if((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) && !presentDays.contains(holidayDay)){
+                              absentDays--;
+                            }
+                          };
+                        });
+                      });
                     });
-                  });
               });
 
               return;
@@ -537,14 +547,6 @@ class _HomePageState extends State<HomePage> {
         .then((result) {
           setState(() {
             pastSchoolDays = result['totalDaysNow'];
-          });
-        }),
-      getAttendanceDays(userId)
-        .then((results) {
-          results.forEach((result) {
-            DateTime attendanceDate = DateTime.parse(result['date_marked']).toLocal();
-            DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-            presentDays.add(attendanceDay);
           });
         }),
       getSchoolYearInformation()
