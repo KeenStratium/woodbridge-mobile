@@ -115,6 +115,11 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
             String attendanceStatus = 'ABSENT';
 
             if(presentDays.length > 0){
+              try {
+                if(presentDays[presentDaysIndex].isBefore(schoolDayIndex) && presentDaysIndex < presentDays.length - 1){
+                  presentDaysIndex++;
+                }
+              } catch (e) {}
               if(schoolDayIndex == presentDays[presentDaysIndex] && presentDaysIndex < presentDays.length){
                 attendanceStatus = 'PRESENT';
                 if(presentDaysIndex < presentDays.length - 1){
