@@ -83,6 +83,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
           DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
           DateTime holidayIndexDate = startHoliday;
 
+          widget.holidayDays = {};
+
           for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
             if(widget.holidayDays[holidayIndexDate] == null){
               widget.holidayDays[holidayIndexDate] = [];
