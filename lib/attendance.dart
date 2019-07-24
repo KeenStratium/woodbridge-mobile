@@ -73,17 +73,16 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
     return jsonDecode(response.body);
   }
-  Future getHolidayList() async {
-    return await fetchHolidayList()
+  void getHolidayList() async {
+    await fetchHolidayList()
       .then((resolve) {
+        widget.holidayDays = {};
         for(int i = 0; i < resolve.length; i++){
           Map holiday = resolve[i];
           String holidayTitle = holiday['title'];
           DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
           DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
           DateTime holidayIndexDate = startHoliday;
-
-          widget.holidayDays = {};
 
           for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
             if(widget.holidayDays[holidayIndexDate] == null){
@@ -97,7 +96,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
           }
           widget.holidayDays[holidayIndexDate].add(holidayTitle);
         }
-        return Future.value(widget.holidayDays);
+        buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
       });
   }
 
@@ -131,6 +130,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
         schoolDayIndex = schoolDayIndex.add(Duration(days: 1));
       }
+      setState(() {});
     }
   }
 
@@ -165,11 +165,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   void initState(){
     super.initState();
 
-    getHolidayList()
-      .then((holidays) {
-        buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
-        setState(() {});
-      });
+    getHolidayList();
+    setState(() {});
 
     eventsLegend.addAll([
       Column(
