@@ -1272,10 +1272,10 @@ class _HomePageState extends State<HomePage> {
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: <Widget>[
                                                                   Text(
-                                                                    'All set!',
+                                                                    'Fully paid!',
                                                                     style: TextStyle(
                                                                       color: Colors.green,
-                                                                      fontSize: 16.0,
+                                                                      fontSize: 15.0,
                                                                       fontWeight: FontWeight.w600
                                                                     ),
                                                                   ),
