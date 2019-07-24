@@ -852,7 +852,6 @@ class _HomePageState extends State<HomePage> {
           pastSchoolDays: this.pastSchoolDays,
           absentDays: this.absentDays,
           totalSchoolDays: this.totalSchoolDays,
-          holidayDays: this.holidayDays,
         );
       }
 
@@ -1479,7 +1478,6 @@ class _HomePageState extends State<HomePage> {
                                             pastSchoolDays: this.pastSchoolDays,
                                             absentDays: this.absentDays,
                                             totalSchoolDays: this.totalSchoolDays,
-                                            holidayDays: this.holidayDays
                                           ),
                                           buildContext: context,
                                         ),
