@@ -1,9 +1,28 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'model.dart';
+
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'enroll_package.dart';
 import 'home_page.dart';
 
 List<StudentAvatarPicker> studentAvatarPickers = <StudentAvatarPicker>[];
+
+Future<Map> getStudentUnseenNotifications(userId) async {
+  String url = '$baseApi/notif/get-student-unseen-notifs';
+
+  var response = await http.post(url, body: json.encode({
+    "data": userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 
 class StudentPicker extends StatefulWidget {
   List<String> users;
@@ -18,7 +37,36 @@ class StudentPicker extends StatefulWidget {
 }
 
 class _StudentPickerState extends State<StudentPicker> {
+  Map userIdUnreadStatus = {};
+
+  void setStudentsUnreadNotif(List<String> userIds) async {
+    for(int i = 0; i < userIds.length; i++){
+      String userId = userIds[i];
+      await getStudentUnseenNotifications(userId)
+          .then((results) {
+        if(results['success']){
+          if(userIdUnreadStatus[userId] == null){
+            userIdUnreadStatus[userId] = false;
+          }
+
+          if(results['data'].length > 0){
+            userIdUnreadStatus[userId] = true;
+          }
+        }
+      });
+    }
+
+    setState(() {});
+  }
+
   bool enableEnrollment = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    setStudentsUnreadNotif(widget.users);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +76,7 @@ class _StudentPickerState extends State<StudentPicker> {
       return StudentAvatarPicker(
         userId: userId,
         isActive: false,
+        hasUnreadNotif: userIdUnreadStatus[userId] ?? false,
         onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl) =>
           Navigator.of(context).push(new MaterialPageRoute(
             builder: (BuildContext context) => HomePage(

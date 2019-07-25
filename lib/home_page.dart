@@ -250,9 +250,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Map userIdUnreadStatus = {};
+
   String _token;
   StreamController streamController;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   Color attendanceStatusColor = Colors.redAccent;
   Icon attendanceStatusIcon = Icon(
     Icons.error_outline,
@@ -435,8 +437,9 @@ class _HomePageState extends State<HomePage> {
     return sortedMonthNames;
   }
 
-
   Map paymentData = {};
+
+  bool otherChildHasUnreadNotif = false;
 
   void fetchPdf() async {
     await initLoadPdf();
@@ -642,9 +645,6 @@ class _HomePageState extends State<HomePage> {
             .then((result) {
               if(result['code'] == 1){
                 _firebaseMessaging.subscribeToTopic(topic['topic']);
-                print('subscribed to ${topic['topic']}');
-              }else if(result['code'] == 2){
-                print('${topic['topic']} already subscribed.');
               }
             });
         }
@@ -656,10 +656,7 @@ class _HomePageState extends State<HomePage> {
         IosNotificationSettings(sound: true, badge: true, alert: true)
     );
     _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings)
-        {
-          print("Settings registered: $settings");
-        });
+        .listen((IosNotificationSettings settings) {});
   }
   void _saveUserProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -677,6 +674,30 @@ class _HomePageState extends State<HomePage> {
   }
   void fetchAttendanceInfo(userId) async {
     await getAttendanceInfo(userId);
+  }
+  void setStudentsUnreadNotif(List<String> userIds) async {
+    otherChildHasUnreadNotif = false;
+    userIdUnreadStatus = {};
+    for(int i = 0; i < userIds.length; i++){
+      String userId = userIds[i];
+      await getStudentUnseenNotifications(userId)
+        .then((results) {
+          if(results['success']){
+            if(userIdUnreadStatus[userId] == null){
+              userIdUnreadStatus[userId] = false;
+            }
+
+            if(results['data'].length > 0){
+              userIdUnreadStatus[userId] = true;
+              if(userId != widget.heroTag){
+                otherChildHasUnreadNotif = true;
+              }
+            }
+          }
+        });
+    }
+
+    setState(() {});
   }
 
   @override
@@ -708,6 +729,7 @@ class _HomePageState extends State<HomePage> {
     presentDays = <DateTime>[];
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
+    userIdUnreadStatus = {};
 
     for(topicIndex = 0; topicIndex < topics.length; topicIndex++){
       Map topic = topics[topicIndex];
@@ -724,6 +746,7 @@ class _HomePageState extends State<HomePage> {
     transformActivityList(widget.classId);
     fetchAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
+    setStudentsUnreadNotif(widget.userIds);
 
     setAvatarUrl(widget.avatarUrl);
 
@@ -865,14 +888,14 @@ class _HomePageState extends State<HomePage> {
     presentDays = <DateTime>[];
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
+    userIdUnreadStatus = {};
 
 
     transformActivityList(widget.classId);
     fetchAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
     setUnreadNotif(widget.heroTag);
-
-    print('All data are up-to-date');
+    setStudentsUnreadNotif(widget.userIds);
   }
 
   void userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId){
@@ -1135,6 +1158,7 @@ class _HomePageState extends State<HomePage> {
                                           color: Color.fromRGBO(255, 255, 255, 0),
                                           child: InkWell(
                                             onTap: () {
+                                              setStudentsUnreadNotif(widget.userIds);
                                               setState(() {
                                                 showStudentSwitcher = true;
                                               });
@@ -1150,9 +1174,19 @@ class _HomePageState extends State<HomePage> {
                                                       color: Colors.white
                                                   ),
                                                 ),
-                                                Padding(
+                                                otherChildHasUnreadNotif ? Padding(
                                                   padding: EdgeInsets.symmetric(horizontal: 6.0),
-                                                ),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red[600],
+                                                      borderRadius: BorderRadius.circular(24.0)
+                                                    ),
+                                                    constraints: BoxConstraints(
+                                                      minWidth: 9,
+                                                      minHeight: 9,
+                                                    ),
+                                                  ),
+                                                ) : Container(),
                                                 Icon(
                                                   Icons.arrow_drop_down,
                                                   color: Colors.white,
@@ -1620,6 +1654,7 @@ class _HomePageState extends State<HomePage> {
                                       return StudentAvatarPicker(
                                         userId: '${userId}',
                                         isActive: userId == widget.heroTag,
+                                        hasUnreadNotif: userIdUnreadStatus[userId] ?? false,
                                         onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl) {
                                           showStudentSwitcher = false;
 
