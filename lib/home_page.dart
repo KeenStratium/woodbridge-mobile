@@ -141,6 +141,19 @@ Future<Map> getStudentUnseenNotifications(userId) async {
 
   return jsonDecode(response.body);
 }
+Future<Map> getStudentNotificationInfo(notifId) async {
+  String url = '$baseApi/notif/get-student-notification-info';
+
+  var response = await http.post(url, body: json.encode({
+    "data": notifId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 Future getClassDetails(classId) async {
   String url = '$baseApi/classroom/get-class-details';
 
@@ -342,45 +355,45 @@ class _HomePageState extends State<HomePage> {
     Completer _completer = Completer();
 
     await fetchStudentPayments(userId)
-        .then((results) {
-      payments = [];
-      totalBalance = 0.00;
-      totalPayments = 0.00;
+      .then((results) {
+        payments = [];
+        totalBalance = 0.00;
+        totalPayments = 0.00;
 
-      nextPaymentMonth = null;
-      nextPaymentDay = null;
+        nextPaymentMonth = null;
+        nextPaymentDay = null;
 
-      results.forEach((payment) {
-        var amount;
-        DateTime dueDate;
-        if(payment['due_date'] != null){
-          dueDate = DateTime.parse(payment['due_date']).toLocal();
-        }
-        String paymentDate = 'Unpaid';
-        try {
-          amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
-          if(amount == 'N/A' || amount == null || amount == '0'){
-            totalBalance += payment['due_amount'];
-            if(nextPaymentMonth == null){
-              nextPaymentMonth = monthNames[dueDate.month - 1];
-              nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
-            }
-          }else {
-            if(payment['amount_paid'] != null){
-              totalPayments += payment['amount_paid'];
-            }
+        results.forEach((payment) {
+          var amount;
+          DateTime dueDate;
+          if(payment['due_date'] != null){
+            dueDate = DateTime.parse(payment['due_date']).toLocal();
           }
-        } catch(e){
-          print(e);
-        }
-
-        try{
-          String paidDate = payment['paid_date'];
-          if(paidDate != null){
-            paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
+          String paymentDate = 'Unpaid';
+          try {
+            amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
+            if(amount == 'N/A' || amount == null || amount == '0'){
+              totalBalance += payment['due_amount'];
+              if(nextPaymentMonth == null){
+                nextPaymentMonth = monthNames[dueDate.month - 1];
+                nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+              }
+            }else {
+              if(payment['amount_paid'] != null){
+                totalPayments += payment['amount_paid'];
+              }
+            }
+          } catch(e){
+            print(e);
           }
-        }catch(e){}
-        payments.add(
+
+          try{
+            String paidDate = payment['paid_date'];
+            if(paidDate != null){
+              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
+            }
+          }catch(e){}
+          payments.add(
             Payment(
                 label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
                 amount: amount,
@@ -398,9 +411,9 @@ class _HomePageState extends State<HomePage> {
                 },
                 paymentNote: payment['description']
             )
-        );
+          );
+        });
       });
-    });
     streamController.add({
       'totalPayments': totalPayments,
       'totalBalance': totalBalance,
@@ -634,7 +647,6 @@ class _HomePageState extends State<HomePage> {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
     _token = "";
-    print(topics);
     _firebaseMessaging.getToken().then((token){
       print(token);
       _token = token;
@@ -675,7 +687,7 @@ class _HomePageState extends State<HomePage> {
   void fetchAttendanceInfo(userId) async {
     await getAttendanceInfo(userId);
   }
-  void setStudentsUnreadNotif(List<String> userIds) async {
+  Future setStudentsUnreadNotif(List<String> userIds) async {
     otherChildHasUnreadNotif = false;
     userIdUnreadStatus = {};
     for(int i = 0; i < userIds.length; i++){
@@ -698,6 +710,8 @@ class _HomePageState extends State<HomePage> {
     }
 
     setState(() {});
+    
+    return Future.value(otherChildHasUnreadNotif);
   }
 
   @override
@@ -744,6 +758,7 @@ class _HomePageState extends State<HomePage> {
 
     firebaseCloudMessaging_Listeners(widget.classId);
     transformActivityList(widget.classId);
+
     fetchAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
     setStudentsUnreadNotif(widget.userIds);
@@ -758,17 +773,20 @@ class _HomePageState extends State<HomePage> {
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
         updateHomeData();
       },
       onResume: (Map<String, dynamic> message) async {
         updateHomeData();
-        routeNotificationPage(message['notif_category']);
-        print('on resume $message');
+        setStudentsUnreadNotif(widget.userIds)
+          .then((hasOtherNotif) async {
+            print(message);
+            if(!hasOtherNotif){
+              routeNotificationPage(message['notif_category']);
+            }
+          });
       },
       onLaunch: (Map<String, dynamic> message) async {
         updateHomeData();
-        print('on launch $message');
       },
     );
 
@@ -776,7 +794,6 @@ class _HomePageState extends State<HomePage> {
       if(msg == 'AppLifecycleState.resumed'){
         updateHomeData();
       }
-      debugPrint('SystemChannels> $msg');
     });
 
     setUnreadNotif(widget.heroTag);
