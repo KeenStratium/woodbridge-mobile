@@ -777,13 +777,7 @@ class _HomePageState extends State<HomePage> {
       },
       onResume: (Map<String, dynamic> message) async {
         updateHomeData();
-        setStudentsUnreadNotif(widget.userIds)
-          .then((hasOtherNotif) async {
-            print(message);
-            if(!hasOtherNotif){
-              routeNotificationPage(message['notif_category']);
-            }
-          });
+        setStudentsUnreadNotif(widget.userIds);
       },
       onLaunch: (Map<String, dynamic> message) async {
         updateHomeData();
