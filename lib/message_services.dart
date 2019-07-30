@@ -327,7 +327,7 @@ class _BoardState extends State<Board> {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
                             child: Text(
-                              "Please contact (433-3851) or go to the admin office to reschedule with your preferred time and choose a response accordingly afterwards.",
+                              "Please contact (433-3851) or go to the admin office to reschedule with your preferred time and choose a response here accordingly afterwards.",
                               style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 16.0,

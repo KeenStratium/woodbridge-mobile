@@ -650,6 +650,8 @@ class _HomePageState extends State<HomePage> {
     _firebaseMessaging.getToken().then((token){
       print(token);
       _token = token;
+      print('topics');
+      print(topics);
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
         if(topic['topic'] != null){
@@ -774,6 +776,7 @@ class _HomePageState extends State<HomePage> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         updateHomeData();
+        print(message);
       },
       onResume: (Map<String, dynamic> message) async {
         updateHomeData();
@@ -800,9 +803,10 @@ class _HomePageState extends State<HomePage> {
     setUnreadNotif(widget.heroTag)
       .then((resolve) {
         category == 'progress' ? unread_name = 'grade_update' : null;
-        category == 'activities' ? unread_name = 'activities' : null;
+        category == 'Activities' ? unread_name = 'activities' : null;
         category == 'photos' ? unread_name = 'photo_update' : null;
         category == 'attendance' ? unread_name = 'student_present' : null;
+        category == 'Payments' ? unread_name = 'payment_due' : null;
 
         if(category == 'messages' || category == 'appointment'){
           unreadNotifIds.addAll(getModuleUnreadNotifIds('announcement'));
@@ -820,7 +824,7 @@ class _HomePageState extends State<HomePage> {
         }
       });
 
-    if((category != null) && (['activity','photos','messages','appointment','progress','attendance'].contains(category))){
+    if((category != null) && (['activity','photos','messages','appointment','progress','attendance','payment'].contains(category))){
       Widget pageBuilder;
       Route route = MaterialPageRoute(builder: (buildContext) => HomePage(
         child: Avatar(
@@ -900,7 +904,6 @@ class _HomePageState extends State<HomePage> {
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
     userIdUnreadStatus = {};
-
 
     transformActivityList(widget.classId);
     fetchAttendanceInfo(widget.heroTag);
@@ -1721,6 +1724,7 @@ class MenuItem extends StatelessWidget {
     label == 'Activities' ? unread_name = 'activities' : null;
     label == 'Photos' ? unread_name = 'photo_update' : null;
     label == 'Attendance' ? unread_name = 'student_present' : null;
+    label == 'Payments' ? unread_name = 'payment_due' : null;
 
     if(label == 'Messages'){
       unreadCount = getModuleUnreadCount('appointment') + getModuleUnreadCount('announcement');
