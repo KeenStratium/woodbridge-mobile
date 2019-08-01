@@ -59,8 +59,8 @@ List<List<Widget>> transformPaginationListCache(list, pageSize, offsetPage, call
 }
 
 String epochToHumanTime(epoch) {
-  var currDivisor = [1,60,60,24,7,4];
-  var unitTime = ['sec','min','hr',' day',' week'];
+  var currDivisor = [1,60,60,24,7,4, 12];
+  var unitTime = ['sec','min','hr',' day',' week', ' month'];
   var sentence = "";
   var majorTime;
   var minorTime = 0;

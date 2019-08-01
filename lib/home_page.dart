@@ -534,7 +534,7 @@ class _HomePageState extends State<HomePage> {
                       });
                       setState(() {
                         absentDays = pastSchoolDays - presentDaysNo;
-                        totalSchoolDays = result['totalDays'];
+                        totalSchoolDays = result['totalDays'] + 0.0;
                         resolve.forEach((key, value) {
                           DateTime holidayDay = key;
                           if(holidayDay.weekday <= 5) {
