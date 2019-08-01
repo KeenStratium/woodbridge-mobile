@@ -306,6 +306,31 @@ class PaymentDetails extends StatelessWidget {
                         Divider(height: 1.0, color: Colors.grey[300]),
                       ],
                     ),
+                    paymentNote != '' && paymentNote != null ? Padding(
+                      padding: EdgeInsets.only(top: 20.0),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            'NOTE',
+                            style: TextStyle(
+                                color: Colors.grey[500],
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12.0
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 3.0),
+                            child: Text(
+                              paymentNote,
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.black87
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ) : Container(),
                     paymentDate != 'Unpaid' ? Column(
                       children: <Widget>[
                         Padding(
@@ -314,31 +339,6 @@ class PaymentDetails extends StatelessWidget {
                             children: <Widget>[
                               Column(
                                 children: <Widget>[
-                                  paymentNote != '' && paymentNote != null ? Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 6.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          'NOTE',
-                                          style: TextStyle(
-                                              color: Colors.grey[500],
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 12.0
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 3.0),
-                                          child: Text(
-                                            paymentNote,
-                                            style: TextStyle(
-                                                fontSize: 18.0,
-                                                color: Colors.black87
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ) : Container(),
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: 6.0),
                                     child: Column(
