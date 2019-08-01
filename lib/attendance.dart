@@ -605,26 +605,28 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
               ));
             }
             if(event == 'PRESENT' || (event == 'CURRENT' && thisEvents[0] == 'PRESENT')){
-              eventsLegend.add(Container(
-                margin: EdgeInsets.only(right: 4.0),
-                padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-                decoration: BoxDecoration(
-                  color: Colors.green[50],
-                  border: Border.all(
-                    color: Colors.green[50]
+              if(event != 'CURRENT'){
+                eventsLegend.add(Container(
+                  margin: EdgeInsets.only(right: 4.0),
+                  padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                  decoration: BoxDecoration(
+                      color: Colors.green[50],
+                      border: Border.all(
+                          color: Colors.green[50]
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))
-                ),
-                child: Text(
-                  'Present',
-                  softWrap: false,
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.0
+                  child: Text(
+                    'Present',
+                    softWrap: false,
+                    style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.0
+                    ),
                   ),
-                ),
-              ));
+                ));
+              }
             }
           }
         }
