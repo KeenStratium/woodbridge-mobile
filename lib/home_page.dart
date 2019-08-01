@@ -659,6 +659,7 @@ class _HomePageState extends State<HomePage> {
             .then((result) {
               if(result['code'] == 1){
                 _firebaseMessaging.subscribeToTopic(topic['topic']);
+                print('subscribed to $topic');
               }
             });
         }
@@ -686,9 +687,11 @@ class _HomePageState extends State<HomePage> {
     await prefs.setStringList('userIds', widget.userIds);
     await prefs.setStringList('topics', widget.userIds);
   }
+
   void fetchAttendanceInfo(userId) async {
     await getAttendanceInfo(userId);
   }
+
   Future setStudentsUnreadNotif(List<String> userIds) async {
     otherChildHasUnreadNotif = false;
     userIdUnreadStatus = {};
@@ -1721,7 +1724,7 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     label == 'Progress' ? unread_name = 'grade_update' : null;
-    label == 'Activities' ? unread_name = 'activities' : null;
+    label == 'Activities' ? unread_name = 'activitiy_new' : null;
     label == 'Photos' ? unread_name = 'photo_update' : null;
     label == 'Attendance' ? unread_name = 'student_present' : null;
     label == 'Payments' ? unread_name = 'payment_due' : null;
