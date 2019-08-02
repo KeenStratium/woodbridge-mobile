@@ -738,8 +738,6 @@ class _HomePageState extends State<HomePage> {
     activityWithYearNames = [];
     holidayDays = {};
 
-    fetchPdf();
-
     payments = [];
     initialPayments = [];
 
@@ -1015,14 +1013,17 @@ class _HomePageState extends State<HomePage> {
                                       ListTile(
                                         leading: Icon(Icons.book),
                                         onTap: (){
+                                          if(guidePages == null || guidePages.length == 0){
+                                            fetchPdf();
+                                          }
                                           Route route = MaterialPageRoute(
-                                              builder: (BuildContext context) {
-                                                return InitialOnboard(
-                                                  pages: guidePages,
-                                                  userIds: [],
-                                                  showAgreementCta: false,
-                                                );
-                                              });
+                                            builder: (BuildContext context) {
+                                              return InitialOnboard(
+                                                pages: guidePages,
+                                                userIds: [],
+                                                showAgreementCta: false,
+                                              );
+                                            });
                                           Navigator.push(context, route);
                                         },
                                         title: Text(
