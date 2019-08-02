@@ -1,11 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'model.dart';
-
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 List<String> dayNames = <String>['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

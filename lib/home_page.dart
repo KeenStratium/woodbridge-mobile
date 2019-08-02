@@ -454,9 +454,6 @@ class _HomePageState extends State<HomePage> {
 
   bool otherChildHasUnreadNotif = false;
 
-  void fetchPdf() async {
-    await initLoadPdf();
-  }
   Future getAttendanceInfo(userId) async {
     return await Future.wait([
       getHolidayList()
@@ -577,6 +574,36 @@ class _HomePageState extends State<HomePage> {
         })
     ]);
   }
+  Future setStudentsUnreadNotif(List<String> userIds) async {
+    otherChildHasUnreadNotif = false;
+    userIdUnreadStatus = {};
+    for(int i = 0; i < userIds.length; i++){
+      String userId = userIds[i];
+      await getStudentUnseenNotifications(userId)
+          .then((results) {
+        if(results['success']){
+          if(userIdUnreadStatus[userId] == null){
+            userIdUnreadStatus[userId] = false;
+          }
+
+          if(results['data'].length > 0){
+            userIdUnreadStatus[userId] = true;
+            if(userId != widget.heroTag){
+              otherChildHasUnreadNotif = true;
+            }
+          }
+        }
+      });
+    }
+
+    setState(() {});
+
+    return Future.value(otherChildHasUnreadNotif);
+  }
+  
+  void fetchPdf() async {
+    await initLoadPdf();
+  }
   void transformActivityList(classId) async {
     await getStudentActivities(classId)
       .then((results) {
@@ -687,36 +714,8 @@ class _HomePageState extends State<HomePage> {
     await prefs.setStringList('userIds', widget.userIds);
     await prefs.setStringList('topics', widget.userIds);
   }
-
   void fetchAttendanceInfo(userId) async {
     await getAttendanceInfo(userId);
-  }
-
-  Future setStudentsUnreadNotif(List<String> userIds) async {
-    otherChildHasUnreadNotif = false;
-    userIdUnreadStatus = {};
-    for(int i = 0; i < userIds.length; i++){
-      String userId = userIds[i];
-      await getStudentUnseenNotifications(userId)
-        .then((results) {
-          if(results['success']){
-            if(userIdUnreadStatus[userId] == null){
-              userIdUnreadStatus[userId] = false;
-            }
-
-            if(results['data'].length > 0){
-              userIdUnreadStatus[userId] = true;
-              if(userId != widget.heroTag){
-                otherChildHasUnreadNotif = true;
-              }
-            }
-          }
-        });
-    }
-
-    setState(() {});
-    
-    return Future.value(otherChildHasUnreadNotif);
   }
 
   @override
@@ -900,7 +899,6 @@ class _HomePageState extends State<HomePage> {
       Navigator.push(context, routeNew);
     }
   }
-
   void updateHomeData() async {
     schoolDays = <DateTime>[];
     presentDays = <DateTime>[];
@@ -914,7 +912,6 @@ class _HomePageState extends State<HomePage> {
     setUnreadNotif(widget.heroTag);
     setStudentsUnreadNotif(widget.userIds);
   }
-
   void userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId){
     widget.child = Avatar(
       backgroundColor: Colors.indigo,
@@ -936,7 +933,6 @@ class _HomePageState extends State<HomePage> {
     updateHomeData();
     _saveUserProfileData();
   }
-
   void _setLoggedInStatus(bool status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
