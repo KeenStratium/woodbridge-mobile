@@ -31,6 +31,10 @@ void setCategorySeen(String moduleName) {
   _moduleUnreadCount.remove(moduleName);
 }
 
+Map getModuleUnread() {
+  return _moduleUnreadCount;
+}
+
 int getModuleUnreadCount(String moduleName) {
   var  _module = _moduleUnreadCount[moduleName] ?? {};
 

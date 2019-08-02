@@ -580,20 +580,20 @@ class _HomePageState extends State<HomePage> {
     for(int i = 0; i < userIds.length; i++){
       String userId = userIds[i];
       await getStudentUnseenNotifications(userId)
-          .then((results) {
-        if(results['success']){
-          if(userIdUnreadStatus[userId] == null){
-            userIdUnreadStatus[userId] = false;
-          }
+        .then((results) {
+          if(results['success']){
+            if(userIdUnreadStatus[userId] == null){
+              userIdUnreadStatus[userId] = false;
+            }
 
-          if(results['data'].length > 0){
-            userIdUnreadStatus[userId] = true;
-            if(userId != widget.heroTag){
-              otherChildHasUnreadNotif = true;
+            if(results['data'].length > 0){
+              userIdUnreadStatus[userId] = true;
+              if(userId != widget.heroTag){
+                otherChildHasUnreadNotif = true;
+              }
             }
           }
-        }
-      });
+        });
     }
 
     setState(() {});
@@ -1722,7 +1722,7 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     label == 'Progress' ? unread_name = 'grade_update' : null;
-    label == 'Activities' ? unread_name = 'activitiy_new' : null;
+    label == 'Activities' ? unread_name = 'activity_new' : null;
     label == 'Photos' ? unread_name = 'photo_update' : null;
     label == 'Attendance' ? unread_name = 'student_present' : null;
     label == 'Payments' ? unread_name = 'payment_due' : null;

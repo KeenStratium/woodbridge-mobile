@@ -43,17 +43,17 @@ class _StudentPickerState extends State<StudentPicker> {
     for(int i = 0; i < userIds.length; i++){
       String userId = userIds[i];
       await getStudentUnseenNotifications(userId)
-          .then((results) {
-        if(results['success']){
-          if(userIdUnreadStatus[userId] == null){
-            userIdUnreadStatus[userId] = false;
-          }
+        .then((results) {
+          if(results['success']){
+            if(userIdUnreadStatus[userId] == null){
+              userIdUnreadStatus[userId] = false;
+            }
 
-          if(results['data'].length > 0){
-            userIdUnreadStatus[userId] = true;
+            if(results['data'].length > 0){
+              userIdUnreadStatus[userId] = true;
+            }
           }
-        }
-      });
+        });
     }
 
     setState(() {});
