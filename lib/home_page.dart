@@ -600,7 +600,7 @@ class _HomePageState extends State<HomePage> {
 
     return Future.value(otherChildHasUnreadNotif);
   }
-  
+
   void fetchPdf() async {
     await initLoadPdf();
   }
@@ -756,6 +756,7 @@ class _HomePageState extends State<HomePage> {
         break;
       }
     }
+
     if(topicIndex == topics.length){
       addTopic('all', '');
     }

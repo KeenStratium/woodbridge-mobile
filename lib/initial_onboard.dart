@@ -31,6 +31,7 @@ class InitialOnboard extends StatefulWidget {
   List<String> userIds = <String>[];
   bool showAgreementCta;
   String userId;
+  bool hasFinishedLoading = false;
 
   InitialOnboard({
     this.pages,
@@ -49,6 +50,27 @@ class _InitialOnboardState extends State<InitialOnboard> {
 
   Widget loadPdf(int pageNumber) {
     return widget.pages[pageNumber];
+  }
+
+  void loopTimer() async {
+    var future = new Future.delayed(const Duration(milliseconds: 100));
+    if(widget.pages.length >= (14 - 2)){
+      setState(() {
+        widget.hasFinishedLoading = true;
+      });
+    }else{
+      widget.hasFinishedLoading = false;
+      await future.then((result) {
+        loopTimer();
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    loopTimer();
   }
 
   @override
@@ -72,8 +94,28 @@ class _InitialOnboardState extends State<InitialOnboard> {
           direction: Axis.vertical,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Expanded(
+            widget.hasFinishedLoading ? Expanded(
               child: mounted ? loadPdf(widget.currentPage) : Container(),
+            ) : Expanded(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 32.0, maxHeight: 32.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      "Fetching Parent's Guide...",
+                      style: TextStyle(
+                        color: Colors.grey[500]
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
             Container(
               padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 20.0),
