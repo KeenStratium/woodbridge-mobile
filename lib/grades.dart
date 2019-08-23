@@ -301,7 +301,7 @@ class _GradesState extends State<Grades> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
                         child: Text(
-                          'Psychological Skills',
+                          'Psychosocial Skills',
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.black87,
