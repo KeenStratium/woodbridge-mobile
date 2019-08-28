@@ -766,6 +766,7 @@ class _HomePageState extends State<HomePage> {
     fetchAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
     setStudentsUnreadNotif(widget.userIds);
+    _saveUserProfileData();
 
     setAvatarUrl(widget.avatarUrl);
 
