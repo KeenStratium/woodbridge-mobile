@@ -57,6 +57,14 @@ class _NotificationsState extends State<Notifications> {
                           widget.notificationTiles = snapshot.data['notifications'];
                           widget.hasInitiated = true;
                         }
+                        if(widget.pageNum > widget.notificationTiles.length){
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 64.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
                         return Expanded(
                           child: Column(
                             children: <Widget>[
@@ -64,7 +72,7 @@ class _NotificationsState extends State<Notifications> {
                                 flex: 1,
                                 child: widget.notificationTiles[0].length != 0 ? SingleChildScrollView(
                                   child: Column(
-                                    children: widget.notificationTiles[widget.pageNum - 1],
+                                    children: widget.pageNum < widget.notificationTiles.length ? widget.notificationTiles[widget.pageNum - 1] : <Widget>[CircularProgressIndicator()],
                                     ),
                                   ) : Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -104,7 +112,7 @@ class _NotificationsState extends State<Notifications> {
                                     }
                                     setState(() {});
                                   },
-                                  nextDisableCondition: widget.notificationTiles[widget.pageNum].length == 0 || widget.notificationTiles[widget.pageNum - 1].length == 0,
+                                  nextDisableCondition: widget.pageNum < widget.notificationTiles.length ? widget.notificationTiles[widget.pageNum].length == 0 || widget.notificationTiles[widget.pageNum - 1].length == 0 : false,
                                 ),
                               )
                             ],
