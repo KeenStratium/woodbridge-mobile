@@ -260,33 +260,16 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                           return Material(
                             color: Colors.white,
                             child: InkWell(
-                              onTap: () async {
-                                await Future.wait([fetchBankInfo(payment.paymentType['bank_abbr']), fetchPaymentSettings(payment.paymentSettingId)])
-                                  .then((results) {
-                                    var paymentResults = results[1];
-                                    var bankResult = results[0]['data'];
-                                    var paymentMetaInfo = payment.paymentType;
-                                    Map settings = paymentResults[0];
-                                    int installment = settings['installment'];
+                              onTap: () {
+                                Route route = MaterialPageRoute(
+                                  builder: (buildContext) => PaymentDetails(
+                                    userId: widget.userId,
+                                    firstName: widget.firstName,
+                                    lastName: widget.lastName,
+                                    payment: payment
+                                  ));
 
-                                    if(results[0]['success']){
-                                      paymentMetaInfo['bank_name'] = bankResult['bank_name'];
-                                    }else{
-                                      paymentMetaInfo['bank_name'] = null;
-                                    }
-
-                                    double totalAnnualFee = settings['total_annual_fee'] + 0.00;
-                                    double totalTuitionFee = settings['total_tuition_fee'] + 0.00;
-
-                                    Route route = MaterialPageRoute(
-                                      builder: (buildContext) => PaymentDetails(
-                                        userId: widget.userId,
-                                        firstName: widget.firstName,
-                                        lastName: widget.lastName,
-                                        payment: payment
-                                      ));
-                                    Navigator.push(context, route);
-                                  });
+                                Navigator.push(context, route);
                               },
                               child: Container(
                                 decoration: BoxDecoration(
