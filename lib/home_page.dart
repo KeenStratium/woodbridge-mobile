@@ -714,6 +714,7 @@ class _HomePageState extends State<HomePage> {
     await prefs.setStringList('userIds', widget.userIds);
     await prefs.setStringList('topics', widget.userIds);
   }
+
   void fetchAttendanceInfo(userId) async {
     await getAttendanceInfo(userId);
   }
@@ -787,6 +788,7 @@ class _HomePageState extends State<HomePage> {
         updateHomeData();
       },
     );
+
 
     SystemChannels.lifecycle.setMessageHandler((msg){
       if(msg == 'AppLifecycleState.resumed'){

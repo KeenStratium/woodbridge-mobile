@@ -1,48 +1,8 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'model.dart';
 import 'services.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
-
-Future<List> fetchPaymentSettings(settingsId) async {
-  String url = '$baseApi/pay/get-payment-settings';
-  var response = await http.post(url, body: json.encode({
-    'data': {
-      'settings_id': [settingsId]
-    }
-  }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
-
-  return jsonDecode(response.body);
-}
-Future fetchBankInfo(bankAbbr) async {
-  String url = '$baseApi/pay/get-bank-info';
-
-  if(bankAbbr != null && bankAbbr != ''){
-    var response = await http.post(url, body: json.encode({
-      'data': {
-        'bank_abbr': bankAbbr
-      }
-    }),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        });
-
-    return jsonDecode(response.body);
-  }else{
-    return {'success': false};
-  }
-
-
-}
 
 class Payment {
   String label;
