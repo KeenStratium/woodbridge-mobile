@@ -1,48 +1,8 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'model.dart';
 import 'services.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
-
-Future<List> fetchPaymentSettings(settingsId) async {
-  String url = '$baseApi/pay/get-payment-settings';
-  var response = await http.post(url, body: json.encode({
-    'data': {
-      'settings_id': [settingsId]
-    }
-  }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
-
-  return jsonDecode(response.body);
-}
-Future fetchBankInfo(bankAbbr) async {
-  String url = '$baseApi/pay/get-bank-info';
-
-  if(bankAbbr != null && bankAbbr != ''){
-    var response = await http.post(url, body: json.encode({
-      'data': {
-        'bank_abbr': bankAbbr
-      }
-    }),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        });
-
-    return jsonDecode(response.body);
-  }else{
-    return {'success': false};
-  }
-
-
-}
 
 class Payment {
   String label;
@@ -260,44 +220,16 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                           return Material(
                             color: Colors.white,
                             child: InkWell(
-                              onTap: () async {
-                                await Future.wait([fetchBankInfo(payment.paymentType['bank_abbr']), fetchPaymentSettings(payment.paymentSettingId)])
-                                  .then((results) {
-                                    var paymentResults = results[1];
-                                    var bankResult = results[0]['data'];
-                                    var paymentMetaInfo = payment.paymentType;
-                                    Map settings = paymentResults[0];
-                                    int installment = settings['installment'];
+                              onTap: () {
+                                Route route = MaterialPageRoute(
+                                  builder: (buildContext) => PaymentDetails(
+                                    userId: widget.userId,
+                                    firstName: widget.firstName,
+                                    lastName: widget.lastName,
+                                    payment: payment
+                                  ));
 
-                                    if(results[0]['success']){
-                                      paymentMetaInfo['bank_name'] = bankResult['bank_name'];
-                                    }else{
-                                      paymentMetaInfo['bank_name'] = null;
-                                    }
-
-                                    double totalAnnualFee = settings['total_annual_fee'] + 0.00;
-                                    double totalTuitionFee = settings['total_tuition_fee'] + 0.00;
-
-                                    Route route = MaterialPageRoute(
-                                      builder: (buildContext) => PaymentDetails(
-                                      date: payment.label,
-                                      userId: widget.userId,
-                                      firstName: widget.firstName,
-                                      lastName: widget.lastName,
-                                      paymentModes: payment.paymentModes,
-                                      amountDesc: payment.amountDesc,
-                                      amountPaid: payment.amount != 'N/A' ? double.parse(payment.amount) : null,
-                                      enrollmentFee: totalAnnualFee - totalTuitionFee,
-                                      tuitionFee: settings['tuition_fee'] + 0.00,
-                                      paymentDate: payment.paidDate ?? 'Unpaid',
-                                      paymentType: paymentMetaInfo,
-                                      amountDue: payment.dueAmount,
-                                      totalAnnualPackageOneFee: totalAnnualFee - (totalAnnualFee * settings['discount']),
-                                      paymentNote: payment.paymentNote,
-                                      installment: installment,
-                                    ));
-                                    Navigator.push(context, route);
-                                  });
+                                Navigator.push(context, route);
                               },
                               child: Container(
                                 decoration: BoxDecoration(
