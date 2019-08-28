@@ -1,22 +1,62 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'model.dart';
+import 'services.dart';
+
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
-import 'services.dart';
-
-class Payment {
+class PaymentDetail {
   String label;
   String amount;
   bool isPaid;
 
-  Payment({this.label, this.amount, this.isPaid});
+  PaymentDetail({this.label, this.amount, this.isPaid});
 }
 
-List<Payment> pre_school_payments = <Payment>[];
-List<Payment> kumon_payments = <Payment>[];
+Future<List> fetchPaymentSettings(settingsId) async {
+  String url = '$baseApi/pay/get-payment-settings';
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'settings_id': [settingsId]
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+Future fetchBankInfo(bankAbbr) async {
+  String url = '$baseApi/pay/get-bank-info';
+
+  if(bankAbbr != null && bankAbbr != ''){
+    var response = await http.post(url, body: json.encode({
+      'data': {
+        'bank_abbr': bankAbbr
+      }
+    }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+
+    return jsonDecode(response.body);
+  }else{
+    return {'success': false};
+  }
+
+
+}
+
+List<PaymentDetail> pre_school_payments = <PaymentDetail>[];
+List<PaymentDetail> kumon_payments = <PaymentDetail>[];
 
 class PaymentDataView extends StatelessWidget{
   final String title;
-  final List<Payment> payments;
+  final List<PaymentDetail> payments;
 
   PaymentDataView({
     this.title,
@@ -25,7 +65,6 @@ class PaymentDataView extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       margin: EdgeInsets.only(bottom: 10.0),
       child: Column(
@@ -51,7 +90,7 @@ class PaymentDataView extends StatelessWidget{
             shrinkWrap: true,
             itemCount: this.payments.length,
             itemBuilder: (BuildContext context, int index) {
-              Payment payment = this.payments[index];
+              PaymentDetail payment = this.payments[index];
               bool isPaid = payment.isPaid;
               if(isPaid == null){
                 isPaid = false;
@@ -88,6 +127,34 @@ class PaymentDataView extends StatelessWidget{
   }
 }
 
+class Payment {
+  String label;
+  String amount;
+  String paymentModes;
+  double dueAmount;
+  DateTime rawDate;
+  String paidDate;
+  String paymentSettingId;
+  String amountDesc;
+  String paymentNote;
+  Map paymentType;
+  bool isPaid;
+
+  Payment({
+    this.label,
+    this.amount,
+    this.rawDate,
+    this.paidDate,
+    this.isPaid,
+    this.dueAmount,
+    this.paymentModes,
+    this.paymentSettingId,
+    this.amountDesc,
+    this.paymentType,
+    this.paymentNote
+  });
+}
+
 class PaymentDetails extends StatelessWidget {
   final String date;
   final String firstName;
@@ -101,6 +168,7 @@ class PaymentDetails extends StatelessWidget {
   final double amountDue;
   final double totalAnnualPackageOneFee;
   final Map paymentType;
+  var payment;
   final int installment;
   double enrollmentFee;
   double tuitionFee;
@@ -117,6 +185,7 @@ class PaymentDetails extends StatelessWidget {
     this.tuitionFee,
     this.paymentDate,
     this.paymentType,
+    this.payment,
     this.amountDue,
     this.totalAnnualPackageOneFee,
     this.paymentNote,
@@ -135,8 +204,8 @@ class PaymentDetails extends StatelessWidget {
     int packageNum;
     List payments;
 
-    kumon_payments = <Payment>[];
-    pre_school_payments = <Payment>[];
+    kumon_payments = <PaymentDetail>[];
+    pre_school_payments = <PaymentDetail>[];
 
     if(paymentModes != null){
       payments = paymentModes.split(',');
@@ -162,7 +231,7 @@ class PaymentDetails extends StatelessWidget {
 
       if(packageNum == 1){
         if(enrollmentFee != null && enrollmentFee != 0.0){
-          pre_school_payments.add( Payment(
+          pre_school_payments.add( PaymentDetail(
             label: 'ENROLLMENT FEES',
             amount: localCurrencyFormat(totalAnnualPackageOneFee),
             isPaid: paymentDate != 'Unpaid'
@@ -170,14 +239,14 @@ class PaymentDetails extends StatelessWidget {
         }
       }else {
         if(enrollmentFee != null && enrollmentFee != 0.0){
-          pre_school_payments.add( Payment(
+          pre_school_payments.add( PaymentDetail(
               label: 'ENROLLMENT FEES',
               amount: localCurrencyFormat(enrollmentFee),
               isPaid: paymentDate != 'Unpaid'
           ));
         }
         if(tuitionFee != null && tuitionFee != 0.0){
-          pre_school_payments.add( Payment(
+          pre_school_payments.add( PaymentDetail(
               label: 'TUITION FEE',
               amount: localCurrencyFormat(tuitionFee),
               isPaid: paymentDate != 'Unpaid'
@@ -186,28 +255,28 @@ class PaymentDetails extends StatelessWidget {
       }
 
       if(mathFee != null && mathFee != 0.0){
-        kumon_payments.add( Payment(
+        kumon_payments.add( PaymentDetail(
           label: 'MATH',
           amount: localCurrencyFormat(mathFee),
           isPaid: paymentDate != 'Unpaid'
         ));
       }
       if(readingFee != null && readingFee != 0.0){
-        kumon_payments.add( Payment(
+        kumon_payments.add( PaymentDetail(
           label: 'READING',
           amount: localCurrencyFormat(readingFee),
           isPaid: paymentDate != 'Unpaid'
         ));
       }
       if(kumonRegFee != null && kumonRegFee != 0.0){
-        kumon_payments.add( Payment(
+        kumon_payments.add( PaymentDetail(
           label: 'REGISTRATION FEE',
           amount: localCurrencyFormat(kumonRegFee),
           isPaid: paymentDate != 'Unpaid'
         ));
       }
     }else{
-      pre_school_payments.add( Payment(
+      pre_school_payments.add( PaymentDetail(
         label: amountDesc.toUpperCase(),
         amount: localCurrencyFormat(amountDue),
         isPaid: paymentDate != 'Unpaid'
@@ -230,252 +299,292 @@ class PaymentDetails extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          child: Flex(
-                            direction: Axis.horizontal,
+                child: FutureBuilder(
+                  future: Future.wait([fetchBankInfo(this.payment.paymentType['bank_abbr']), fetchPaymentSettings(this.payment.paymentSettingId)]),
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    if(snapshot.connectionState == ConnectionState.done){
+                      var results = snapshot.data;
+                      var paymentResults = results[1];
+                      var bankResult = results[0]['data'];
+                      var paymentMetaInfo = payment.paymentType;
+                      Map settings = paymentResults[0];
+                      int installment = settings['installment'];
+
+                      if(results[0]['success']){
+                        paymentMetaInfo['bank_name'] = bankResult['bank_name'];
+                      }else{
+                        paymentMetaInfo['bank_name'] = null;
+                      }
+
+                      double totalAnnualFee = settings['total_annual_fee'] + 0.00;
+                      double totalTuitionFee = settings['total_tuition_fee'] + 0.00;
+
+                      this.date = payment.label;
+                      this.paymentModes = payment.paymentModes;
+                      this.amountDesc = payment.amountDesc;
+                      this.amountPaid = payment.amount != 'N/A' ? double.parse(payment.amount)  = null;
+                      this.enrollmentFee = totalAnnualFee - totalTuitionFee;
+                      this.tuitionFee = settings['tuition_fee'] + 0.00;
+                      this.paymentDate = payment.paidDate ?? 'Unpaid';
+                      this.paymentType = paymentMetaInfo;
+                      this.amountDue = payment.dueAmount;
+                      this.totalAnnualPackageOneFee = totalAnnualFee - (totalAnnualFee * settings['discount']);
+                      this.paymentNote = payment.paymentNote;
+                      this.installment = installment;
+
+                      print('data');
+                      print(snapshot.data);
+                      return Column(
+                        children: <Widget>[
+                          Column(
                             children: <Widget>[
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                child: Flex(
+                                  direction: Axis.horizontal,
                                   children: <Widget>[
-                                    DashboardTile(
-                                      label: 'DUE DATE',
-                                      displayPlainValue: true,
-                                      value: date,
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          DashboardTile(
+                                            label: 'DUE DATE',
+                                            displayPlainValue: true,
+                                            value: date,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          DashboardTile(
+                                            label: 'DATE OF PAYMENT',
+                                            displayPlainValue: true,
+                                            value: paymentDate,
+                                            isActive: paymentDate != 'Unpaid',
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    DashboardTile(
-                                      label: 'DATE OF PAYMENT',
-                                      displayPlainValue: true,
-                                      value: paymentDate,
-                                      isActive: paymentDate != 'Unpaid',
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              Divider(height: 1.0, color: Colors.grey[300]),
                             ],
                           ),
-                        ),
-                        Divider(height: 1.0, color: Colors.grey[300]),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
-                          child: Column(
+                          Column(
                             children: <Widget>[
-                              pre_school_payments.length > 0 ? PaymentDataView(
-                                title: 'Pre-School',
-                                payments: pre_school_payments
-                              ) : Container(),
-                              kumon_payments.length > 0 ? PaymentDataView(
-                                  title: 'Kumon',
-                                  payments: kumon_payments
-                              ) : Container(),
-                              tutorialFee != 0.0 && tutorialFee != null ? PaymentDataView(
-                                title: 'Tutorial',
-                                payments: [Payment(
-                                  label: 'REGISTRATION FEE',
-                                  amount: '₱${tutorialFee + 0.00}',
-                                  isPaid: paymentDate != 'Unpaid'
-                                )],
-                              ) : Container(),
-                              othersFee != 0.0 && othersFee != null ? PaymentDataView(
-                                title: '',
-                                payments: [Payment(
-                                    label: 'OTHERS',
-                                    amount: '₱${othersFee + 0.00}',
-                                    isPaid: paymentDate != 'Unpaid'
-                                )],
-                              ) : Container()
-                            ]
-                          ),
-                        ),
-                        Divider(height: 1.0, color: Colors.grey[300]),
-                      ],
-                    ),
-                    paymentNote != '' && paymentNote != null ? Padding(
-                      padding: EdgeInsets.only(top: 20.0),
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            'NOTE',
-                            style: TextStyle(
-                                color: Colors.grey[500],
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12.0
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 3.0),
-                            child: Text(
-                              paymentNote,
-                              style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.black87
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                                child: Column(
+                                    children: <Widget>[
+                                      pre_school_payments.length > 0 ? PaymentDataView(
+                                          title: 'Pre-School',
+                                          payments: pre_school_payments
+                                      ) : Container(),
+                                      kumon_payments.length > 0 ? PaymentDataView(
+                                          title: 'Kumon',
+                                          payments: kumon_payments
+                                      ) : Container(),
+                                      tutorialFee != 0.0 && tutorialFee != null ? PaymentDataView(
+                                        title: 'Tutorial',
+                                        payments: [PaymentDetail(
+                                            label: 'REGISTRATION FEE',
+                                            amount: '₱${tutorialFee + 0.00}',
+                                            isPaid: paymentDate != 'Unpaid'
+                                        )],
+                                      ) : Container(),
+                                      othersFee != 0.0 && othersFee != null ? PaymentDataView(
+                                        title: '',
+                                        payments: [PaymentDetail(
+                                            label: 'OTHERS',
+                                            amount: '₱${othersFee + 0.00}',
+                                            isPaid: paymentDate != 'Unpaid'
+                                        )],
+                                      ) : Container()
+                                    ]
+                                ),
                               ),
-                            ),
+                              Divider(height: 1.0, color: Colors.grey[300]),
+                            ],
                           ),
-                        ],
-                      ),
-                    ) : Container(),
-                    paymentDate != 'Unpaid' ? Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20.0),
-                          child: Column(
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 6.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          'TYPE',
-                                          style: TextStyle(
-                                            color: Colors.grey[500],
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 12.0
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 3.0),
-                                          child: Text(
-                                            capitalize(paymentType['type']),
-                                            style: TextStyle(
-                                              fontSize: 18.0,
-                                              color: Colors.black87
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                          paymentNote != '' && paymentNote != null ? Padding(
+                            padding: EdgeInsets.only(top: 20.0),
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  'NOTE',
+                                  style: TextStyle(
+                                      color: Colors.grey[500],
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12.0
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 3.0),
+                                  child: Text(
+                                    paymentNote,
+                                    style: TextStyle(
+                                        fontSize: 18.0,
+                                        color: Colors.black87
                                     ),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 6.0),
-                                    child: Column(
+                                ),
+                              ],
+                            ),
+                          ) : Container(),
+                          paymentDate != 'Unpaid' ? Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Column(
                                       children: <Widget>[
-                                        Text(
-                                          'OFFICIAL RECEIPT',
-                                          style: TextStyle(
-                                            color: Colors.grey[500],
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 12.0
-                                          ),
-                                        ),
                                         Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 3.0),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                          padding: EdgeInsets.symmetric(vertical: 6.0),
+                                          child: Column(
                                             children: <Widget>[
                                               Text(
-                                                '#',
+                                                'TYPE',
                                                 style: TextStyle(
-                                                  color: Colors.grey[500]
+                                                    color: Colors.grey[500],
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12.0
                                                 ),
                                               ),
                                               Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 1.0),
-                                              ),
-                                              Text(
-                                                '${paymentType['official_receipt']}',
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  color: Colors.black87
+                                                padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                child: Text(
+                                                  capitalize(paymentType['type']),
+                                                  style: TextStyle(
+                                                      fontSize: 18.0,
+                                                      color: Colors.black87
+                                                  ),
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  paymentType['bank_name'] != null ? Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 6.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          'BANK',
-                                          style: TextStyle(
-                                              color: Colors.grey[500],
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 12.0
-                                          ),
-                                        ),
                                         Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 3.0),
-                                          child: Text(
-                                            paymentType['bank_name'] ?? '',
-                                            style: TextStyle(
-                                              fontSize: 18.0,
-                                              color: Colors.black87,
-                                            ),
+                                          padding: EdgeInsets.symmetric(vertical: 6.0),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text(
+                                                'OFFICIAL RECEIPT',
+                                                style: TextStyle(
+                                                    color: Colors.grey[500],
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12.0
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      '#',
+                                                      style: TextStyle(
+                                                          color: Colors.grey[500]
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.symmetric(horizontal: 1.0),
+                                                    ),
+                                                    Text(
+                                                      '${paymentType['official_receipt']}',
+                                                      style: TextStyle(
+                                                          fontSize: 18.0,
+                                                          color: Colors.black87
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
+                                        paymentType['bank_name'] != null ? Padding(
+                                          padding: EdgeInsets.symmetric(vertical: 6.0),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text(
+                                                'BANK',
+                                                style: TextStyle(
+                                                    color: Colors.grey[500],
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12.0
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                child: Text(
+                                                  paymentType['bank_name'] ?? '',
+                                                  style: TextStyle(
+                                                    fontSize: 18.0,
+                                                    color: Colors.black87,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ) : Container(),
                                       ],
                                     ),
-                                  ) : Container(),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Divider(height: 1.0, color: Colors.grey[300]),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 32.0),
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Flexible(
-                                child: Text(
-                                  'GRAND TOTAL',
-                                  style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w700
-                                  ),
+                                  ],
                                 ),
                               ),
-                              Flexible(
-                                child: Text(
-                                  localCurrencyFormat(amountPaid),
-                                  style: TextStyle(
-                                      color: Theme.of(context).accentColor,
-                                      fontSize: 24.0,
-                                      fontWeight: FontWeight.w600
-                                  ),
+                              Divider(height: 1.0, color: Colors.grey[300]),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 32.0),
+                                child: Flex(
+                                  direction: Axis.horizontal,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Flexible(
+                                      child: Text(
+                                        'GRAND TOTAL',
+                                        style: TextStyle(
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w700
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        localCurrencyFormat(amountPaid),
+                                        style: TextStyle(
+                                            color: Theme.of(context).accentColor,
+                                            fontSize: 24.0,
+                                            fontWeight: FontWeight.w600
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               )
                             ],
+                          ) : Container(
+                            padding: EdgeInsets.symmetric(vertical: 40.0),
+                            child: Text(
+                              'No payment information yet.',
+                              style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
                           ),
-                        )
-                      ],
-                    ) : Container(
-                      padding: EdgeInsets.symmetric(vertical: 40.0),
-                      child: Text(
-                        'No payment information yet.',
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600
-                        ),
-                      ),
-                    ),
-                  ],
+                        ],
+                      );
+                    }else {
+                      return Container();
+                    }
+                  }
                 ),
               )
             ],
