@@ -156,40 +156,28 @@ class Payment {
 }
 
 class PaymentDetails extends StatelessWidget {
-  final String date;
+  String date;
   final String firstName;
   final String lastName;
   final String userId;
-  final String paymentModes;
-  final String amountDesc;
-  final String paymentDate;
-  final String paymentNote;
-  final double amountPaid;
-  final double amountDue;
-  final double totalAnnualPackageOneFee;
-  final Map paymentType;
+  String paymentModes;
+  String amountDesc;
+  String paymentDate;
+  String paymentNote;
+  double amountPaid;
+  double amountDue;
+  double totalAnnualPackageOneFee;
+  Map paymentType;
   var payment;
-  final int installment;
+  int installment;
   double enrollmentFee;
   double tuitionFee;
 
   PaymentDetails({
-    this.date,
     this.firstName,
     this.lastName,
     this.userId,
-    this.paymentModes,
-    this.amountPaid,
-    this.amountDesc,
-    this.enrollmentFee,
-    this.tuitionFee,
-    this.paymentDate,
-    this.paymentType,
     this.payment,
-    this.amountDue,
-    this.totalAnnualPackageOneFee,
-    this.paymentNote,
-    this.installment
   });
 
   @override
@@ -207,85 +195,9 @@ class PaymentDetails extends StatelessWidget {
     kumon_payments = <PaymentDetail>[];
     pre_school_payments = <PaymentDetail>[];
 
-    if(paymentModes != null){
-      payments = paymentModes.split(',');
-      payments[0] != '' ? packageNum = int.parse(payments[0]) : null;
-      payments[1] != '' ? kumonRegFee = double.parse(payments[1]) : null;
-      payments[2] != '' ? mathFee = double.parse(payments[2]) : null;
-      payments[3] != '' ? readingFee = double.parse(payments[3]) : null;
-      payments[4] != '' ? tutorialFee = double.parse(payments[4]) : null;
-      try {
-        payments[5] != '' ? manualTuitionFee = double.parse(payments[5]) : null;
-        payments[6] != '' ? manualEnrollmentFee = double.parse(payments[6]) : null;
-        payments[7] != '' ? othersFee = double.parse(payments[7]) : null;
-      }catch(e){}
-
-      if(packageNum == 3){
-        enrollmentFee /= installment;
-      }
-
-      if(packageNum == 0){
-        tuitionFee = manualTuitionFee;
-        enrollmentFee = manualEnrollmentFee;
-      }
-
-      if(packageNum == 1){
-        if(enrollmentFee != null && enrollmentFee != 0.0){
-          pre_school_payments.add( PaymentDetail(
-            label: 'ENROLLMENT FEES',
-            amount: localCurrencyFormat(totalAnnualPackageOneFee),
-            isPaid: paymentDate != 'Unpaid'
-          ));
-        }
-      }else {
-        if(enrollmentFee != null && enrollmentFee != 0.0){
-          pre_school_payments.add( PaymentDetail(
-              label: 'ENROLLMENT FEES',
-              amount: localCurrencyFormat(enrollmentFee),
-              isPaid: paymentDate != 'Unpaid'
-          ));
-        }
-        if(tuitionFee != null && tuitionFee != 0.0){
-          pre_school_payments.add( PaymentDetail(
-              label: 'TUITION FEE',
-              amount: localCurrencyFormat(tuitionFee),
-              isPaid: paymentDate != 'Unpaid'
-          ));
-        }
-      }
-
-      if(mathFee != null && mathFee != 0.0){
-        kumon_payments.add( PaymentDetail(
-          label: 'MATH',
-          amount: localCurrencyFormat(mathFee),
-          isPaid: paymentDate != 'Unpaid'
-        ));
-      }
-      if(readingFee != null && readingFee != 0.0){
-        kumon_payments.add( PaymentDetail(
-          label: 'READING',
-          amount: localCurrencyFormat(readingFee),
-          isPaid: paymentDate != 'Unpaid'
-        ));
-      }
-      if(kumonRegFee != null && kumonRegFee != 0.0){
-        kumon_payments.add( PaymentDetail(
-          label: 'REGISTRATION FEE',
-          amount: localCurrencyFormat(kumonRegFee),
-          isPaid: paymentDate != 'Unpaid'
-        ));
-      }
-    }else{
-      pre_school_payments.add( PaymentDetail(
-        label: amountDesc.toUpperCase(),
-        amount: localCurrencyFormat(amountDue),
-        isPaid: paymentDate != 'Unpaid'
-      ));
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment on ' + date)
+        title: Text('Payment on ' + this.payment.label)
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -322,7 +234,7 @@ class PaymentDetails extends StatelessWidget {
                       this.date = payment.label;
                       this.paymentModes = payment.paymentModes;
                       this.amountDesc = payment.amountDesc;
-                      this.amountPaid = payment.amount != 'N/A' ? double.parse(payment.amount)  = null;
+                      this.amountPaid = payment.amount != 'N/A' ? double.parse(payment.amount) : null;
                       this.enrollmentFee = totalAnnualFee - totalTuitionFee;
                       this.tuitionFee = settings['tuition_fee'] + 0.00;
                       this.paymentDate = payment.paidDate ?? 'Unpaid';
@@ -332,8 +244,82 @@ class PaymentDetails extends StatelessWidget {
                       this.paymentNote = payment.paymentNote;
                       this.installment = installment;
 
-                      print('data');
-                      print(snapshot.data);
+                      if(paymentModes != null){
+                        payments = paymentModes.split(',');
+                        payments[0] != '' ? packageNum = int.parse(payments[0]) : null;
+                        payments[1] != '' ? kumonRegFee = double.parse(payments[1]) : null;
+                        payments[2] != '' ? mathFee = double.parse(payments[2]) : null;
+                        payments[3] != '' ? readingFee = double.parse(payments[3]) : null;
+                        payments[4] != '' ? tutorialFee = double.parse(payments[4]) : null;
+                        try {
+                          payments[5] != '' ? manualTuitionFee = double.parse(payments[5]) : null;
+                          payments[6] != '' ? manualEnrollmentFee = double.parse(payments[6]) : null;
+                          payments[7] != '' ? othersFee = double.parse(payments[7]) : null;
+                        }catch(e){}
+
+                        if(packageNum == 3){
+                          enrollmentFee /= installment;
+                        }
+
+                        if(packageNum == 0){
+                          tuitionFee = manualTuitionFee;
+                          enrollmentFee = manualEnrollmentFee;
+                        }
+
+                        if(packageNum == 1){
+                          if(enrollmentFee != null && enrollmentFee != 0.0){
+                            pre_school_payments.add( PaymentDetail(
+                                label: 'ENROLLMENT FEES',
+                                amount: localCurrencyFormat(totalAnnualPackageOneFee),
+                                isPaid: paymentDate != 'Unpaid'
+                            ));
+                          }
+                        }else {
+                          if(enrollmentFee != null && enrollmentFee != 0.0){
+                            pre_school_payments.add( PaymentDetail(
+                                label: 'ENROLLMENT FEES',
+                                amount: localCurrencyFormat(enrollmentFee),
+                                isPaid: paymentDate != 'Unpaid'
+                            ));
+                          }
+                          if(tuitionFee != null && tuitionFee != 0.0){
+                            pre_school_payments.add( PaymentDetail(
+                                label: 'TUITION FEE',
+                                amount: localCurrencyFormat(tuitionFee),
+                                isPaid: paymentDate != 'Unpaid'
+                            ));
+                          }
+                        }
+
+                        if(mathFee != null && mathFee != 0.0){
+                          kumon_payments.add( PaymentDetail(
+                              label: 'MATH',
+                              amount: localCurrencyFormat(mathFee),
+                              isPaid: paymentDate != 'Unpaid'
+                          ));
+                        }
+                        if(readingFee != null && readingFee != 0.0){
+                          kumon_payments.add( PaymentDetail(
+                              label: 'READING',
+                              amount: localCurrencyFormat(readingFee),
+                              isPaid: paymentDate != 'Unpaid'
+                          ));
+                        }
+                        if(kumonRegFee != null && kumonRegFee != 0.0){
+                          kumon_payments.add( PaymentDetail(
+                              label: 'REGISTRATION FEE',
+                              amount: localCurrencyFormat(kumonRegFee),
+                              isPaid: paymentDate != 'Unpaid'
+                          ));
+                        }
+                      }else{
+                        pre_school_payments.add( PaymentDetail(
+                            label: amountDesc.toUpperCase(),
+                            amount: localCurrencyFormat(amountDue),
+                            isPaid: paymentDate != 'Unpaid'
+                        ));
+                      }
+
                       return Column(
                         children: <Widget>[
                           Column(
@@ -582,7 +568,12 @@ class PaymentDetails extends StatelessWidget {
                         ],
                       );
                     }else {
-                      return Container();
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 64.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
                     }
                   }
                 ),

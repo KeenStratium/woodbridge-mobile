@@ -280,21 +280,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
 
                                     Route route = MaterialPageRoute(
                                       builder: (buildContext) => PaymentDetails(
-                                        date: payment.label,
                                         userId: widget.userId,
                                         firstName: widget.firstName,
                                         lastName: widget.lastName,
-                                        paymentModes: payment.paymentModes,
-                                        amountDesc: payment.amountDesc,
-                                        amountPaid: payment.amount != 'N/A' ? double.parse(payment.amount) : null,
-                                        enrollmentFee: totalAnnualFee - totalTuitionFee,
-                                        tuitionFee: settings['tuition_fee'] + 0.00,
-                                        paymentDate: payment.paidDate ?? 'Unpaid',
-                                        paymentType: paymentMetaInfo,
-                                        amountDue: payment.dueAmount,
-                                        totalAnnualPackageOneFee: totalAnnualFee - (totalAnnualFee * settings['discount']),
-                                        paymentNote: payment.paymentNote,
-                                        installment: installment,
                                         payment: payment
                                       ));
                                     Navigator.push(context, route);
