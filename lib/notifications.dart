@@ -57,22 +57,14 @@ class _NotificationsState extends State<Notifications> {
                           widget.notificationTiles = snapshot.data['notifications'];
                           widget.hasInitiated = true;
                         }
-                        if(widget.pageNum > widget.notificationTiles.length){
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 64.0),
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
                         return Expanded(
-                          child: Column(
+                          child: widget.pageNum < widget.notificationTiles.length ? Column(
                             children: <Widget>[
                               Expanded(
                                 flex: 1,
                                 child: widget.notificationTiles[0].length != 0 ? SingleChildScrollView(
                                   child: Column(
-                                    children: widget.pageNum < widget.notificationTiles.length ? widget.notificationTiles[widget.pageNum - 1] : <Widget>[CircularProgressIndicator()],
+                                    children: widget.notificationTiles[widget.pageNum - 1],
                                     ),
                                   ) : Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -103,19 +95,22 @@ class _NotificationsState extends State<Notifications> {
                                   },
                                   nextCallback: () async {
                                     widget.pageNum++;
-
                                     if(widget.pageNum == widget.notificationTiles.length){
-                                      await buildNotificationList(widget.userId, widget.pageSize, widget.pageNum)
-                                          .then((result) {
+                                      await buildNotificationList(widget.userId, widget.pageSize, widget.pageNum).then((result) {
                                         widget.notificationTiles.addAll(result['notifications']);
                                       });
                                     }
                                     setState(() {});
                                   },
-                                  nextDisableCondition: widget.pageNum < widget.notificationTiles.length ? widget.notificationTiles[widget.pageNum].length == 0 || widget.notificationTiles[widget.pageNum - 1].length == 0 : false,
+                                  nextDisableCondition: widget.notificationTiles[widget.pageNum].length == 0 || widget.notificationTiles[widget.pageNum - 1].length == 0,
                                 ),
                               )
                             ],
+                          ) : Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 64.0),
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
                         );
                       }else{
