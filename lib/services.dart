@@ -36,7 +36,7 @@ String formatMilitaryTime(time) {
   return '$hourStr:$minuteStr$meridiem';
 }
 
-String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+String capitalize(String s) => s.length > 0 ? s[0].toUpperCase() + s.substring(1) : '';
 
 List<List<Widget>> transformPaginationListCache(list, pageSize, offsetPage, callback) {
   List<List<Widget>> paginatedList = <List<Widget>>[];

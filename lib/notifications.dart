@@ -58,7 +58,7 @@ class _NotificationsState extends State<Notifications> {
                           widget.hasInitiated = true;
                         }
                         return Expanded(
-                          child: Column(
+                          child: widget.pageNum < widget.notificationTiles.length ? Column(
                             children: <Widget>[
                               Expanded(
                                 flex: 1,
@@ -95,10 +95,8 @@ class _NotificationsState extends State<Notifications> {
                                   },
                                   nextCallback: () async {
                                     widget.pageNum++;
-
                                     if(widget.pageNum == widget.notificationTiles.length){
-                                      await buildNotificationList(widget.userId, widget.pageSize, widget.pageNum)
-                                          .then((result) {
+                                      await buildNotificationList(widget.userId, widget.pageSize, widget.pageNum).then((result) {
                                         widget.notificationTiles.addAll(result['notifications']);
                                       });
                                     }
@@ -108,6 +106,11 @@ class _NotificationsState extends State<Notifications> {
                                 ),
                               )
                             ],
+                          ) : Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 64.0),
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
                         );
                       }else{

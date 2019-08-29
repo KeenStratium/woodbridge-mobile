@@ -42,7 +42,7 @@ class _TextNotificationsState extends State<TextNotifications> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              capitalize(widget.title),
+              capitalize(widget.title) ?? '',
               style: TextStyle(
                 fontSize: 14.0,
                 color: Colors.black87,
@@ -53,7 +53,7 @@ class _TextNotificationsState extends State<TextNotifications> {
               padding: EdgeInsets.symmetric(vertical: 1.0),
             ),
             Text(
-              widget.msg,
+              widget.msg.length > 0 ? widget.msg : '' ?? '',
               maxLines: 3,
               textAlign: TextAlign.left,
               style: TextStyle(
@@ -65,7 +65,7 @@ class _TextNotificationsState extends State<TextNotifications> {
           ],
         ),
         subtitle: Text(
-          widget.postDate,
+          widget.postDate ?? '',
           style: TextStyle(
               fontSize: 12.0
           ),
@@ -76,9 +76,10 @@ class _TextNotificationsState extends State<TextNotifications> {
 }
 
 Future buildNotificationList(userId, pageSize, pageNum) async {
-  int offsetPage = 2;
+  int offsetPage = 3;
   int offsetPageSize = pageSize * offsetPage;
-  List<Future> futures = <Future>[fetchStudentNotification(userId, offsetPageSize, pageNum)];
+  int offsetPageNum = ((pageNum/offsetPage) + 1).floor();
+  List<Future> futures = <Future>[fetchStudentNotification(userId, offsetPageSize, offsetPageNum)];
 
   return Future.wait(futures)
     .then((result) {
@@ -93,10 +94,10 @@ Future buildNotificationList(userId, pageSize, pageNum) async {
         _notifications = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item, page, pageItemIndex, index) {
           var postDateEpoch = (DateTime.parse(item['notif_timestamp']).toLocal().millisecondsSinceEpoch/1000).floor();
           return TextNotifications(
-            msg: item['notif_desc'],
+            msg: item['notif_desc'] ?? '',
             postDate: epochToHumanTime(currentEpoch - postDateEpoch),
             profileAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6",
-            title: item['notif_subj']
+            title: item['notif_subj'] ?? ''
           );
         });
       }else{
