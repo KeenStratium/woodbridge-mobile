@@ -1627,13 +1627,13 @@ class _HomePageState extends State<HomePage> {
                   ),
                 )
               ),
-              Positioned(
+              Positioned.fill(
                 child: SafeArea(
                   child: showStudentSwitcher ? Container(
                     width: double.infinity,
                     height: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(22, 86, 135, .88)
+                      color: Color.fromRGBO(0, 0, 0, .88)
                     ),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
