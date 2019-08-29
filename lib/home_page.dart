@@ -1743,6 +1743,12 @@ class MenuItem extends StatelessWidget {
       isCustomOnPressed = false;
     }
 
+    if(label == 'Payments' || label == 'Activities'){
+      if(unreadCount > 0){
+        unreadCount = -1;
+      }
+    }
+
     return Material(
       child: InkWell(
         onTap: () {
@@ -1799,21 +1805,21 @@ class MenuItem extends StatelessWidget {
                 ],
               ),
             ),
-            unreadCount > 0 ? Positioned(
+            unreadCount > 0 || unreadCount < 0 ? Positioned(
               right: 8,
               top: 8,
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(24.0)
+                  color: unreadCount < 0 ? Colors.blueAccent : Colors.red,
+                  borderRadius: BorderRadius.circular(32.0)
                 ),
                 constraints: BoxConstraints(
-                  minWidth: 20,
+                  minWidth: 17,
                   minHeight: 14,
                 ),
                 child: Text(
-                  '$unreadCount',
+                  '${unreadCount < 0 ? '' : unreadCount}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 10,
