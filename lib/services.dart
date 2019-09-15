@@ -25,10 +25,12 @@ String formatMilitaryTime(time) {
   String hourStr;
   String minuteStr = '${minutes < 10 ? '0': ''}${minutes}';
 
-  if(hour > 12){
+  if(hour >= 12){
     meridiem = 'pm';
-    hour -= 12;
-  }else if(hour == 0){
+    if(hour > 12){
+      hour -= 12;
+    }
+  } else if(hour == 0){
     hour = 12;
   }
   hourStr = hour.toString();
