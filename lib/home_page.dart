@@ -6,8 +6,6 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter/services.dart';
-import 'message_services.dart';
-import 'notification_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
@@ -46,6 +44,17 @@ Future<Map> getPresentDaysNo(userId) async {
       });
 
   return jsonDecode(response.body)[0];
+}
+Future fetchHolidayList() async {
+  String url = '$baseApi/sett/get-holidays';
+
+  var response = await http.get(url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
 }
 Future<Map> getTotalSchoolDays(userId) async {
   String url = '$baseApi/att/get-total-school-days';
@@ -119,6 +128,45 @@ Future<List> fetchStudentPayments(userId) async {
 
   return jsonDecode(response.body);
 }
+Future<Map> getStudentUnseenNotifications(userId) async {
+  String url = '$baseApi/notif/get-student-unseen-notifs';
+
+  var response = await http.post(url, body: json.encode({
+    "data": userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+Future<Map> getStudentNotificationInfo(notifId) async {
+  String url = '$baseApi/notif/get-student-notification-info';
+
+  var response = await http.post(url, body: json.encode({
+    "data": notifId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
+Future getClassDetails(classId) async {
+  String url = '$baseApi/classroom/get-class-details';
+
+  var response = await http.post(url, body: json.encode({
+    'data': classId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 Future addNotificationToken(token, topic, studentId) async {
   String url = '$baseApi/account/notif-token-add';
 
@@ -169,6 +217,21 @@ Future removeNotificationToken(token) async {
 
   return jsonDecode(response.body);
 }
+Future seenNotification(notifId) async {
+  String url = '$baseApi/notif/seen-student-notif';
+
+  var response = await http.post(url, body: json.encode({
+    'data': {
+      'notif_id': notifId
+    }
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 
 class HomePage extends StatefulWidget {
   Widget child;
@@ -200,9 +263,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Map userIdUnreadStatus = {};
+
   String _token;
   StreamController streamController;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   Color attendanceStatusColor = Colors.redAccent;
   Icon attendanceStatusIcon = Icon(
     Icons.error_outline,
@@ -211,6 +276,7 @@ class _HomePageState extends State<HomePage> {
 
   Map monthWithYearActivities = {};
   List<String> activityWithYearNames = [];
+  Map<DateTime, List> holidayDays = {};
 
   String attendanceStatus = '';
   String schoolYearStart;
@@ -251,24 +317,241 @@ class _HomePageState extends State<HomePage> {
 
     return guidePages;
   }
+  Future getHolidayList() async {
+    return await fetchHolidayList()
+      .then((resolve) {
+        for(int i = 0; i < resolve.length; i++){
+          Map holiday = resolve[i];
+          String holidayTitle = holiday['title'];
+          DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
+          DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
+          DateTime holidayIndexDate = startHoliday;
+
+          for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
+            if(holidayDays[holidayIndexDate] == null){
+              holidayDays[holidayIndexDate] = [];
+            }
+            holidayDays[holidayIndexDate].add(holidayTitle);
+          }
+
+          if(holidayDays[holidayIndexDate] == null){
+            holidayDays[holidayIndexDate] = [];
+          }
+          holidayDays[holidayIndexDate].add(holidayTitle);
+        }
+        return Future.value(holidayDays);
+      });
+  }
+  Future setUnreadNotif(String userId) async {
+    return await getStudentUnseenNotifications(userId)
+      .then((results) {
+        if(results['success']){
+          setAllUnreadCount(results['data']);
+          setState(() {});
+        }
+      });
+  }
+  Future buildStudentPayments(userId) async {
+    Completer _completer = Completer();
+
+    await fetchStudentPayments(userId)
+      .then((results) {
+        payments = [];
+        totalBalance = 0.00;
+        totalPayments = 0.00;
+
+        nextPaymentMonth = null;
+        nextPaymentDay = null;
+
+        results.forEach((payment) {
+          var amount;
+          DateTime dueDate;
+          if(payment['due_date'] != null){
+            dueDate = DateTime.parse(payment['due_date']).toLocal();
+          }
+          String paymentDate = 'Unpaid';
+          try {
+            amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
+            if(amount == 'N/A' || amount == null || amount == '0'){
+              totalBalance += payment['due_amount'];
+              if(nextPaymentMonth == null){
+                nextPaymentMonth = monthNames[dueDate.month - 1];
+                nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+              }
+            }else {
+              if(payment['amount_paid'] != null){
+                totalPayments += payment['amount_paid'];
+              }
+            }
+          } catch(e){
+            print(e);
+          }
+
+          try{
+            String paidDate = payment['paid_date'];
+            if(paidDate != null){
+              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
+            }
+          }catch(e){}
+          payments.add(
+            Payment(
+                label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
+                amount: amount,
+                dueAmount: payment['due_amount'] + 0.00 ?? 0,
+                rawDate: dueDate,
+                paidDate: paymentDate,
+                isPaid: amount != 'N/A',
+                paymentModes: payment['note'],
+                paymentSettingId: payment['pay_setting_id'].split(',')[0],
+                amountDesc: payment['due_desc'],
+                paymentType: {
+                  'type': payment['pay_type'],
+                  'official_receipt': payment['official_receipt'],
+                  'bank_abbr': payment['pay_bank']
+                },
+                paymentNote: payment['description']
+            )
+          );
+        });
+      });
+    streamController.add({
+      'totalPayments': totalPayments,
+      'totalBalance': totalBalance,
+      'payments': payments
+    });
+    _completer.complete();
+    return _completer.future;
+  }
+  List<String> sortActivityNames(activityNamesSort) {
+    List<int> sortedMonthIndex = <int>[];
+    List<String> sortedMonthNames = <String>[];
+
+    for(int i = 0; i < activityNamesSort.length; i++){
+      String month = activityNamesSort[i];
+      int monthIndex = 0;
+      int largestMonthIndex = 0;
+
+      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
+        if(monthNames[monthIndex] == month){
+          if(monthIndex > largestMonthIndex){
+            largestMonthIndex = monthIndex;
+          }
+          break;
+        }
+      }
+
+      sortedMonthIndex.add(monthIndex);
+      sortedMonthIndex.sort();
+    }
+    for(int i = 0; i < sortedMonthIndex.length; i++){
+      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
+    }
+
+    return sortedMonthNames;
+  }
 
   Map paymentData = {};
 
-  void fetchPdf() async {
-    await initLoadPdf();
-  }
-  void getAttendanceInfo(userId) {
-    Future.wait([
+  bool otherChildHasUnreadNotif = false;
+
+  Future getAttendanceInfo(userId) async {
+    return await Future.wait([
+      getHolidayList()
+        .then((resolve) async {
+          return await getStudentLatestAttendance(userId)
+            .then((results) async {
+              DateTime today = DateTime.now();
+              DateTime thisDay = DateTime(today.year, today.month, today.day);
+              try {
+                if(results.length > 0 || results != null){
+                  Map latestAttendance = results[0];
+                  DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
+                  DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+                  DateTime thisTime = DateTime(today.year, today.month, today.day, today.hour, today.minute);
+
+                  getClassDetails(widget.classId)
+                    .then((classDetails) {
+                      Map classDetail = classDetails[0];
+                      List startTime = classDetail['class_start_schedule'].split(':');
+                      DateTime classStart = DateTime(today.year, today.month, today.day, int.parse(startTime[0]), int.parse(startTime[1]));
+                      if(resolve[thisDay] != null){
+                        attendanceStatus = 'No class';
+                        attendanceStatusColor = Colors.deepPurple[400];
+                        attendanceStatusIcon = Icon(
+                          Icons.home,
+                          color: Colors.deepPurple[600],
+                          size: 18.0,
+                        );
+                      }else{
+                        if(attendanceDay.isAtSameMomentAs(thisDay)){
+                          if(latestAttendance['in'] == '1'){
+                            attendanceStatus = 'Present';
+                            attendanceStatusColor = Colors.green;
+                            attendanceStatusIcon = Icon(
+                              Icons.check,
+                              color: Colors.green,
+                              size: 18.0,
+                            );
+                          }
+                        }else if(thisTime.isBefore(classStart)){
+                          attendanceStatus = formatMilitaryTime(classDetail['class_start_schedule']);
+                          attendanceStatusColor = Theme.of(context).accentColor;
+                          attendanceStatusIcon = Icon(
+                            Icons.group,
+                            color: Colors.orangeAccent,
+                            size: 18.0,
+                          );
+                        } else{
+                          attendanceStatus = 'Absent';
+                        }
+                      }
+                    });
+                }
+              } catch(e) {
+                attendanceStatus = 'Absent';
+              }
+
+              if(attendanceStatus == 'Absent'){
+                attendanceStatusColor = Colors.redAccent;
+                attendanceStatusIcon = Icon(
+                  Icons.error_outline,
+                  color: Colors.redAccent,
+                  size: 18.0,
+                );
+              }
+
+              await getTotalSchoolDays(userId)
+                .then((result) async {
+                  await getAttendanceDays(userId)
+                    .then((presents) {
+                      presents.forEach((result) {
+                        DateTime attendanceDate = DateTime.parse(result['date_marked']).toLocal();
+                        DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+                        presentDays.add(attendanceDay);
+                      });
+                      setState(() {
+                        absentDays = pastSchoolDays - presentDaysNo;
+                        totalSchoolDays = result['totalDays'] + 0.0;
+                        resolve.forEach((key, value) {
+                          DateTime holidayDay = key;
+                          if(holidayDay.weekday <= 5) {
+                            totalSchoolDays--;
+                            if((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) && !presentDays.contains(holidayDay)){
+                              absentDays--;
+                            }
+                          };
+                        });
+                      });
+                    });
+              });
+
+              return;
+            });
+        }),
       getPresentDaysNo(userId)
         .then((result) {
           setState(() {
             presentDaysNo = result['presentDays'];
-          });
-        }),
-      getTotalSchoolDays(userId)
-        .then((result) {
-          setState(() {
-            totalSchoolDays = result['totalDays'];
           });
         }),
       getAbsentDays(userId)
@@ -276,60 +559,6 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             pastSchoolDays = result['totalDaysNow'];
           });
-        }),
-      getAttendanceDays(userId)
-        .then((results) {
-          results.forEach((result) {
-            DateTime attendanceDate = DateTime.parse(result['date_marked']).toLocal();
-            DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-            presentDays.add(attendanceDay);
-          });
-        }),
-      getStudentLatestAttendance(userId)
-        .then((results) {
-          try {
-            if(results.length > 0 || results != null){
-              Map latestAttendance = results[0];
-              DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
-              DateTime today = DateTime.now();
-              DateTime attendanceDay = DateTime.utc(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-              DateTime thisDay = DateTime.utc(today.year, today.month, today.day);
-
-              if(attendanceDay.isAtSameMomentAs(thisDay)){
-                if(latestAttendance['in'] == '1'){
-                  attendanceStatus = 'Present';
-                  attendanceStatusColor = Colors.green;
-                  attendanceStatusIcon = Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  );
-                }else if(today.isBefore(attendanceDate)){
-                  attendanceStatus = 'Soon';
-                  attendanceStatusColor = Theme.of(context).accentColor;
-                  attendanceStatusIcon = Icon(
-                    Icons.brightness_low,
-                    color: Theme.of(context).accentColor,
-                    size: 18.0,
-                  );
-                }else if(today.isAfter(attendanceDate)){
-                  attendanceStatus = 'Absent';
-                }
-              }else{
-                attendanceStatus = 'Absent';
-              }
-            }
-          } catch(e) {
-            attendanceStatus = 'Absent';
-          }
-
-          if(attendanceStatus == 'Absent'){
-            attendanceStatusColor = Colors.redAccent;
-            attendanceStatusIcon = Icon(
-              Icons.error_outline,
-              color: Colors.redAccent,
-              size: 18.0,
-            );
-          }
         }),
       getSchoolYearInformation()
         .then((results) {
@@ -345,6 +574,36 @@ class _HomePageState extends State<HomePage> {
         })
     ]);
   }
+  Future setStudentsUnreadNotif(List<String> userIds) async {
+    otherChildHasUnreadNotif = false;
+    userIdUnreadStatus = {};
+    for(int i = 0; i < userIds.length; i++){
+      String userId = userIds[i];
+      await getStudentUnseenNotifications(userId)
+        .then((results) {
+          if(results['success']){
+            if(userIdUnreadStatus[userId] == null){
+              userIdUnreadStatus[userId] = false;
+            }
+
+            if(results['data'].length > 0){
+              userIdUnreadStatus[userId] = true;
+              if(userId != widget.heroTag){
+                otherChildHasUnreadNotif = true;
+              }
+            }
+          }
+        });
+    }
+
+    setState(() {});
+
+    return Future.value(otherChildHasUnreadNotif);
+  }
+
+  void fetchPdf() async {
+    await initLoadPdf();
+  }
   void transformActivityList(classId) async {
     await getStudentActivities(classId)
       .then((results) {
@@ -355,6 +614,7 @@ class _HomePageState extends State<HomePage> {
 
         monthWithYearActivities = {};
         activityWithYearNames = [];
+        holidayDays = {};
 
         for(int i = 0; i < results.length; i++){
           Map activity = results[i];
@@ -410,41 +670,15 @@ class _HomePageState extends State<HomePage> {
         setState(() {});
       });
   }
-  List<String> sortActivityNames(activityNamesSort) {
-    List<int> sortedMonthIndex = <int>[];
-    List<String> sortedMonthNames = <String>[];
-
-    for(int i = 0; i < activityNamesSort.length; i++){
-      String month = activityNamesSort[i];
-      int monthIndex = 0;
-      int largestMonthIndex = 0;
-
-      for(monthIndex = 0; monthIndex < monthNames.length; monthIndex++){
-        if(monthNames[monthIndex] == month){
-          if(monthIndex > largestMonthIndex){
-            largestMonthIndex = monthIndex;
-          }
-          break;
-        }
-      }
-
-      sortedMonthIndex.add(monthIndex);
-      sortedMonthIndex.sort();
-    }
-    for(int i = 0; i < sortedMonthIndex.length; i++){
-      sortedMonthNames.add(monthNames[sortedMonthIndex[i]]);
-    }
-
-    return sortedMonthNames;
-  }
   void firebaseCloudMessaging_Listeners(String classId) {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
     _token = "";
-    print(topics);
     _firebaseMessaging.getToken().then((token){
       print(token);
       _token = token;
+      print('topics');
+      print(topics);
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
         if(topic['topic'] != null){
@@ -452,9 +686,7 @@ class _HomePageState extends State<HomePage> {
             .then((result) {
               if(result['code'] == 1){
                 _firebaseMessaging.subscribeToTopic(topic['topic']);
-                print('subscribed to ${topic['topic']}');
-              }else if(result['code'] == 2){
-                print('${topic['topic']} already subscribed.');
+                print('subscribed to $topic');
               }
             });
         }
@@ -466,88 +698,11 @@ class _HomePageState extends State<HomePage> {
         IosNotificationSettings(sound: true, badge: true, alert: true)
     );
     _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings)
-        {
-          print("Settings registered: $settings");
-        });
+        .listen((IosNotificationSettings settings) {});
   }
-
-  Future buildStudentPayments(userId) async {
-    Completer _completer = Completer();
-
-    await fetchStudentPayments(userId)
-      .then((results) {
-        payments = [];
-        totalBalance = 0.00;
-        totalPayments = 0.00;
-
-        nextPaymentMonth = null;
-        nextPaymentDay = null;
-
-        results.forEach((payment) {
-          var amount;
-          DateTime dueDate;
-          if(payment['due_date'] != null){
-            dueDate = DateTime.parse(payment['due_date']).toLocal();
-          }
-          String paymentDate = 'Unpaid';
-          try {
-            amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
-            if(amount == 'N/A' || amount == null || amount == '0'){
-              totalBalance += payment['due_amount'];
-              if(nextPaymentMonth == null){
-                nextPaymentMonth = monthNames[dueDate.month - 1];
-                nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
-              }
-            }else {
-              if(payment['amount_paid'] != null){
-                totalPayments += payment['amount_paid'];
-              }
-            }
-          } catch(e){
-            print(e);
-          }
-
-          try{
-            String paidDate = payment['paid_date'];
-            if(paidDate != null){
-              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
-            }
-          }catch(e){}
-          payments.add(
-            Payment(
-              label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
-              amount: amount,
-              dueAmount: payment['due_amount'] + 0.00 ?? 0,
-              rawDate: dueDate,
-              paidDate: paymentDate,
-              isPaid: amount != 'N/A',
-              paymentModes: payment['note'],
-              paymentSettingId: payment['pay_setting_id'].split(',')[0],
-              amountDesc: payment['due_desc'],
-              paymentType: {
-                'type': payment['pay_type'],
-                'official_receipt': payment['official_receipt'],
-                'bank_abbr': payment['pay_bank']
-              },
-              paymentNote: payment['description']
-            )
-          );
-        });
-    });
-    streamController.add({
-      'totalPayments': totalPayments,
-      'totalBalance': totalBalance,
-      'payments': payments
-    });
-    _completer.complete();
-    return _completer.future;
-  }
-
   void _saveUserProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print('saving user profile data');
     await prefs.setString('fname', widget.firstName);
     await prefs.setString('lname', widget.lastName);
     await prefs.setString('userId', widget.heroTag);
@@ -558,7 +713,10 @@ class _HomePageState extends State<HomePage> {
     await prefs.setString('gradeSection', widget.gradeSection);
     await prefs.setStringList('userIds', widget.userIds);
     await prefs.setStringList('topics', widget.userIds);
-    print('done saving user profile data');
+  }
+
+  void fetchAttendanceInfo(userId) async {
+    await getAttendanceInfo(userId);
   }
 
   @override
@@ -572,12 +730,14 @@ class _HomePageState extends State<HomePage> {
     List topics = getTopics();
     int topicIndex = 0;
     super.initState();
+
+    _setLoggedInStatus(true);
+
     streamController = StreamController();
 
     monthWithYearActivities = {};
     activityWithYearNames = [];
-
-    fetchPdf();
+    holidayDays = {};
 
     payments = [];
     initialPayments = [];
@@ -586,21 +746,27 @@ class _HomePageState extends State<HomePage> {
     presentDays = <DateTime>[];
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
+    userIdUnreadStatus = {};
 
-    for(int topicIndex = 0; topicIndex < topics.length; topicIndex++){
+    for(topicIndex = 0; topicIndex < topics.length; topicIndex++){
       Map topic = topics[topicIndex];
 
       if(topic['topic'] == 'all'){
         break;
       }
     }
+
     if(topicIndex == topics.length){
       addTopic('all', '');
     }
+
     firebaseCloudMessaging_Listeners(widget.classId);
     transformActivityList(widget.classId);
-    getAttendanceInfo(widget.heroTag);
+
+    fetchAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
+    setStudentsUnreadNotif(widget.userIds);
+    _saveUserProfileData();
 
     setAvatarUrl(widget.avatarUrl);
 
@@ -612,32 +778,57 @@ class _HomePageState extends State<HomePage> {
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
         updateHomeData();
+        print(message);
       },
       onResume: (Map<String, dynamic> message) async {
-        print('updating');
         updateHomeData();
-        routeNotificationPage(message['notif_category']);
-        print('on resume $message');
+        setStudentsUnreadNotif(widget.userIds);
       },
       onLaunch: (Map<String, dynamic> message) async {
         updateHomeData();
-//        routeNotificationPage(message['notif_category']);
-        print('on launch $message');
       },
     );
+
 
     SystemChannels.lifecycle.setMessageHandler((msg){
       if(msg == 'AppLifecycleState.resumed'){
         updateHomeData();
       }
-      debugPrint('SystemChannels> $msg');
     });
+
+    setUnreadNotif(widget.heroTag);
   }
 
   void routeNotificationPage(category) async {
-    if((category != null) && (['activity','photos','messages','appointment','progress','attendance'].contains(category))){
+    String unread_name;
+    List unreadNotifIds = [];
+
+    setUnreadNotif(widget.heroTag)
+      .then((resolve) {
+        category == 'progress' ? unread_name = 'grade_update' : null;
+        category == 'Activities' ? unread_name = 'activities' : null;
+        category == 'photos' ? unread_name = 'photo_update' : null;
+        category == 'attendance' ? unread_name = 'student_present' : null;
+        category == 'Payments' ? unread_name = 'payment_due' : null;
+
+        if(category == 'messages' || category == 'appointment'){
+          unreadNotifIds.addAll(getModuleUnreadNotifIds('announcement'));
+          unreadNotifIds.addAll(getModuleUnreadNotifIds('appointment'));
+          setCategorySeen('appointment');
+          setCategorySeen('announcement');
+        }else{
+          unreadNotifIds.addAll(getModuleUnreadNotifIds(unread_name));
+          setCategorySeen(unread_name);
+        }
+
+        for(int i = 0; i < unreadNotifIds.length; i++){
+          int id = unreadNotifIds[i];
+          seenNotification(id);
+        }
+      });
+
+    if((category != null) && (['activity','photos','messages','appointment','progress','attendance','payment'].contains(category))){
       Widget pageBuilder;
       Route route = MaterialPageRoute(builder: (buildContext) => HomePage(
         child: Avatar(
@@ -645,7 +836,7 @@ class _HomePageState extends State<HomePage> {
           maxRadius: 54.0,
           minRadius: 20.0,
           fontSize: 20.0,
-          initial: "${widget.firstName != null ? widget.lastName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
+          initial: "${widget.firstName != null ? widget.firstName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
           avatarUrl: widget.avatarUrl,
         ),
         firstName: widget.firstName ?? '',
@@ -676,17 +867,11 @@ class _HomePageState extends State<HomePage> {
           classId: this.widget.classId,
         );
       }else if(category == 'messages' || category == 'appointment') {
-        pageBuilder = await buildMessageList(widget.heroTag, messagePageSize, 1)
-          .then((result) {
-            return MessageBoard(
-              userId: widget.heroTag,
-              pageSize: messagePageSize,
-              pageNum: 1,
-              messageBoardLists: result['messages'],
-              firstName: widget.firstName,
-              lastName: widget.lastName,
-            );
-          });
+        pageBuilder =  MessageBoard(
+          userId: widget.heroTag,
+          firstName: widget.firstName,
+          lastName: widget.lastName,
+        );
       }else if(category == 'progress'){
         pageBuilder = Grades(
           userId: widget.heroTag,
@@ -716,21 +901,19 @@ class _HomePageState extends State<HomePage> {
       Navigator.push(context, routeNew);
     }
   }
-
   void updateHomeData() async {
     schoolDays = <DateTime>[];
     presentDays = <DateTime>[];
     noSchoolDays = <DateTime>[];
     specialSchoolDays = <DateTime>[];
-
+    userIdUnreadStatus = {};
 
     transformActivityList(widget.classId);
-    getAttendanceInfo(widget.heroTag);
+    fetchAttendanceInfo(widget.heroTag);
     buildStudentPayments(widget.heroTag);
-
-    print('All data are up-to-date');
+    setUnreadNotif(widget.heroTag);
+    setStudentsUnreadNotif(widget.userIds);
   }
-
   void userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId){
     widget.child = Avatar(
       backgroundColor: Colors.indigo,
@@ -750,16 +933,14 @@ class _HomePageState extends State<HomePage> {
 
     setAvatarUrl(avatarUrl);
     updateHomeData();
+    _saveUserProfileData();
   }
-
   void _setLoggedInStatus(bool status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if(status == false){
       await prefs.clear();
     }
-    print('settings login status');
-    print(status);
     await prefs.setBool('isLoggedIn', status);
   }
 
@@ -777,8 +958,6 @@ class _HomePageState extends State<HomePage> {
       widget.userIds = [];
       widget.userIds.add(widget.heroTag);
     }
-
-    _saveUserProfileData();
 
     return SafeArea(
       child: WillPopScope(
@@ -837,14 +1016,17 @@ class _HomePageState extends State<HomePage> {
                                       ListTile(
                                         leading: Icon(Icons.book),
                                         onTap: (){
+                                          if(guidePages == null || guidePages.length == 0){
+                                            fetchPdf();
+                                          }
                                           Route route = MaterialPageRoute(
-                                              builder: (BuildContext context) {
-                                                return InitialOnboard(
-                                                  pages: guidePages,
-                                                  userIds: [],
-                                                  showAgreementCta: false,
-                                                );
-                                              });
+                                            builder: (BuildContext context) {
+                                              return InitialOnboard(
+                                                pages: guidePages,
+                                                userIds: [],
+                                                showAgreementCta: false,
+                                              );
+                                            });
                                           Navigator.push(context, route);
                                         },
                                         title: Text(
@@ -994,6 +1176,7 @@ class _HomePageState extends State<HomePage> {
                                           color: Color.fromRGBO(255, 255, 255, 0),
                                           child: InkWell(
                                             onTap: () {
+                                              setStudentsUnreadNotif(widget.userIds);
                                               setState(() {
                                                 showStudentSwitcher = true;
                                               });
@@ -1009,9 +1192,19 @@ class _HomePageState extends State<HomePage> {
                                                       color: Colors.white
                                                   ),
                                                 ),
-                                                Padding(
+                                                otherChildHasUnreadNotif ? Padding(
                                                   padding: EdgeInsets.symmetric(horizontal: 6.0),
-                                                ),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red[600],
+                                                      borderRadius: BorderRadius.circular(24.0)
+                                                    ),
+                                                    constraints: BoxConstraints(
+                                                      minWidth: 9,
+                                                      minHeight: 9,
+                                                    ),
+                                                  ),
+                                                ) : Container(),
                                                 Icon(
                                                   Icons.arrow_drop_down,
                                                   color: Colors.white,
@@ -1077,6 +1270,7 @@ class _HomePageState extends State<HomePage> {
                                             padding: EdgeInsets.symmetric(vertical: 12.0),
                                             child: Flex(
                                               crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.max,
                                               direction: Axis.horizontal,
                                               children: <Widget>[
                                                 Expanded(
@@ -1129,10 +1323,10 @@ class _HomePageState extends State<HomePage> {
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: <Widget>[
                                                                   Text(
-                                                                    'All set!',
+                                                                    'Fully paid!',
                                                                     style: TextStyle(
                                                                       color: Colors.green,
-                                                                      fontSize: 16.0,
+                                                                      fontSize: 15.0,
                                                                       fontWeight: FontWeight.w600
                                                                     ),
                                                                   ),
@@ -1158,48 +1352,68 @@ class _HomePageState extends State<HomePage> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: <Widget>[
                                                       SingleChildScrollView(
-                                                        child: Column(
+                                                        child: Flex(
+                                                          direction: Axis.vertical,
                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                           children: <Widget>[
                                                             Text(
                                                               'Attendance',
+                                                              overflow: TextOverflow.fade,
                                                               style: TextStyle(
-                                                                  fontSize: 13.0,
+                                                                  fontSize: 12.0,
                                                                   fontWeight: FontWeight.w700,
                                                                   color: Colors.black87
                                                               ),
                                                             ),
-                                                            Padding(
-                                                              padding: EdgeInsets.only(top: 5.0),
-                                                              child: Column(
-                                                                children: <Widget>[
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: <Widget>[
-                                                                      attendanceStatusIcon,
-                                                                      Padding(
-                                                                        padding: EdgeInsets.only(left: 4.0),
-                                                                        child: Text(
-                                                                          attendanceStatus,
-                                                                          style: TextStyle(
-                                                                            color: attendanceStatusColor,
-                                                                            fontSize: 16.0,
-                                                                            fontWeight: FontWeight.w700
+                                                            Flexible(
+                                                              flex: 0,
+                                                              child: Padding(
+                                                                padding: EdgeInsets.only(top: 8.0),
+                                                                child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: <Widget>[
+                                                                    attendanceStatus == 'No class' ? Padding(
+                                                                      padding: EdgeInsets.symmetric(vertical: 4.0)
+                                                                    ) : Container(),
+                                                                    Flex(
+                                                                      direction: Axis.horizontal,
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                      children: <Widget>[
+                                                                        Flexible(
+                                                                          flex: 0,
+                                                                          child: Container(
+                                                                            child: attendanceStatusIcon
+                                                                          )
+                                                                        ),
+                                                                        Expanded(
+                                                                          flex: 0,
+                                                                          child: Padding(
+                                                                            padding: EdgeInsets.only(left: 2.0),
+                                                                            child: Text(
+                                                                              attendanceStatus,
+                                                                              overflow: TextOverflow.fade,
+                                                                              style: TextStyle(
+                                                                                color: attendanceStatusColor,
+                                                                                fontSize: 15.0,
+                                                                                fontWeight: FontWeight.w700
+                                                                              ),
+                                                                            ),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Text(
-                                                                    '$presentDaysNo/${totalSchoolDays.floor()}',
-                                                                    overflow: TextOverflow.fade,
-                                                                    style: TextStyle(
-                                                                        color: Colors.black38,
-                                                                        fontSize: 12.0,
-                                                                        fontWeight: FontWeight.w600
+                                                                      ],
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                    attendanceStatus != 'No class' ? Text(
+                                                                      '$presentDaysNo/${totalSchoolDays.floor()}',
+                                                                      overflow: TextOverflow.fade,
+                                                                      style: TextStyle(
+                                                                          color: Colors.black38,
+                                                                          fontSize: 12.0,
+                                                                          fontWeight: FontWeight.w600
+                                                                      ),
+                                                                    ) : Container(),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             )
                                                           ],
@@ -1357,21 +1571,12 @@ class _HomePageState extends State<HomePage> {
                                         MenuItem(
                                           iconPath: 'img/Icons/icon_announcements_2x.png',
                                           label: 'Messages',
-                                          isCustomOnPressed: true,
-                                          customOnPressed: () async {
-                                            await buildMessageList(widget.heroTag, messagePageSize, 1)
-                                              .then((result) {
-                                                Route route = MaterialPageRoute(builder: (buildContext) => MessageBoard(
-                                                  userId: widget.heroTag,
-                                                  pageSize: messagePageSize,
-                                                  pageNum: 1,
-                                                  messageBoardLists: result['messages'],
-                                                  firstName: widget.firstName,
-                                                  lastName: widget.lastName,
-                                                ));
-                                                Navigator.push(context, route);
-                                              });
-                                          },
+                                          pageBuilder: MessageBoard(
+                                            userId: widget.heroTag,
+                                            firstName: widget.firstName,
+                                            lastName: widget.lastName,
+                                          ),
+                                          buildContext: context,
                                         )
                                       ],
                                     ),
@@ -1385,9 +1590,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                     appBar: AppBar(
                       title: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 14.0, vertical: 6.0),
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage("img/woodbridge_logo.png")
+                            image: AssetImage("img/mywoodbridge.png")
                           )
                         ),
                       ),
@@ -1404,17 +1610,12 @@ class _HomePageState extends State<HomePage> {
                       actions: <Widget>[
                         IconButton(
                           onPressed: () async {
-                            await buildNotificationList(this.widget.heroTag, notificationPageSize, 1)
-                              .then((result) {
-                                Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
-                                  firstName: this.widget.firstName,
-                                  lastName: this.widget.lastName,
-                                  userId: this.widget.heroTag,
-                                  notificationTiles: result['notifications'],
-                                  pageSize: notificationPageSize,
-                                ));
-                                Navigator.push(context, route);
-                              });
+                            Route route = MaterialPageRoute(builder: (buildContext) => Notifications(
+                              firstName: this.widget.firstName,
+                              lastName: this.widget.lastName,
+                              userId: this.widget.heroTag,
+                            ));
+                            Navigator.push(context, route);
                           },
                           icon: Icon(
                             Icons.notifications_none,
@@ -1426,13 +1627,13 @@ class _HomePageState extends State<HomePage> {
                   ),
                 )
               ),
-              Positioned(
+              Positioned.fill(
                 child: SafeArea(
                   child: showStudentSwitcher ? Container(
                     width: double.infinity,
                     height: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(22, 86, 135, .88)
+                      color: Color.fromRGBO(0, 0, 0, .88)
                     ),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
@@ -1471,6 +1672,7 @@ class _HomePageState extends State<HomePage> {
                                       return StudentAvatarPicker(
                                         userId: '${userId}',
                                         isActive: userId == widget.heroTag,
+                                        hasUnreadNotif: userIdUnreadStatus[userId] ?? false,
                                         onTap: (lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl) {
                                           showStudentSwitcher = false;
 
@@ -1498,6 +1700,17 @@ class _HomePageState extends State<HomePage> {
 }
 
 class MenuItem extends StatelessWidget {
+  final Widget child;
+  final String iconPath;
+  final String label;
+  final Widget pageBuilder;
+  final BuildContext buildContext;
+  var customOnPressed;
+  bool isCustomOnPressed;
+  String unread_name;
+  int unreadCount = 0;
+  List unreadNotifIds = [];
+
   MenuItem({
     Key key,
     this.child,
@@ -1509,23 +1722,46 @@ class MenuItem extends StatelessWidget {
     this.customOnPressed
   }) : super(key: key);
 
-  final Widget child;
-  final String iconPath;
-  final String label;
-  final Widget pageBuilder;
-  final BuildContext buildContext;
-  var customOnPressed;
-  bool isCustomOnPressed;
-
   @override
   Widget build(BuildContext context) {
+    label == 'Progress' ? unread_name = 'grade_update' : null;
+    label == 'Activities' ? unread_name = 'activity_new' : null;
+    label == 'Photos' ? unread_name = 'photo_update' : null;
+    label == 'Attendance' ? unread_name = 'student_present' : null;
+    label == 'Payments' ? unread_name = 'payment_due' : null;
+
+    if(label == 'Messages'){
+      unreadCount = getModuleUnreadCount('appointment') + getModuleUnreadCount('announcement');
+      unreadNotifIds.addAll(getModuleUnreadNotifIds('appointment'));
+      unreadNotifIds.addAll(getModuleUnreadNotifIds('announcement'));
+    }else{
+      unreadCount = getModuleUnreadCount(unread_name);
+      unreadNotifIds.addAll(getModuleUnreadNotifIds(unread_name));
+    }
+
     if(isCustomOnPressed == null){
       isCustomOnPressed = false;
+    }
+
+    if(label == 'Payments' || label == 'Activities'){
+      if(unreadCount > 0){
+        unreadCount = -1;
+      }
     }
 
     return Material(
       child: InkWell(
         onTap: () {
+          for(int i = 0; i < unreadNotifIds.length; i++){
+            int id = unreadNotifIds[i];
+            seenNotification(id);
+          }
+          if(label == 'Messages') {
+            setCategorySeen('appointment');
+            setCategorySeen('announcement');
+          }else{
+            setCategorySeen(unread_name);
+          }
           if(isCustomOnPressed){
             customOnPressed();
           }else{
@@ -1533,9 +1769,9 @@ class MenuItem extends StatelessWidget {
             Navigator.push(buildContext, route);
           }
         },
-        child: Material(
-          child: InkWell(
-            child: Container(
+        child: Stack(
+          children: <Widget>[
+            Container(
               padding: EdgeInsets.symmetric(vertical: 4.0),
               decoration: BoxDecoration(
                 boxShadow: [BrandTheme.cardShadow],
@@ -1569,7 +1805,31 @@ class MenuItem extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+            unreadCount > 0 || unreadCount < 0 ? Positioned(
+              right: 8,
+              top: 8,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: unreadCount < 0 ? Colors.blueAccent : Colors.red,
+                  borderRadius: BorderRadius.circular(32.0)
+                ),
+                constraints: BoxConstraints(
+                  minWidth: 17,
+                  minHeight: 14,
+                ),
+                child: Text(
+                  '${unreadCount < 0 ? '' : unreadCount}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ) : Container()
+          ],
         ),
       ),
     );

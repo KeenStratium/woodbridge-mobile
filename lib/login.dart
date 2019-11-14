@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'model.dart';
 
-import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -55,20 +54,16 @@ class LoginBody extends StatefulWidget {
 class _LoginBodyState extends State<LoginBody> {
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
+  PDFDocument doc;
+  List<Widget> guidePages = <Widget>[];
+  int maxPagesCount;
 
   @override
   void initState(){
     super.initState();
 
     clearTopics();
-  }
-
-  _setLoggedInStatus(bool status) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    print('settings status');
-    print(status);
-    await prefs.setBool('isLoggedIn', status);
+    fetchPdf();
   }
 
   Future getStudents(parentId) async {
@@ -142,6 +137,24 @@ class _LoginBodyState extends State<LoginBody> {
     }
 
     return loginStatus;
+  }
+
+  void fetchPdf() async {
+    await initLoadPdf();
+  }
+
+  Future initLoadPdf() async {
+    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
+    int maxPages = doc.count;
+    maxPagesCount = maxPages;
+
+    for(int i = 0; i < maxPages; i++){
+      Widget page = await doc.get(page: i+1);
+      setState(() {
+        guidePages.add(page);
+      });
+    }
+    return guidePages;
   }
 
   @override
@@ -220,7 +233,6 @@ class _LoginBodyState extends State<LoginBody> {
                       child: accentCtaButton(
                         label: 'Log In',
                         onPressed: (() async {
-                          _setLoggedInStatus(true);
                           final errorSnackBar = SnackBar(
                             content: Text(
                               'Invalid login credentials. Please try again.',
@@ -261,29 +273,30 @@ class _LoginBodyState extends State<LoginBody> {
                               Navigator.push(context, route);
                             }else if(data['status'] == 'initial'){
                               await checkHandbookAgreementStatus(data['user_id'])
-                                  .then((resolves) {
-                                bool hasAgreed = false;
+                                .then((resolves) {
+                                  bool hasAgreed = false;
 
-                                if(resolves['data'] == 1){
-                                  hasAgreed = true;
-                                }else{
-                                  hasAgreed = false;
-                                }
+                                  if(resolves['data'] == 1 || resolves['data'] == '1'){
+                                    hasAgreed = true;
+                                  }else{
+                                    hasAgreed = false;
+                                  }
 
-                                Route route = MaterialPageRoute(
+                                  Route route = MaterialPageRoute(
                                     builder: (BuildContext context) {
                                       return ChangePassword(
-                                          userId: data['user_id'],
-                                          userIds: data['ids'],
-                                          hasAgreed: hasAgreed
+                                        userId: data['user_id'],
+                                        userIds: data['ids'],
+                                        hasAgreed: hasAgreed,
+                                        guidePages: guidePages,
+                                        maxPageCount: maxPagesCount,
                                       );
                                     });
-                                Navigator.push(context, route);
+                                  Navigator.push(context, route);
                               });
                             } else{
                               Scaffold.of(context).hideCurrentSnackBar();
                               Scaffold.of(context).showSnackBar(errorSnackBar);
-                              print('Please try again.');
                             }
                           });
                         }),

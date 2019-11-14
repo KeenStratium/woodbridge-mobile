@@ -32,7 +32,6 @@ Future<List> getStudentActivities(classId) async {
 
   return jsonDecode(response.body);
 }
-
 List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActivities, List<String> activityNameList) {
   int count = monthActivities.length;
   List<String> activityNames = activityNameList;
@@ -184,7 +183,6 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
     );
   });
 }
-
 Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState state, List<String> activityNames) {
   String month = activityNames[index].split(' ')[0];
   String year = activityNames[index].split(' ')[1];

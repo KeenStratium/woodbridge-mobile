@@ -9,18 +9,6 @@ import 'woodbridge-ui_components.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:date_utils/date_utils.dart';
 
-Future fetchHolidayList() async {
-  String url = '$baseApi/sett/get-holidays';
-
-  var response = await http.get(url,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
-
-  return jsonDecode(response.body);
-}
-
 class Attendance extends StatefulWidget {
   final String firstName;
   final String lastName;
@@ -35,6 +23,8 @@ class Attendance extends StatefulWidget {
   int pastSchoolDays = 0;
   int absentDays = 0;
   double totalSchoolDays = 0;
+  Map<DateTime, List> holidayDays = {};
+  bool hasInitiated = false;
 
   Attendance({
     this.firstName,
@@ -57,7 +47,6 @@ class Attendance extends StatefulWidget {
 }
 
 class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
-  Map<DateTime, List> holidayDays = {};
   Map<DateTime, List> _events;
   Map<DateTime, List> _visibleEvents;
   Map<DateTime, List> _visibleHolidays;
@@ -73,17 +62,64 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   static DateTime currentDate = DateTime.now();
   DateTime currentDay = DateTime(currentDate.year, currentDate.month, currentDate.day);
 
-  void buildAttendanceCalendarDays(yearStartDay, today, presentDays) {
+  Future fetchHolidayList() async {
+    String url = '$baseApi/sett/get-holidays';
+
+    var response = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+
+    return jsonDecode(response.body);
+  }
+  Future getHolidayList() async {
+    return await fetchHolidayList()
+      .then((resolve) async {
+        widget.holidayDays = {};
+        for(int i = 0; i < resolve.length; i++){
+          Map holiday = resolve[i];
+          String holidayTitle = holiday['title'];
+          DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
+          DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
+          DateTime holidayIndexDate = startHoliday;
+
+          for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
+            if(widget.holidayDays[holidayIndexDate] == null){
+              widget.holidayDays[holidayIndexDate] = [];
+            }
+            widget.holidayDays[holidayIndexDate].add(holidayTitle);
+          }
+
+          if(widget.holidayDays[holidayIndexDate] == null){
+            widget.holidayDays[holidayIndexDate] = [];
+          }
+          widget.holidayDays[holidayIndexDate].add(holidayTitle);
+        }
+
+        return Future.value(widget.holidayDays);
+      })
+      .then((resolve) {
+        buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
+        return Future.value(resolve);
+      });
+  }
+
+  Future buildAttendanceCalendarDays(yearStartDay, today, presentDays) {
     DateTime schoolDayIndex = yearStartDay;
     int presentDaysIndex = 0;
-
     if(yearStartDay != null) {
-      while(schoolDayIndex != today){
-        if(holidayDays[schoolDayIndex] == null){
+      while(schoolDayIndex.isBefore(today)){
+        if(widget.holidayDays[schoolDayIndex] == null){
           if(schoolDayIndex.weekday <= 5){
             String attendanceStatus = 'ABSENT';
 
             if(presentDays.length > 0){
+              try {
+                if(presentDays[presentDaysIndex].isBefore(schoolDayIndex) && presentDaysIndex < presentDays.length - 1){
+                  presentDaysIndex++;
+                }
+              } catch (e) {}
               if(schoolDayIndex == presentDays[presentDaysIndex] && presentDaysIndex < presentDays.length){
                 attendanceStatus = 'PRESENT';
                 if(presentDaysIndex < presentDays.length - 1){
@@ -104,6 +140,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         schoolDayIndex = schoolDayIndex.add(Duration(days: 1));
       }
     }
+
+    return Future.value();
   }
 
   void _onDaySelected(DateTime day, List events) {
@@ -124,7 +162,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       );
 
       _visibleHolidays = Map.fromEntries(
-        holidayDays.entries.where(
+        widget.holidayDays.entries.where(
           (entry) =>
             entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
             entry.key.isBefore(last.add(const Duration(days: 1))),
@@ -133,37 +171,9 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     });
   }
 
-  void getHolidayList() async {
-    await fetchHolidayList()
-      .then((resolve) {
-        for(int i = 0; i < resolve.length; i++){
-          Map holiday = resolve[i];
-          Map<DateTime, List> holidayRange = {};
-          String holidayTitle = holiday['title'];
-          DateTime startHoliday = DateTime.parse(holiday['holiday_start_date']).toLocal();
-          DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
-          DateTime holidayIndexDate = startHoliday;
-
-          for(;!(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))){
-            if(holidayDays[holidayIndexDate] == null){
-              holidayDays[holidayIndexDate] = [];
-            }
-            holidayDays[holidayIndexDate].add(holidayTitle);
-          }
-
-          if(holidayDays[holidayIndexDate] == null){
-            holidayDays[holidayIndexDate] = [];
-          }
-          holidayDays[holidayIndexDate].add(holidayTitle);
-        }
-      });
-  }
-
   @override
   void initState(){
     super.initState();
-
-    getHolidayList();
 
     eventsLegend.addAll([
       Column(
@@ -242,25 +252,20 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     ]);
 
     _selectedDay = DateTime.now();
+    _selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
 
     _events = {
       _selectedDay: [],
     };
 
     try {
+      _selectedEvents = [];
       _selectedEvents = _events[_selectedDay] ?? [];
     } catch(e) {
       _selectedEvents = [];
     }
 
-    buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
-
-    setState(() {
-      widget.absentDays = widget.pastSchoolDays - widget.presentDaysNo;
-    });
-
     _visibleEvents = _events;
-    _visibleHolidays = holidayDays;
 
     _controller = AnimationController(
       vsync: this,
@@ -446,7 +451,23 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    _buildTableCalendarWithBuilders(),
+                    FutureBuilder(
+                      future: !widget.hasInitiated ? getHolidayList() : Future.value(_visibleHolidays),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if((snapshot.connectionState == ConnectionState.done) || widget.hasInitiated) {
+                          widget.hasInitiated = true;
+                          _visibleHolidays = snapshot.data;
+                          return _buildTableCalendarWithBuilders();
+                        }else {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 64.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -538,10 +559,11 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       ),
       onDaySelected: (date, events) {
         _onDaySelected(date, events);
-        List selectedHolidays = holidayDays[_selectedDay];
-        List thisEvents = _events[date];
+        List selectedHolidays = widget.holidayDays[_selectedDay];
+        List thisEvents = _events[date] ?? [''];
         eventsLegend = [];
-        if(_selectedEvents.length != 0){
+
+        if(_selectedEvents.length != 0 && thisEvents[0] != '' && (thisEvents.length > 0 && thisEvents[0] != 'CURRENT')){
           eventsLegend.add(Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -583,26 +605,28 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
               ));
             }
             if(event == 'PRESENT' || (event == 'CURRENT' && thisEvents[0] == 'PRESENT')){
-              eventsLegend.add(Container(
-                margin: EdgeInsets.only(right: 4.0),
-                padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-                decoration: BoxDecoration(
-                  color: Colors.green[50],
-                  border: Border.all(
-                    color: Colors.green[50]
+              if(event != 'CURRENT'){
+                eventsLegend.add(Container(
+                  margin: EdgeInsets.only(right: 4.0),
+                  padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                  decoration: BoxDecoration(
+                      color: Colors.green[50],
+                      border: Border.all(
+                          color: Colors.green[50]
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))
-                ),
-                child: Text(
-                  'Present',
-                  softWrap: false,
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.0
+                  child: Text(
+                    'Present',
+                    softWrap: false,
+                    style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.0
+                    ),
                   ),
-                ),
-              ));
+                ));
+              }
             }
           }
         }

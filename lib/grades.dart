@@ -35,7 +35,6 @@ Future<List> fetchMarkingCodes(schoolLevel) async {
 
   return jsonDecode(response.body);
 }
-
 Future<List> fetchGrades(userId) async {
   String url = '$baseApi/grade/get-grades';
 
@@ -49,7 +48,6 @@ Future<List> fetchGrades(userId) async {
 
   return jsonDecode(response.body);
 }
-
 Future<List> fetchPsychSkills(userId, schoolLevel) async {
   String url = '$baseApi/grade/get-skills-mobile';
 
@@ -130,6 +128,7 @@ class _GradesState extends State<Grades> {
                 first: subject['first'],
                 second: subject['second'],
                 third: subject['third'],
+                fourth: subject['fourth'],
               ),
             ));
           }
@@ -303,7 +302,7 @@ class _GradesState extends State<Grades> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
                         child: Text(
-                          'Psychological Skills',
+                          'Psychosocial Skills',
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.black87,

@@ -2,12 +2,54 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
 
 String _avatarUrl;
 String _username;
 List<Map> _topics = <Map>[];
+Map _moduleUnreadCount = {};
+
+void setModuleUnreadCount(String moduleName, int count, List<int> notifIds){
+  if(_moduleUnreadCount[moduleName] == null){
+    _moduleUnreadCount[moduleName] = 0;
+  }
+
+  _moduleUnreadCount[moduleName] = count;
+}
+
+void setAllUnreadCount(Map unread) {
+  _moduleUnreadCount = unread;
+}
+
+void clearAllUnreadCount() {
+  _moduleUnreadCount = {};
+}
+
+void setCategorySeen(String moduleName) {
+  _moduleUnreadCount.remove(moduleName);
+}
+
+Map getModuleUnread() {
+  return _moduleUnreadCount;
+}
+
+int getModuleUnreadCount(String moduleName) {
+  var  _module = _moduleUnreadCount[moduleName] ?? {};
+
+  return _module['count'] ?? 0;
+}
+
+List getModuleUnreadNotifIds(String moduleName) {
+  var  _module = _moduleUnreadCount[moduleName] ?? {};
+
+  return _module['notif_ids'] ?? [];
+}
+
+Map getAllUnreadCount() {
+  return _moduleUnreadCount;
+}
 
 void setAvatarUrl(url) {
   _avatarUrl = url;
@@ -78,7 +120,6 @@ class Avatar extends StatelessWidget {
     if(avatarUrl != null){
       hasPhoto = true;
     }
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(100.0)),
@@ -105,7 +146,7 @@ class Avatar extends StatelessWidget {
         backgroundColor: Colors.white,
         maxRadius: this.maxRadius,
         minRadius: this.minRadius,
-        backgroundImage: NetworkImage(avatarUrl),
+        backgroundImage: CachedNetworkImageProvider(avatarUrl),
       ),
     );
   }
@@ -287,6 +328,7 @@ class accentCtaButton extends FlatButton {
 class StudentAvatarPicker extends StatefulWidget{
   final userId;
   final heroTag;
+  final bool hasUnreadNotif;
   bool enableShadow;
   bool isActive;
   var onTap;
@@ -297,7 +339,8 @@ class StudentAvatarPicker extends StatefulWidget{
     this.onTap,
     this.heroTag,
     this.isActive,
-    this.enableShadow
+    this.enableShadow,
+    this.hasUnreadNotif = false
   }) : super(key: key);
 
   @override
@@ -361,90 +404,108 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
     }
 
     return GestureDetector(
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 7.0, vertical: 7.0),
-        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-        decoration: BoxDecoration(
-            color: widget.isActive ? Theme.of(context).accentColor : Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-            boxShadow: [BrandTheme.cardShadow]
-        ),
-        child: Flex(
-          direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Flexible(
-              flex: 4,
-              child: Hero(
-                tag: widget.heroTag ?? widget.userId,
-                child: Material(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: avatarColor,
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        return widget.onTap(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl);
-                      },
+      child: Stack(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 7.0, vertical: 7.0),
+            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            decoration: BoxDecoration(
+                color: widget.isActive ? Theme.of(context).accentColor : Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                boxShadow: [BrandTheme.cardShadow]
+            ),
+            child: Flex(
+              direction: Axis.vertical,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Flexible(
+                  flex: 4,
+                  child: Hero(
+                    tag: widget.heroTag ?? widget.userId,
+                    child: Material(
                       child: Container(
                         decoration: BoxDecoration(
                           color: avatarColor,
                         ),
-                        child: Stack(
-                          children: <Widget>[
-                            widget.isActive ? Center(
-                              child: CircleAvatar(
-                                maxRadius: 41.0,
-                                backgroundColor: Colors.white,
-                              ),
-                            ) : Container(),
-                            Center(
-                              child: AspectRatio(
-                                aspectRatio: 1.0,
-                                child: Avatar(
-                                  backgroundColor: Colors.indigo,
-                                  maxRadius: 41.0,
-                                  fontSize: 24.0,
-                                  initial: "$fInitial$lInitial",
-                                  enableShadow: widget.enableShadow,
-                                  avatarUrl: avatarUrl,
-                                ),
-                              ),
+                        child: InkWell(
+                          onTap: () {
+                            return widget.onTap(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: avatarColor,
                             ),
-                          ],
+                            child: Stack(
+                              children: <Widget>[
+                                widget.isActive ? Center(
+                                  child: CircleAvatar(
+                                    maxRadius: 41.0,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                ) : Container(),
+                                Center(
+                                  child: AspectRatio(
+                                    aspectRatio: 1.0,
+                                    child: Avatar(
+                                      backgroundColor: Colors.indigo,
+                                      maxRadius: 41.0,
+                                      fontSize: 24.0,
+                                      initial: "$fInitial$lInitial",
+                                      enableShadow: widget.enableShadow,
+                                      avatarUrl: avatarUrl,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 0,
-              child: SizedBox(
-                height: 2.0,
-              ),
-            ),
-            Flexible(
-              fit: FlexFit.loose,
-              flex: 2,
-              child: Container(
-                width: 128.0,
-                child: Text(
-                  '${fname ?? ''}',
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.fade,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    color: widget.isActive ? Colors.white : Colors.black87,
-                    fontWeight: FontWeight.w700,
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 0,
+                  child: SizedBox(
+                    height: 2.0,
+                  ),
+                ),
+                Flexible(
+                  fit: FlexFit.loose,
+                  flex: 2,
+                  child: Container(
+                    width: 128.0,
+                    child: Text(
+                      '${fname ?? ''}',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: widget.isActive ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    )
                   ),
                 )
+              ],
+            ),
+          ),
+          widget.hasUnreadNotif ? Positioned(
+            top: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.red[700],
+                borderRadius: BorderRadius.circular(24.0)
               ),
-            )
-          ],
-        ),
+              constraints: BoxConstraints(
+                minWidth: 18,
+                minHeight: 18,
+              ),
+            ),
+          ) : Container()
+        ],
       ),
     );
   }

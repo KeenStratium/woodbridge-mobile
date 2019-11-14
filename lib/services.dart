@@ -1,17 +1,11 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'model.dart';
-
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 List<String> dayNames = <String>['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 String localCurrencyFormat(double amount){
-  return '₱${amount + 0.00}';
+  return '₱${amount + 0.00}'.replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
 }
 
 String timeFormat(unformattedTime, format){
@@ -31,10 +25,12 @@ String formatMilitaryTime(time) {
   String hourStr;
   String minuteStr = '${minutes < 10 ? '0': ''}${minutes}';
 
-  if(hour > 12){
+  if(hour >= 12){
     meridiem = 'pm';
-    hour -= 12;
-  }else if(hour == 0){
+    if(hour > 12){
+      hour -= 12;
+    }
+  } else if(hour == 0){
     hour = 12;
   }
   hourStr = hour.toString();
@@ -42,7 +38,7 @@ String formatMilitaryTime(time) {
   return '$hourStr:$minuteStr$meridiem';
 }
 
-String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+String capitalize(String s) => s.length > 0 ? s[0].toUpperCase() + s.substring(1) : '';
 
 List<List<Widget>> transformPaginationListCache(list, pageSize, offsetPage, callback) {
   List<List<Widget>> paginatedList = <List<Widget>>[];
@@ -59,8 +55,8 @@ List<List<Widget>> transformPaginationListCache(list, pageSize, offsetPage, call
 }
 
 String epochToHumanTime(epoch) {
-  var currDivisor = [1,60,60,24,7,4];
-  var unitTime = ['sec','min','hr',' day',' week'];
+  var currDivisor = [1,60,60,24,7,4, 12];
+  var unitTime = ['sec','min','hr',' day',' week', ' month'];
   var sentence = "";
   var majorTime;
   var minorTime = 0;

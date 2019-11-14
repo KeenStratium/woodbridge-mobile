@@ -63,10 +63,10 @@ class _ResponseButtonState extends State<ResponseButton> {
       iconColor = Colors.red[300];
       icon = Icons.block;
     }else {
-      borderColor = Colors.grey[300];
-      labelColor = Colors.grey[700];
-      iconColor = Colors.grey[500];
-      icon = Icons.sentiment_neutral;
+      borderColor = Colors.amber[200];
+      labelColor = Colors.amber[700];
+      iconColor = Colors.amber[500];
+      icon = Icons.av_timer;
     }
 
     if(widget.isActive == null) {
@@ -295,6 +295,49 @@ class _BoardState extends State<Board> {
                         ],
                       ),
                     ),
+                    widget.activeType == 3 ? Container(
+                      margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                      padding: EdgeInsets.only(bottom: 12.0, left: 10.0, right: 10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.amber[100],
+                        borderRadius: BorderRadius.all(Radius.circular(7.0))
+                      ),
+                      width: double.infinity,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.amber[400]
+                                    )
+                                )
+                            ),
+                            child: Text(
+                              'How to reschedule',
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16.0
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+                            child: Text(
+                              "Please contact (433-3851) or go to the admin office to reschedule with your preferred time and choose a response here accordingly afterwards.",
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w700
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ) : Container(),
                     widget.hasResponse ? Container(
                       margin: EdgeInsets.symmetric(horizontal: 20.0),
                       padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
@@ -366,11 +409,11 @@ class _BoardState extends State<Board> {
                                     ),
                                     Expanded(
                                       child: ResponseButton(
-                                        label: 'Undecided',
+                                        label: 'Reschedule',
                                         type: 3,
                                         isActive: widget.activeType == 3,
                                         onTap: () {
-                                          respondNotification(widget.userId, widget.notifId, 'Undecided');
+                                          respondNotification(widget.userId, widget.notifId, 'Reschedule');
                                           Timer(Duration(milliseconds: 145), () {
                                             setState(() {
                                               widget.activeType = 3;
@@ -389,7 +432,7 @@ class _BoardState extends State<Board> {
                     ) : Container()
                   ],
                 )
-              )
+              ),
             ],
           ),
         ),
@@ -398,125 +441,124 @@ class _BoardState extends State<Board> {
   }
 }
 
-Future buildMessageList(userId, pageSize, pageNum) async {
+Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
   int offsetPage = 2;
   int offsetPageSize = pageSize * offsetPage;
-  List<String> responseActions = ['Going', 'Not going', 'Undecided'];
+  List<String> responseActions = ['Going', 'Not going', 'Reschedule'];
+    return await fetchStudentMessages(userId, offsetPageSize, pageNum)
+      .then((result) {
+        List<List<Widget>> _messages = <List<Widget>>[];
+        List _studentNotifications;
+        List<DateTime> _timeStampDays = <DateTime>[];
+        bool isSuccess = result['success'] ?? false;
+        if(isSuccess){
+          _studentNotifications = result['data'];
+          _messages = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item, page, pageItemIndex, index) {
+            Map message = item;
+            DateTime eventDate;
+            DateTime timeStamp;
+            DateTime timeStampDay;
 
-  return await fetchStudentMessages(userId, offsetPageSize, pageNum)
-    .then((result) {
-    List<List<Widget>> _messages = <List<Widget>>[];
-    List _studentNotifications;
-    List<DateTime> _timeStampDays = <DateTime>[];
-    bool isSuccess = result['success'] ?? false;
-    if(isSuccess){
-      _studentNotifications = result['data'];
-      _messages = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item, page, pageItemIndex, index) {
-        Map message = item;
-        DateTime eventDate;
-        DateTime timeStamp;
-        DateTime timeStampDay;
+            String timeStampHourMinute;
+            String eventTime;
+            String response = message['response'];
+            String dayName;
+            String month;
+            String day;
+            String boardTitle;
+            String boardDesc;
 
-        String timeStampHourMinute;
-        String eventTime;
-        String response = message['response'];
-        String dayName;
-        String month;
-        String day;
-        String boardTitle;
-        String boardDesc;
+            int activeType = 0;
 
-        int activeType = 0;
+            bool isSameDay = false;
 
-        bool isSameDay = false;
+            for(int i = 0; i < responseActions.length; i++){
+              if(responseActions[i] == response){
+                activeType = i + 1;
+                break;
+              }
+            }
 
-        for(int i = 0; i < responseActions.length; i++){
-          if(responseActions[i] == response){
-            activeType = i + 1;
-            break;
-          }
-        }
+            timeStamp = DateTime.parse(message['notif_timestamp']).toLocal();
+            timeStampHourMinute = formatMilitaryTime('${timeStamp.hour}:${timeStamp.minute}');
+            timeStampDay = DateTime.utc(timeStamp.year, timeStamp.month, timeStamp.day);
 
-        timeStamp = DateTime.parse(message['notif_timestamp']).toLocal();
-        timeStampHourMinute = formatMilitaryTime('${timeStamp.hour}:${timeStamp.minute}');
-        timeStampDay = DateTime.utc(timeStamp.year, timeStamp.month, timeStamp.day);
+            _timeStampDays.add(timeStampDay);
 
-        _timeStampDays.add(timeStampDay);
+            dayName = dayNames[_timeStampDays[index].weekday - 1];
+            month = monthNames[_timeStampDays[index].month - 1];
+            day = _timeStampDays[index].day.toString();
 
-        dayName = dayNames[_timeStampDays[index].weekday - 1];
-        month = monthNames[_timeStampDays[index].month - 1];
-        day = _timeStampDays[index].day.toString();
+            if(pageItemIndex > 0){
+              if(_timeStampDays[index].isAtSameMomentAs(_timeStampDays[index - 1])){
+                isSameDay = true;
+              }
+            }
 
-        if(pageItemIndex > 0){
-          if(_timeStampDays[index].isAtSameMomentAs(_timeStampDays[index - 1])){
-            isSameDay = true;
-          }
-        }
+            if(message['details'].length > 0){
+              Map details = message['details'][0];
+              String date = details['aa_event_date'];
+              eventTime = details['aa_event_time'];
+              eventDate = DateTime.parse(date);
+              boardTitle = details['aa_subj'];
+              boardDesc = details['aa_desc'];
+            }else{
+              boardTitle = message['notif_subj'];
+              boardDesc = message['notif_desc'];
+            }
 
-        if(message['details'].length > 0){
-          Map details = message['details'][0];
-          String date = details['aa_event_date'];
-          eventTime = details['aa_event_time'];
-          eventDate = DateTime.parse(date);
-          boardTitle = details['aa_subj'];
-          boardDesc = details['aa_desc'];
-        }else{
-          boardTitle = message['notif_subj'];
-          boardDesc = message['notif_desc'];
-        }
-
-        return Column(
-          children: <Widget>[
-            pageItemIndex != 0 ? Padding(padding: EdgeInsets.symmetric(vertical: 10.0)) : Container(),
-            isSameDay ? Container() : Container(
-              margin: EdgeInsets.only(top: pageItemIndex != 0 ? 40.0 : 0.0, left: 20.0),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200]
-                    ),
-                    width: 46.0,
-                    height: 3.0,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text(
-                      '$dayName, $month $day',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey[700]
+            return Column(
+              children: <Widget>[
+                pageItemIndex != 0 ? Padding(padding: EdgeInsets.symmetric(vertical: 10.0)) : Container(),
+                isSameDay ? Container() : Container(
+                  margin: EdgeInsets.only(top: pageItemIndex != 0 ? 40.0 : 0.0, left: 20.0),
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey[200]
+                        ),
+                        width: 46.0,
+                        height: 3.0,
                       ),
-                    ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        child: Text(
+                          '$dayName, $month $day',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[700]
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            Board(
-              title: boardTitle,
-              description: boardDesc,
-              category: message['category'],
-              hasResponse: message['category'] == 'appointment',
-              notifId: message['id'],
-              date: eventDate,
-              time: eventTime,
-              responseActions: responseActions,
-              activeType: activeType,
-              userId: userId,
-              timeStamp: timeStampHourMinute,
-            ),
-          ],
-        );
-      });
-    }else{
-      return Text('Something went wrong getting you updated. Please try again.');
-    }
+                ),
+                Board(
+                  title: boardTitle,
+                  description: boardDesc,
+                  category: message['category'],
+                  hasResponse: message['category'] == 'appointment',
+                  notifId: message['id'],
+                  date: eventDate,
+                  time: eventTime,
+                  responseActions: responseActions,
+                  activeType: activeType,
+                  userId: userId,
+                  timeStamp: timeStampHourMinute,
+                ),
+              ],
+            );
+          });
+        }else{
+          return Text('Something went wrong getting you updated. Please try again.');
+        }
 
-    return {'messages': _messages};
-  });
+        return {'messages': _messages};
+      });
 }
 
 Future fetchStudentMessages(userId, pageSize, pageNum) async {
