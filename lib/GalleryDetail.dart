@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class GalleryDetail extends StatelessWidget {
-  final String galleryName;
-  final String heroTag;
-  final String imgPath;
-
   GalleryDetail({
     this.galleryName,
     this.heroTag,
     this.imgPath
   });
+
+  final String galleryName;
+  final String heroTag;
+  final String imgPath;
 
   void open(BuildContext context, final int index) {
 //    Navigator.push(
@@ -125,7 +125,6 @@ class GalleryExampleItemThumbnail extends StatelessWidget {
       : super(key: key);
 
   final GalleryExampleItem galleryExampleItem;
-
   final GestureTapCallback onTap;
 
   @override

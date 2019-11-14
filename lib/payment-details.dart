@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
 class PaymentDetail {
-  String label;
+  PaymentDetail({this.label, this.amount, this.isPaid});
+
   String amount;
   bool isPaid;
-
-  PaymentDetail({this.label, this.amount, this.isPaid});
+  String label;
 }
 
 Future<List> fetchPaymentSettings(settingsId) async {
@@ -55,13 +55,13 @@ List<PaymentDetail> pre_school_payments = <PaymentDetail>[];
 List<PaymentDetail> kumon_payments = <PaymentDetail>[];
 
 class PaymentDataView extends StatelessWidget{
-  final String title;
-  final List<PaymentDetail> payments;
-
   PaymentDataView({
     this.title,
     this.payments,
   });
+
+  final List<PaymentDetail> payments;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -128,18 +128,6 @@ class PaymentDataView extends StatelessWidget{
 }
 
 class Payment {
-  String label;
-  String amount;
-  String paymentModes;
-  double dueAmount;
-  DateTime rawDate;
-  String paidDate;
-  String paymentSettingId;
-  String amountDesc;
-  String paymentNote;
-  Map paymentType;
-  bool isPaid;
-
   Payment({
     this.label,
     this.amount,
@@ -153,32 +141,44 @@ class Payment {
     this.paymentType,
     this.paymentNote
   });
+
+  String amount;
+  String amountDesc;
+  double dueAmount;
+  bool isPaid;
+  String label;
+  String paidDate;
+  String paymentModes;
+  String paymentNote;
+  String paymentSettingId;
+  Map paymentType;
+  DateTime rawDate;
 }
 
 class PaymentDetails extends StatelessWidget {
-  String date;
-  final String firstName;
-  final String lastName;
-  final String userId;
-  String paymentModes;
-  String amountDesc;
-  String paymentDate;
-  String paymentNote;
-  double amountPaid;
-  double amountDue;
-  double totalAnnualPackageOneFee;
-  Map paymentType;
-  var payment;
-  int installment;
-  double enrollmentFee;
-  double tuitionFee;
-
   PaymentDetails({
     this.firstName,
     this.lastName,
     this.userId,
     this.payment,
   });
+
+  String amountDesc;
+  double amountDue;
+  double amountPaid;
+  String date;
+  double enrollmentFee;
+  final String firstName;
+  int installment;
+  final String lastName;
+  var payment;
+  String paymentDate;
+  String paymentModes;
+  String paymentNote;
+  Map paymentType;
+  double totalAnnualPackageOneFee;
+  double tuitionFee;
+  final String userId;
 
   @override
   Widget build(BuildContext context) {

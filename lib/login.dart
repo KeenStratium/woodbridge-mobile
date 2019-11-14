@@ -52,11 +52,12 @@ class LoginBody extends StatefulWidget {
 }
 
 class _LoginBodyState extends State<LoginBody> {
-  final _userController = TextEditingController();
-  final _passwordController = TextEditingController();
   PDFDocument doc;
   List<Widget> guidePages = <Widget>[];
   int maxPagesCount;
+
+  final _passwordController = TextEditingController();
+  final _userController = TextEditingController();
 
   @override
   void initState(){

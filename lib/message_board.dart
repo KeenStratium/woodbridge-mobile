@@ -5,27 +5,27 @@ import 'woodbridge-ui_components.dart';
 import 'message_services.dart';
 
 class MessageBoard extends StatefulWidget {
-  String userId;
-  String firstName;
-  String lastName;
-  int pageSize = 6;
-  int pageNum = 1;
-  List<List<Widget>> messageBoardLists = <List<Widget>>[];
-  bool hasInitiated = false;
-
   MessageBoard({
     this.userId,
     this.firstName,
     this.lastName
   });
 
+  String firstName;
+  bool hasInitiated = false;
+  String lastName;
+  List<List<Widget>> messageBoardLists = <List<Widget>>[];
+  int pageNum = 1;
+  int pageSize = 6;
+  String userId;
+
   @override
   _MessageBoardState createState() => _MessageBoardState();
 }
 
 class _MessageBoardState extends State<MessageBoard> {
-  List<String> responseActions = ['Going', 'Not going', 'Undecided'];
   List<Widget> boards = <Widget>[];
+  List<String> responseActions = ['Going', 'Not going', 'Undecided'];
 
   @override
   Widget build(BuildContext context) {

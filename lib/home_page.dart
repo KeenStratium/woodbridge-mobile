@@ -234,17 +234,6 @@ Future seenNotification(notifId) async {
 }
 
 class HomePage extends StatefulWidget {
-  Widget child;
-  String firstName;
-  String lastName;
-  String heroTag;
-  String schoolLevel;
-  String classId;
-  String gradeLevel;
-  String gradeSection;
-  String avatarUrl;
-  List<String> userIds;
-
   HomePage({
     this.child,
     this.firstName,
@@ -258,54 +247,141 @@ class HomePage extends StatefulWidget {
     this.avatarUrl
   });
 
+  String avatarUrl;
+  Widget child;
+  String classId;
+  String firstName;
+  String gradeLevel;
+  String gradeSection;
+  String heroTag;
+  String lastName;
+  String schoolLevel;
+  List<String> userIds;
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  Map userIdUnreadStatus = {};
-
-  String _token;
-  StreamController streamController;
+  int absentDays = 0;
+  List<String> activityWithYearNames = [];
+  String attendanceStatus = '';
   Color attendanceStatusColor = Colors.redAccent;
   Icon attendanceStatusIcon = Icon(
     Icons.error_outline,
     color: Colors.redAccent,
   );
 
-  Map monthWithYearActivities = {};
-  List<String> activityWithYearNames = [];
-  Map<DateTime, List> holidayDays = {};
-
-  String attendanceStatus = '';
-  String schoolYearStart;
-  String schoolYearEnd;
-  String nextEventMonth;
-  String nextEventDay;
-  String nextPaymentMonth;
-  String nextPaymentDay;
-
-  List<DateTime> schoolDays = <DateTime>[];
-  List<DateTime> presentDays = <DateTime>[];
-  List<DateTime> noSchoolDays = <DateTime>[];
-  List<DateTime> specialSchoolDays = <DateTime>[];
-
-  DateTime yearStartDay;
-  DateTime yearEndDay;
-
-  double totalSchoolDays = 0;
-  int presentDaysNo = 0;
-  int pastSchoolDays = 0;
-  int absentDays = 0;
-
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-
   PDFDocument doc;
   List<Widget> guidePages = <Widget>[];
-
-  int notificationPageSize = 8;
+  Map<DateTime, List> holidayDays = {};
   int messagePageSize = 8;
+  Map monthWithYearActivities = {};
+  String nextEventDay;
+  String nextEventMonth;
+  String nextPaymentDay;
+  String nextPaymentMonth;
+  List<DateTime> noSchoolDays = <DateTime>[];
+  int notificationPageSize = 8;
+  bool otherChildHasUnreadNotif = false;
+  int pastSchoolDays = 0;
+  Map paymentData = {};
+  List<DateTime> presentDays = <DateTime>[];
+  int presentDaysNo = 0;
+  List<DateTime> schoolDays = <DateTime>[];
+  String schoolYearEnd;
+  String schoolYearStart;
+  List<DateTime> specialSchoolDays = <DateTime>[];
+  StreamController streamController;
+  double totalSchoolDays = 0;
+  Map userIdUnreadStatus = {};
+  DateTime yearEndDay;
+  DateTime yearStartDay;
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  String _token;
+
+  @override
+  void dispose() {
+    streamController.close();
+    super.dispose();
+  }
+
+  @override
+  void initState(){
+    List topics = getTopics();
+    int topicIndex = 0;
+    super.initState();
+
+    _setLoggedInStatus(true);
+
+    streamController = StreamController();
+
+    monthWithYearActivities = {};
+    activityWithYearNames = [];
+    holidayDays = {};
+
+    payments = [];
+    initialPayments = [];
+
+    schoolDays = <DateTime>[];
+    presentDays = <DateTime>[];
+    noSchoolDays = <DateTime>[];
+    specialSchoolDays = <DateTime>[];
+    userIdUnreadStatus = {};
+
+    for(topicIndex = 0; topicIndex < topics.length; topicIndex++){
+      Map topic = topics[topicIndex];
+
+      if(topic['topic'] == 'all'){
+        break;
+      }
+    }
+
+    if(topicIndex == topics.length){
+      addTopic('all', '');
+    }
+
+    firebaseCloudMessaging_Listeners(widget.classId);
+    transformActivityList(widget.classId);
+
+    fetchAttendanceInfo(widget.heroTag);
+    buildStudentPayments(widget.heroTag);
+    setStudentsUnreadNotif(widget.userIds);
+    _saveUserProfileData();
+
+    setAvatarUrl(widget.avatarUrl);
+
+    streamController.stream.listen((data){
+      setState(() {
+        paymentData = data;
+      });
+    });
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        updateHomeData();
+        print(message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        updateHomeData();
+        setStudentsUnreadNotif(widget.userIds);
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        updateHomeData();
+      },
+    );
+
+
+    SystemChannels.lifecycle.setMessageHandler((msg){
+      if(msg == 'AppLifecycleState.resumed'){
+        updateHomeData();
+      }
+    });
+
+    setUnreadNotif(widget.heroTag);
+  }
 
   Future initLoadPdf() async {
     doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
@@ -317,6 +393,7 @@ class _HomePageState extends State<HomePage> {
 
     return guidePages;
   }
+
   Future getHolidayList() async {
     return await fetchHolidayList()
       .then((resolve) {
@@ -342,6 +419,7 @@ class _HomePageState extends State<HomePage> {
         return Future.value(holidayDays);
       });
   }
+
   Future setUnreadNotif(String userId) async {
     return await getStudentUnseenNotifications(userId)
       .then((results) {
@@ -351,6 +429,7 @@ class _HomePageState extends State<HomePage> {
         }
       });
   }
+
   Future buildStudentPayments(userId) async {
     Completer _completer = Completer();
 
@@ -422,6 +501,7 @@ class _HomePageState extends State<HomePage> {
     _completer.complete();
     return _completer.future;
   }
+
   List<String> sortActivityNames(activityNamesSort) {
     List<int> sortedMonthIndex = <int>[];
     List<String> sortedMonthNames = <String>[];
@@ -449,10 +529,6 @@ class _HomePageState extends State<HomePage> {
 
     return sortedMonthNames;
   }
-
-  Map paymentData = {};
-
-  bool otherChildHasUnreadNotif = false;
 
   Future getAttendanceInfo(userId) async {
     return await Future.wait([
@@ -574,6 +650,7 @@ class _HomePageState extends State<HomePage> {
         })
     ]);
   }
+
   Future setStudentsUnreadNotif(List<String> userIds) async {
     otherChildHasUnreadNotif = false;
     userIdUnreadStatus = {};
@@ -604,6 +681,7 @@ class _HomePageState extends State<HomePage> {
   void fetchPdf() async {
     await initLoadPdf();
   }
+
   void transformActivityList(classId) async {
     await getStudentActivities(classId)
       .then((results) {
@@ -670,6 +748,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {});
       });
   }
+
   void firebaseCloudMessaging_Listeners(String classId) {
     List<Map> topics = getTopics();
     if (Platform.isIOS) iOS_Permission();
@@ -693,6 +772,7 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
+
   void iOS_Permission() {
     _firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true)
@@ -700,6 +780,7 @@ class _HomePageState extends State<HomePage> {
     _firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings settings) {});
   }
+
   void _saveUserProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -717,87 +798,6 @@ class _HomePageState extends State<HomePage> {
 
   void fetchAttendanceInfo(userId) async {
     await getAttendanceInfo(userId);
-  }
-
-  @override
-  void dispose() {
-    streamController.close();
-    super.dispose();
-  }
-
-  @override
-  void initState(){
-    List topics = getTopics();
-    int topicIndex = 0;
-    super.initState();
-
-    _setLoggedInStatus(true);
-
-    streamController = StreamController();
-
-    monthWithYearActivities = {};
-    activityWithYearNames = [];
-    holidayDays = {};
-
-    payments = [];
-    initialPayments = [];
-
-    schoolDays = <DateTime>[];
-    presentDays = <DateTime>[];
-    noSchoolDays = <DateTime>[];
-    specialSchoolDays = <DateTime>[];
-    userIdUnreadStatus = {};
-
-    for(topicIndex = 0; topicIndex < topics.length; topicIndex++){
-      Map topic = topics[topicIndex];
-
-      if(topic['topic'] == 'all'){
-        break;
-      }
-    }
-
-    if(topicIndex == topics.length){
-      addTopic('all', '');
-    }
-
-    firebaseCloudMessaging_Listeners(widget.classId);
-    transformActivityList(widget.classId);
-
-    fetchAttendanceInfo(widget.heroTag);
-    buildStudentPayments(widget.heroTag);
-    setStudentsUnreadNotif(widget.userIds);
-    _saveUserProfileData();
-
-    setAvatarUrl(widget.avatarUrl);
-
-    streamController.stream.listen((data){
-      setState(() {
-        paymentData = data;
-      });
-    });
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        updateHomeData();
-        print(message);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        updateHomeData();
-        setStudentsUnreadNotif(widget.userIds);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        updateHomeData();
-      },
-    );
-
-
-    SystemChannels.lifecycle.setMessageHandler((msg){
-      if(msg == 'AppLifecycleState.resumed'){
-        updateHomeData();
-      }
-    });
-
-    setUnreadNotif(widget.heroTag);
   }
 
   void routeNotificationPage(category) async {
@@ -901,6 +901,7 @@ class _HomePageState extends State<HomePage> {
       Navigator.push(context, routeNew);
     }
   }
+
   void updateHomeData() async {
     schoolDays = <DateTime>[];
     presentDays = <DateTime>[];
@@ -914,6 +915,7 @@ class _HomePageState extends State<HomePage> {
     setUnreadNotif(widget.heroTag);
     setStudentsUnreadNotif(widget.userIds);
   }
+
   void userData(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl, userId){
     widget.child = Avatar(
       backgroundColor: Colors.indigo,
@@ -935,6 +937,7 @@ class _HomePageState extends State<HomePage> {
     updateHomeData();
     _saveUserProfileData();
   }
+
   void _setLoggedInStatus(bool status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -1700,17 +1703,6 @@ class _HomePageState extends State<HomePage> {
 }
 
 class MenuItem extends StatelessWidget {
-  final Widget child;
-  final String iconPath;
-  final String label;
-  final Widget pageBuilder;
-  final BuildContext buildContext;
-  var customOnPressed;
-  bool isCustomOnPressed;
-  String unread_name;
-  int unreadCount = 0;
-  List unreadNotifIds = [];
-
   MenuItem({
     Key key,
     this.child,
@@ -1721,6 +1713,17 @@ class MenuItem extends StatelessWidget {
     this.isCustomOnPressed,
     this.customOnPressed
   }) : super(key: key);
+
+  final BuildContext buildContext;
+  final Widget child;
+  var customOnPressed;
+  final String iconPath;
+  bool isCustomOnPressed;
+  final String label;
+  final Widget pageBuilder;
+  String unread_name;
+  int unreadCount = 0;
+  List unreadNotifIds = [];
 
   @override
   Widget build(BuildContext context) {

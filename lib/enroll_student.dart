@@ -105,66 +105,65 @@ class EnrollStudent extends StatefulWidget {
 }
 
 class _EnrollStudentState extends State<EnrollStudent> {
-  int _genderRadio = -1;
-
-  bool _hadPriorSchooling = false;
-  bool _homeTelNumNA = false;
-  bool _hadAllergies = false;
-  bool _hadMedications = false;
-
-  DateTime _dateBirth;
-  String _dateBirthValue = null;
-
   List<String> sexLabels = ['Male', 'Female'];
-  List _month = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.',' Nov.', 'Dec.'];
-
-  // Student
-  final _fnameController = TextEditingController();
-  final _middleInitialController = TextEditingController();
-  final _lnameController = TextEditingController();
-  final _homeAddressController = TextEditingController();
-  final _homeTelNumController = TextEditingController();
-  final _placeOfBirthController = TextEditingController();
-  final _religionController = TextEditingController();
-  final _schoolHistoryController = TextEditingController();
-  final _allergiesController = TextEditingController();
-  final _legalGuardianController = TextEditingController();
-  final _medicationNamesController = TextEditingController();
-  final _medicationPurposesController = TextEditingController();
-  final _activitiesController = TextEditingController();
-  final _prefferedToysController = TextEditingController();
-  final _spendsHisDayController = TextEditingController();
-  final _schoolExpectationsController = TextEditingController();
-  final _otherConcernsController = TextEditingController();
-
   // Family
   List<String> titleLabels = ['Mr.', 'Mrs.', 'Dr.', 'Ms.', 'Arch.', 'Atty.', 'Engr.', 'Hon.', 'Other'];
 
-  // Family - Father
-  final _fatherFnameController = TextEditingController();
-  final _fatherMiddleInitialController = TextEditingController();
-  final _fatherLnameController = TextEditingController();
-  final _fatherHomeAddrController = TextEditingController();
-  final _fatherOccupationController = TextEditingController();
+
+  static bool _fatherHomeAddrSIsSame = false;
+  static bool _motherHomeAddrSIsSame = false;
+
+  final _activitiesController = TextEditingController();
+  final _allergiesController = TextEditingController();
+  DateTime _dateBirth;
+  String _dateBirthValue = null;
   final _fatherBusAddrController = TextEditingController();
   final _fatherBusTelNumController = TextEditingController();
-  final _fatherMobileNumController = TextEditingController();
   final _fatherEmailAddrController = TextEditingController();
-  String _fatherTitle;
-  static bool _fatherHomeAddrSIsSame = false;
+  // Family - Father
+  final _fatherFnameController = TextEditingController();
 
-  // Family - Mother
-  final _motherFnameController = TextEditingController();
-  final _motherMiddleInitialController = TextEditingController();
-  final _motherLnameController = TextEditingController();
-  final _motherHomeAddrController = TextEditingController();
-  final _motherOccupationController = TextEditingController();
+  final _fatherHomeAddrController = TextEditingController();
+  final _fatherLnameController = TextEditingController();
+  final _fatherMiddleInitialController = TextEditingController();
+  final _fatherMobileNumController = TextEditingController();
+  final _fatherOccupationController = TextEditingController();
+  String _fatherTitle;
+  // Student
+  final _fnameController = TextEditingController();
+
+  int _genderRadio = -1;
+  bool _hadAllergies = false;
+  bool _hadMedications = false;
+  bool _hadPriorSchooling = false;
+  final _homeAddressController = TextEditingController();
+  final _homeTelNumController = TextEditingController();
+  bool _homeTelNumNA = false;
+  final _legalGuardianController = TextEditingController();
+  final _lnameController = TextEditingController();
+  final _medicationNamesController = TextEditingController();
+  final _medicationPurposesController = TextEditingController();
+  final _middleInitialController = TextEditingController();
+  List _month = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.',' Nov.', 'Dec.'];
   final _motherBusAddrController = TextEditingController();
   final _motherBusTelNumController = TextEditingController();
-  final _motherMobileNumController = TextEditingController();
   final _motherEmailAddrController = TextEditingController();
+  // Family - Mother
+  final _motherFnameController = TextEditingController();
+
+  final _motherHomeAddrController = TextEditingController();
+  final _motherLnameController = TextEditingController();
+  final _motherMiddleInitialController = TextEditingController();
+  final _motherMobileNumController = TextEditingController();
+  final _motherOccupationController = TextEditingController();
   String _motherTitle;
-  static bool _motherHomeAddrSIsSame = false;
+  final _otherConcernsController = TextEditingController();
+  final _placeOfBirthController = TextEditingController();
+  final _prefferedToysController = TextEditingController();
+  final _religionController = TextEditingController();
+  final _schoolExpectationsController = TextEditingController();
+  final _schoolHistoryController = TextEditingController();
+  final _spendsHisDayController = TextEditingController();
 
   Future _selectDateBirth() async {
     _dateBirth = await showDatePicker(
@@ -756,13 +755,6 @@ class _EnrollStudentState extends State<EnrollStudent> {
 }
 
 class InputTextField extends StatelessWidget {
-  final double VerticalSpacing = 6.0;
-  final String label;
-  List<TextInputFormatter> inputFormatter;
-  TextEditingController controller;
-  final onSaved;
-  FocusNode focus;
-
   InputTextField({
     this.label,
     this.controller,
@@ -770,6 +762,13 @@ class InputTextField extends StatelessWidget {
     this.onSaved,
     this.focus
   });
+
+  TextEditingController controller;
+  FocusNode focus;
+  List<TextInputFormatter> inputFormatter;
+  final String label;
+  final onSaved;
+  final double VerticalSpacing = 6.0;
 
   @override
   Widget build(BuildContext context) {
@@ -796,13 +795,13 @@ class InputTextField extends StatelessWidget {
 }
 
 class InputDropdownButton extends StatefulWidget{
-  final List<String> dropdownValueLabels;
-  String dropdownValue;
-
   InputDropdownButton({
     this.dropdownValueLabels,
     this.dropdownValue
   });
+
+  String dropdownValue;
+  final List<String> dropdownValueLabels;
 
   @override
   _InputDropdownButtonState createState() => _InputDropdownButtonState();
@@ -829,13 +828,13 @@ class _InputDropdownButtonState extends State<InputDropdownButton> {
 }
 
 class customFormField extends StatelessWidget {
-  final String fieldTitle;
-  final Widget child;
-
   customFormField({
     this.fieldTitle,
     this.child
   });
+
+  final Widget child;
+  final String fieldTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -863,12 +862,6 @@ class customFormField extends StatelessWidget {
 }
 
 class ReactiveInputTextField extends StatefulWidget {
-  TextEditingController controller;
-  bool conditionalControl;
-  String label;
-  String conditionalLabel;
-  var onChange;
-
   ReactiveInputTextField({
     this.controller,
     this.conditionalControl,
@@ -876,6 +869,12 @@ class ReactiveInputTextField extends StatefulWidget {
     this.label,
     this.conditionalLabel
   });
+
+  bool conditionalControl;
+  String conditionalLabel;
+  TextEditingController controller;
+  String label;
+  var onChange;
 
   @override
   _ReactiveInputTextFieldState createState() => _ReactiveInputTextFieldState();

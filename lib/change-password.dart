@@ -27,12 +27,6 @@ Future changePassword(userId, password) async {
 }
 
 class ChangePassword extends StatelessWidget {
-  String userId;
-  List<String> userIds;
-  bool hasAgreed;
-  List<Widget> guidePages = <Widget>[];
-  final int maxPageCount;
-
   ChangePassword({
     this.userId,
     this.userIds,
@@ -40,6 +34,12 @@ class ChangePassword extends StatelessWidget {
     this.guidePages,
     this.maxPageCount
   });
+
+  List<Widget> guidePages = <Widget>[];
+  bool hasAgreed;
+  final int maxPageCount;
+  String userId;
+  List<String> userIds;
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +54,6 @@ class ChangePassword extends StatelessWidget {
 }
 
 class ChangePasswordPage extends StatefulWidget {
-  String userId;
-  List<String> userIds;
-  bool hasAgreed;
-  List<Widget> guidePages = <Widget>[];
-  final int maxPageCount;
-  bool hasFinishedLoading = false;
-  bool updateInitialTapped = false;
-
   ChangePasswordPage({
     this.userId,
     this.userIds,
@@ -70,17 +62,30 @@ class ChangePasswordPage extends StatefulWidget {
     this.maxPageCount
   });
 
+  List<Widget> guidePages = <Widget>[];
+  bool hasAgreed;
+  bool hasFinishedLoading = false;
+  final int maxPageCount;
+  bool updateInitialTapped = false;
+  String userId;
+  List<String> userIds;
+
   @override
   _ChangePasswordPageState createState() => _ChangePasswordPageState();
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  var _passwordController = TextEditingController();
-  var _passwordAgainController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
-
   String noticeText;
+
+  final _formKey = GlobalKey<FormState>();
+  var _passwordAgainController = TextEditingController();
+  var _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    checkAgreement();
+  }
 
   void checkAgreement() async {
     if(widget.hasAgreed){
@@ -88,12 +93,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     }else {
       noticeText = "To activate your account, update to a new password.";
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    checkAgreement();
   }
 
   @override

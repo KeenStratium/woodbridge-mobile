@@ -93,15 +93,6 @@ class BrandTheme {
 }
 
 class Avatar extends StatelessWidget {
-  final Color backgroundColor;
-  final double maxRadius;
-  final String initial;
-  final double fontSize;
-  final String avatarUrl;
-  bool enableShadow;
-  bool hasPhoto = false;
-  double minRadius = null;
-
   Avatar({
     this.backgroundColor,
     this.maxRadius,
@@ -111,6 +102,15 @@ class Avatar extends StatelessWidget {
     this.enableShadow,
     this.avatarUrl
   });
+
+  final String avatarUrl;
+  final Color backgroundColor;
+  bool enableShadow;
+  final double fontSize;
+  bool hasPhoto = false;
+  final String initial;
+  final double maxRadius;
+  double minRadius = null;
 
   @override
   Widget build(BuildContext context) {
@@ -153,16 +153,16 @@ class Avatar extends StatelessWidget {
 }
 
 class ProfileHeader extends StatelessWidget {
-  final String firstName;
-  final String lastName;
-  String heroTag;
-
   ProfileHeader({
     Key key,
     this.firstName,
     this.lastName,
     this.heroTag,
   }) : super(key: key);
+
+  final String firstName;
+  String heroTag;
+  final String lastName;
 
   @override
   Widget build(BuildContext context) {
@@ -211,12 +211,6 @@ class ProfileHeader extends StatelessWidget {
 }
 
 class DashboardTile extends StatelessWidget {
-  final String label;
-  final String value;
-  final Widget child;
-  final bool displayPlainValue;
-  final bool isActive;
-
   DashboardTile({
     Key key,
     this.label,
@@ -227,6 +221,12 @@ class DashboardTile extends StatelessWidget {
     this.displayPlainValue: false,
     this.isActive: true
   }) : super(key: key);
+
+  final Widget child;
+  final bool displayPlainValue;
+  final bool isActive;
+  final String label;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
@@ -258,21 +258,20 @@ class DashboardTile extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class CtaButton extends FlatButton {
-  String label;
-  var onPressed;
-  Color color;
-  bool isDisabled = false;
-
   CtaButton({
     this.onPressed,
     this.label,
     this.color,
     this.isDisabled
   });
+
+  Color color;
+  bool isDisabled = false;
+  String label;
+  var onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -301,15 +300,15 @@ class CtaButton extends FlatButton {
 }
 
 class accentCtaButton extends FlatButton {
-  String label;
-  var onPressed;
-  bool isDisabled;
-
   accentCtaButton({
     this.onPressed,
     this.label,
     this.isDisabled
   });
+
+  bool isDisabled;
+  String label;
+  var onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -326,13 +325,6 @@ class accentCtaButton extends FlatButton {
 }
 
 class StudentAvatarPicker extends StatefulWidget{
-  final userId;
-  final heroTag;
-  final bool hasUnreadNotif;
-  bool enableShadow;
-  bool isActive;
-  var onTap;
-
   StudentAvatarPicker({
     Key key,
     this.userId,
@@ -343,19 +335,33 @@ class StudentAvatarPicker extends StatefulWidget{
     this.hasUnreadNotif = false
   }) : super(key: key);
 
+  bool enableShadow;
+  final bool hasUnreadNotif;
+  final heroTag;
+  bool isActive;
+  var onTap;
+  final userId;
+
   @override
   _StudentAvatarPickerState createState() => _StudentAvatarPickerState();
 }
 
 class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
-  String fname;
-  String lname;
-  String schoolLevel; // TODO: Verify if school level is 's_grade_level' or 's_school'
+  String avatarUrl;
+  String avatarUrlExt;
   String classId;
+  String fname;
   String gradeLevel;
   String gradeSection;
-  String avatarUrlExt;
-  String avatarUrl;
+  String lname;
+  String schoolLevel; // TODO: Verify if school level is 's_grade_level' or 's_school'
+
+  @override
+  void initState() {
+    super.initState();
+
+    getStudent(widget.userId);
+  }
 
   void getStudent(userId) async {
     await _getStudentInfo(userId)
@@ -376,13 +382,6 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
           addTopic(classId, student['s_id']);
         });
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    getStudent(widget.userId);
   }
 
   @override
@@ -512,12 +511,6 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
 }
 
 class InputRadioButton extends StatefulWidget {
-  int radioValue;
-  final List<String> radioValueLabels;
-  final String label;
-  String direction;
-  var onChangeCallback;
-
   InputRadioButton({
     this.radioValue,
     this.radioValueLabels,
@@ -525,6 +518,12 @@ class InputRadioButton extends StatefulWidget {
     this.direction,
     this.onChangeCallback
   });
+
+  String direction;
+  final String label;
+  var onChangeCallback;
+  int radioValue;
+  final List<String> radioValueLabels;
 
   @override
   _InputRadioButtonState createState() => _InputRadioButtonState();
@@ -592,17 +591,17 @@ class _InputRadioButtonState extends State<InputRadioButton> {
 }
 
 class PaginationControl extends StatefulWidget {
-  int pageNum;
-  var prevCallback;
-  var nextCallback;
-  bool nextDisableCondition;
-
   PaginationControl({
     this.pageNum,
     this.prevCallback,
     this.nextCallback,
     this.nextDisableCondition
   });
+
+  var nextCallback;
+  bool nextDisableCondition;
+  int pageNum;
+  var prevCallback;
 
   @override
   _PaginationControlState createState() => _PaginationControlState();

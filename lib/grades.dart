@@ -7,19 +7,19 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
 class Grade {
-  String subject;
-  String first;
-  String second;
-  String third;
-  String fourth;
-  String ave;
-
   Grade({this.subject, this.first, this.second, this.third, this.fourth, this.ave});
+
+  String ave;
+  String first;
+  String fourth;
+  String second;
+  String subject;
+  String third;
 }
 
 class Areas {
-  String number;
   String location;
+  String number;
 }
 
 Future<List> fetchMarkingCodes(schoolLevel) async {
@@ -66,17 +66,17 @@ Future<List> fetchPsychSkills(userId, schoolLevel) async {
 }
 
 class Grades extends StatefulWidget {
-  final String firstName;
-  final String lastName;
-  final String userId;
-  final String schoolLevel;
-
   Grades({
     this.firstName,
     this.lastName,
     this.userId,
     this.schoolLevel,
   });
+
+  final String firstName;
+  final String lastName;
+  final String schoolLevel;
+  final String userId;
 
   @override
   _GradesState createState() => _GradesState();
@@ -338,13 +338,13 @@ class _GradesState extends State<Grades> {
 }
 
 class GradeCard extends StatelessWidget {
-  final Grade grade;
-  bool includeAve = true;
-
   GradeCard({
     this.grade,
     this.includeAve
   });
+
+  final Grade grade;
+  bool includeAve = true;
 
   @override
   Widget build(BuildContext context) {
@@ -436,13 +436,13 @@ class GradeCard extends StatelessWidget {
 }
 
 class QuarterGrade extends StatelessWidget {
-  final String label;
-  String value;
-
   QuarterGrade({
     this.label,
     this.value
   });
+
+  final String label;
+  String value;
 
   @override
   Widget build(BuildContext context) {
