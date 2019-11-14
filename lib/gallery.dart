@@ -37,12 +37,12 @@ class PhotoCard extends StatelessWidget {
   final String caption;
   final int id;
   final String imgUrl;
-  String militaryTime;
   final DateTime timeStamp;
 
   @override
   Widget build(BuildContext context) {
-    militaryTime = '${timeStamp.hour}:${timeStamp.minute}';
+    final String militaryTime = '${timeStamp.hour}:${timeStamp.minute}'; 
+
     DateTime now = DateTime.now();
     int currentEpoch = (now.millisecondsSinceEpoch/1000).floor();
     var postDateEpoch = (timeStamp.millisecondsSinceEpoch/1000).floor();
@@ -212,12 +212,12 @@ class ActivityGallery extends StatefulWidget {
 
   final String classId;
   final String firstName;
-  bool isLastItem = false;
+  final bool isLastItem = false;
   bool isLoading = false;
   final String lastName;
   bool noMoreImages = false;
   int pageNum = 1;
-  int pageSize = 2;
+  final int pageSize = 2;
   final String userId;
 
   @override
@@ -323,7 +323,7 @@ class _ActivityGalleryState extends State<ActivityGallery> {
               Map photo = results[i];
               _photos.add(PhotoCard(
                 id: _photos.length,
-                imgUrl: '${baseServer}/${photo['img_url']}',
+                imgUrl: '$baseServer/${photo['img_url']}',
                 timeStamp: DateTime.parse(photo['date_posted']).toLocal(),
                 caption: photo['caption']
               ));

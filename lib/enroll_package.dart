@@ -1,7 +1,8 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'model.dart';
+// import 'dart:async';
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+// import 'model.dart';
+// TODO: Header imports to be used when this feature is enabled
 
 import 'enroll_student.dart';
 
@@ -576,10 +577,10 @@ class PackageOptionCard extends StatefulWidget {
     this.isSelected
   });
 
-  bool isSelected;
-  Widget packageDesc;
-  String packageName;
-  String uponEnrollmentFee;
+  final bool isSelected;
+  final Widget packageDesc;
+  final String packageName;
+  final String uponEnrollmentFee;
 
 @override
   _PackageOptionCardState createState() => _PackageOptionCardState();
@@ -664,8 +665,8 @@ class PackageDescLabelField extends StatelessWidget {
     this.value
   });
 
-  String label;
-  String value;
+  final String label;
+  final String value;
 
   @override
   Widget build(BuildContext context) {

@@ -141,10 +141,11 @@ class _InitialOnboardState extends State<InitialOnboard> {
                                   color: widget.currentPage == 0 ? Colors.grey[400] : Colors.grey[600],
                                 ),
                                 onPressed: (){
-                                  widget.currentPage >= 1 ?
-                                  mounted ? setState(() {
-                                    widget.currentPage--;
-                                  }) : null : null;
+                                  if(widget.currentPage >= 1 && mounted){
+                                    setState(() {
+                                      widget.currentPage--;
+                                    });
+                                  }
                                 },
                               ),
                             ),
@@ -158,10 +159,11 @@ class _InitialOnboardState extends State<InitialOnboard> {
                                   color: widget.currentPage == maxPage - 1 ? Colors.grey[400] : _enableAgreementBtn ? Colors.grey[600] : Theme.of(context).accentColor,
                                 ),
                                 onPressed: (){
-                                  widget.currentPage < maxPage - 1 ?
-                                  mounted ? setState(() {
-                                    widget.currentPage++;
-                                  }) : null : null;
+                                  if(widget.currentPage < maxPage - 1 && mounted){
+                                    setState(() {
+                                      widget.currentPage++;
+                                    });
+                                  }
                                 },
                               ),
                             ),

@@ -55,7 +55,7 @@ class _ProfileState extends State<Profile> {
       lInitial = widget.lastName != null ? widget.lastName[0] ?? '' : '';
     } catch(e) {
       lInitial = '';
-    };
+    }
 
     void _buildProfileFields() {
       profileInfo.forEach((label, value) {

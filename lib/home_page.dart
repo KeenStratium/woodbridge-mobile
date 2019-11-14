@@ -185,14 +185,14 @@ Future addNotificationToken(token, topic, studentId) async {
 
   return jsonDecode(response.body);
 }
-Future addNotificationTopic(topic, token, s_id) async {
+Future addNotificationTopic(topic, token, _sId) async {
   String url = '$baseApi/account/add-notif-topic';
 
   var response = await http.post(url, body: json.encode({
     'data': {
       'topic': topic,
       'token': token,
-      's_id': s_id
+      's_id': _sId
     }
   }),
       headers: {
@@ -343,7 +343,7 @@ class _HomePageState extends State<HomePage> {
       addTopic('all', '');
     }
 
-    firebaseCloudMessaging_Listeners(widget.classId);
+    firebaseCloudMessagingListeners(widget.classId);
     transformActivityList(widget.classId);
 
     fetchAttendanceInfo(widget.heroTag);
@@ -615,7 +615,7 @@ class _HomePageState extends State<HomePage> {
                             if((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) && !presentDays.contains(holidayDay)){
                               absentDays--;
                             }
-                          };
+                          }
                         });
                       });
                     });
@@ -749,9 +749,9 @@ class _HomePageState extends State<HomePage> {
       });
   }
 
-  void firebaseCloudMessaging_Listeners(String classId) {
+  void firebaseCloudMessagingListeners(String classId) {
     List<Map> topics = getTopics();
-    if (Platform.isIOS) iOS_Permission();
+    if (Platform.isIOS) iOSPermission();
     _token = "";
     _firebaseMessaging.getToken().then((token){
       print(token);
@@ -773,7 +773,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void iOS_Permission() {
+  void iOSPermission() {
     _firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true)
     );
@@ -801,16 +801,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   void routeNotificationPage(category) async {
-    String unread_name;
+    String _unreadName;
     List unreadNotifIds = [];
 
     setUnreadNotif(widget.heroTag)
       .then((resolve) {
-        category == 'progress' ? unread_name = 'grade_update' : null;
-        category == 'Activities' ? unread_name = 'activities' : null;
-        category == 'photos' ? unread_name = 'photo_update' : null;
-        category == 'attendance' ? unread_name = 'student_present' : null;
-        category == 'Payments' ? unread_name = 'payment_due' : null;
+        category == 'progress' ? _unreadName = 'grade_update' : null;
+        category == 'Activities' ? _unreadName = 'activities' : null;
+        category == 'photos' ? _unreadName = 'photo_update' : null;
+        category == 'attendance' ? _unreadName = 'student_present' : null;
+        category == 'Payments' ? _unreadName = 'payment_due' : null;
 
         if(category == 'messages' || category == 'appointment'){
           unreadNotifIds.addAll(getModuleUnreadNotifIds('announcement'));
@@ -818,8 +818,8 @@ class _HomePageState extends State<HomePage> {
           setCategorySeen('appointment');
           setCategorySeen('announcement');
         }else{
-          unreadNotifIds.addAll(getModuleUnreadNotifIds(unread_name));
-          setCategorySeen(unread_name);
+          unreadNotifIds.addAll(getModuleUnreadNotifIds(_unreadName));
+          setCategorySeen(_unreadName);
         }
 
         for(int i = 0; i < unreadNotifIds.length; i++){
@@ -886,7 +886,7 @@ class _HomePageState extends State<HomePage> {
           userId: this.widget.heroTag,
           schoolDays: this.schoolDays,
           presentDays: this.presentDays,
-          noSchoolDays: this.noSchoolDays,
+          noSchoolDays: this.noSchoolDays ?? <DateTime>[],
           specialSchoolDays: this.specialSchoolDays,
           yearStartDay: this.yearStartDay,
           yearEndDay: this.yearEndDay,
@@ -1525,7 +1525,7 @@ class _HomePageState extends State<HomePage> {
                                             userId: this.widget.heroTag,
                                             schoolDays: this.schoolDays,
                                             presentDays: this.presentDays,
-                                            noSchoolDays: this.noSchoolDays,
+                                            noSchoolDays: this.noSchoolDays ?? <DateTime>[],
                                             specialSchoolDays: this.specialSchoolDays,
                                             yearStartDay: this.yearStartDay,
                                             yearEndDay: this.yearEndDay,
@@ -1723,25 +1723,25 @@ class MenuItem extends StatelessWidget {
   bool isCustomOnPressed;
   final String label;
   final Widget pageBuilder;
-  String unread_name;
+  String _unreadName;
   int unreadCount = 0;
   List unreadNotifIds = [];
 
   @override
   Widget build(BuildContext context) {
-    label == 'Progress' ? unread_name = 'grade_update' : null;
-    label == 'Activities' ? unread_name = 'activity_new' : null;
-    label == 'Photos' ? unread_name = 'photo_update' : null;
-    label == 'Attendance' ? unread_name = 'student_present' : null;
-    label == 'Payments' ? unread_name = 'payment_due' : null;
+    label == 'Progress' ? _unreadName = 'grade_update' : null;
+    label == 'Activities' ? _unreadName = 'activity_new' : null;
+    label == 'Photos' ? _unreadName = 'photo_update' : null;
+    label == 'Attendance' ? _unreadName = 'student_present' : null;
+    label == 'Payments' ? _unreadName = 'payment_due' : null;
 
     if(label == 'Messages'){
       unreadCount = getModuleUnreadCount('appointment') + getModuleUnreadCount('announcement');
       unreadNotifIds.addAll(getModuleUnreadNotifIds('appointment'));
       unreadNotifIds.addAll(getModuleUnreadNotifIds('announcement'));
     }else{
-      unreadCount = getModuleUnreadCount(unread_name);
-      unreadNotifIds.addAll(getModuleUnreadNotifIds(unread_name));
+      unreadCount = getModuleUnreadCount(_unreadName);
+      unreadNotifIds.addAll(getModuleUnreadNotifIds(_unreadName));
     }
 
     if(isCustomOnPressed == null){
@@ -1765,7 +1765,7 @@ class MenuItem extends StatelessWidget {
             setCategorySeen('appointment');
             setCategorySeen('announcement');
           }else{
-            setCategorySeen(unread_name);
+            setCategorySeen(_unreadName);
           }
           if(isCustomOnPressed){
             customOnPressed();

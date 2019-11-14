@@ -15,7 +15,7 @@ class Notifications extends StatefulWidget {
   final String lastName;
   List<List<Widget>> notificationTiles = <List<Widget>>[];
   int pageNum = 1;
-  int pageSize = 10;
+  final int pageSize = 10;
   final String userId;
 
   @override

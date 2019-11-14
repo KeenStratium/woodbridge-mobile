@@ -30,7 +30,7 @@ class StudentPicker extends StatefulWidget {
     @required this.users
   }) : super(key: key);
 
-  List<String> users;
+  final List<String> users;
 
   @override
   _StudentPickerState createState() => _StudentPickerState();

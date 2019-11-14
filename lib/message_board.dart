@@ -11,13 +11,13 @@ class MessageBoard extends StatefulWidget {
     this.lastName
   });
 
-  String firstName;
+  final String firstName;
   bool hasInitiated = false;
   String lastName;
   List<List<Widget>> messageBoardLists = <List<Widget>>[];
   int pageNum = 1;
-  int pageSize = 6;
-  String userId;
+  final int pageSize = 6;
+  final String userId;
 
   @override
   _MessageBoardState createState() => _MessageBoardState();

@@ -14,33 +14,33 @@ class Attendance extends StatefulWidget {
     this.firstName,
     this.lastName,
     this.userId,
-    this.schoolDays,
-    this.presentDays,
-    this.noSchoolDays,
-    this.specialSchoolDays,
+    this.schoolDays: const <DateTime>[],
+    this.presentDays: const <DateTime>[],
+    this.noSchoolDays: const <DateTime>[],
+    this.specialSchoolDays: const <DateTime>[],
     this.yearStartDay,
     this.yearEndDay,
-    this.presentDaysNo,
-    this.pastSchoolDays,
-    this.absentDays,
-    this.totalSchoolDays,
+    this.presentDaysNo: 0,
+    this.pastSchoolDays: 0,
+    this.absentDays: 0,
+    this.totalSchoolDays: 0
   });
 
-  int absentDays = 0;
+  final int absentDays;
   final String firstName;
   bool hasInitiated = false;
   Map<DateTime, List> holidayDays = {};
   final String lastName;
-  List<DateTime> noSchoolDays = <DateTime>[];
-  int pastSchoolDays = 0;
-  List<DateTime> presentDays = <DateTime>[];
-  int presentDaysNo = 0;
-  List<DateTime> schoolDays = <DateTime>[];
-  List<DateTime> specialSchoolDays = <DateTime>[];
-  double totalSchoolDays = 0;
+  final List<DateTime> noSchoolDays;
+  final int pastSchoolDays;
+  final List<DateTime> presentDays;
+  final int presentDaysNo;
+  final List<DateTime> schoolDays;
+  final List<DateTime> specialSchoolDays;
+  final double totalSchoolDays;
   final String userId;
-  DateTime yearEndDay;
-  DateTime yearStartDay;
+  final DateTime yearEndDay;
+  final DateTime yearStartDay;
 
   @override
   _AttendanceState createState() => _AttendanceState();
@@ -232,7 +232,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
             }
 
             try{
-              if(_events[schoolDayIndex].isEmpty);
+              if(_events[schoolDayIndex].isEmpty){}
             }catch(e){
               _events[schoolDayIndex] = [];
             }

@@ -35,7 +35,7 @@ class ResponseButton extends StatefulWidget {
   bool isActive;
   String label;
   var onTap;
-  int type;
+  final int type;
 
   @override
   _ResponseButtonState createState() => _ResponseButtonState();

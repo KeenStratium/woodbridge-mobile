@@ -31,15 +31,15 @@ class ChangePassword extends StatelessWidget {
     this.userId,
     this.userIds,
     this.hasAgreed,
-    this.guidePages,
+    this.guidePages: const <Widget>[],
     this.maxPageCount
   });
 
-  List<Widget> guidePages = <Widget>[];
-  bool hasAgreed;
+  final List<Widget> guidePages;
+  final bool hasAgreed;
   final int maxPageCount;
-  String userId;
-  List<String> userIds;
+  final String userId;
+  final List<String> userIds;
 
   @override
   Widget build(BuildContext context) {
@@ -58,17 +58,17 @@ class ChangePasswordPage extends StatefulWidget {
     this.userId,
     this.userIds,
     this.hasAgreed,
-    this.guidePages,
+    this.guidePages: const <Widget>[],
     this.maxPageCount
   });
 
-  List<Widget> guidePages = <Widget>[];
-  bool hasAgreed;
+  final List<Widget> guidePages;
+  final bool hasAgreed;
   bool hasFinishedLoading = false;
   final int maxPageCount;
   bool updateInitialTapped = false;
-  String userId;
-  List<String> userIds;
+  final String userId;
+  final List<String> userIds;
 
   @override
   _ChangePasswordPageState createState() => _ChangePasswordPageState();
@@ -150,13 +150,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
                                   if(value.isEmpty) {
                                     return 'Enter a password';
-                                  };
+                                  }
                                   if(value == 'woodbridge'){
                                     return 'Please set a new password';
-                                  };
+                                  }
                                   if(!validCharacters.hasMatch(value)){
                                     return 'Avoid using special characters';
-                                  };
+                                  }
                                   return null;
                                 },
                                 decoration: InputDecoration(

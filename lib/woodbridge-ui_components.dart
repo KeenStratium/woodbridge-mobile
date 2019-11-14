@@ -110,7 +110,7 @@ class Avatar extends StatelessWidget {
   bool hasPhoto = false;
   final String initial;
   final double maxRadius;
-  double minRadius = null;
+  double minRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +161,7 @@ class ProfileHeader extends StatelessWidget {
   }) : super(key: key);
 
   final String firstName;
-  String heroTag;
+  final String heroTag;
   final String lastName;
 
   @override
@@ -290,7 +290,9 @@ class CtaButton extends FlatButton {
           ),
         ),
         onPressed: (() {
-          isDisabled ? null : onPressed();
+          if(isDisabled != null){
+            onPressed();
+          }
         }),
         padding: EdgeInsets.symmetric(vertical: 20.0),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

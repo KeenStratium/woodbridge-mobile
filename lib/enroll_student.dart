@@ -116,7 +116,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
   final _activitiesController = TextEditingController();
   final _allergiesController = TextEditingController();
   DateTime _dateBirth;
-  String _dateBirthValue = null;
+
   final _fatherBusAddrController = TextEditingController();
   final _fatherBusTelNumController = TextEditingController();
   final _fatherEmailAddrController = TextEditingController();
@@ -172,7 +172,6 @@ class _EnrollStudentState extends State<EnrollStudent> {
       firstDate: new DateTime(2000),
       lastDate: (new DateTime.now()).add(new Duration(hours: 1))
     );
-    if(_dateBirth != null) setState(() => _dateBirthValue = _dateBirth.toString());
   }
 
   @override
@@ -436,7 +435,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             InputTextField(label: "Father's First Name", controller: _fatherFnameController),
                             InputTextField(label: "Father's Middle Initial", controller: _fatherMiddleInitialController),
                             InputTextField(label: "Father's Last Name", controller: _fatherLnameController),
-                            customFormField(
+                            CustomFormField(
                               fieldTitle: "Father's Title",
                               child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _fatherTitle)
                             ),
@@ -481,7 +480,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             InputTextField(label: "Mother's First Name", controller: _motherFnameController),
                             InputTextField(label: "Mother's Middle Initial", controller: _motherMiddleInitialController),
                             InputTextField(label: "Mother's Last Name", controller: _motherLnameController),
-                            customFormField(
+                            CustomFormField(
                                 fieldTitle: "Mother's Title",
                                 child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _motherTitle)
                             ),
@@ -516,7 +515,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                     child: Flex(
                       direction: Axis.vertical,
                       children: <Widget>[
-                        customFormField(
+                        CustomFormField(
                           fieldTitle: "Does your child have any siblings?",
                           child: SingleChildScrollView(
                             child: Flex(
@@ -544,7 +543,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           )
                         ),
                         InputTextField(label: "Who is your child's legal guardian?", controller: _legalGuardianController),
-                        customFormField(
+                        CustomFormField(
                           fieldTitle: "Who is/are assigned to pick your child up from the school?",
                           child: SingleChildScrollView(
                                 child: Flex(
@@ -763,23 +762,25 @@ class InputTextField extends StatelessWidget {
     this.focus
   });
 
-  TextEditingController controller;
-  FocusNode focus;
-  List<TextInputFormatter> inputFormatter;
+  final TextEditingController controller;
+  final FocusNode focus;
+  final List<TextInputFormatter> inputFormatter;
   final String label;
   final onSaved;
-  final double VerticalSpacing = 6.0;
+  final double _verticalSpacing = 6.0;
 
   @override
   Widget build(BuildContext context) {
-    focus == null ? null : this.focus.addListener(() {
-      if(!focus.hasFocus){
-        onSaved();
-      }
-    });
+    if(focus != null){
+      this.focus.addListener(() {
+        if(!focus.hasFocus){
+          onSaved();
+        }
+      });
+    }
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: VerticalSpacing),
+      padding: EdgeInsets.symmetric(vertical: _verticalSpacing),
       child: TextFormField(
         controller: controller,
         inputFormatters: inputFormatter,
@@ -827,8 +828,8 @@ class _InputDropdownButtonState extends State<InputDropdownButton> {
   }
 }
 
-class customFormField extends StatelessWidget {
-  customFormField({
+class CustomFormField extends StatelessWidget {
+  CustomFormField({
     this.fieldTitle,
     this.child
   });
@@ -870,10 +871,10 @@ class ReactiveInputTextField extends StatefulWidget {
     this.conditionalLabel
   });
 
-  bool conditionalControl;
-  String conditionalLabel;
+  final bool conditionalControl;
+  final String conditionalLabel;
   TextEditingController controller;
-  String label;
+  final String label;
   var onChange;
 
   @override
@@ -934,7 +935,7 @@ onSave(
     columnTwoFocus.add(FocusNode());
 
     columnOneFields.add(InputTextField(
-        label: "${columnOneLabel} #${newSiblingIndex + 1}",
+        label: "$columnOneLabel #${newSiblingIndex + 1}",
         controller: columnOneController[newSiblingIndex],
         onSaved: () {
           onSave(
