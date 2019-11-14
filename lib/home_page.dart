@@ -378,6 +378,8 @@ class _HomePageState extends State<HomePage> {
       if(msg == 'AppLifecycleState.resumed'){
         updateHomeData();
       }
+      
+      return null;
     });
 
     setUnreadNotif(widget.heroTag);
@@ -806,11 +808,11 @@ class _HomePageState extends State<HomePage> {
 
     setUnreadNotif(widget.heroTag)
       .then((resolve) {
-        category == 'progress' ? _unreadName = 'grade_update' : null;
-        category == 'Activities' ? _unreadName = 'activities' : null;
-        category == 'photos' ? _unreadName = 'photo_update' : null;
-        category == 'attendance' ? _unreadName = 'student_present' : null;
-        category == 'Payments' ? _unreadName = 'payment_due' : null;
+        if(category == 'progress') { _unreadName = 'grade_update'; }
+        if(category == 'Activities') { _unreadName = 'activities'; }
+        if(category == 'photos') { _unreadName = 'photo_update'; }
+        if(category == 'attendance') { _unreadName = 'student_present'; }
+        if(category == 'Payments') { _unreadName = 'payment_due'; }
 
         if(category == 'messages' || category == 'appointment'){
           unreadNotifIds.addAll(getModuleUnreadNotifIds('announcement'));
