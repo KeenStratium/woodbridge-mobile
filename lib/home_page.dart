@@ -1593,11 +1593,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                     appBar: AppBar(
                       title: Container(
+                        height: 46,
                         margin: EdgeInsets.symmetric(horizontal: 14.0, vertical: 6.0),
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage("img/mywoodbridge.png")
-                          )
+                            image: AssetImage("img/mywoodbridge.png"),
+                            fit: BoxFit.fitHeight
+                          ),
                         ),
                       ),
                       leading: IconButton(
