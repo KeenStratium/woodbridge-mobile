@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
@@ -1508,7 +1509,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                                       children: <Widget>[
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_payments_2x.png',
+                                          iconPath: 'img/Icons/icon_payments.png',
                                           label: 'Payments',
                                           pageBuilder: PaymentHistory(
                                             firstName: this.widget.firstName,
@@ -1519,7 +1520,7 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_attendance_2x.png',
+                                          iconPath: 'img/Icons/icon_attendance.png',
                                           label: 'Attendance',
                                           pageBuilder: Attendance(
                                             firstName: this.widget.firstName,
@@ -1539,7 +1540,7 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_grades_2x.png',
+                                          iconPath: 'img/Icons/icon_grades.png',
                                           label: 'Progress',
                                           pageBuilder: Grades(
                                             userId: widget.heroTag,
@@ -1550,7 +1551,7 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_activities_2x.png',
+                                          iconPath: 'img/Icons/icon_activities.png',
                                           label: 'Activities',
                                           pageBuilder: Activities(
                                             firstName: this.widget.firstName,
@@ -1563,7 +1564,7 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_gallery_2x.png',
+                                          iconPath: 'img/Icons/icon_gallery.png',
                                           label: 'Photos',
                                           pageBuilder: ActivityGallery(
                                             firstName: this.widget.firstName,
@@ -1574,7 +1575,7 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_announcements_2x.png',
+                                          iconPath: 'img/Icons/icon_announcements.png',
                                           label: 'Messages',
                                           pageBuilder: MessageBoard(
                                             userId: widget.heroTag,
@@ -1715,7 +1716,7 @@ class MenuItem extends StatelessWidget {
     this.pageBuilder,
     this.buildContext,
     this.isCustomOnPressed,
-    this.customOnPressed
+    this.customOnPressed,
   }) : super(key: key);
 
   final BuildContext buildContext;
@@ -1791,11 +1792,14 @@ class MenuItem extends StatelessWidget {
                 children: <Widget>[
                   Flexible(
                     flex: 3,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(iconPath)
-                        )
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(iconPath)
+                          )
+                        ),
                       ),
                     ),
                   ),

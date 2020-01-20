@@ -53,12 +53,12 @@ flutter:
   assets:
     - img/background-img.png
     - img/woodbridge_logo.png
-    - img/Icons/icon_payments_2x.png
-    - img/Icons/icon_activities_2x.png
-    - img/Icons/icon_attendance_2x.png
-    - img/Icons/icon_grades_2x.png
-    - img/Icons/icon_gallery_2x.png
-    - img/Icons/icon_announcements_2x.png
+    - img/Icons/icon_payments.png
+    - img/Icons/icon_activities.png
+    - img/Icons/icon_attendance.png
+    - img/Icons/icon_grades.png
+    - img/Icons/icon_gallery.png
+    - img/Icons/icon_announcements.png
     - img/Icons/Icon-180.png
     - img/home_profile_head_cover.png
     - img/mywoodbridge.png
@@ -76,16 +76,6 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
      - family: Muli
        fonts:
          - asset: fonts/Muli-Black.ttf
