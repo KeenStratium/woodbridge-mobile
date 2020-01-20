@@ -58,7 +58,7 @@ void getUserPreferences() async {
 
 ThemeData _buildWoodbridgeTheme() {
   return ThemeData(
-    fontFamily: 'Muli',
+    fontFamily: 'Roboto',
     accentColor: blue,
     backgroundColor: Color.fromRGBO(246, 246, 246, 1),
     scaffoldBackgroundColor: Color.fromRGBO(245, 244, 245, 1),
