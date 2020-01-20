@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 
 class PaymentDetail {
-  String label;
+  PaymentDetail({this.label, this.amount, this.isPaid});
+
   String amount;
   bool isPaid;
-
-  PaymentDetail({this.label, this.amount, this.isPaid});
+  String label;
 }
 
 Future<List> fetchPaymentSettings(settingsId) async {
@@ -51,17 +51,17 @@ Future fetchBankInfo(bankAbbr) async {
 
 }
 
-List<PaymentDetail> pre_school_payments = <PaymentDetail>[];
-List<PaymentDetail> kumon_payments = <PaymentDetail>[];
+List<PaymentDetail> _preSchoolPayments = <PaymentDetail>[];
+List<PaymentDetail> _kumonPayments = <PaymentDetail>[];
 
 class PaymentDataView extends StatelessWidget{
-  final String title;
-  final List<PaymentDetail> payments;
-
   PaymentDataView({
     this.title,
     this.payments,
   });
+
+  final List<PaymentDetail> payments;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -128,18 +128,6 @@ class PaymentDataView extends StatelessWidget{
 }
 
 class Payment {
-  String label;
-  String amount;
-  String paymentModes;
-  double dueAmount;
-  DateTime rawDate;
-  String paidDate;
-  String paymentSettingId;
-  String amountDesc;
-  String paymentNote;
-  Map paymentType;
-  bool isPaid;
-
   Payment({
     this.label,
     this.amount,
@@ -153,32 +141,44 @@ class Payment {
     this.paymentType,
     this.paymentNote
   });
+
+  String amount;
+  String amountDesc;
+  double dueAmount;
+  bool isPaid;
+  String label;
+  String paidDate;
+  String paymentModes;
+  String paymentNote;
+  String paymentSettingId;
+  Map paymentType;
+  DateTime rawDate;
 }
 
 class PaymentDetails extends StatelessWidget {
-  String date;
-  final String firstName;
-  final String lastName;
-  final String userId;
-  String paymentModes;
-  String amountDesc;
-  String paymentDate;
-  String paymentNote;
-  double amountPaid;
-  double amountDue;
-  double totalAnnualPackageOneFee;
-  Map paymentType;
-  var payment;
-  int installment;
-  double enrollmentFee;
-  double tuitionFee;
-
   PaymentDetails({
     this.firstName,
     this.lastName,
     this.userId,
     this.payment,
   });
+
+  String amountDesc;
+  double amountDue;
+  double amountPaid;
+  String date;
+  double enrollmentFee;
+  final String firstName;
+  int installment;
+  final String lastName;
+  var payment;
+  String paymentDate;
+  String paymentModes;
+  String paymentNote;
+  Map paymentType;
+  double totalAnnualPackageOneFee;
+  double tuitionFee;
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
@@ -192,8 +192,8 @@ class PaymentDetails extends StatelessWidget {
     int packageNum;
     List payments;
 
-    kumon_payments = <PaymentDetail>[];
-    pre_school_payments = <PaymentDetail>[];
+    _kumonPayments = <PaymentDetail>[];
+    _preSchoolPayments = <PaymentDetail>[];
 
     return Scaffold(
       appBar: AppBar(
@@ -246,15 +246,17 @@ class PaymentDetails extends StatelessWidget {
 
                       if(paymentModes != null){
                         payments = paymentModes.split(',');
-                        payments[0] != '' ? packageNum = int.parse(payments[0]) : null;
-                        payments[1] != '' ? kumonRegFee = double.parse(payments[1]) : null;
-                        payments[2] != '' ? mathFee = double.parse(payments[2]) : null;
-                        payments[3] != '' ? readingFee = double.parse(payments[3]) : null;
-                        payments[4] != '' ? tutorialFee = double.parse(payments[4]) : null;
+
+                        if(payments[0] != ''){ packageNum = int.parse(payments[0]); }
+                        if(payments[1] != ''){ kumonRegFee = double.parse(payments[1]); }
+                        if(payments[2] != ''){ mathFee = double.parse(payments[2]); }
+                        if(payments[3] != ''){ readingFee = double.parse(payments[3]); }
+                        if(payments[4] != ''){ tutorialFee = double.parse(payments[4]); }
+
                         try {
-                          payments[5] != '' ? manualTuitionFee = double.parse(payments[5]) : null;
-                          payments[6] != '' ? manualEnrollmentFee = double.parse(payments[6]) : null;
-                          payments[7] != '' ? othersFee = double.parse(payments[7]) : null;
+                          if(payments[5] != ''){ manualTuitionFee = double.parse(payments[5]); }
+                          if(payments[6] != ''){ manualEnrollmentFee = double.parse(payments[6]); }
+                          if(payments[7] != ''){ othersFee = double.parse(payments[7]); }
                         }catch(e){}
 
                         if(packageNum == 3){
@@ -268,7 +270,7 @@ class PaymentDetails extends StatelessWidget {
 
                         if(packageNum == 1){
                           if(enrollmentFee != null && enrollmentFee != 0.0){
-                            pre_school_payments.add( PaymentDetail(
+                            _preSchoolPayments.add( PaymentDetail(
                                 label: 'ENROLLMENT FEES',
                                 amount: localCurrencyFormat(totalAnnualPackageOneFee),
                                 isPaid: paymentDate != 'Unpaid'
@@ -276,14 +278,14 @@ class PaymentDetails extends StatelessWidget {
                           }
                         }else {
                           if(enrollmentFee != null && enrollmentFee != 0.0){
-                            pre_school_payments.add( PaymentDetail(
+                            _preSchoolPayments.add( PaymentDetail(
                                 label: 'ENROLLMENT FEES',
                                 amount: localCurrencyFormat(enrollmentFee),
                                 isPaid: paymentDate != 'Unpaid'
                             ));
                           }
                           if(tuitionFee != null && tuitionFee != 0.0){
-                            pre_school_payments.add( PaymentDetail(
+                            _preSchoolPayments.add( PaymentDetail(
                                 label: 'TUITION FEE',
                                 amount: localCurrencyFormat(tuitionFee),
                                 isPaid: paymentDate != 'Unpaid'
@@ -292,28 +294,28 @@ class PaymentDetails extends StatelessWidget {
                         }
 
                         if(mathFee != null && mathFee != 0.0){
-                          kumon_payments.add( PaymentDetail(
+                          _kumonPayments.add( PaymentDetail(
                               label: 'MATH',
                               amount: localCurrencyFormat(mathFee),
                               isPaid: paymentDate != 'Unpaid'
                           ));
                         }
                         if(readingFee != null && readingFee != 0.0){
-                          kumon_payments.add( PaymentDetail(
+                          _kumonPayments.add( PaymentDetail(
                               label: 'READING',
                               amount: localCurrencyFormat(readingFee),
                               isPaid: paymentDate != 'Unpaid'
                           ));
                         }
                         if(kumonRegFee != null && kumonRegFee != 0.0){
-                          kumon_payments.add( PaymentDetail(
+                          _kumonPayments.add( PaymentDetail(
                               label: 'REGISTRATION FEE',
                               amount: localCurrencyFormat(kumonRegFee),
                               isPaid: paymentDate != 'Unpaid'
                           ));
                         }
                       }else{
-                        pre_school_payments.add( PaymentDetail(
+                        _preSchoolPayments.add( PaymentDetail(
                             label: amountDesc.toUpperCase(),
                             amount: localCurrencyFormat(amountDue),
                             isPaid: paymentDate != 'Unpaid'
@@ -366,13 +368,13 @@ class PaymentDetails extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                                 child: Column(
                                     children: <Widget>[
-                                      pre_school_payments.length > 0 ? PaymentDataView(
+                                      _preSchoolPayments.length > 0 ? PaymentDataView(
                                           title: 'Pre-School',
-                                          payments: pre_school_payments
+                                          payments: _preSchoolPayments
                                       ) : Container(),
-                                      kumon_payments.length > 0 ? PaymentDataView(
+                                      _kumonPayments.length > 0 ? PaymentDataView(
                                           title: 'Kumon',
-                                          payments: kumon_payments
+                                          payments: _kumonPayments
                                       ) : Container(),
                                       tutorialFee != 0.0 && tutorialFee != null ? PaymentDataView(
                                         title: 'Tutorial',

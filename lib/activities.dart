@@ -9,13 +9,13 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'services.dart';
 
 class ActivityEvent {
+  ActivityEvent({this.title, this.venue, this.time, this.day, this.weekday});
+
+  String day;
+  String time;
   String title;
   String venue;
-  String time;
-  String day;
   String weekday;
-
-  ActivityEvent({this.title, this.venue, this.time, this.day, this.weekday});
 }
 
 bool isInitiated = false;
@@ -231,13 +231,6 @@ Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState sta
 }
 
 class Activities extends StatefulWidget {
-  final String firstName;
-  final String lastName;
-  final String classId;
-  final String userId;
-  final Map monthActivities;
-  final List<String> activityNames;
-
   Activities({
     this.firstName,
     this.lastName,
@@ -246,6 +239,13 @@ class Activities extends StatefulWidget {
     this.monthActivities,
     this.activityNames
   });
+
+  final List<String> activityNames;
+  final String classId;
+  final String firstName;
+  final String lastName;
+  final Map monthActivities;
+  final String userId;
 
   @override
   _ActivitiesState createState() => _ActivitiesState();

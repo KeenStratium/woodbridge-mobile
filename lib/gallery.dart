@@ -27,12 +27,6 @@ Future getClassImages(classId, pageSize, pageNum) async {
 List<Widget> _photos = <Widget>[];
 
 class PhotoCard extends StatelessWidget {
-  final int id;
-  final String imgUrl;
-  final DateTime timeStamp;
-  final String caption;
-  String militaryTime;
-
   PhotoCard({
     this.id,
     this.imgUrl,
@@ -40,9 +34,15 @@ class PhotoCard extends StatelessWidget {
     this.caption
   });
 
+  final String caption;
+  final int id;
+  final String imgUrl;
+  final DateTime timeStamp;
+
   @override
   Widget build(BuildContext context) {
-    militaryTime = '${timeStamp.hour}:${timeStamp.minute}';
+    final String militaryTime = '${timeStamp.hour}:${timeStamp.minute}'; 
+
     DateTime now = DateTime.now();
     int currentEpoch = (now.millisecondsSinceEpoch/1000).floor();
     var postDateEpoch = (timeStamp.millisecondsSinceEpoch/1000).floor();
@@ -158,12 +158,12 @@ class HeroPhotoViewWrapper extends StatelessWidget {
       this.id
       });
 
+  final Decoration backgroundDecoration;
+  final int id;
   final ImageProvider imageProvider;
   final Widget loadingChild;
-  final Decoration backgroundDecoration;
-  final dynamic minScale;
   final dynamic maxScale;
-  final int id;
+  final dynamic minScale;
 
   @override
   Widget build(BuildContext context) {
@@ -203,16 +203,6 @@ class HeroPhotoViewWrapper extends StatelessWidget {
 }
 
 class ActivityGallery extends StatefulWidget {
-  final String firstName;
-  final String lastName;
-  final String userId;
-  final String classId;
-  int pageNum = 1;
-  int pageSize = 2;
-  bool isLastItem = false;
-  bool isLoading = false;
-  bool noMoreImages = false;
-
   ActivityGallery({
     this.firstName,
     this.lastName,
@@ -220,43 +210,27 @@ class ActivityGallery extends StatefulWidget {
     this.classId
   });
 
+  final String classId;
+  final String firstName;
+  final bool isLastItem = false;
+  bool isLoading = false;
+  final String lastName;
+  bool noMoreImages = false;
+  int pageNum = 1;
+  final int pageSize = 2;
+  final String userId;
+
   @override
   _ActivityGalleryState createState() => _ActivityGalleryState();
 }
 
 class _ActivityGalleryState extends State<ActivityGallery> {
   ScrollController _scrollController = ScrollController();
-  
-  Future fetchClassImages(classId, pageSize, num) async {
-    return await getClassImages(classId, pageSize, num)
-      .then((results) {
-        setState(() {
-          if(_photos.length != 1){
-            _photos.removeLast();
-          }
-          if(results.length == 0){
-            widget.noMoreImages = true;
-          }else{
-            for(int i = 0; i < results.length; i++){
-              Map photo = results[i];
-              _photos.add(PhotoCard(
-                id: _photos.length,
-                imgUrl: '${baseServer}/${photo['img_url']}',
-                timeStamp: DateTime.parse(photo['date_posted']).toLocal(),
-                caption: photo['caption']
-              ));
-            }
-          }
-          widget.isLoading = false;
-        });
-      });
-  }
 
-  void _loadMore() {
-    widget.pageNum++;
-    setState(() {
-      fetchClassImages(widget.classId, widget.pageSize, widget.pageNum);
-    });
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -335,10 +309,36 @@ class _ActivityGalleryState extends State<ActivityGallery> {
     });
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  Future fetchClassImages(classId, pageSize, num) async {
+    return await getClassImages(classId, pageSize, num)
+      .then((results) {
+        setState(() {
+          if(_photos.length != 1){
+            _photos.removeLast();
+          }
+          if(results.length == 0){
+            widget.noMoreImages = true;
+          }else{
+            for(int i = 0; i < results.length; i++){
+              Map photo = results[i];
+              _photos.add(PhotoCard(
+                id: _photos.length,
+                imgUrl: '$baseServer/${photo['img_url']}',
+                timeStamp: DateTime.parse(photo['date_posted']).toLocal(),
+                caption: photo['caption']
+              ));
+            }
+          }
+          widget.isLoading = false;
+        });
+      });
+  }
+
+  void _loadMore() {
+    widget.pageNum++;
+    setState(() {
+      fetchClassImages(widget.classId, widget.pageSize, widget.pageNum);
+    });
   }
 
   @override

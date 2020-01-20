@@ -3,20 +3,20 @@ import 'woodbridge-ui_components.dart';
 import 'notification_services.dart';
 
 class Notifications extends StatefulWidget {
-  final String firstName;
-  final String lastName;
-  final String userId;
-  int pageNum = 1;
-  int pageSize = 10;
-  bool completedAllPages = false;
-  List<List<Widget>> notificationTiles = <List<Widget>>[];
-  bool hasInitiated = false;
-
   Notifications({
     this.firstName,
     this.lastName,
     this.userId,
   });
+
+  bool completedAllPages = false;
+  final String firstName;
+  bool hasInitiated = false;
+  final String lastName;
+  List<List<Widget>> notificationTiles = <List<Widget>>[];
+  int pageNum = 1;
+  final int pageSize = 10;
+  final String userId;
 
   @override
   _NotificationsState createState() => _NotificationsState();

@@ -25,14 +25,6 @@ Future setHandbookAgreement(userId) async {
 }
 
 class InitialOnboard extends StatefulWidget {
-  int currentPage = 0;
-  int prevPage = 0;
-  List<Widget> pages = <Widget>[];
-  List<String> userIds = <String>[];
-  bool showAgreementCta;
-  String userId;
-  bool hasFinishedLoading = false;
-
   InitialOnboard({
     this.pages,
     this.userIds,
@@ -40,13 +32,29 @@ class InitialOnboard extends StatefulWidget {
     this.userId
   });
 
+  int currentPage = 0;
+  bool hasFinishedLoading = false;
+  List<Widget> pages = <Widget>[];
+  int prevPage = 0;
+  bool showAgreementCta;
+  String userId;
+  List<String> userIds = <String>[];
+
   @override
   _InitialOnboardState createState() => _InitialOnboardState();
 }
 
 class _InitialOnboardState extends State<InitialOnboard> {
-  bool _enableAgreementBtn = false;
   String buttonLabel = "Please read the Parent's Handbook Guide";
+
+  bool _enableAgreementBtn = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    loopTimer();
+  }
 
   Widget loadPdf(int pageNumber) {
     return widget.pages[pageNumber];
@@ -64,13 +72,6 @@ class _InitialOnboardState extends State<InitialOnboard> {
         loopTimer();
       });
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    loopTimer();
   }
 
   @override
@@ -140,10 +141,11 @@ class _InitialOnboardState extends State<InitialOnboard> {
                                   color: widget.currentPage == 0 ? Colors.grey[400] : Colors.grey[600],
                                 ),
                                 onPressed: (){
-                                  widget.currentPage >= 1 ?
-                                  mounted ? setState(() {
-                                    widget.currentPage--;
-                                  }) : null : null;
+                                  if(widget.currentPage >= 1 && mounted){
+                                    setState(() {
+                                      widget.currentPage--;
+                                    });
+                                  }
                                 },
                               ),
                             ),
@@ -157,10 +159,11 @@ class _InitialOnboardState extends State<InitialOnboard> {
                                   color: widget.currentPage == maxPage - 1 ? Colors.grey[400] : _enableAgreementBtn ? Colors.grey[600] : Theme.of(context).accentColor,
                                 ),
                                 onPressed: (){
-                                  widget.currentPage < maxPage - 1 ?
-                                  mounted ? setState(() {
-                                    widget.currentPage++;
-                                  }) : null : null;
+                                  if(widget.currentPage < maxPage - 1 && mounted){
+                                    setState(() {
+                                      widget.currentPage++;
+                                    });
+                                  }
                                 },
                               ),
                             ),

@@ -25,19 +25,27 @@ Future<Map> getStudentUnseenNotifications(userId) async {
 }
 
 class StudentPicker extends StatefulWidget {
-  List<String> users;
-
   StudentPicker({
     Key key,
     @required this.users
   }) : super(key: key);
+
+  final List<String> users;
 
   @override
   _StudentPickerState createState() => _StudentPickerState();
 }
 
 class _StudentPickerState extends State<StudentPicker> {
+  bool enableEnrollment = false;
   Map userIdUnreadStatus = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    setStudentsUnreadNotif(widget.users);
+  }
 
   void setStudentsUnreadNotif(List<String> userIds) async {
     for(int i = 0; i < userIds.length; i++){
@@ -57,15 +65,6 @@ class _StudentPickerState extends State<StudentPicker> {
     }
 
     setState(() {});
-  }
-
-  bool enableEnrollment = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    setStudentsUnreadNotif(widget.users);
   }
 
   @override

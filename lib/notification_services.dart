@@ -7,11 +7,6 @@ import 'package:flutter/material.dart';
 import 'services.dart';
 
 class TextNotifications extends StatefulWidget {
-  final String msg;
-  final String postDate;
-  final String profileAvatar;
-  final String title;
-
   TextNotifications({
     Key key,
     this.msg,
@@ -19,6 +14,11 @@ class TextNotifications extends StatefulWidget {
     this.profileAvatar,
     this.title
   }) : super (key: key);
+
+  final String msg;
+  final String postDate;
+  final String profileAvatar;
+  final String title;
 
   @override
   _TextNotificationsState createState() => _TextNotificationsState();

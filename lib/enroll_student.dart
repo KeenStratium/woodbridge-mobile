@@ -105,66 +105,65 @@ class EnrollStudent extends StatefulWidget {
 }
 
 class _EnrollStudentState extends State<EnrollStudent> {
-  int _genderRadio = -1;
-
-  bool _hadPriorSchooling = false;
-  bool _homeTelNumNA = false;
-  bool _hadAllergies = false;
-  bool _hadMedications = false;
-
-  DateTime _dateBirth;
-  String _dateBirthValue = null;
-
   List<String> sexLabels = ['Male', 'Female'];
-  List _month = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.',' Nov.', 'Dec.'];
-
-  // Student
-  final _fnameController = TextEditingController();
-  final _middleInitialController = TextEditingController();
-  final _lnameController = TextEditingController();
-  final _homeAddressController = TextEditingController();
-  final _homeTelNumController = TextEditingController();
-  final _placeOfBirthController = TextEditingController();
-  final _religionController = TextEditingController();
-  final _schoolHistoryController = TextEditingController();
-  final _allergiesController = TextEditingController();
-  final _legalGuardianController = TextEditingController();
-  final _medicationNamesController = TextEditingController();
-  final _medicationPurposesController = TextEditingController();
-  final _activitiesController = TextEditingController();
-  final _prefferedToysController = TextEditingController();
-  final _spendsHisDayController = TextEditingController();
-  final _schoolExpectationsController = TextEditingController();
-  final _otherConcernsController = TextEditingController();
-
   // Family
   List<String> titleLabels = ['Mr.', 'Mrs.', 'Dr.', 'Ms.', 'Arch.', 'Atty.', 'Engr.', 'Hon.', 'Other'];
 
-  // Family - Father
-  final _fatherFnameController = TextEditingController();
-  final _fatherMiddleInitialController = TextEditingController();
-  final _fatherLnameController = TextEditingController();
-  final _fatherHomeAddrController = TextEditingController();
-  final _fatherOccupationController = TextEditingController();
+
+  static bool _fatherHomeAddrSIsSame = false;
+  static bool _motherHomeAddrSIsSame = false;
+
+  final _activitiesController = TextEditingController();
+  final _allergiesController = TextEditingController();
+  DateTime _dateBirth;
+
   final _fatherBusAddrController = TextEditingController();
   final _fatherBusTelNumController = TextEditingController();
-  final _fatherMobileNumController = TextEditingController();
   final _fatherEmailAddrController = TextEditingController();
-  String _fatherTitle;
-  static bool _fatherHomeAddrSIsSame = false;
+  // Family - Father
+  final _fatherFnameController = TextEditingController();
 
-  // Family - Mother
-  final _motherFnameController = TextEditingController();
-  final _motherMiddleInitialController = TextEditingController();
-  final _motherLnameController = TextEditingController();
-  final _motherHomeAddrController = TextEditingController();
-  final _motherOccupationController = TextEditingController();
+  final _fatherHomeAddrController = TextEditingController();
+  final _fatherLnameController = TextEditingController();
+  final _fatherMiddleInitialController = TextEditingController();
+  final _fatherMobileNumController = TextEditingController();
+  final _fatherOccupationController = TextEditingController();
+  String _fatherTitle;
+  // Student
+  final _fnameController = TextEditingController();
+
+  int _genderRadio = -1;
+  bool _hadAllergies = false;
+  bool _hadMedications = false;
+  bool _hadPriorSchooling = false;
+  final _homeAddressController = TextEditingController();
+  final _homeTelNumController = TextEditingController();
+  bool _homeTelNumNA = false;
+  final _legalGuardianController = TextEditingController();
+  final _lnameController = TextEditingController();
+  final _medicationNamesController = TextEditingController();
+  final _medicationPurposesController = TextEditingController();
+  final _middleInitialController = TextEditingController();
+  List _month = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sep.', 'Oct.',' Nov.', 'Dec.'];
   final _motherBusAddrController = TextEditingController();
   final _motherBusTelNumController = TextEditingController();
-  final _motherMobileNumController = TextEditingController();
   final _motherEmailAddrController = TextEditingController();
+  // Family - Mother
+  final _motherFnameController = TextEditingController();
+
+  final _motherHomeAddrController = TextEditingController();
+  final _motherLnameController = TextEditingController();
+  final _motherMiddleInitialController = TextEditingController();
+  final _motherMobileNumController = TextEditingController();
+  final _motherOccupationController = TextEditingController();
   String _motherTitle;
-  static bool _motherHomeAddrSIsSame = false;
+  final _otherConcernsController = TextEditingController();
+  final _placeOfBirthController = TextEditingController();
+  final _prefferedToysController = TextEditingController();
+  final _religionController = TextEditingController();
+  final _schoolExpectationsController = TextEditingController();
+  final _schoolHistoryController = TextEditingController();
+  final _spendsHisDayController = TextEditingController();
 
   Future _selectDateBirth() async {
     _dateBirth = await showDatePicker(
@@ -173,7 +172,6 @@ class _EnrollStudentState extends State<EnrollStudent> {
       firstDate: new DateTime(2000),
       lastDate: (new DateTime.now()).add(new Duration(hours: 1))
     );
-    if(_dateBirth != null) setState(() => _dateBirthValue = _dateBirth.toString());
   }
 
   @override
@@ -437,7 +435,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             InputTextField(label: "Father's First Name", controller: _fatherFnameController),
                             InputTextField(label: "Father's Middle Initial", controller: _fatherMiddleInitialController),
                             InputTextField(label: "Father's Last Name", controller: _fatherLnameController),
-                            customFormField(
+                            CustomFormField(
                               fieldTitle: "Father's Title",
                               child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _fatherTitle)
                             ),
@@ -482,7 +480,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                             InputTextField(label: "Mother's First Name", controller: _motherFnameController),
                             InputTextField(label: "Mother's Middle Initial", controller: _motherMiddleInitialController),
                             InputTextField(label: "Mother's Last Name", controller: _motherLnameController),
-                            customFormField(
+                            CustomFormField(
                                 fieldTitle: "Mother's Title",
                                 child: InputDropdownButton(dropdownValueLabels: titleLabels, dropdownValue: _motherTitle)
                             ),
@@ -517,7 +515,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                     child: Flex(
                       direction: Axis.vertical,
                       children: <Widget>[
-                        customFormField(
+                        CustomFormField(
                           fieldTitle: "Does your child have any siblings?",
                           child: SingleChildScrollView(
                             child: Flex(
@@ -545,7 +543,7 @@ class _EnrollStudentState extends State<EnrollStudent> {
                           )
                         ),
                         InputTextField(label: "Who is your child's legal guardian?", controller: _legalGuardianController),
-                        customFormField(
+                        CustomFormField(
                           fieldTitle: "Who is/are assigned to pick your child up from the school?",
                           child: SingleChildScrollView(
                                 child: Flex(
@@ -756,13 +754,6 @@ class _EnrollStudentState extends State<EnrollStudent> {
 }
 
 class InputTextField extends StatelessWidget {
-  final double VerticalSpacing = 6.0;
-  final String label;
-  List<TextInputFormatter> inputFormatter;
-  TextEditingController controller;
-  final onSaved;
-  FocusNode focus;
-
   InputTextField({
     this.label,
     this.controller,
@@ -771,16 +762,25 @@ class InputTextField extends StatelessWidget {
     this.focus
   });
 
+  final TextEditingController controller;
+  final FocusNode focus;
+  final List<TextInputFormatter> inputFormatter;
+  final String label;
+  final onSaved;
+  final double _verticalSpacing = 6.0;
+
   @override
   Widget build(BuildContext context) {
-    focus == null ? null : this.focus.addListener(() {
-      if(!focus.hasFocus){
-        onSaved();
-      }
-    });
+    if(focus != null){
+      this.focus.addListener(() {
+        if(!focus.hasFocus){
+          onSaved();
+        }
+      });
+    }
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: VerticalSpacing),
+      padding: EdgeInsets.symmetric(vertical: _verticalSpacing),
       child: TextFormField(
         controller: controller,
         inputFormatters: inputFormatter,
@@ -796,13 +796,13 @@ class InputTextField extends StatelessWidget {
 }
 
 class InputDropdownButton extends StatefulWidget{
-  final List<String> dropdownValueLabels;
-  String dropdownValue;
-
   InputDropdownButton({
     this.dropdownValueLabels,
     this.dropdownValue
   });
+
+  String dropdownValue;
+  final List<String> dropdownValueLabels;
 
   @override
   _InputDropdownButtonState createState() => _InputDropdownButtonState();
@@ -828,14 +828,14 @@ class _InputDropdownButtonState extends State<InputDropdownButton> {
   }
 }
 
-class customFormField extends StatelessWidget {
-  final String fieldTitle;
-  final Widget child;
-
-  customFormField({
+class CustomFormField extends StatelessWidget {
+  CustomFormField({
     this.fieldTitle,
     this.child
   });
+
+  final Widget child;
+  final String fieldTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -863,12 +863,6 @@ class customFormField extends StatelessWidget {
 }
 
 class ReactiveInputTextField extends StatefulWidget {
-  TextEditingController controller;
-  bool conditionalControl;
-  String label;
-  String conditionalLabel;
-  var onChange;
-
   ReactiveInputTextField({
     this.controller,
     this.conditionalControl,
@@ -876,6 +870,12 @@ class ReactiveInputTextField extends StatefulWidget {
     this.label,
     this.conditionalLabel
   });
+
+  final bool conditionalControl;
+  final String conditionalLabel;
+  TextEditingController controller;
+  final String label;
+  var onChange;
 
   @override
   _ReactiveInputTextFieldState createState() => _ReactiveInputTextFieldState();
@@ -935,7 +935,7 @@ onSave(
     columnTwoFocus.add(FocusNode());
 
     columnOneFields.add(InputTextField(
-        label: "${columnOneLabel} #${newSiblingIndex + 1}",
+        label: "$columnOneLabel #${newSiblingIndex + 1}",
         controller: columnOneController[newSiblingIndex],
         onSaved: () {
           onSave(

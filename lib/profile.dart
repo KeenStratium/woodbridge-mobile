@@ -21,15 +21,15 @@ Future<Map> fetchProfileInformation(userId) async {
 }
 
 class Profile extends StatefulWidget {
-  final String heroTag;
-  final String firstName;
-  final String lastName;
-
   Profile({
     this.heroTag,
     this.firstName,
     this.lastName
   });
+
+  final String firstName;
+  final String heroTag;
+  final String lastName;
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -55,7 +55,7 @@ class _ProfileState extends State<Profile> {
       lInitial = widget.lastName != null ? widget.lastName[0] ?? '' : '';
     } catch(e) {
       lInitial = '';
-    };
+    }
 
     void _buildProfileFields() {
       profileInfo.forEach((label, value) {
@@ -254,21 +254,20 @@ class _ProfileState extends State<Profile> {
 }
 
 class ProfileField extends StatefulWidget {
-  final String fieldValue;
-  final String fieldLabel;
-
   ProfileField({
     Key key,
     this.fieldValue,
     this.fieldLabel,
   });
 
+  final String fieldLabel;
+  final String fieldValue;
+
   @override
   _ProfileFieldState createState() => _ProfileFieldState();
 }
 
 class _ProfileFieldState extends State<ProfileField> {
-
   @override
   Widget build(BuildContext context) {
     return ListTile(

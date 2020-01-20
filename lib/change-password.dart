@@ -27,19 +27,19 @@ Future changePassword(userId, password) async {
 }
 
 class ChangePassword extends StatelessWidget {
-  String userId;
-  List<String> userIds;
-  bool hasAgreed;
-  List<Widget> guidePages = <Widget>[];
-  final int maxPageCount;
-
   ChangePassword({
     this.userId,
     this.userIds,
     this.hasAgreed,
-    this.guidePages,
+    this.guidePages: const <Widget>[],
     this.maxPageCount
   });
+
+  final List<Widget> guidePages;
+  final bool hasAgreed;
+  final int maxPageCount;
+  final String userId;
+  final List<String> userIds;
 
   @override
   Widget build(BuildContext context) {
@@ -54,33 +54,38 @@ class ChangePassword extends StatelessWidget {
 }
 
 class ChangePasswordPage extends StatefulWidget {
-  String userId;
-  List<String> userIds;
-  bool hasAgreed;
-  List<Widget> guidePages = <Widget>[];
-  final int maxPageCount;
-  bool hasFinishedLoading = false;
-  bool updateInitialTapped = false;
-
   ChangePasswordPage({
     this.userId,
     this.userIds,
     this.hasAgreed,
-    this.guidePages,
+    this.guidePages: const <Widget>[],
     this.maxPageCount
   });
+
+  final List<Widget> guidePages;
+  final bool hasAgreed;
+  bool hasFinishedLoading = false;
+  final int maxPageCount;
+  bool updateInitialTapped = false;
+  final String userId;
+  final List<String> userIds;
 
   @override
   _ChangePasswordPageState createState() => _ChangePasswordPageState();
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  var _passwordController = TextEditingController();
-  var _passwordAgainController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
-
   String noticeText;
+
+  final _formKey = GlobalKey<FormState>();
+  var _passwordAgainController = TextEditingController();
+  var _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    checkAgreement();
+  }
 
   void checkAgreement() async {
     if(widget.hasAgreed){
@@ -88,12 +93,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     }else {
       noticeText = "To activate your account, update to a new password.";
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    checkAgreement();
   }
 
   @override
@@ -151,13 +150,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
                                   if(value.isEmpty) {
                                     return 'Enter a password';
-                                  };
+                                  }
                                   if(value == 'woodbridge'){
                                     return 'Please set a new password';
-                                  };
+                                  }
                                   if(!validCharacters.hasMatch(value)){
                                     return 'Avoid using special characters';
-                                  };
+                                  }
                                   return null;
                                 },
                                 decoration: InputDecoration(

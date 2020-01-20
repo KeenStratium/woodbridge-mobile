@@ -23,7 +23,7 @@ String formatMilitaryTime(time) {
   int hour = int.parse(timeClockStr[0]);
   int minutes = int.parse(timeClockStr[1]);
   String hourStr;
-  String minuteStr = '${minutes < 10 ? '0': ''}${minutes}';
+  String minuteStr = '${minutes < 10 ? '0': ''}$minutes';
 
   if(hour >= 12){
     meridiem = 'pm';
@@ -82,9 +82,9 @@ String epochToHumanTime(epoch) {
     minorTimeUnit = unitTime[i-1];
   }
 
-  majorTimePhrase = "${majorTime}${majorTimeUnit}${majorTime > 1 ? 's' : ''}";
-  minorTimePhrase = "${minorTime}${minorTimeUnit}${minorTime > 1 ? 's' : ''}";
+  majorTimePhrase = "$majorTime$majorTimeUnit${majorTime > 1 ? 's' : ''}";
+  minorTimePhrase = "$minorTime$minorTimeUnit${minorTime > 1 ? 's' : ''}";
 
-  sentence = "${majorTimePhrase}${i > 0 ? ' ' : ''}${i == 0 ? ' ' : ''}${ minorTime == 0 ? '' : i == 0 ? '' : minorTimePhrase + ' ' }ago";
+  sentence = "$majorTimePhrase${i > 0 ? ' ' : ''}${i == 0 ? ' ' : ''}${ minorTime == 0 ? '' : i == 0 ? '' : minorTimePhrase + ' ' }ago";
   return sentence;
 }

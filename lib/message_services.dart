@@ -25,12 +25,6 @@ Future respondNotification(userId, notifId, notifResponse) async {
 }
 
 class ResponseButton extends StatefulWidget {
-  String label;
-  int type;
-  var onTap;
-  bool isActive;
-
-
   ResponseButton({
     this.label,
     this.type,
@@ -38,16 +32,21 @@ class ResponseButton extends StatefulWidget {
     this.isActive
   });
 
+  bool isActive;
+  String label;
+  var onTap;
+  final int type;
+
   @override
   _ResponseButtonState createState() => _ResponseButtonState();
 }
 
 class _ResponseButtonState extends State<ResponseButton> {
   Color borderColor;
-  Color labelColor;
-  Color iconColor;
   Color buttonColor;
   IconData icon;
+  Color iconColor;
+  Color labelColor;
 
   @override
   Widget build(BuildContext context) {
@@ -123,19 +122,6 @@ class _ResponseButtonState extends State<ResponseButton> {
 }
 
 class Board extends StatefulWidget {
-  String title;
-  String description;
-  String category;
-  String time;
-  String userId;
-  String timeStamp;
-  List<String> responseActions;
-  DateTime date;
-  bool hasResponse;
-  int responseType;
-  int notifId;
-  int activeType;
-
   Board({
     this.title,
     this.description,
@@ -150,6 +136,19 @@ class Board extends StatefulWidget {
     this.userId,
     this.timeStamp
   });
+
+  int activeType;
+  String category;
+  DateTime date;
+  String description;
+  bool hasResponse;
+  int notifId;
+  List<String> responseActions;
+  int responseType;
+  String time;
+  String timeStamp;
+  String title;
+  String userId;
 
   @override
   _BoardState createState() => _BoardState();

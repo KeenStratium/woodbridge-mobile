@@ -1,7 +1,8 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'model.dart';
+// import 'dart:async';
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+// import 'model.dart';
+// TODO: Header imports to be used when this feature is enabled
 
 import 'enroll_student.dart';
 
@@ -15,29 +16,33 @@ class EnrollPackage extends StatefulWidget {
 
 class _EnrollPackageState extends State<EnrollPackage> {
   List<bool> isExpandedPanels = [true, false, false];
-  double kumonRegFee = 500.00;
-  List note = [];
-  // Pre-School
-  String preSchoolHeader = 'Choose Pre-School';
-  String preSchoolPackageHeader = '';
-  String preSchoolGradeLevel;
-  String _selectedPackage;
-  List<String> _preschoolLevels = ['Toddler', 'Nursery', 'Pre-Kindergarten', 'Kindergarten'];
-  int schoolPackageNum = -1;
+  List<double> kumonFee = [1800.00, 1800.00];
+  String kumonGradeLevel;
   // Kumon
   String kumonHeader = 'Choose Kumon';
-  String kumonGradeLevel;
-  String kumonSelectedPackage;
-  List<String> _kumonLevels = ['Pre-Kindergarten', 'Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'];
-  List<String> kumonSelectedPackages = [];
+
   List<bool> kumonPackages = [false, false];
-  List<double> kumonFee = [1800.00, 1800.00];
+  double kumonRegFee = 500.00;
+  String kumonSelectedPackage;
+  List<String> kumonSelectedPackages = [];
+  List note = [];
+  String preSchoolGradeLevel;
+  // Pre-School
+  String preSchoolHeader = 'Choose Pre-School';
+
+  String preSchoolPackageHeader = '';
+  int schoolPackageNum = -1;
+  List<double> tutorialFees = [1250, 2500];
   // Tutorial
   String tutorialHeader = 'Choose Tutorial';
-  String tutorialSelectedPackage;
+
   List<String> tutorialLabels = ['Half (₱1,250.00)', 'Full (₱2,500.00)'];
-  List<double> tutorialFees = [1250, 2500];
   int tutorialRadioValue = -1;
+  String tutorialSelectedPackage;
+
+  List<String> _kumonLevels = ['Pre-Kindergarten', 'Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'];
+  List<String> _preschoolLevels = ['Toddler', 'Nursery', 'Pre-Kindergarten', 'Kindergarten'];
+  String _selectedPackage;
 
   @override
   Widget build(BuildContext context) {
@@ -565,11 +570,6 @@ class _EnrollPackageState extends State<EnrollPackage> {
 }
 
 class PackageOptionCard extends StatefulWidget {
-  String packageName;
-  String uponEnrollmentFee;
-  Widget packageDesc;
-  bool isSelected;
-
   PackageOptionCard({
     this.packageName,
     this.uponEnrollmentFee,
@@ -577,6 +577,10 @@ class PackageOptionCard extends StatefulWidget {
     this.isSelected
   });
 
+  final bool isSelected;
+  final Widget packageDesc;
+  final String packageName;
+  final String uponEnrollmentFee;
 
 @override
   _PackageOptionCardState createState() => _PackageOptionCardState();
@@ -656,13 +660,13 @@ class _PackageOptionCardState extends State<PackageOptionCard> {
 }
 
 class PackageDescLabelField extends StatelessWidget {
-  String label;
-  String value;
-
   PackageDescLabelField({
     this.label,
     this.value
   });
+
+  final String label;
+  final String value;
 
   @override
   Widget build(BuildContext context) {

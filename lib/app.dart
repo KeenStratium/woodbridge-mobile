@@ -26,25 +26,25 @@ List<String> userIds;
 void getUserPreferences() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  String s_fname = prefs.getString('fname');
-  String s_lname = prefs.getString('lname');
-  String s_avatarUrl = prefs.getString('avatarUrl');;
-  String s_userId = prefs.getString('userId');
-  String s_schoolLevel = prefs.getString('schoolLevel');
-  String s_classId = prefs.getString('classId');
-  String s_gradeLevel = prefs.getString('gradeLevel');
-  String s_gradeSection = prefs.getString('gradeSection');
-  List<String> s_userIds = prefs.getStringList('userIds');
+  String sFname = prefs.getString('fname');
+  String sLname = prefs.getString('lname');
+  String sAvatarUrl = prefs.getString('avatarUrl');;
+  String sUserId = prefs.getString('userId');
+  String sSchoolLevel = prefs.getString('schoolLevel');
+  String sClassId = prefs.getString('classId');
+  String sGradeLevel = prefs.getString('gradeLevel');
+  String sGradeSection = prefs.getString('gradeSection');
+  List<String> sUserIds = prefs.getStringList('userIds');
 
-  fname = s_fname;
-  lname = s_lname;
-  avatarUrl = s_avatarUrl;
-  userId = s_userId;
-  schoolLevel = s_schoolLevel;
-  classId = s_classId;
-  gradeLevel = s_gradeLevel;
-  gradeSection = s_gradeSection;
-  userIds = s_userIds;
+  fname = sFname;
+  lname = sLname;
+  avatarUrl = sAvatarUrl;
+  userId = sUserId;
+  schoolLevel = sSchoolLevel;
+  classId = sClassId;
+  gradeLevel = sGradeLevel;
+  gradeSection = sGradeSection;
+  userIds = sUserIds;
 
   try {
     firstInitial = fname[0];
@@ -74,7 +74,7 @@ Widget homePage = HomePage(
     maxRadius: 40.0,
     minRadius: 20.0,
     fontSize: 20.0,
-    initial: "${firstInitial}${lastInitial}",
+    initial: "$firstInitial$lastInitial",
     avatarUrl: avatarUrl,
   ),
   firstName: fname ?? '',

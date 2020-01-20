@@ -5,18 +5,6 @@ import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
 
 class Payment {
-  String label;
-  String amount;
-  String paymentModes;
-  double dueAmount;
-  DateTime rawDate;
-  String paidDate;
-  String paymentSettingId;
-  String amountDesc;
-  String paymentNote;
-  Map paymentType;
-  bool isPaid;
-
   Payment({
     this.label,
     this.amount,
@@ -30,19 +18,21 @@ class Payment {
     this.paymentType,
     this.paymentNote
   });
+
+  String amount;
+  String amountDesc;
+  double dueAmount;
+  bool isPaid;
+  String label;
+  String paidDate;
+  String paymentModes;
+  String paymentNote;
+  String paymentSettingId;
+  Map paymentType;
+  DateTime rawDate;
 }
 
 class PaymentHistory extends StatefulWidget {
-  final String firstName;
-  final String lastName;
-  final String userId;
-  final Map paymentData;
-
-  List<Payment> payments = <Payment>[];
-  double totalPayments = 0.00;
-  double totalBalance = 0.00;
-  bool isInitiated = false;
-
   PaymentHistory({
     this.firstName,
     this.lastName,
@@ -50,20 +40,28 @@ class PaymentHistory extends StatefulWidget {
     this.paymentData,
   });
 
+  final String firstName;
+  bool isInitiated = false;
+  final String lastName;
+  final Map paymentData;
+  List<Payment> payments = <Payment>[];
+  double totalBalance = 0.00;
+  double totalPayments = 0.00;
+  final String userId;
+
   @override
   _PaymentHistoryState createState() => _PaymentHistoryState();
 }
 
 class _PaymentHistoryState extends State<PaymentHistory> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
