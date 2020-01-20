@@ -83,6 +83,15 @@ String getUsername(){
   return _username;
 }
 
+BoxShadow dynamicCardShadow(Color shadowColor) {
+  return BoxShadow(
+    color: shadowColor,
+    blurRadius: 8.0,
+    offset: Offset(0.0, 1.0),
+    spreadRadius: -3.0
+  );
+}
+
 class BrandTheme {
   static final BoxShadow cardShadow = BoxShadow(
     color: Color.fromRGBO(0, 0, 0, .25),

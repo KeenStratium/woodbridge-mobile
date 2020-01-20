@@ -1001,7 +1001,7 @@ class _HomePageState extends State<HomePage> {
                               otherAccountsPictures: <Widget>[
                                 IconButton(
                                   icon: Icon(Icons.close),
-                                  color: Color.fromRGBO(255, 255, 255, .75),
+                                  color: Color.fromRGBO(255, 255, 255, .35),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
@@ -1511,6 +1511,7 @@ class _HomePageState extends State<HomePage> {
                                         MenuItem(
                                           iconPath: 'img/Icons/icon_payments.png',
                                           label: 'Payments',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(83, 162, 193, .35)),
                                           pageBuilder: PaymentHistory(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1522,6 +1523,7 @@ class _HomePageState extends State<HomePage> {
                                         MenuItem(
                                           iconPath: 'img/Icons/icon_attendance.png',
                                           label: 'Attendance',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(6, 140, 92, .35)),
                                           pageBuilder: Attendance(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1542,6 +1544,7 @@ class _HomePageState extends State<HomePage> {
                                         MenuItem(
                                           iconPath: 'img/Icons/icon_grades.png',
                                           label: 'Progress',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(242, 197, 54, .35)),
                                           pageBuilder: Grades(
                                             userId: widget.heroTag,
                                             firstName: this.widget.firstName,
@@ -1553,6 +1556,7 @@ class _HomePageState extends State<HomePage> {
                                         MenuItem(
                                           iconPath: 'img/Icons/icon_activities.png',
                                           label: 'Activities',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(123, 76, 167, .35)),
                                           pageBuilder: Activities(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1565,7 +1569,8 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         MenuItem(
                                           iconPath: 'img/Icons/icon_gallery.png',
-                                          label: 'Photos',
+                                          label: 'Classroom',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(219, 69, 58, .35)),
                                           pageBuilder: ActivityGallery(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1577,6 +1582,7 @@ class _HomePageState extends State<HomePage> {
                                         MenuItem(
                                           iconPath: 'img/Icons/icon_announcements.png',
                                           label: 'Messages',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(252, 142, 43, .35)),
                                           pageBuilder: MessageBoard(
                                             userId: widget.heroTag,
                                             firstName: widget.firstName,
@@ -1717,6 +1723,7 @@ class MenuItem extends StatelessWidget {
     this.buildContext,
     this.isCustomOnPressed,
     this.customOnPressed,
+    this.cardShadow,
   }) : super(key: key);
 
   final BuildContext buildContext;
@@ -1726,6 +1733,7 @@ class MenuItem extends StatelessWidget {
   bool isCustomOnPressed;
   final String label;
   final Widget pageBuilder;
+  BoxShadow cardShadow;
   String _unreadName;
   int unreadCount = 0;
   List unreadNotifIds = [];
@@ -1782,7 +1790,7 @@ class MenuItem extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(vertical: 4.0),
               decoration: BoxDecoration(
-                boxShadow: [BrandTheme.cardShadow],
+                boxShadow: [cardShadow],
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(7.0))
               ),
@@ -1810,6 +1818,7 @@ class MenuItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13.0,
                         fontWeight: FontWeight.w700,
+                        color: Color.fromRGBO(0, 0, 0, .55)
                       ),
                     ),
                   ),
