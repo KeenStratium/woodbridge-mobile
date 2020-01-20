@@ -1143,7 +1143,7 @@ class _HomePageState extends State<HomePage> {
                                   image: AssetImage('img/home_profile_head_cover.png')
                                 )
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
                               child: Flex(
                                 direction: Axis.vertical,
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1170,12 +1170,12 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 4.0),
+                                    padding: EdgeInsets.symmetric(vertical: 6.0),
                                   ),
                                   Expanded(
-                                    flex: 3,
+                                    flex: 2,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Material(
@@ -1220,7 +1220,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                                          padding: EdgeInsets.symmetric(vertical: 1.0),
                                         ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
