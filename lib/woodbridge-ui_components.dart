@@ -138,6 +138,7 @@ class Avatar extends StatelessWidget {
           offset: Offset(0.0, 1.0),
           spreadRadius: 0.0
         )] : [],
+        border: Border.all(width: 2.0, color: Colors.yellow)
       ),
       child: !hasPhoto ? CircleAvatar(
         child: Text(
