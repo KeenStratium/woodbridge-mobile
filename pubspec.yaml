@@ -95,6 +95,9 @@ flutter:
         - asset: fonts/Roboto-Italic.ttf
         - asset: fonts/Roboto-ThinItalic.ttf
         - asset: fonts/Roboto-LightItalic.ttf
+    - family: SFPro
+      fonts: 
+        - asset: fonts/SF-Pro-Display-Regular.otf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
