@@ -711,6 +711,7 @@ class _HomePageState extends State<HomePage> {
               title: activity['a_title'],
               venue: activity['a_location'],
               time: activity['a_time_start'],
+              desc: activity['a_desc'],
               day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
               weekday: weekdayNames[date.weekday - 1]
             );

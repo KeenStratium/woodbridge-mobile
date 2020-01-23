@@ -9,18 +9,31 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'services.dart';
 
 class ActivityEvent {
-  ActivityEvent({this.title, this.venue, this.time, this.day, this.weekday});
+  ActivityEvent({this.title, this.venue, this.time, this.day, this.weekday, this.desc});
 
   String day;
   String time;
   String title;
   String venue;
   String weekday;
+  String desc;
 }
 
 bool isInitiated = false;
 
 String oldUserId = '';
+
+LinearGradient overflowGradient() {
+  return  LinearGradient(
+    begin: Alignment.centerRight,
+    end: Alignment.center,
+    stops: [0.0, 0.15],
+    colors: [
+      Colors.white,
+      Color.fromRGBO(255, 255, 255, 0),
+    ]
+  );
+}
 
 Future<List> getStudentActivities(classId) async {
   String url = '$baseApi/act/get-student-activities?data=$classId';
@@ -38,6 +51,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
 
   return List.generate(count, (sliverIndex) {
     sliverIndex += firstIndex;
+    
     return new SliverStickyHeaderBuilder(
       builder: (context, state) => _buildHeader(context, sliverIndex, state, activityNames),
       sliver: SliverList(
@@ -52,7 +66,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                boxShadow: [BrandTheme.cardShadow],
+                boxShadow: [BrandTheme.cardShadow]
               ),
               child: Flex(
                 direction: Axis.horizontal,
@@ -89,14 +103,38 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            monthActivities[activityNames[sliverIndex]][i].title,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w700
+                        Flexible(
+                          flex: 1,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              monthActivities[activityNames[sliverIndex]][i].title,
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                              textDirection: TextDirection.ltr,
+                              softWrap: false,
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w700
+                              ),
+                            ),
+                          ),
+                        ),
+                         Flexible(
+                          flex: 1,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              monthActivities[activityNames[sliverIndex]][i].desc ?? '',
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                              textDirection: TextDirection.ltr,
+                              softWrap: false,
+                              style: TextStyle(
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black54
+                              ),
                             ),
                           ),
                         ),
@@ -156,6 +194,8 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                                       child: Text(
                                         monthActivities[activityNames[sliverIndex]][i].venue,
                                         overflow: TextOverflow.fade,
+                                        maxLines: 1,
+                                        textDirection: TextDirection.ltr,
                                         softWrap: false,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
