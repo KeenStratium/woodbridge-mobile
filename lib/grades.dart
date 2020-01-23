@@ -240,7 +240,7 @@ class _GradesState extends State<Grades> {
                         child: Column(
                           children: <Widget>[
                             Text(
-                              'Marking Codes',
+                              'Marking Code',
                               style: TextStyle(
                                 fontSize: 20.0,
                                 color: Theme.of(context).accentColor,
