@@ -1211,9 +1211,16 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                   ),
                                                 ) : Container(),
-                                                Icon(
-                                                  Icons.arrow_drop_down,
-                                                  color: Colors.white,
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                                ),
+                                                Text(
+                                                  '􀄥',
+                                                  style: TextStyle(
+                                                    fontFamily: 'SFPro',
+                                                    color: Colors.white,
+                                                    fontSize: 9.0
+                                                  ),
                                                 )
                                               ],
                                             ),
