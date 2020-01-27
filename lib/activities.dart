@@ -35,6 +35,42 @@ LinearGradient overflowGradient() {
   );
 }
 
+class OverflowLabel extends StatelessWidget {
+  const OverflowLabel({Key key, this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Flexible(
+        flex: 1,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: 1.0, color: Colors.white)
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: child,
+              ),
+            ),
+            IgnorePointer(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: overflowGradient()
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 Future<List> getStudentActivities(classId) async {
   String url = '$baseApi/act/get-student-activities?data=$classId';
   var response = await http.get(url,
@@ -103,40 +139,32 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Flexible(
-                          flex: 1,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              monthActivities[activityNames[sliverIndex]][i].title,
-                              overflow: TextOverflow.fade,
-                              maxLines: 1,
-                              textDirection: TextDirection.ltr,
-                              softWrap: false,
-                              style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w700
-                              ),
+                        OverflowLabel(
+                          child: Text(
+                            monthActivities[activityNames[sliverIndex]][i].title,
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            textDirection: TextDirection.ltr,
+                            softWrap: false,
+                            style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w700
                             ),
-                          ),
+                          )
                         ),
-                         Flexible(
-                          flex: 1,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              monthActivities[activityNames[sliverIndex]][i].desc ?? '',
-                              overflow: TextOverflow.fade,
-                              maxLines: 1,
-                              textDirection: TextDirection.ltr,
-                              softWrap: false,
-                              style: TextStyle(
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black54
-                              ),
+                        OverflowLabel(
+                          child: Text(
+                            monthActivities[activityNames[sliverIndex]][i].desc ?? '',
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            textDirection: TextDirection.ltr,
+                            softWrap: false,
+                            style: TextStyle(
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black54
                             ),
-                          ),
+                          )
                         ),
                         Flex(
                           direction: Axis.horizontal,
