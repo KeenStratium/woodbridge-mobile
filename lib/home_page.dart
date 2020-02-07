@@ -363,7 +363,6 @@ class _HomePageState extends State<HomePage> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         updateHomeData();
-        print(message);
       },
       onResume: (Map<String, dynamic> message) async {
         updateHomeData();
@@ -758,10 +757,7 @@ class _HomePageState extends State<HomePage> {
     if (Platform.isIOS) iOSPermission();
     _token = "";
     _firebaseMessaging.getToken().then((token){
-      print(token);
       _token = token;
-      print('topics');
-      print(topics);
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
         if(topic['topic'] != null){
