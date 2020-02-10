@@ -94,7 +94,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                           children: <Widget>[
                             Expanded(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
                                   DashboardTile(
@@ -107,7 +107,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                             ),
                             Expanded(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   DashboardTile(
                                     label: 'Total Balance',
@@ -140,20 +140,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    'DATE',
+                                    'Due Date',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 12.0,
+                                        fontSize: 14.0,
                                         fontWeight: FontWeight.w700,
-                                        color: Colors.black54
-                                    ),
-                                  ),
-                                  Text(
-                                    'DUE',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
+                                        color: Colors.black87
                                     ),
                                   )
                                 ],
@@ -165,20 +157,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'DUE',
+                                    'Amount Due',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
-                                    ),
-                                  ),
-                                  Text(
-                                    'AMOUNT',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87
                                     ),
                                   )
                                 ],
@@ -190,20 +174,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: <Widget>[
                                   Text(
-                                    'PAYMENT',
+                                    'Payment Date', 
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
-                                    ),
-                                  ),
-                                  Text(
-                                    'DATE',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87
                                     ),
                                   )
                                 ],

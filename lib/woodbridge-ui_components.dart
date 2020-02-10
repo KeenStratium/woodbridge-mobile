@@ -249,7 +249,7 @@ class DashboardTile extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
             this.label,

@@ -333,10 +333,10 @@ class PaymentDetails extends StatelessWidget {
                                   children: <Widget>[
                                     Expanded(
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           DashboardTile(
-                                            label: 'DUE DATE',
+                                            label: 'Due Date',
                                             displayPlainValue: true,
                                             value: date,
                                           ),
@@ -345,10 +345,10 @@ class PaymentDetails extends StatelessWidget {
                                     ),
                                     Expanded(
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           DashboardTile(
-                                            label: 'DATE OF PAYMENT',
+                                            label: 'Date of Payment',
                                             displayPlainValue: true,
                                             value: paymentDate,
                                             isActive: paymentDate != 'Unpaid',
@@ -369,7 +369,7 @@ class PaymentDetails extends StatelessWidget {
                                 child: Column(
                                     children: <Widget>[
                                       _preSchoolPayments.length > 0 ? PaymentDataView(
-                                          title: 'Pre-School',
+                                          title: 'Preschool',
                                           payments: _preSchoolPayments
                                       ) : Container(),
                                       _kumonPayments.length > 0 ? PaymentDataView(
