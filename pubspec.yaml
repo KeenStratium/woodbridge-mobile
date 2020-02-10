@@ -32,6 +32,7 @@ dependencies:
   photo_view: ^0.4.2
   shared_preferences: ^0.5.3+3
   cached_network_image: ^2.0.0-rc
+  flutter_svg: ^0.13.0
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +61,7 @@ flutter:
     - img/Icons/icon_gallery.png
     - img/Icons/icon_announcements.png
     - img/Icons/Icon-180.png
+    - img/Icons/details.svg
     - img/home_profile_head_cover.png
     - img/mywoodbridge.png
     - files/TWAMobileParentsGuide.pdf

@@ -3,6 +3,7 @@ import 'services.dart';
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Payment {
   Payment({
@@ -224,8 +225,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         payment.label,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w600,
                                           color: Colors.black87
                                         ),
                                       ),
@@ -236,7 +237,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         payment.dueAmount != null ? localCurrencyFormat(payment.dueAmount) : 'N/A',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          fontSize: 15.0,
+                                          fontSize: 14.0,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.black87
                                         ),
@@ -244,14 +245,28 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                       flex: 1
                                     ),
                                     Expanded(
-                                      child: Text(
-                                        payment.paidDate ?? 'Unpaid',
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.w600,
-                                          color: payment.paidDate == 'Unpaid' ? Colors.black38 : Colors.black87
-                                        ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                            child: Text(
+                                              payment.paidDate ?? 'Unpaid',
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w600,
+                                                color: payment.paidDate == 'Unpaid' ? Colors.black38 : Colors.black87
+                                              ),
+                                            ),
+                                          ),
+                                          SvgPicture.asset(
+                                            'img/Icons/details.svg',
+                                            height: 13.0,
+                                            color: Theme.of(context).accentColor,
+                                            semanticsLabel: 'View payment details'
+                                          )
+                                        ],
                                       ),
                                       flex: 1,
                                     ),
