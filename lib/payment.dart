@@ -95,28 +95,29 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                             Expanded(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  DashboardTile(
-                                    label: 'BALANCE',
-                                    displayPlainValue: true,
-                                    value: widget.paymentData['totalBalance'] != null ? localCurrencyFormat(widget.paymentData['totalBalance']) : "0.00",
-                                  )
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
                                   DashboardTile(
-                                    label: 'TOTAL PAYMENTS',
+                                    label: 'Total Payments',
                                     displayPlainValue: true,
                                     value: widget.paymentData['totalPayments'] != null ? localCurrencyFormat(widget.paymentData['totalPayments']) : "0.00",
                                   ),
                                 ],
                               ),
                             ),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  DashboardTile(
+                                    label: 'Total Balance',
+                                    displayPlainValue: true,
+                                    value: widget.paymentData['totalBalance'] != null ? localCurrencyFormat(widget.paymentData['totalBalance']) : "0.00",
+                                    color: Color(0xFFDA4453)
+                                  )
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),

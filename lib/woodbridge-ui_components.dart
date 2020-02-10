@@ -228,6 +228,8 @@ class DashboardTile extends StatelessWidget {
     this.child: null,
     // ignore: avoid_init_to_null
     this.value: null,
+    // ignore: avoid_init_to_null
+    this.color: null,
     this.displayPlainValue: false,
     this.isActive: true
   }) : super(key: key);
@@ -237,9 +239,13 @@ class DashboardTile extends StatelessWidget {
   final bool isActive;
   final String label;
   final String value;
+  Color color;
 
   @override
   Widget build(BuildContext context) {
+    if(color == null) {
+      color = Theme.of(context).accentColor;
+    }
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
@@ -248,8 +254,8 @@ class DashboardTile extends StatelessWidget {
           Text(
             this.label,
             style: TextStyle(
-              fontSize: 12.0,
-              fontWeight: FontWeight.w700,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w600,
               color: Colors.grey[600]
             ),
           ),
@@ -261,7 +267,7 @@ class DashboardTile extends StatelessWidget {
             style: TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.w700,
-              color: isActive ? Theme.of(context).accentColor : Colors.grey[600]
+              color: isActive ? color : Colors.grey[600]
             ),
           ) : this.child,
         ],
