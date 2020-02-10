@@ -471,12 +471,12 @@ class _HomePageState extends State<HomePage> {
           try{
             String paidDate = payment['paid_date'];
             if(paidDate != null){
-              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
+              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MMM dd y');
             }
           }catch(e){}
           payments.add(
             Payment(
-                label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
+                label: dueDate != null ? timeFormat(dueDate.toString(), 'MMM dd y') : '',
                 amount: amount,
                 dueAmount: payment['due_amount'] + 0.00 ?? 0,
                 rawDate: dueDate,
