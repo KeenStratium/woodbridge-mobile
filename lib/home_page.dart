@@ -980,18 +980,11 @@ class _HomePageState extends State<HomePage> {
                           Flexible(
                             flex: 0,
                             child: UserAccountsDrawerHeader(
-                              accountEmail: Text(
-                                '${widget.gradeLevel} - ${widget.gradeSection}',
-                                style: TextStyle(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w600
-                                ),
-                              ),
                               accountName: Text(
                                 '${this.widget.firstName ?? ""} ${this.widget.lastName ?? ""}',
                                 style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w800
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w500
                                 ),
                               ),
                               otherAccountsPictures: <Widget>[
@@ -1032,7 +1025,7 @@ class _HomePageState extends State<HomePage> {
                                           Navigator.push(context, route);
                                         },
                                         title: Text(
-                                          "Parent's Guide",
+                                          "Parents' Guide",
                                           style: TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.w700,
@@ -1063,7 +1056,7 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                       ListTile(
-                                        leading: Icon(Icons.error),
+                                        leading: Icon(Icons.info),
                                         title: Text(
                                           'About Us',
                                           style: TextStyle(
