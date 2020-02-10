@@ -147,11 +147,14 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                               color: activityHeadColors[colorIndex(activityHeadColors.length, activityNames.length - 1, sliverIndex + 1, maxColorSpaceRange)]
                             ),
                           ),
-                          Text(
-                            monthActivities[activityNames[sliverIndex]][i].weekday,
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.black54
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 1.0),
+                            child: Text(
+                              monthActivities[activityNames[sliverIndex]][i].weekday,
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.black54
+                              ),
                             ),
                           )
                         ],
