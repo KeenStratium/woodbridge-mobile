@@ -1509,6 +1509,7 @@ class _HomePageState extends State<HomePage> {
                                           iconPath: 'img/Icons/icon_payments.png',
                                           label: 'Payments',
                                           cardShadow: dynamicCardShadow(Color.fromRGBO(83, 162, 193, .35)),
+                                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                                           pageBuilder: PaymentHistory(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1521,6 +1522,7 @@ class _HomePageState extends State<HomePage> {
                                           iconPath: 'img/Icons/icon_attendance.png',
                                           label: 'Attendance',
                                           cardShadow: dynamicCardShadow(Color.fromRGBO(6, 140, 92, .35)),
+                                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                           pageBuilder: Attendance(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1542,6 +1544,7 @@ class _HomePageState extends State<HomePage> {
                                           iconPath: 'img/Icons/icon_grades.png',
                                           label: 'Progress',
                                           cardShadow: dynamicCardShadow(Color.fromRGBO(242, 197, 54, .35)),
+                                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                           pageBuilder: Grades(
                                             userId: widget.heroTag,
                                             firstName: this.widget.firstName,
@@ -1568,6 +1571,7 @@ class _HomePageState extends State<HomePage> {
                                           iconPath: 'img/Icons/icon_gallery.png',
                                           label: 'Classroom',
                                           cardShadow: dynamicCardShadow(Color.fromRGBO(219, 69, 58, .35)),
+                                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                           pageBuilder: ActivityGallery(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1721,6 +1725,7 @@ class MenuItem extends StatelessWidget {
     this.isCustomOnPressed,
     this.customOnPressed,
     this.cardShadow,
+    this.padding
   }) : super(key: key);
 
   final BuildContext buildContext;
@@ -1728,6 +1733,7 @@ class MenuItem extends StatelessWidget {
   var customOnPressed;
   final String iconPath;
   bool isCustomOnPressed;
+  EdgeInsetsGeometry padding;
   final String label;
   final Widget pageBuilder;
   BoxShadow cardShadow;
@@ -1798,7 +1804,7 @@ class MenuItem extends StatelessWidget {
                   Flexible(
                     flex: 3,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+                      padding: padding ?? EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
