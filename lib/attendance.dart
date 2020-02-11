@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'model.dart';
 
 import 'package:flutter/material.dart';
@@ -59,6 +60,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   List _selectedEvents;
   Map<DateTime, List> _visibleEvents;
   Map<DateTime, List> _visibleHolidays;
+  DateFormat formatter = DateFormat('MMMM d, yyyy');
 
   @override
   void initState(){
@@ -723,11 +725,11 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                   children: <Widget>[
                     Container(
                       height: 30.0,
-                      margin: EdgeInsets.only(top: 20.0, left: 20.0),
+                      margin: EdgeInsets.only(top: 20.0, left: eventsLegend.length > 0 ? 20.0 : 0.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Expanded(
+                          eventsLegend.length > 0 ? Expanded(
                             flex: 1,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
@@ -737,6 +739,13 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                               itemBuilder: (BuildContext context, int index) {
                                 return eventsLegend[index];
                               }
+                            ),
+                          ) : Text(
+                            formatter.format(_selectedDay),
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[600]
                             ),
                           ),
                         ],
