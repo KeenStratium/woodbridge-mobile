@@ -149,23 +149,6 @@ class _StudentPickerState extends State<StudentPicker> {
                   ),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 7.0),
-                child: Container(
-                  padding: EdgeInsets.only(top: 8.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: accentCtaButton(
-                      label: 'Enroll New Student',
-                      isDisabled: !enableEnrollment,
-                      onPressed: () {
-                        Route route = MaterialPageRoute(builder: (context) => EnrollPackage());
-                        Navigator.push(context, route);
-                      },
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         ),
