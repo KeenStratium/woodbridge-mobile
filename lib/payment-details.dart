@@ -572,32 +572,41 @@ class PaymentDetails extends StatelessWidget {
                               ),
                               Divider(height: 1.0, color: Colors.grey[300]),
                               Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 32.0),
-                                child: Flex(
-                                  direction: Axis.horizontal,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Text(
-                                        'GRAND TOTAL',
-                                        style: TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w700
+                                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF3F9BDF),
+                                    borderRadius: BorderRadius.all(Radius.circular(14.0)),
+                                    border: Border.all(width: 1.0, color: Color.fromRGBO(0, 0, 0, .075))
+                                  ),
+                                  padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                                  child: Flex(
+                                    direction: Axis.horizontal,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: Text(
+                                          'GRAND TOTAL',
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w400
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        localCurrencyFormat(amountPaid),
-                                        style: TextStyle(
-                                            color: Theme.of(context).accentColor,
-                                            fontSize: 24.0,
-                                            fontWeight: FontWeight.w600
+                                      Flexible(
+                                        child: Text(
+                                          localCurrencyFormat(amountPaid),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.w600
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
                             ],
