@@ -141,8 +141,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     ]);
 
     _selectedDay = DateTime.now();
-    _selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
-
+    _selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day, 0, 0);
+    
     _events = {
       _selectedDay: [],
     };
@@ -249,7 +249,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
   void _onDaySelected(DateTime day, List events) {
     setState(() {
-      _selectedDay = day;
+      _selectedDay = DateTime(day.year, day.month, day.day, 0, 0);
       _selectedEvents = events;
     });
   }
@@ -356,7 +356,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       onDaySelected: (date, events) {
         _onDaySelected(date, events);
         List selectedHolidays = widget.holidayDays[_selectedDay];
-        List thisEvents = _events[date] ?? [''];
+        List thisEvents = _events[_selectedDay] ?? [''];
         eventsLegend = [];
 
         if(_selectedEvents.length != 0 && thisEvents[0] != '' && (thisEvents.length > 0 && thisEvents[0] != 'CURRENT')){
@@ -474,8 +474,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   }
 
   Widget _buildEventsMarker(DateTime date, List events) {
-    DateTime thisDay = DateTime(date.year, date.month, date.day);
-    DateTime selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
+    DateTime thisDay = DateTime(date.year, date.month, date.day, 0, 0);
+    DateTime selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day, 0, 0);
     Color bgColor;
     Color fontColor = Colors.white;
 

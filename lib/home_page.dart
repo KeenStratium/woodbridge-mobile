@@ -998,7 +998,7 @@ class _HomePageState extends State<HomePage> {
                                   splashColor: Colors.white,
                                 )
                               ],
-                              currentAccountPicture: widget.child,
+                              currentAccountPicture: widget.child, accountEmail: null,
                             ),
                           ),
                           Flexible(
