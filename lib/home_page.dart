@@ -1604,7 +1604,7 @@ class _HomePageState extends State<HomePage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage("img/mywoodbridge.png"),
-                            fit: BoxFit.fitHeight
+                            fit: BoxFit.fitWidth
                           ),
                         ),
                       ),
