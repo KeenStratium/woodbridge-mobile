@@ -1005,6 +1005,7 @@ class _HomePageState extends State<HomePage> {
                             flex: 1,
                             child: Container(
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Column(
@@ -1078,38 +1079,144 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Column(
                                     children: <Widget>[
-                                      Divider(
-                                        color: Colors.grey[400],
-                                        height: 16.0,
-                                      ),
-                                      ListTile(
-                                        leading: Icon(Icons.exit_to_app),
-                                        title: Text(
-                                          'Logout',
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black87
-                                          )
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 20.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.location_on,
+                                                  color: Colors.grey[600],
+                                                  size: 16.0
+                                                ),
+                                                Padding(padding: EdgeInsets.symmetric(horizontal: 4.0),),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "#5 23rd Street, Capitol Subdivision",
+                                                      style: TextStyle(
+                                                        fontSize: 14.0,
+                                                        color: Colors.grey[600],
+                                                        fontWeight: FontWeight.w600
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Bacolod City, Negros Occidental",
+                                                      style: TextStyle(
+                                                        fontSize: 14.0,
+                                                        color: Colors.grey[600],
+                                                        fontWeight: FontWeight.w600
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "6100 Philippines",
+                                                      style: TextStyle(
+                                                        fontSize: 14.0,
+                                                        color: Colors.grey[600],
+                                                        fontWeight: FontWeight.w600
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 10.0)
+                                            ),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.phone,
+                                                      color: Colors.grey[600],
+                                                      size: 16.0
+                                                    ),
+                                                    Padding(padding: EdgeInsets.symmetric(horizontal: 4.0),),
+                                                    Text(
+                                                      "(+6334) 433-3851",
+                                                      style: TextStyle(
+                                                        fontSize: 14.0,
+                                                        color: Colors.grey[600],
+                                                        fontWeight: FontWeight.w600
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Flex(
+                                                  direction: Axis.horizontal,
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.email,
+                                                      color: Colors.grey[600],
+                                                      size: 16.0
+                                                    ),
+                                                    Padding(padding: EdgeInsets.symmetric(horizontal: 4.0),),
+                                                    Flexible(
+                                                        child: Text(
+                                                        "hello@thewoodbridgeacademy.com",
+                                                        softWrap: true,
+                                                        textAlign: TextAlign.start,
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.fade,
+                                                        style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          color: Colors.grey[600],
+                                                          fontWeight: FontWeight.w600
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        onTap: () {
-                                          List topics = getTopics();
-                                          _setLoggedInStatus(false);
-                                          removeNotificationToken(_token)
-                                            .then((resolves) {
-                                              for(int i = 0; i < topics.length; i++){
-                                                String topic = topics[i]['topic'];
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8.0)
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Divider(
+                                            color: Colors.grey[400],
+                                            height: 16.0,
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.exit_to_app),
+                                            title: Text(
+                                              'Logout',
+                                              style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.black87
+                                              )
+                                            ),
+                                            onTap: () {
+                                              List topics = getTopics();
+                                              _setLoggedInStatus(false);
+                                              removeNotificationToken(_token)
+                                                .then((resolves) {
+                                                  for(int i = 0; i < topics.length; i++){
+                                                    String topic = topics[i]['topic'];
 
-                                                _firebaseMessaging.unsubscribeFromTopic(topic);
-                                              }
+                                                    _firebaseMessaging.unsubscribeFromTopic(topic);
+                                                  }
 
-                                              Route route = MaterialPageRoute(
-                                                  builder: (BuildContext context) {
-                                                    return LoginPage();
-                                                  });
-                                              Navigator.push(context, route);
-                                            });
-                                        },
+                                                  Route route = MaterialPageRoute(
+                                                      builder: (BuildContext context) {
+                                                        return LoginPage();
+                                                      });
+                                                  Navigator.push(context, route);
+                                                });
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
