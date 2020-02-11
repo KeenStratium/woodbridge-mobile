@@ -484,6 +484,7 @@ class _HomePageState extends State<HomePage> {
                 paymentModes: payment['note'],
                 paymentSettingId: payment['pay_setting_id'].split(',')[0],
                 amountDesc: payment['due_desc'],
+                checkNo: payment['check_no'],
                 paymentType: {
                   'type': payment['pay_type'],
                   'official_receipt': payment['official_receipt'],

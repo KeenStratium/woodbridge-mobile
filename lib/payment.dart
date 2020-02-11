@@ -17,7 +17,8 @@ class Payment {
     this.paymentSettingId,
     this.amountDesc,
     this.paymentType,
-    this.paymentNote
+    this.paymentNote,
+    this.checkNo
   });
 
   String amount;
@@ -29,6 +30,7 @@ class Payment {
   String paymentModes;
   String paymentNote;
   String paymentSettingId;
+  String checkNo;
   Map paymentType;
   DateTime rawDate;
 }
@@ -193,6 +195,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         children: widget.paymentData['payments'] != null ? (widget.paymentData['payments'] as List).map((payment) {
+                          print('check no');
+                          print(payment.amount);
+                          print(payment.checkNo);
                           return Material(
                             color: Colors.white,
                             child: InkWell(
