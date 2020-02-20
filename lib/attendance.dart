@@ -360,15 +360,16 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         List selectedHolidays = widget.holidayDays[_selectedDay];
         List thisEvents = _events[_selectedDay] ?? [''];
         eventsLegend = [];
-
+        DateFormat formatter = DateFormat('MMM. d');
         if(_selectedEvents.length != 0 && thisEvents[0] != '' && (thisEvents.length > 0 && thisEvents[0] != 'CURRENT')){
+
           eventsLegend.add(Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(right: 4.0, left: 4.0),
                 child: Text(
-                  'Status: ',
+                  '${formatter.format(date)} ',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.grey[600]
@@ -435,7 +436,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
               Padding(
                 padding: EdgeInsets.only(right: 4.0, left: 4.0),
                 child: Text(
-                  'Holiday${ selectedHolidays.length > 1 ? 's' : '' }: ',
+                  '${formatter.format(date)} ',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.grey[600]
