@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 import 'package:http/http.dart' as http;
 import 'model.dart';
 
@@ -103,7 +104,8 @@ class PhotoCard extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => HeroPhotoViewWrapper(
                               imageProvider: CachedNetworkImageProvider(imgUrl),
-                              id: this.id
+                              id: this.id,
+                              caption: this.caption,
                             )
                           ));
                       },
@@ -128,15 +130,21 @@ class PhotoCard extends StatelessWidget {
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                    child: Text(
-                      this.caption,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black87
-                      )
-                    ),
+                    child: Hero(
+                      tag: 'caption-${this.id}',
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Text(
+                          this.caption,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black87
+                          )
+                        ),
+                      ),
+                    )
                   ),
                 ],
               ),
@@ -155,7 +163,8 @@ class HeroPhotoViewWrapper extends StatelessWidget {
       this.backgroundDecoration,
       this.minScale,
       this.maxScale,
-      this.id
+      this.caption,
+      this.id,
       });
 
   final Decoration backgroundDecoration;
@@ -164,6 +173,7 @@ class HeroPhotoViewWrapper extends StatelessWidget {
   final Widget loadingChild;
   final dynamic maxScale;
   final dynamic minScale;
+  final String caption;
 
   @override
   Widget build(BuildContext context) {
@@ -194,6 +204,35 @@ class HeroPhotoViewWrapper extends StatelessWidget {
                   Navigator.pop(context);
                 },
               )
+            ),
+          ),
+          Positioned(
+            bottom: 0.0,
+            width: MediaQuery.of(context).size.width,
+            child: Hero(
+              tag: 'caption-${this.id}',
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 32.0, sigmaY: 32.0),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(0, 0, 0, 0.35),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Text(
+                        this.caption,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w400
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
