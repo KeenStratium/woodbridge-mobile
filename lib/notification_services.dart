@@ -54,8 +54,10 @@ class _TextNotificationsState extends State<TextNotifications> {
             ),
             Text(
               widget.msg.length > 0 ? widget.msg : '' ?? '',
-              maxLines: 3,
+              maxLines: 6,
+              textDirection: TextDirection.ltr,
               textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w600,
