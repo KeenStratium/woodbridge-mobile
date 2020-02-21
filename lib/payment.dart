@@ -101,9 +101,6 @@ class _PaymentHistoryState extends State<PaymentHistory> {
         totalBalance = 0.00;
         totalPayments = 0.00;
 
-        nextPaymentMonth = null;
-        nextPaymentDay = null;
-
         results.forEach((payment) {
           var amount;
           DateTime dueDate;
@@ -118,6 +115,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
               if(nextPaymentMonth == null){
                 nextPaymentMonth = monthNames[dueDate.month - 1];
                 nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+                setNextPayment(nextPaymentDay, nextPaymentMonth);
               }
             }else {
               if(payment['amount_paid'] != null){

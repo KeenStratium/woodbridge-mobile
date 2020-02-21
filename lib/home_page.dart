@@ -115,6 +115,19 @@ Future<List> getStudentLatestAttendance(userId) async {
 
   return jsonDecode(response.body);
 }
+Future<List> fetchStudentPayments(userId) async {
+  String url = '$baseApi/pay/get-student-payments';
+
+  var response = await http.post(url, body: json.encode({
+    'data': userId
+  }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
+
+  return jsonDecode(response.body);
+}
 Future<Map> getStudentUnseenNotifications(userId) async {
   String url = '$baseApi/notif/get-student-unseen-notifs';
 
@@ -266,8 +279,6 @@ class _HomePageState extends State<HomePage> {
   Map monthWithYearActivities = {};
   String nextEventDay;
   String nextEventMonth;
-  String nextPaymentDay;
-  String nextPaymentMonth;
   List<DateTime> noSchoolDays = <DateTime>[];
   int notificationPageSize = 8;
   bool otherChildHasUnreadNotif = false;
@@ -334,6 +345,7 @@ class _HomePageState extends State<HomePage> {
     transformActivityList(widget.classId);
 
     fetchAttendanceInfo(widget.heroTag);
+    buildStudentPayments(widget.heroTag);
     setStudentsUnreadNotif(widget.userIds);
     _saveUserProfileData();
 
@@ -415,6 +427,80 @@ class _HomePageState extends State<HomePage> {
           setState(() {});
         }
       });
+  }
+
+  Future buildStudentPayments(userId) async {
+    Completer _completer = Completer();
+
+    await fetchStudentPayments(userId)
+      .then((results) {
+        payments = [];
+        totalBalance = 0.00;
+        totalPayments = 0.00;
+
+        String nextPaymentMonth;
+        String nextPaymentDay;
+
+        results.forEach((payment) {
+          var amount;
+          DateTime dueDate;
+          if(payment['due_date'] != null){
+            dueDate = DateTime.parse(payment['due_date']).toLocal();
+          }
+          String paymentDate = 'Unpaid';
+          try {
+            amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
+            if(amount == 'N/A' || amount == null || amount == '0'){
+              totalBalance += payment['due_amount'];
+              if(nextPaymentMonth == null){
+                nextPaymentMonth = monthNames[dueDate.month - 1];
+                nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+                setNextPayment(nextPaymentDay, nextPaymentMonth);
+              }
+            }else {
+              if(payment['amount_paid'] != null){
+                totalPayments += payment['amount_paid'];
+              }
+            }
+          } catch(e){
+            print(e);
+          }
+
+          try{
+            String paidDate = payment['paid_date'];
+            if(paidDate != null){
+              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MMM dd y');
+            }
+          }catch(e){}
+          payments.add(
+            Payment(
+                label: dueDate != null ? timeFormat(dueDate.toString(), 'MMM dd y') : '',
+                amount: amount,
+                dueAmount: payment['due_amount'] + 0.00 ?? 0,
+                rawDate: dueDate,
+                paidDate: paymentDate,
+                isPaid: amount != 'N/A',
+                paymentModes: payment['note'],
+                paymentSettingId: payment['pay_setting_id'].split(',')[0],
+                amountDesc: payment['due_desc'],
+                checkNo: payment['check_no'],
+                paymentType: {
+                  'type': payment['pay_type'],
+                  'official_receipt': payment['official_receipt'],
+                  'bank_abbr': payment['pay_bank']
+                },
+                paymentNote: payment['description']
+            )
+          );
+        });
+      });
+    streamController.add({
+      'totalPayments': totalPayments,
+      'totalBalance': totalBalance,
+      'payments': payments
+    });
+    _completer.complete();
+    return _completer.future;
   }
 
   List<String> sortActivityNames(activityNamesSort) {
@@ -824,6 +910,7 @@ class _HomePageState extends State<HomePage> {
 
     transformActivityList(widget.classId);
     fetchAttendanceInfo(widget.heroTag);
+    buildStudentPayments(widget.heroTag);
     setUnreadNotif(widget.heroTag);
     setStudentsUnreadNotif(widget.userIds);
   }
@@ -862,6 +949,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
+    Map nextPayment = getNextPayment();
+    String nextPaymentDay = nextPayment['nextPaymentDay'];
+    String nextPaymentMonth = nextPayment['nextPaymentMonth'];
     height *= .2;
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(

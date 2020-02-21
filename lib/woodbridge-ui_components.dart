@@ -10,6 +10,22 @@ String _avatarUrl;
 String _username;
 List<Map> _topics = <Map>[];
 Map _moduleUnreadCount = {};
+String _nextPaymentDay;
+String _nextPaymentMonth;
+
+Map getNextPayment() {
+  Map nextPayment = {
+    'nextPaymentDay': _nextPaymentDay ?? '',
+    'nextPaymentMonth': _nextPaymentMonth ?? ''
+  };
+
+  return nextPayment;
+}
+
+void setNextPayment(String day, String month) {
+  _nextPaymentDay = day;
+  _nextPaymentMonth = month;
+}
 
 void setModuleUnreadCount(String moduleName, int count, List<int> notifIds){
   if(_moduleUnreadCount[moduleName] == null){
