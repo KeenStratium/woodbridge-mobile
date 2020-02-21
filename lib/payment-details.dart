@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
 import 'services.dart';
@@ -140,7 +141,7 @@ class Payment {
     this.amountDesc,
     this.paymentType,
     this.paymentNote
-  });
+  }); 
 
   String amount;
   String amountDesc;
@@ -333,10 +334,10 @@ class PaymentDetails extends StatelessWidget {
                                   children: <Widget>[
                                     Expanded(
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           DashboardTile(
-                                            label: 'DUE DATE',
+                                            label: 'Due Date',
                                             displayPlainValue: true,
                                             value: date,
                                           ),
@@ -345,10 +346,10 @@ class PaymentDetails extends StatelessWidget {
                                     ),
                                     Expanded(
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           DashboardTile(
-                                            label: 'DATE OF PAYMENT',
+                                            label: 'Date of Payment',
                                             displayPlainValue: true,
                                             value: paymentDate,
                                             isActive: paymentDate != 'Unpaid',
@@ -369,7 +370,7 @@ class PaymentDetails extends StatelessWidget {
                                 child: Column(
                                     children: <Widget>[
                                       _preSchoolPayments.length > 0 ? PaymentDataView(
-                                          title: 'Pre-School',
+                                          title: 'Preschool',
                                           payments: _preSchoolPayments
                                       ) : Container(),
                                       _kumonPayments.length > 0 ? PaymentDataView(
@@ -402,13 +403,24 @@ class PaymentDetails extends StatelessWidget {
                             padding: EdgeInsets.only(top: 20.0),
                             child: Column(
                               children: <Widget>[
-                                Text(
-                                  'NOTE',
-                                  style: TextStyle(
-                                      color: Colors.grey[500],
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12.0
-                                  ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    SvgPicture.asset(
+                                      'img/Icons/notes.svg',
+                                      height: 12.0,
+                                      color: Colors.amber[700],
+                                      semanticsLabel: 'Notes'
+                                    ),
+                                    Padding(padding: EdgeInsets.symmetric(horizontal: 2.0),),
+                                    Text(
+                                      'Note',
+                                      style: TextStyle(
+                                          color: Colors.amber[700],
+                                          fontSize: 14.0
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Padding(
                                   padding: EdgeInsets.symmetric(vertical: 3.0),
@@ -436,36 +448,11 @@ class PaymentDetails extends StatelessWidget {
                                           child: Column(
                                             children: <Widget>[
                                               Text(
-                                                'TYPE',
+                                                'Official Receipt',
                                                 style: TextStyle(
                                                     color: Colors.grey[500],
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 12.0
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(vertical: 3.0),
-                                                child: Text(
-                                                  capitalize(paymentType['type']),
-                                                  style: TextStyle(
-                                                      fontSize: 18.0,
-                                                      color: Colors.black87
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 6.0),
-                                          child: Column(
-                                            children: <Widget>[
-                                              Text(
-                                                'OFFICIAL RECEIPT',
-                                                style: TextStyle(
-                                                    color: Colors.grey[500],
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 12.0
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 14.0
                                                 ),
                                               ),
                                               Padding(
@@ -486,6 +473,7 @@ class PaymentDetails extends StatelessWidget {
                                                       '${paymentType['official_receipt']}',
                                                       style: TextStyle(
                                                           fontSize: 18.0,
+                                                          fontWeight: FontWeight.w600,
                                                           color: Colors.black87
                                                       ),
                                                     ),
@@ -495,30 +483,87 @@ class PaymentDetails extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        paymentType['bank_name'] != null ? Padding(
+                                        Padding(
                                           padding: EdgeInsets.symmetric(vertical: 6.0),
                                           child: Column(
                                             children: <Widget>[
                                               Text(
-                                                'BANK',
+                                                'Mode of Payment',
                                                 style: TextStyle(
                                                     color: Colors.grey[500],
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 12.0
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 14.0
                                                 ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.symmetric(vertical: 3.0),
                                                 child: Text(
-                                                  paymentType['bank_name'] ?? '',
+                                                  capitalize(paymentType['type']),
                                                   style: TextStyle(
-                                                    fontSize: 18.0,
-                                                    color: Colors.black87,
+                                                      fontSize: 18.0,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.black87
                                                   ),
                                                 ),
                                               ),
                                             ],
                                           ),
+                                        ),
+                                        paymentType['bank_name'] != null ? Column(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 6.0),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Check Number',
+                                                    style: TextStyle(
+                                                        color: Colors.grey[500],
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 14.0
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                    child: Text(
+                                                      payment.checkNo ?? 'n/a',
+                                                      style: TextStyle(
+                                                        fontSize: 18.0,
+                                                        fontWeight: payment.checkNo != null ? FontWeight.w600 : FontWeight.w400,
+                                                        color: payment.checkNo != null ? Colors.black87 : Colors.black54,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 6.0),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Bank',
+                                                    style: TextStyle(
+                                                        color: Colors.grey[500],
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 14.0
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                    child: Text(
+                                                      paymentType['bank_name'] ?? '',
+                                                      style: TextStyle(
+                                                        fontSize: 18.0,
+                                                        fontWeight: FontWeight.w600,
+                                                        color: Colors.black87,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ) : Container(),
                                       ],
                                     ),
@@ -527,32 +572,41 @@ class PaymentDetails extends StatelessWidget {
                               ),
                               Divider(height: 1.0, color: Colors.grey[300]),
                               Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 32.0),
-                                child: Flex(
-                                  direction: Axis.horizontal,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Text(
-                                        'GRAND TOTAL',
-                                        style: TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w700
+                                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF3F9BDF),
+                                    borderRadius: BorderRadius.all(Radius.circular(14.0)),
+                                    border: Border.all(width: 1.0, color: Color.fromRGBO(0, 0, 0, .075))
+                                  ),
+                                  padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                                  child: Flex(
+                                    direction: Axis.horizontal,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: Text(
+                                          'GRAND TOTAL',
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w400
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        localCurrencyFormat(amountPaid),
-                                        style: TextStyle(
-                                            color: Theme.of(context).accentColor,
-                                            fontSize: 24.0,
-                                            fontWeight: FontWeight.w600
+                                      Flexible(
+                                        child: Text(
+                                          localCurrencyFormat(amountPaid),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.w600
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
                             ],

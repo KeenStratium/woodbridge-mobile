@@ -3,6 +3,7 @@ import 'services.dart';
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Payment {
   Payment({
@@ -16,7 +17,8 @@ class Payment {
     this.paymentSettingId,
     this.amountDesc,
     this.paymentType,
-    this.paymentNote
+    this.paymentNote,
+    this.checkNo
   });
 
   String amount;
@@ -28,6 +30,7 @@ class Payment {
   String paymentModes;
   String paymentNote;
   String paymentSettingId;
+  String checkNo;
   Map paymentType;
   DateTime rawDate;
 }
@@ -94,29 +97,30 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                           children: <Widget>[
                             Expanded(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  DashboardTile(
-                                    label: 'BALANCE',
-                                    displayPlainValue: true,
-                                    value: widget.paymentData['totalBalance'] != null ? localCurrencyFormat(widget.paymentData['totalBalance']) : "0.00",
-                                  )
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
                                   DashboardTile(
-                                    label: 'TOTAL PAYMENTS',
+                                    label: 'Total Payments',
                                     displayPlainValue: true,
                                     value: widget.paymentData['totalPayments'] != null ? localCurrencyFormat(widget.paymentData['totalPayments']) : "0.00",
                                   ),
                                 ],
                               ),
                             ),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  DashboardTile(
+                                    label: 'Total Balance',
+                                    displayPlainValue: true,
+                                    value: widget.paymentData['totalBalance'] != null ? localCurrencyFormat(widget.paymentData['totalBalance']) : "0.00",
+                                    color: Color(0xFFDA4453)
+                                  )
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -139,20 +143,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    'DATE',
+                                    'Due Date',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 12.0,
+                                        fontSize: 14.0,
                                         fontWeight: FontWeight.w700,
-                                        color: Colors.black54
-                                    ),
-                                  ),
-                                  Text(
-                                    'DUE',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
+                                        color: Colors.black87
                                     ),
                                   )
                                 ],
@@ -164,20 +160,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'DUE',
+                                    'Amount Due',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
-                                    ),
-                                  ),
-                                  Text(
-                                    'AMOUNT',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87
                                     ),
                                   )
                                 ],
@@ -189,20 +177,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: <Widget>[
                                   Text(
-                                    'PAYMENT',
+                                    'Payment Date', 
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
-                                    ),
-                                  ),
-                                  Text(
-                                    'DATE',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black54
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87
                                     ),
                                   )
                                 ],
@@ -215,6 +195,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         children: widget.paymentData['payments'] != null ? (widget.paymentData['payments'] as List).map((payment) {
+                          print('check no');
+                          print(payment.amount);
+                          print(payment.checkNo);
                           return Material(
                             color: Colors.white,
                             child: InkWell(
@@ -247,8 +230,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         payment.label,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w600,
                                           color: Colors.black87
                                         ),
                                       ),
@@ -259,7 +242,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         payment.dueAmount != null ? localCurrencyFormat(payment.dueAmount) : 'N/A',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          fontSize: 15.0,
+                                          fontSize: 14.0,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.black87
                                         ),
@@ -267,14 +250,28 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                       flex: 1
                                     ),
                                     Expanded(
-                                      child: Text(
-                                        payment.paidDate ?? 'Unpaid',
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.w600,
-                                          color: payment.paidDate == 'Unpaid' ? Colors.black38 : Colors.black87
-                                        ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                            child: Text(
+                                              payment.paidDate ?? 'Unpaid',
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w600,
+                                                color: payment.paidDate == 'Unpaid' ? Colors.black38 : Colors.black87
+                                              ),
+                                            ),
+                                          ),
+                                          SvgPicture.asset(
+                                            'img/Icons/details.svg',
+                                            height: 13.0,
+                                            color: Theme.of(context).accentColor,
+                                            semanticsLabel: 'View payment details'
+                                          )
+                                        ],
                                       ),
                                       flex: 1,
                                     ),

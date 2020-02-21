@@ -9,18 +9,67 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'services.dart';
 
 class ActivityEvent {
-  ActivityEvent({this.title, this.venue, this.time, this.day, this.weekday});
+  ActivityEvent({this.title, this.venue, this.time, this.day, this.weekday, this.desc});
 
   String day;
   String time;
   String title;
   String venue;
   String weekday;
+  String desc;
 }
 
 bool isInitiated = false;
 
 String oldUserId = '';
+
+LinearGradient overflowGradient() {
+  return  LinearGradient(
+    begin: Alignment.centerRight,
+    end: Alignment.center,
+    stops: [0.0, .25],
+    colors: [
+      Colors.white,
+      Color.fromRGBO(255, 255, 255, 0),
+    ]
+  );
+}
+
+class OverflowLabel extends StatelessWidget {
+  const OverflowLabel({Key key, this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Flexible(
+        flex: 1,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: 1.0, color: Colors.white)
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: child,
+              ),
+            ),
+            IgnorePointer(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: overflowGradient()
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 Future<List> getStudentActivities(classId) async {
   String url = '$baseApi/act/get-student-activities?data=$classId';
@@ -32,14 +81,41 @@ Future<List> getStudentActivities(classId) async {
 
   return jsonDecode(response.body);
 }
+
+int getColorSpaceRange(int totalColorLength, int itemSize, int maxRangeInterval) {
+  final int  rangeIntervalMultiplier = ((itemSize/maxRangeInterval) - (totalColorLength/maxRangeInterval)).ceil();
+  final int maxColorSpaceRange = (totalColorLength + (rangeIntervalMultiplier*maxRangeInterval));
+
+  return maxColorSpaceRange;
+}
+
+int colorIndex(int totalColorLength, int currentIndex, int countIndex, int maxColorSpaceRange) {
+  return (((maxColorSpaceRange/(currentIndex + 2)) * (countIndex % maxColorSpaceRange)) % totalColorLength).floor();
+}
+
 List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActivities, List<String> activityNameList) {
   int count = monthActivities.length;
   List<String> activityNames = activityNameList;
+  List<Color> activityHeadColors = [
+    Color(0xFFBF263C),
+    Color(0xFFDA4453),
+    Color(0xFFE9573F),
+    Color(0xFFF6BB42),
+    Color(0xFFE0C341),
+    Color(0xFF37BC9B),
+    Color(0xFF7DB1B1),
+    Color(0xFF3BAFDA),
+    Color(0xFF4A89DC),
+    Color(0xFF967ADC),
+    Color(0xFF6A50A7),
+    Color(0xFFD770AD)];
+  final int maxColorSpaceRange = getColorSpaceRange(activityHeadColors.length, activityNames.length,activityHeadColors.length);
 
   return List.generate(count, (sliverIndex) {
     sliverIndex += firstIndex;
+    
     return new SliverStickyHeaderBuilder(
-      builder: (context, state) => _buildHeader(context, sliverIndex, state, activityNames),
+      builder: (context, state) => _buildHeader(context, sliverIndex, state, activityNames, activityHeadColors),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, i) => Container(
@@ -52,7 +128,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                boxShadow: [BrandTheme.cardShadow],
+                boxShadow: [BrandTheme.cardShadow]
               ),
               child: Flex(
                 direction: Axis.horizontal,
@@ -68,14 +144,17 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                             monthActivities[activityNames[sliverIndex]][i].day,
                             style: TextStyle(
                               fontSize: 24.0,
-                              color: Theme.of(context).accentColor
+                              color: activityHeadColors[colorIndex(activityHeadColors.length, activityNames.length - 1, sliverIndex + 1, maxColorSpaceRange)]
                             ),
                           ),
-                          Text(
-                            monthActivities[activityNames[sliverIndex]][i].weekday,
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.black54
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 1.0),
+                            child: Text(
+                              monthActivities[activityNames[sliverIndex]][i].weekday,
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.black54
+                              ),
                             ),
                           )
                         ],
@@ -89,16 +168,32 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Expanded(
+                        OverflowLabel(
                           child: Text(
                             monthActivities[activityNames[sliverIndex]][i].title,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            textDirection: TextDirection.ltr,
+                            softWrap: false,
                             style: TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.w700
                             ),
-                          ),
+                          )
+                        ),
+                        OverflowLabel(
+                          child: Text(
+                            monthActivities[activityNames[sliverIndex]][i].desc ?? '',
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            textDirection: TextDirection.ltr,
+                            softWrap: false,
+                            style: TextStyle(
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black54
+                            ),
+                          )
                         ),
                         Flex(
                           direction: Axis.horizontal,
@@ -149,13 +244,13 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
                                       padding: EdgeInsets.symmetric(horizontal: 1.0),
                                     ),
                                   ),
-                                  Flexible(
-                                    flex: 1,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
+                                  Container(
+                                    child: OverflowLabel(
                                       child: Text(
                                         monthActivities[activityNames[sliverIndex]][i].venue,
                                         overflow: TextOverflow.fade,
+                                        maxLines: 1,
+                                        textDirection: TextDirection.ltr,
                                         softWrap: false,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
@@ -183,9 +278,10 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
     );
   });
 }
-Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState state, List<String> activityNames) {
+Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState state, List<String> activityNames, List<Color> monthColor) {
   String month = activityNames[index].split(' ')[0];
   String year = activityNames[index].split(' ')[1];
+  final int maxColorSpaceRange = getColorSpaceRange(monthColor.length, activityNames.length,monthColor.length);
 
   return new Container(
     height: 48.0,
@@ -209,7 +305,7 @@ Widget _buildHeader(BuildContext context, int index, SliverStickyHeaderState sta
         Text(
           month,
           style: TextStyle(
-            color: Colors.black87,
+            color: monthColor[colorIndex(monthColor.length, activityNames.length - 1, index + 1, maxColorSpaceRange)],
             fontSize: 16.0,
             fontWeight: FontWeight.w700
           ),
@@ -252,6 +348,7 @@ class Activities extends StatefulWidget {
 }
 
 class _ActivitiesState extends State<Activities> {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

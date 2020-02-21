@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'model.dart';
 
 import 'package:flutter/material.dart';
@@ -59,6 +60,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   List _selectedEvents;
   Map<DateTime, List> _visibleEvents;
   Map<DateTime, List> _visibleHolidays;
+  DateFormat formatter = DateFormat('MMMM d, yyyy');
 
   @override
   void initState(){
@@ -141,8 +143,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     ]);
 
     _selectedDay = DateTime.now();
-    _selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
-
+    _selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day, 0, 0);
+    
     _events = {
       _selectedDay: [],
     };
@@ -249,7 +251,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
   void _onDaySelected(DateTime day, List events) {
     setState(() {
-      _selectedDay = day;
+      _selectedDay = DateTime(day.year, day.month, day.day, 0, 0);
       _selectedEvents = events;
     });
   }
@@ -356,17 +358,18 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       onDaySelected: (date, events) {
         _onDaySelected(date, events);
         List selectedHolidays = widget.holidayDays[_selectedDay];
-        List thisEvents = _events[date] ?? [''];
+        List thisEvents = _events[_selectedDay] ?? [''];
         eventsLegend = [];
-
+        DateFormat formatter = DateFormat('MMM. d');
         if(_selectedEvents.length != 0 && thisEvents[0] != '' && (thisEvents.length > 0 && thisEvents[0] != 'CURRENT')){
+
           eventsLegend.add(Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(right: 4.0, left: 4.0),
                 child: Text(
-                  'Status: ',
+                  '${formatter.format(date)} ',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.grey[600]
@@ -433,7 +436,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
               Padding(
                 padding: EdgeInsets.only(right: 4.0, left: 4.0),
                 child: Text(
-                  'Holiday${ selectedHolidays.length > 1 ? 's' : '' }: ',
+                  '${formatter.format(date)} ',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.grey[600]
@@ -474,8 +477,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   }
 
   Widget _buildEventsMarker(DateTime date, List events) {
-    DateTime thisDay = DateTime(date.year, date.month, date.day);
-    DateTime selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
+    DateTime thisDay = DateTime(date.year, date.month, date.day, 0, 0);
+    DateTime selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day, 0, 0);
     Color bgColor;
     Color fontColor = Colors.white;
 
@@ -723,11 +726,11 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                   children: <Widget>[
                     Container(
                       height: 30.0,
-                      margin: EdgeInsets.only(top: 20.0, left: 20.0),
+                      margin: EdgeInsets.only(top: 20.0, left: eventsLegend.length > 0 ? 20.0 : 0.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Expanded(
+                          eventsLegend.length > 0 ? Expanded(
                             flex: 1,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
@@ -737,6 +740,13 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                               itemBuilder: (BuildContext context, int index) {
                                 return eventsLegend[index];
                               }
+                            ),
+                          ) : Text(
+                            formatter.format(_selectedDay),
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[600]
                             ),
                           ),
                         ],

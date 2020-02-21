@@ -5,7 +5,7 @@ List<String> dayNames = <String>['Monday', 'Tuesday', 'Wednesday', 'Thursday', '
 List<String> monthNames = <String>['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 String localCurrencyFormat(double amount){
-  return '₱${amount + 0.00}'.replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+  return '₱${amount.toStringAsFixed(2)}'.replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
 }
 
 String timeFormat(unformattedTime, format){

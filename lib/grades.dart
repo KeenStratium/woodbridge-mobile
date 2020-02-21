@@ -166,12 +166,12 @@ class _GradesState extends State<Grades> {
                               ),
                             ),
                             Text(
-                              markingCode['code_title'],
+                              markingCode['code_title'].toUpperCase(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 14.0,
+                                  fontSize: 12.0,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.grey[600]
+                                  color: Colors.grey[700]
                               ),
                             )
                           ],
@@ -240,7 +240,7 @@ class _GradesState extends State<Grades> {
                         child: Column(
                           children: <Widget>[
                             Text(
-                              'Marking Codes',
+                              'Marking Code',
                               style: TextStyle(
                                 fontSize: 20.0,
                                 color: Theme.of(context).accentColor,
@@ -274,7 +274,7 @@ class _GradesState extends State<Grades> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
                         child: Text(
-                          'Subjects',
+                          'Academic Performance',
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black87,
@@ -468,8 +468,8 @@ class QuarterGrade extends StatelessWidget {
               value ?? '-',
               style: TextStyle(
                 fontSize: 16.0,
-                fontWeight: FontWeight.w700,
-                color: value == null ? Colors.black54 : Theme.of(context).accentColor
+                fontWeight: value == null ? FontWeight.w400 : FontWeight.w700,
+                color: value == null ? Colors.black38 : Theme.of(context).accentColor
               ),
             )
           ],

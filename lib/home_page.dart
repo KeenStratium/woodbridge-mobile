@@ -362,7 +362,6 @@ class _HomePageState extends State<HomePage> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         updateHomeData();
-        print(message);
       },
       onResume: (Map<String, dynamic> message) async {
         updateHomeData();
@@ -471,12 +470,12 @@ class _HomePageState extends State<HomePage> {
           try{
             String paidDate = payment['paid_date'];
             if(paidDate != null){
-              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MM/d/y');
+              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MMM dd y');
             }
           }catch(e){}
           payments.add(
             Payment(
-                label: dueDate != null ? timeFormat(dueDate.toString(), 'MM/d/y') : '',
+                label: dueDate != null ? timeFormat(dueDate.toString(), 'MMM dd y') : '',
                 amount: amount,
                 dueAmount: payment['due_amount'] + 0.00 ?? 0,
                 rawDate: dueDate,
@@ -485,6 +484,7 @@ class _HomePageState extends State<HomePage> {
                 paymentModes: payment['note'],
                 paymentSettingId: payment['pay_setting_id'].split(',')[0],
                 amountDesc: payment['due_desc'],
+                checkNo: payment['check_no'],
                 paymentType: {
                   'type': payment['pay_type'],
                   'official_receipt': payment['official_receipt'],
@@ -553,7 +553,7 @@ class _HomePageState extends State<HomePage> {
                       List startTime = classDetail['class_start_schedule'].split(':');
                       DateTime classStart = DateTime(today.year, today.month, today.day, int.parse(startTime[0]), int.parse(startTime[1]));
                       if(resolve[thisDay] != null){
-                        attendanceStatus = 'No class';
+                        attendanceStatus = 'No Classes';
                         attendanceStatusColor = Colors.deepPurple[400];
                         attendanceStatusIcon = Icon(
                           Icons.home,
@@ -710,6 +710,7 @@ class _HomePageState extends State<HomePage> {
               title: activity['a_title'],
               venue: activity['a_location'],
               time: activity['a_time_start'],
+              desc: activity['a_desc'],
               day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
               weekday: weekdayNames[date.weekday - 1]
             );
@@ -756,10 +757,7 @@ class _HomePageState extends State<HomePage> {
     if (Platform.isIOS) iOSPermission();
     _token = "";
     _firebaseMessaging.getToken().then((token){
-      print(token);
       _token = token;
-      print('topics');
-      print(topics);
       for(int i = 0; i < topics.length; i++){
         Map topic = topics[i];
         if(topic['topic'] != null){
@@ -983,37 +981,31 @@ class _HomePageState extends State<HomePage> {
                           Flexible(
                             flex: 0,
                             child: UserAccountsDrawerHeader(
-                              accountEmail: Text(
-                                '${widget.gradeLevel} - ${widget.gradeSection}',
-                                style: TextStyle(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w600
-                                ),
-                              ),
                               accountName: Text(
                                 '${this.widget.firstName ?? ""} ${this.widget.lastName ?? ""}',
                                 style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w800
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w500
                                 ),
                               ),
                               otherAccountsPictures: <Widget>[
                                 IconButton(
                                   icon: Icon(Icons.close),
-                                  color: Color.fromRGBO(255, 255, 255, .75),
+                                  color: Color.fromRGBO(255, 255, 255, .35),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
                                   splashColor: Colors.white,
                                 )
                               ],
-                              currentAccountPicture: widget.child,
+                              currentAccountPicture: widget.child, accountEmail: null,
                             ),
                           ),
                           Flexible(
                             flex: 1,
                             child: Container(
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Column(
@@ -1035,7 +1027,7 @@ class _HomePageState extends State<HomePage> {
                                           Navigator.push(context, route);
                                         },
                                         title: Text(
-                                          "Parent's Guide",
+                                          "Parents' Guide",
                                           style: TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.w700,
@@ -1066,7 +1058,7 @@ class _HomePageState extends State<HomePage> {
                                         },
                                       ),
                                       ListTile(
-                                        leading: Icon(Icons.error),
+                                        leading: Icon(Icons.info),
                                         title: Text(
                                           'About Us',
                                           style: TextStyle(
@@ -1082,6 +1074,129 @@ class _HomePageState extends State<HomePage> {
                                             });
                                           Navigator.push(context, route);
                                         },
+                                      ),
+                                      ExpansionTile(
+                                        leading: Icon(Icons.phone),
+                                        initiallyExpanded: false,
+                                        onExpansionChanged: (_isExpanded) {
+                                        },
+                                        title: Text(
+                                          'Contact Us',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87
+                                          )
+                                        ),
+                                        children: <Widget>[
+                                          Container(
+                                              width: double.infinity,
+                                              padding: EdgeInsets.only(right: 18.0, bottom: 20.0),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: EdgeInsets.only(left: 20.0),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: <Widget>[
+                                                        Row(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Icon(
+                                                              Icons.location_on,
+                                                              color: Colors.grey[600],
+                                                              size: 16.0
+                                                            ),
+                                                            Padding(padding: EdgeInsets.symmetric(horizontal: 4.0),),
+                                                            Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: <Widget>[
+                                                                Text(
+                                                                  "#5 23rd Street, Capitol Subdivision",
+                                                                  style: TextStyle(
+                                                                    fontSize: 14.0,
+                                                                    color: Colors.grey[600],
+                                                                    fontWeight: FontWeight.w600
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  "Bacolod City, Negros Occidental",
+                                                                  style: TextStyle(
+                                                                    fontSize: 14.0,
+                                                                    color: Colors.grey[600],
+                                                                    fontWeight: FontWeight.w600
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  "6100 Philippines",
+                                                                  style: TextStyle(
+                                                                    fontSize: 14.0,
+                                                                    color: Colors.grey[600],
+                                                                    fontWeight: FontWeight.w600
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Padding(
+                                                          padding: EdgeInsets.symmetric(vertical: 10.0)
+                                                        ),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Row(
+                                                              children: <Widget>[
+                                                                Icon(
+                                                                  Icons.phone,
+                                                                  color: Colors.grey[600],
+                                                                  size: 16.0
+                                                                ),
+                                                                Padding(padding: EdgeInsets.symmetric(horizontal: 4.0),),
+                                                                Text(
+                                                                  "(+6334) 433-3851",
+                                                                  style: TextStyle(
+                                                                    fontSize: 14.0,
+                                                                    color: Colors.grey[600],
+                                                                    fontWeight: FontWeight.w600
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Flex(
+                                                              direction: Axis.horizontal,
+                                                              children: <Widget>[
+                                                                Icon(
+                                                                  Icons.email,
+                                                                  color: Colors.grey[600],
+                                                                  size: 16.0
+                                                                ),
+                                                                Padding(padding: EdgeInsets.symmetric(horizontal: 4.0),),
+                                                                Flexible(
+                                                                    child: Text(
+                                                                    "hello@thewoodbridgeacademy.com",
+                                                                    softWrap: true,
+                                                                    textAlign: TextAlign.start,
+                                                                    maxLines: 2,
+                                                                    overflow: TextOverflow.fade,
+                                                                    style: TextStyle(
+                                                                      fontSize: 14.0,
+                                                                      color: Colors.grey[600],
+                                                                      fontWeight: FontWeight.w600
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                          )
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -1142,7 +1257,7 @@ class _HomePageState extends State<HomePage> {
                                   image: AssetImage('img/home_profile_head_cover.png')
                                 )
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
                               child: Flex(
                                 direction: Axis.vertical,
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1169,12 +1284,12 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 4.0),
+                                    padding: EdgeInsets.symmetric(vertical: 6.0),
                                   ),
                                   Expanded(
-                                    flex: 3,
+                                    flex: 2,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Material(
@@ -1210,16 +1325,23 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                   ),
                                                 ) : Container(),
-                                                Icon(
-                                                  Icons.arrow_drop_down,
-                                                  color: Colors.white,
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                                ),
+                                                Text(
+                                                  '􀄥',
+                                                  style: TextStyle(
+                                                    fontFamily: 'SFPro',
+                                                    color: Colors.white,
+                                                    fontSize: 9.0
+                                                  ),
                                                 )
                                               ],
                                             ),
                                           ),
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                                          padding: EdgeInsets.symmetric(vertical: 1.0),
                                         ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1377,7 +1499,7 @@ class _HomePageState extends State<HomePage> {
                                                                 child: Column(
                                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                                   children: <Widget>[
-                                                                    attendanceStatus == 'No class' ? Padding(
+                                                                    attendanceStatus == 'No Classes' ? Padding(
                                                                       padding: EdgeInsets.symmetric(vertical: 4.0)
                                                                     ) : Container(),
                                                                     Flex(
@@ -1408,7 +1530,7 @@ class _HomePageState extends State<HomePage> {
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                    attendanceStatus != 'No class' ? Text(
+                                                                    attendanceStatus != 'No Classes' ? Text(
                                                                       '$presentDaysNo/${totalSchoolDays.floor()}',
                                                                       overflow: TextOverflow.fade,
                                                                       style: TextStyle(
@@ -1508,8 +1630,10 @@ class _HomePageState extends State<HomePage> {
                                       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                                       children: <Widget>[
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_payments_2x.png',
+                                          iconPath: 'img/Icons/icon_payments.png',
                                           label: 'Payments',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(83, 162, 193, .35)),
+                                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                                           pageBuilder: PaymentHistory(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1519,8 +1643,10 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_attendance_2x.png',
+                                          iconPath: 'img/Icons/icon_attendance.png',
                                           label: 'Attendance',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(6, 140, 92, .35)),
+                                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                           pageBuilder: Attendance(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1539,8 +1665,10 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_grades_2x.png',
+                                          iconPath: 'img/Icons/icon_grades.png',
                                           label: 'Progress',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(242, 197, 54, .35)),
+                                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                           pageBuilder: Grades(
                                             userId: widget.heroTag,
                                             firstName: this.widget.firstName,
@@ -1550,8 +1678,9 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_activities_2x.png',
+                                          iconPath: 'img/Icons/icon_activities.png',
                                           label: 'Activities',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(123, 76, 167, .35)),
                                           pageBuilder: Activities(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1563,8 +1692,10 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_gallery_2x.png',
-                                          label: 'Photos',
+                                          iconPath: 'img/Icons/icon_gallery.png',
+                                          label: 'Classroom',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(219, 69, 58, .35)),
+                                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                           pageBuilder: ActivityGallery(
                                             firstName: this.widget.firstName,
                                             lastName: this.widget.lastName,
@@ -1574,8 +1705,9 @@ class _HomePageState extends State<HomePage> {
                                           buildContext: context,
                                         ),
                                         MenuItem(
-                                          iconPath: 'img/Icons/icon_announcements_2x.png',
+                                          iconPath: 'img/Icons/icon_announcements.png',
                                           label: 'Messages',
+                                          cardShadow: dynamicCardShadow(Color.fromRGBO(252, 142, 43, .35)),
                                           pageBuilder: MessageBoard(
                                             userId: widget.heroTag,
                                             firstName: widget.firstName,
@@ -1600,7 +1732,7 @@ class _HomePageState extends State<HomePage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage("img/mywoodbridge.png"),
-                            fit: BoxFit.fitHeight
+                            fit: BoxFit.fitWidth
                           ),
                         ),
                       ),
@@ -1715,7 +1847,9 @@ class MenuItem extends StatelessWidget {
     this.pageBuilder,
     this.buildContext,
     this.isCustomOnPressed,
-    this.customOnPressed
+    this.customOnPressed,
+    this.cardShadow,
+    this.padding
   }) : super(key: key);
 
   final BuildContext buildContext;
@@ -1723,8 +1857,10 @@ class MenuItem extends StatelessWidget {
   var customOnPressed;
   final String iconPath;
   bool isCustomOnPressed;
+  EdgeInsetsGeometry padding;
   final String label;
   final Widget pageBuilder;
+  BoxShadow cardShadow;
   String _unreadName;
   int unreadCount = 0;
   List unreadNotifIds = [];
@@ -1781,7 +1917,7 @@ class MenuItem extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(vertical: 4.0),
               decoration: BoxDecoration(
-                boxShadow: [BrandTheme.cardShadow],
+                boxShadow: [cardShadow],
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(7.0))
               ),
@@ -1791,11 +1927,14 @@ class MenuItem extends StatelessWidget {
                 children: <Widget>[
                   Flexible(
                     flex: 3,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(iconPath)
-                        )
+                    child: Padding(
+                      padding: padding ?? EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(iconPath)
+                          )
+                        ),
                       ),
                     ),
                   ),
@@ -1806,6 +1945,7 @@ class MenuItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13.0,
                         fontWeight: FontWeight.w700,
+                        color: Color.fromRGBO(0, 0, 0, .55)
                       ),
                     ),
                   ),

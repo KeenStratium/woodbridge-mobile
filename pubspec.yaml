@@ -32,6 +32,7 @@ dependencies:
   photo_view: ^0.4.2
   shared_preferences: ^0.5.3+3
   cached_network_image: ^2.0.0-rc
+  flutter_svg: ^0.13.0
 
 dev_dependencies:
   flutter_test:
@@ -53,13 +54,15 @@ flutter:
   assets:
     - img/background-img.png
     - img/woodbridge_logo.png
-    - img/Icons/icon_payments_2x.png
-    - img/Icons/icon_activities_2x.png
-    - img/Icons/icon_attendance_2x.png
-    - img/Icons/icon_grades_2x.png
-    - img/Icons/icon_gallery_2x.png
-    - img/Icons/icon_announcements_2x.png
+    - img/Icons/icon_payments.png
+    - img/Icons/icon_activities.png
+    - img/Icons/icon_attendance.png
+    - img/Icons/icon_grades.png
+    - img/Icons/icon_gallery.png
+    - img/Icons/icon_announcements.png
     - img/Icons/Icon-180.png
+    - img/Icons/details.svg
+    - img/Icons/notes.svg
     - img/home_profile_head_cover.png
     - img/mywoodbridge.png
     - files/TWAMobileParentsGuide.pdf
@@ -76,39 +79,28 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-     - family: Muli
-       fonts:
-         - asset: fonts/Muli-Black.ttf
-           weight: 800
-         - asset: fonts/Muli-BlackItalic.ttf
-         - asset: fonts/Muli-Bold.ttf
-           weight: 600
-         - asset: fonts/Muli-BoldItalic.ttf
-         - asset: fonts/Muli-ExtraBold.ttf
-           weight: 700
-         - asset: fonts/Muli-ExtraBoldItalic.ttf
-         - asset: fonts/Muli-ExtraLight.ttf
-           weight: 200
-         - asset: fonts/Muli-ExtraLightItalic.ttf
-         - asset: fonts/Muli-Italic.ttf
-         - asset: fonts/Muli-Light.ttf
-           weight: 300
-         - asset: fonts/Muli-LightItalic.ttf
-         - asset: fonts/Muli-Regular.ttf
-           weight: 400
-         - asset: fonts/Muli-SemiBold.ttf
-           weight: 500
-         - asset: fonts/Muli-SemiBoldItalic.ttf
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Black.ttf
+          weight: 800
+        - asset: fonts/Roboto-Bold.ttf
+          weight: 600
+        - asset: fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: fonts/Roboto-Regular.ttf
+          weight: 400
+        - asset: fonts/Roboto-Light.ttf
+          weight: 300
+        - asset: fonts/Roboto-Thin.ttf
+          weight: 200
+        - asset: fonts/Roboto-BoldItalic.ttf
+        - asset: fonts/Roboto-MediumItalic.ttf
+        - asset: fonts/Roboto-Italic.ttf
+        - asset: fonts/Roboto-ThinItalic.ttf
+        - asset: fonts/Roboto-LightItalic.ttf
+    - family: SFPro
+      fonts: 
+        - asset: fonts/SF-Pro-Display-Regular.otf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
