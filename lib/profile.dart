@@ -186,8 +186,6 @@ class _ProfileState extends State<Profile> {
     Future<List<Widget>> getProfileInformation(userId) async {
       await fetchProfileInformation(userId)
         .then((result) {
-          print('profile info');
-          print(result);
           profileInfo = result;
           _buildProfileFields();
        });
