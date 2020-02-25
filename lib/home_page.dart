@@ -552,7 +552,7 @@ class _HomePageState extends State<HomePage> {
                       List startTime = classDetail['class_start_schedule'].split(':');
                       DateTime classStart = DateTime(today.year, today.month, today.day, int.parse(startTime[0]), int.parse(startTime[1]));
                       if(resolve[thisDay] != null){
-                        attendanceStatus = 'No Classes';
+                        attendanceStatus = 'No Class';
                         attendanceStatusColor = Colors.deepPurple[400];
                         attendanceStatusIcon = Icon(
                           Icons.home,
@@ -1501,7 +1501,7 @@ class _HomePageState extends State<HomePage> {
                                                                 child: Column(
                                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                                   children: <Widget>[
-                                                                    attendanceStatus == 'No Classes' ? Padding(
+                                                                    attendanceStatus == 'No Class' ? Padding(
                                                                       padding: EdgeInsets.symmetric(vertical: 4.0)
                                                                     ) : Container(),
                                                                     Flex(
@@ -1532,7 +1532,7 @@ class _HomePageState extends State<HomePage> {
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                    attendanceStatus != 'No Classes' ? Text(
+                                                                    attendanceStatus != 'No Class' ? Text(
                                                                       '$presentDaysNo/${totalSchoolDays.floor()}',
                                                                       overflow: TextOverflow.fade,
                                                                       style: TextStyle(
