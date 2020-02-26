@@ -13,6 +13,19 @@ Map _moduleUnreadCount = {};
 String _nextPaymentDay;
 String _nextPaymentMonth;
 
+
+LinearGradient overflowGradient() {
+  return  LinearGradient(
+    begin: Alignment.centerRight,
+    end: Alignment.center,
+    stops: [0.0, .25],
+    colors: [
+      Colors.white,
+      Color.fromRGBO(255, 255, 255, 0),
+    ]
+  );
+}
+
 Map getNextPayment() {
   Map nextPayment = {
     'nextPaymentDay': _nextPaymentDay ?? '',

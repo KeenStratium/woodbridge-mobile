@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
 
@@ -134,7 +135,9 @@ class Board extends StatefulWidget {
     this.time,
     this.activeType,
     this.userId,
-    this.timeStamp
+    this.timeStamp,
+    this.attachmentName,
+    this.attachmentUrl
   });
 
   int activeType;
@@ -149,6 +152,8 @@ class Board extends StatefulWidget {
   String timeStamp;
   String title;
   String userId;
+  String attachmentName;
+  String attachmentUrl;
 
   @override
   _BoardState createState() => _BoardState();
@@ -173,6 +178,14 @@ class _BoardState extends State<Board> {
     }
     if(widget.responseType == null){
       widget.responseType = 0;
+    }
+
+    print(widget.title);
+    if(widget.attachmentName != '' && widget.attachmentName != null){
+      print(widget.attachmentName);
+    }
+    if(widget.attachmentUrl != '' && widget.attachmentUrl != null){
+      print(widget.attachmentUrl);
     }
 
     return Column(
@@ -425,10 +438,178 @@ class _BoardState extends State<Board> {
                                 ),
                               ],
                             ),
+                          ),
+                        ],
+                      ),
+                    ) : Container(),
+                    if (widget.attachmentUrl != '' && widget.attachmentUrl != null) Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
+                      child: Column(
+                        children: <Widget>[
+                          Flex(
+                            direction: Axis.horizontal,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Attachment',
+                                style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w700
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 1.0,
+                                  color: Colors.grey[200],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 10.0),
+                            child: Flex(
+                              direction: Axis.horizontal,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Container(
+                                    height: 40.0,
+                                    child: FlatButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                                          side: BorderSide(color: Colors.grey[300])
+                                      ),
+                                      splashColor: Colors.grey[300],
+                                      highlightColor: Colors.grey[300],
+                                      color: Colors.white,
+                                      padding: EdgeInsets.all(0.0),
+                                      onPressed: () {
+                                        print('tapped');
+                                      },
+                                      child: Flex(
+                                        direction: Axis.horizontal,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                            width: 40.0,
+                                            height: 40.0,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(50.0),
+                                                bottomLeft: Radius.circular(50.0)
+                                              ),
+                                              child: Container(
+                                                padding: EdgeInsets.only(left: 7.0),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[100],
+                                                  border: Border(
+                                                    right: BorderSide(
+                                                      width: 1.0,
+                                                      color: Colors.grey[300]
+                                                    )
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    'img/Icons/notes_outline.svg',
+                                                    height: 20.0,
+                                                    color: Colors.grey[400],
+                                                    semanticsLabel: 'File'
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              height: 40.0,
+                                              child: Stack(
+                                                children: <Widget>[
+                                                  SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                    child: Container(
+                                                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                                      child: Center(
+                                                        child: Text(
+                                                          widget.attachmentName + '123131aadadssdad3as' ?? 'Download file',
+                                                          overflow: TextOverflow.fade,
+                                                          style: TextStyle(
+                                                            fontSize: 14.0,
+                                                            fontWeight: FontWeight.w400,
+                                                            color: Colors.grey[600]
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    right: -1.0,
+                                                    top: 0.0,
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        IgnorePointer(
+                                                          child: Container(
+                                                            width: 40.0,
+                                                            height: 40.0,
+                                                            decoration: BoxDecoration(
+                                                              gradient: LinearGradient(
+                                                                begin: Alignment.centerRight,
+                                                                end: Alignment.centerLeft,
+                                                                stops: [0.0, 1],
+                                                                colors: [
+                                                                  Colors.white,
+                                                                  Color.fromRGBO(255, 255, 255, 0),
+                                                                ]
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: 40.0,
+                                                          height: 40.0,
+                                                          child: ClipRRect(
+                                                            borderRadius: BorderRadius.only(
+                                                              topRight: Radius.circular(50.0),
+                                                              bottomRight: Radius.circular(50.0)
+                                                            ),
+                                                            child: Container(
+                                                              padding: EdgeInsets.only(right: 8.0),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                              ),
+                                                              child: Center(
+                                                                child: SvgPicture.asset(
+                                                                  'img/Icons/download.svg',
+                                                                  height: 16.0,
+                                                                  color: Colors.grey[400],
+                                                                  semanticsLabel: 'Download'
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         ],
                       ),
-                    ) : Container()
+                    ) else Container(),
                   ],
                 )
               ),
@@ -466,6 +647,9 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
             String day;
             String boardTitle;
             String boardDesc;
+            String attachmentName;
+            String attachmentUrl;
+            var details;
 
             int activeType = 0;
 
@@ -505,6 +689,17 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
               boardTitle = message['notif_subj'];
               boardDesc = message['notif_desc'];
             }
+
+            try {
+              if(message['details'].length > 0 && message['details'] != null) {
+                details = message['details'][0];
+                attachmentName = details['aa_attachment'];
+                attachmentUrl = details['aa_attachment_url'];
+              }
+            } catch(e) {
+              print(e);
+            }
+            
 
             return Column(
               children: <Widget>[
@@ -548,6 +743,8 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
                   activeType: activeType,
                   userId: userId,
                   timeStamp: timeStampHourMinute,
+                  attachmentName: attachmentName,
+                  attachmentUrl: attachmentUrl,
                 ),
               ],
             );

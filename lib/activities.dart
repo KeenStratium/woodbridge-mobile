@@ -23,18 +23,6 @@ bool isInitiated = false;
 
 String oldUserId = '';
 
-LinearGradient overflowGradient() {
-  return  LinearGradient(
-    begin: Alignment.centerRight,
-    end: Alignment.center,
-    stops: [0.0, .25],
-    colors: [
-      Colors.white,
-      Color.fromRGBO(255, 255, 255, 0),
-    ]
-  );
-}
-
 class OverflowLabel extends StatelessWidget {
   const OverflowLabel({Key key, this.child}) : super(key: key);
 
