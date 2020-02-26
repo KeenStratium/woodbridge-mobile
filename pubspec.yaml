@@ -63,6 +63,8 @@ flutter:
     - img/Icons/Icon-180.png
     - img/Icons/details.svg
     - img/Icons/notes.svg
+    - img/Icons/notes_outline.svg
+    - img/Icons/download.svg
     - img/home_profile_head_cover.png
     - img/mywoodbridge.png
     - files/TWAMobileParentsGuide.pdf
