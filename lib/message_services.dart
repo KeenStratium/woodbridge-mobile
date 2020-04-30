@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/material.dart';
 import 'services.dart';
@@ -23,6 +24,26 @@ Future respondNotification(userId, notifId, notifResponse) async {
       });
 
   return jsonDecode(response.body);
+}
+
+void _launchURL(String url) async {
+  String sanitizedUrl = 'https://flutter.dev';
+
+  print(url);
+  print('launching...');
+  print(sanitizedUrl);
+
+  if (await canLaunch(sanitizedUrl)) {
+    print('launching $sanitizedUrl');
+    await launch(
+      sanitizedUrl,
+      forceSafariVC: false,
+      forceWebView: false,
+      headers: <String, String>{'my_header_key': 'my_header_value'},
+    );
+  } else {
+    print('Could not launch $sanitizedUrl');
+  }
 }
 
 class ResponseButton extends StatefulWidget {
@@ -178,14 +199,6 @@ class _BoardState extends State<Board> {
     }
     if(widget.responseType == null){
       widget.responseType = 0;
-    }
-
-    print(widget.title);
-    if(widget.attachmentName != '' && widget.attachmentName != null){
-      print(widget.attachmentName);
-    }
-    if(widget.attachmentUrl != '' && widget.attachmentUrl != null){
-      print(widget.attachmentUrl);
     }
 
     return Column(
@@ -442,7 +455,7 @@ class _BoardState extends State<Board> {
                         ],
                       ),
                     ) : Container(),
-                    if (widget.attachmentUrl != '' && widget.attachmentUrl != null) Container(
+                    widget.attachmentUrl != '' && widget.attachmentUrl != null ? Container(
                       margin: EdgeInsets.symmetric(horizontal: 20.0),
                       padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
                       child: Column(
@@ -488,7 +501,7 @@ class _BoardState extends State<Board> {
                                       color: Colors.white,
                                       padding: EdgeInsets.all(0.0),
                                       onPressed: () {
-                                        print('tapped');
+                                        _launchURL(widget.attachmentUrl);
                                       },
                                       child: Flex(
                                         direction: Axis.horizontal,
@@ -609,7 +622,7 @@ class _BoardState extends State<Board> {
                           )
                         ],
                       ),
-                    ) else Container(),
+                    ) : Container(),
                   ],
                 )
               ),
