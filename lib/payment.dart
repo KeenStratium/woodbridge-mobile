@@ -8,7 +8,7 @@ import 'model.dart';
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 
 double totalBalance = 0.00;
 double totalPayments = 0.00;
@@ -19,32 +19,26 @@ List<Payment> initialPayments = <Payment>[];
 Future<List> fetchStudentPayments(userId) async {
   String url = '$baseApi/pay/get-student-payments';
 
-  var response = await http.post(url, body: json.encode({
-    'data': userId
-  }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
+  var response =
+      await http.post(url, body: json.encode({'data': userId}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
 
 class Payment {
-  Payment({
-    this.label,
-    this.amount,
-    this.rawDate,
-    this.paidDate,
-    this.isPaid,
-    this.dueAmount,
-    this.paymentModes,
-    this.paymentSettingId,
-    this.amountDesc,
-    this.paymentType,
-    this.paymentNote,
-    this.checkNo
-  });
+  Payment(
+      {this.label,
+      this.amount,
+      this.rawDate,
+      this.paidDate,
+      this.isPaid,
+      this.dueAmount,
+      this.paymentModes,
+      this.paymentSettingId,
+      this.amountDesc,
+      this.paymentType,
+      this.paymentNote,
+      this.checkNo});
 
   String amount;
   String amountDesc;
@@ -95,71 +89,59 @@ class _PaymentHistoryState extends State<PaymentHistory> {
   }
 
   Future buildStudentPayments(userId) async {
-    await fetchStudentPayments(userId)
-      .then((results) {
-        payments = [];
-        totalBalance = 0.00;
-        totalPayments = 0.00;
+    await fetchStudentPayments(userId).then((results) {
+      payments = [];
+      totalBalance = 0.00;
+      totalPayments = 0.00;
 
-        results.forEach((payment) {
-          var amount;
-          DateTime dueDate;
-          if(payment['due_date'] != null){
-            dueDate = DateTime.parse(payment['due_date']).toLocal();
-          }
-          String paymentDate = 'Unpaid';
-          try {
-            amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
-            if(amount == 'N/A' || amount == null || amount == '0'){
-              totalBalance += payment['due_amount'];
-              if(nextPaymentMonth == null){
-                nextPaymentMonth = monthNames[dueDate.month - 1];
-                nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
-                setNextPayment(nextPaymentDay, nextPaymentMonth);
-              }
-            }else {
-              if(payment['amount_paid'] != null){
-                totalPayments += payment['amount_paid'];
-              }
+      results.forEach((payment) {
+        var amount;
+        DateTime dueDate;
+        if (payment['due_date'] != null) {
+          dueDate = DateTime.parse(payment['due_date']).toLocal();
+        }
+        String paymentDate = 'Unpaid';
+        try {
+          amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
+          if (amount == 'N/A' || amount == null || amount == '0') {
+            totalBalance += payment['due_amount'];
+            if (nextPaymentMonth == null) {
+              nextPaymentMonth = monthNames[dueDate.month - 1];
+              nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
+              setNextPayment(nextPaymentDay, nextPaymentMonth);
             }
-          } catch(e){
-            print(e);
+          } else {
+            if (payment['amount_paid'] != null) {
+              totalPayments += payment['amount_paid'];
+            }
           }
+        } catch (e) {
+          print(e);
+        }
 
-          try{
-            String paidDate = payment['paid_date'];
-            if(paidDate != null){
-              paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MMM dd y');
-            }
-          }catch(e){}
-          payments.add(
-            Payment(
-                label: dueDate != null ? timeFormat(dueDate.toString(), 'MMM dd y') : '',
-                amount: amount,
-                dueAmount: payment['due_amount'] + 0.00 ?? 0,
-                rawDate: dueDate,
-                paidDate: paymentDate,
-                isPaid: amount != 'N/A',
-                paymentModes: payment['note'],
-                paymentSettingId: payment['pay_setting_id'].split(',')[0],
-                amountDesc: payment['due_desc'],
-                checkNo: payment['check_no'],
-                paymentType: {
-                  'type': payment['pay_type'],
-                  'official_receipt': payment['official_receipt'],
-                  'bank_abbr': payment['pay_bank']
-                },
-                paymentNote: payment['description']
-            )
-          );
-        });
+        try {
+          String paidDate = payment['paid_date'];
+          if (paidDate != null) {
+            paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MMM dd y');
+          }
+        } catch (e) {}
+        payments.add(Payment(
+            label: dueDate != null ? timeFormat(dueDate.toString(), 'MMM dd y') : '',
+            amount: amount,
+            dueAmount: payment['due_amount'] + 0.00 ?? 0,
+            rawDate: dueDate,
+            paidDate: paymentDate,
+            isPaid: amount != 'N/A',
+            paymentModes: payment['note'],
+            paymentSettingId: payment['pay_setting_id'].split(',')[0],
+            amountDesc: payment['due_desc'],
+            checkNo: payment['check_no'],
+            paymentType: {'type': payment['pay_type'], 'official_receipt': payment['official_receipt'], 'bank_abbr': payment['pay_bank']},
+            paymentNote: payment['description']));
       });
+    });
 
-    paymentData = {
-      'totalPayments': totalPayments,
-      'totalBalance': totalBalance,
-      'payments': payments
-    };
+    paymentData = {'totalPayments': totalPayments, 'totalBalance': totalBalance, 'payments': payments};
 
     return paymentData;
   }
@@ -167,23 +149,21 @@ class _PaymentHistoryState extends State<PaymentHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Payment History')
-      ),
+      appBar: AppBar(title: Text('Payment History')),
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Flex(
-          direction: Axis.vertical,
-          children: <Widget>[
-            ProfileHeader(
-              firstName: this.widget.firstName,
-              lastName: this.widget.lastName,
-              heroTag: this.widget.userId,
-            ),
-            FutureBuilder(
+          child: Flex(
+        direction: Axis.vertical,
+        children: <Widget>[
+          ProfileHeader(
+            firstName: this.widget.firstName,
+            lastName: this.widget.lastName,
+            heroTag: this.widget.userId,
+          ),
+          FutureBuilder(
               future: buildStudentPayments(widget.userId),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if(snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.connectionState == ConnectionState.done) {
                   return Expanded(
                     child: SingleChildScrollView(
                       child: Padding(
@@ -204,7 +184,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         DashboardTile(
                                           label: 'Total Payments',
                                           displayPlainValue: true,
-                                          value: snapshot.data['totalPayments'] != null ? localCurrencyFormat(snapshot.data['totalPayments']) : "0.00",
+                                          value:
+                                              snapshot.data['totalPayments'] != null ? localCurrencyFormat(snapshot.data['totalPayments']) : "0.00",
                                         ),
                                       ],
                                     ),
@@ -214,11 +195,11 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         DashboardTile(
-                                          label: 'Total Balance',
-                                          displayPlainValue: true,
-                                          value: snapshot.data['totalBalance'] != null ? localCurrencyFormat(snapshot.data['totalBalance']) : "0.00",
-                                          color: Color(0xFFDA4453)
-                                        )
+                                            label: 'Total Balance',
+                                            displayPlainValue: true,
+                                            value:
+                                                snapshot.data['totalBalance'] != null ? localCurrencyFormat(snapshot.data['totalBalance']) : "0.00",
+                                            color: Color(0xFFDA4453))
                                       ],
                                     ),
                                   )
@@ -227,13 +208,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(vertical: 10.0),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Colors.grey[300]
-                                  )
-                                )
-                              ),
+                              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey[300]))),
                               child: Flex(
                                 direction: Axis.horizontal,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -246,11 +221,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         Text(
                                           'Due Date',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black87
-                                          ),
+                                          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w700, color: Colors.black87),
                                         )
                                       ],
                                     ),
@@ -263,11 +234,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         Text(
                                           'Amount Due',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black87
-                                          ),
+                                          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w700, color: Colors.black87),
                                         )
                                       ],
                                     ),
@@ -278,13 +245,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: <Widget>[
                                         Text(
-                                          'Payment Date', 
+                                          'Payment Date',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black87
-                                          ),
+                                          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w700, color: Colors.black87),
                                         )
                                       ],
                                     ),
@@ -295,97 +258,79 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                             ListView(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
-                              children: snapshot.data['payments'] != null ? (snapshot.data['payments'] as List).map((payment) {
-                                return Material(
-                                  color: Colors.white,
-                                  child: InkWell(
-                                    onTap: () {
-                                      Route route = MaterialPageRoute(
-                                        builder: (buildContext) => PaymentDetails(
-                                          userId: widget.userId,
-                                          firstName: widget.firstName,
-                                          lastName: widget.lastName,
-                                          payment: payment
-                                        ));
+                              children: snapshot.data['payments'] != null
+                                  ? (snapshot.data['payments'] as List).map((payment) {
+                                      return Material(
+                                        color: Colors.white,
+                                        child: InkWell(
+                                          onTap: () {
+                                            Route route = MaterialPageRoute(
+                                                builder: (buildContext) => PaymentDetails(
+                                                    userId: widget.userId, firstName: widget.firstName, lastName: widget.lastName, payment: payment));
 
-                                      Navigator.push(context, route);
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: Colors.grey[200]
-                                          )
-                                        )
-                                      ),
-                                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                                      child: Flex(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        direction: Axis.horizontal,
-                                        children: <Widget>[
-                                          Expanded(
-                                            child: Text(
-                                              payment.label,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87
-                                              ),
-                                            ),
-                                            flex: 1,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              payment.dueAmount != null ? localCurrencyFormat(payment.dueAmount) : 'N/A',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87
-                                              ),
-                                            ),
-                                            flex: 1
-                                          ),
-                                          Expanded(
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
+                                            Navigator.push(context, route);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey[200]))),
+                                            padding: EdgeInsets.symmetric(vertical: 16.0),
+                                            child: Flex(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              direction: Axis.horizontal,
                                               children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                                Expanded(
                                                   child: Text(
-                                                    payment.paidDate ?? 'Unpaid',
-                                                    textAlign: TextAlign.right,
-                                                    style: TextStyle(
-                                                      fontSize: 14.0,
-                                                      fontWeight: FontWeight.w600,
-                                                      color: payment.paidDate == 'Unpaid' ? Colors.black38 : Colors.black87
-                                                    ),
+                                                    payment.label,
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: Colors.black87),
                                                   ),
+                                                  flex: 1,
                                                 ),
-                                                SvgPicture.asset(
-                                                  'img/Icons/details.svg',
-                                                  height: 13.0,
-                                                  color: Theme.of(context).accentColor,
-                                                  semanticsLabel: 'View payment details'
-                                                )
+                                                Expanded(
+                                                    child: Text(
+                                                      payment.dueAmount != null ? localCurrencyFormat(payment.dueAmount) : 'N/A',
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: Colors.black87),
+                                                    ),
+                                                    flex: 1),
+                                                Expanded(
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                                        child: Text(
+                                                          payment.paidDate ?? 'Unpaid',
+                                                          textAlign: TextAlign.right,
+                                                          style: TextStyle(
+                                                              fontSize: 14.0,
+                                                              fontWeight: FontWeight.w600,
+                                                              color: payment.paidDate == 'Unpaid' ? Colors.black38 : Colors.black87),
+                                                        ),
+                                                      ),
+                                                      // SvgPicture.asset(
+                                                      //   'img/Icons/details.svg',
+                                                      //   height: 13.0,
+                                                      //   color: Theme.of(context).accentColor,
+                                                      //   semanticsLabel: 'View payment details'
+                                                      // )
+                                                    ],
+                                                  ),
+                                                  flex: 1,
+                                                ),
                                               ],
                                             ),
-                                            flex: 1,
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }).toList() : <Widget>[Container()],
+                                        ),
+                                      );
+                                    }).toList()
+                                  : <Widget>[Container()],
                             )
                           ],
                         ),
                       ),
                     ),
                   );
-                }else {
+                } else {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 64.0),
@@ -393,11 +338,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                     ),
                   );
                 }
-              }
-            )
-          ],
-        )
-      ),
+              })
+        ],
+      )),
     );
   }
 }

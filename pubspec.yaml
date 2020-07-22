@@ -24,27 +24,28 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   http: ^0.12.0+2
-  flutter_sticky_header: ^0.4.0
-  table_calendar: ^1.2.2
-  firebase_messaging: ^5.0.3
-  flutter_plugin_pdf_viewer: ^1.0.7
-  intl: ^0.15.8
-  photo_view: ^0.4.2
+  flutter_sticky_header: ^0.4.4
+  table_calendar: ^2.2.3
+  firebase_messaging: ^6.0.16
+  # flutter_plugin_pdf_viewer: ^1.0.7
+  intl: ^0.16.1
+  photo_view: ^0.9.2
   shared_preferences: ^0.5.3+3
-  cached_network_image: ^2.0.0-rc
-  flutter_svg: ^0.13.0
+  cached_network_image: ^2.1.0+1
+  # flutter_svg: ^0.18.0
+  url_launcher: ^5.4.5
+  native_pdf_view: ^3.6.2
+  date_utils: ^0.1.0+3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -101,7 +102,7 @@ flutter:
         - asset: fonts/Roboto-ThinItalic.ttf
         - asset: fonts/Roboto-LightItalic.ttf
     - family: SFPro
-      fonts: 
+      fonts:
         - asset: fonts/SF-Pro-Display-Regular.otf
   #
   # For details regarding fonts from package dependencies,

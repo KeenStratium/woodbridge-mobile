@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'model.dart';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+// import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+import 'package:native_pdf_view/native_pdf_view.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -272,8 +273,8 @@ class _HomePageState extends State<HomePage> {
     color: Colors.redAccent,
   );
 
-  PDFDocument doc;
-  List<Widget> guidePages = <Widget>[];
+  // PDFDocument doc;
+  // List<Widget> guidePages = <Widget>[];
   Map<DateTime, List> holidayDays = {};
   int messagePageSize = 8;
   Map monthWithYearActivities = {};
@@ -382,16 +383,16 @@ class _HomePageState extends State<HomePage> {
     setUnreadNotif(widget.heroTag);
   }
 
-  Future initLoadPdf() async {
-    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
-    int maxPages = doc.count;
+  // Future initLoadPdf() async {
+  //   doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
+  //   int maxPages = doc.count;
 
-    for(int i = 0; i < maxPages; i++){
-      guidePages.add(await doc.get(page: i+1));
-    }
+  //   for(int i = 0; i < maxPages; i++){
+  //     guidePages.add(await doc.get(page: i+1));
+  //   }
 
-    return guidePages;
-  }
+  //   return guidePages;
+  // }
 
   Future getHolidayList() async {
     return await fetchHolidayList()
@@ -679,9 +680,9 @@ class _HomePageState extends State<HomePage> {
     return Future.value(otherChildHasUnreadNotif);
   }
 
-  void fetchPdf() async {
-    await initLoadPdf();
-  }
+  // void fetchPdf() async {
+  //   await initLoadPdf();
+  // }
 
   void transformActivityList(classId) async {
     await getStudentActivities(classId)
@@ -1015,13 +1016,13 @@ class _HomePageState extends State<HomePage> {
                                       ListTile(
                                         leading: Icon(Icons.book),
                                         onTap: (){
-                                          if(guidePages == null || guidePages.length == 0){
-                                            fetchPdf();
-                                          }
+                                          // if(guidePages == null || guidePages.length == 0){
+                                          //   // fetchPdf();
+                                          // }
                                           Route route = MaterialPageRoute(
                                             builder: (BuildContext context) {
                                               return InitialOnboard(
-                                                pages: guidePages,
+                                                // pages: guidePages,
                                                 userIds: [],
                                                 showAgreementCta: false,
                                               );

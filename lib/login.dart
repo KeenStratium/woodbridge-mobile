@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'model.dart';
 
-import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+// import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+import 'package:native_pdf_view/native_pdf_view.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -52,8 +53,9 @@ class LoginBody extends StatefulWidget {
 }
 
 class _LoginBodyState extends State<LoginBody> {
-  PDFDocument doc;
-  List<Widget> guidePages = <Widget>[];
+  // PDFDocument doc;
+  PdfController doc;
+  // List<Widget> guidePages = <Widget>[];
   int maxPagesCount;
 
   final _passwordController = TextEditingController();
@@ -64,7 +66,7 @@ class _LoginBodyState extends State<LoginBody> {
     super.initState();
 
     clearTopics();
-    fetchPdf();
+    // fetchPdf();
   }
 
   Future getStudents(parentId) async {
@@ -140,23 +142,26 @@ class _LoginBodyState extends State<LoginBody> {
     return loginStatus;
   }
 
-  void fetchPdf() async {
-    await initLoadPdf();
-  }
+  // void fetchPdf() async {
+  //   await initLoadPdf();
+  // }
 
-  Future initLoadPdf() async {
-    doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
-    int maxPages = doc.count;
-    maxPagesCount = maxPages;
+  // Future initLoadPdf() async {
+  //   // doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
+  //   doc = PdfController(
+  //     document: PdfDocument.openAsset('files/TWAMobileParentsGuide.pdf'),
+  //   );
+  //   int maxPages = doc.count;
+  //   maxPagesCount = maxPages;
 
-    for(int i = 0; i < maxPages; i++){
-      Widget page = await doc.get(page: i+1);
-      setState(() {
-        guidePages.add(page);
-      });
-    }
-    return guidePages;
-  }
+  //   for(int i = 0; i < maxPages; i++){
+  //     Widget page = await doc.get(page: i+1);
+  //     setState(() {
+  //       guidePages.add(page);
+  //     });
+  //   }
+  //   return guidePages;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -289,7 +294,7 @@ class _LoginBodyState extends State<LoginBody> {
                                         userId: data['user_id'],
                                         userIds: data['ids'],
                                         hasAgreed: hasAgreed,
-                                        guidePages: guidePages,
+                                        // guidePages: guidePages,
                                         maxPageCount: maxPagesCount,
                                       );
                                     });

@@ -187,11 +187,23 @@ class HeroPhotoViewWrapper extends StatelessWidget {
               ),
               child: PhotoView(
                 imageProvider: imageProvider,
-                loadingChild: loadingChild,
+                // loadingChild: loadingChild,
+                loadingBuilder: (context, progress) => Center(
+                  child: Container(
+                    width: 20.0,
+                    height: 20.0,
+                    child: CircularProgressIndicator(
+                      value: progress == null
+                          ? null
+                          : progress.cumulativeBytesLoaded /
+                              progress.expectedTotalBytes,
+                    ),
+                  ),
+                ),
                 backgroundDecoration: backgroundDecoration,
                 minScale: minScale,
                 maxScale: maxScale,
-                heroTag: id,
+                heroAttributes: PhotoViewHeroAttributes(tag: id)
               )),
           ),
           Positioned(

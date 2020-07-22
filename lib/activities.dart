@@ -85,7 +85,7 @@ List<Widget> _buildLists(BuildContext context, int firstIndex, Map monthActiviti
   int count = monthActivities.length;
   List<String> activityNames = activityNameList;
   List<Color> activityHeadColors = [
-    Color(0xFFBF263C),
+    Color(0xFFBF263C), 
     Color(0xFFDA4453),
     Color(0xFFE9573F),
     Color(0xFFF6BB42),
