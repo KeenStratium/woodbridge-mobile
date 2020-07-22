@@ -333,16 +333,17 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                   flex: 1,
                                                 ),
                                                 Expanded(
-                                                    child: Text(
-                                                      payment.dueAmount != null ? localCurrencyFormat(payment.dueAmount) : 'N/A',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontSize: 14.0,
-                                                        fontWeight: FontWeight.w600,
-                                                        color: Colors.black87,
-                                                      ),
+                                                  child: Text(
+                                                    payment.dueAmount != null ? localCurrencyFormat(payment.dueAmount) : 'N/A',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 14.0,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.black87,
                                                     ),
-                                                    flex: 1),
+                                                  ),
+                                                  flex: 1,
+                                                ),
                                                 Expanded(
                                                   child: Row(
                                                     mainAxisAlignment: MainAxisAlignment.end,
