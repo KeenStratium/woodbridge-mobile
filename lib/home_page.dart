@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:myWoodbridge/payment_guide.dart';
 import 'model.dart';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -954,6 +955,23 @@ class _HomePageState extends State<HomePage> {
                                       },
                                       title: Text(
                                         "Parents' Guide",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.payment),
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(builder: (BuildContext context) {
+                                          return PaymentGuide();
+                                        });
+                                        Navigator.push(context, route);
+                                      },
+                                      title: Text(
+                                        "Payment Guide",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.w700,
