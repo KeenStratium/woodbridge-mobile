@@ -25,14 +25,8 @@ Future changePassword(userId, password) async {
 }
 
 class ChangePassword extends StatelessWidget {
-  ChangePassword(
-      {this.userId,
-      this.userIds,
-      this.hasAgreed,
-      // this.guidePages: const <Widget>[],
-      this.maxPageCount});
+  ChangePassword({this.userId, this.userIds, this.hasAgreed, this.maxPageCount});
 
-  // final List<Widget> guidePages;
   final bool hasAgreed;
   final int maxPageCount;
   final String userId;
@@ -114,7 +108,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     child: Text(
                       noticeText ?? '',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700, color: Color.fromRGBO(0, 0, 0, .6)),
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w700,
+                        color: Color.fromRGBO(0, 0, 0, .6),
+                      ),
                     ),
                   ),
                 ),
@@ -245,13 +243,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           updateInitialTapped = true;
                         });
 
-                        return MaterialPageRoute(builder: (BuildContext context) {
-                          return InitialOnboard(
-                            userIds: widget.userIds,
-                            showAgreementCta: true,
-                            userId: widget.userId,
-                          );
-                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return InitialOnboard(
+                                userIds: widget.userIds,
+                                showAgreementCta: true,
+                                userId: widget.userId,
+                              );
+                            },
+                          ),
+                        );
                       }
                     });
                   } else {

@@ -15,15 +15,11 @@ import 'woodbridge-ui_components.dart';
 Future checkHandbookAgreementStatus(userId) async {
   String url = '$baseApi/account/handbook-onboard-status';
 
-  var response = await http.post(url, body: json.encode({
-    'data': {
-      'user_id': userId
-    }
-  }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
+  var response = await http.post(url,
+      body: json.encode({
+        'data': {'user_id': userId}
+      }),
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -40,9 +36,7 @@ class _LoginPageState extends State<LoginPage> {
       onWillPop: () async {
         return false;
       },
-      child: Scaffold(
-        body: LoginBody()
-      ),
+      child: Scaffold(body: LoginBody()),
     );
   }
 }
@@ -62,11 +56,10 @@ class _LoginBodyState extends State<LoginBody> {
   final _userController = TextEditingController();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
 
     clearTopics();
-    // fetchPdf();
   }
 
   Future getStudents(parentId) async {
@@ -76,10 +69,7 @@ class _LoginBodyState extends State<LoginBody> {
             'parent_id': parentId,
           }
         }),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        });
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
     return await json.decode(response.body);
   }
@@ -87,22 +77,12 @@ class _LoginBodyState extends State<LoginBody> {
   Future<Map> getData() async {
     http.Response response = await http.post(Uri.encodeFull('$baseApi/account/login'),
         body: json.encode({
-          'data': {
-            'uname': _userController.text,
-            'pass': _passwordController.text
-          }
+          'data': {'uname': _userController.text, 'pass': _passwordController.text}
         }),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        });
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
     var data = await json.decode(response.body);
-    Map loginStatus = {
-      'status': 'invalid',
-      'ids': [],
-      'user_id': ''
-    };
+    Map loginStatus = {'status': 'invalid', 'ids': [], 'user_id': ''};
 
     try {
       var userData = await data[0];
@@ -110,15 +90,16 @@ class _LoginBodyState extends State<LoginBody> {
       List studentIds = studentsData['data'];
       List<String> userIds = <String>[];
 
-      for(int i = 0; i < studentIds.length; i++){
+      for (int i = 0; i < studentIds.length; i++) {
         String userId = studentIds[i];
 
         userIds.add(userId);
       }
 
-      if(_passwordController.text == 'woodbridge'){ // TODO: Refactor this along with server to have a unified source of initial password
+      if (_passwordController.text == 'woodbridge') {
+        // TODO: Refactor this along with server to have a unified source of initial password
         loginStatus['status'] = 'initial';
-      }else{
+      } else {
         loginStatus['status'] = 'auth';
       }
 
@@ -128,12 +109,8 @@ class _LoginBodyState extends State<LoginBody> {
       loginStatus['user_id'] = userData["user_id"];
 
       return loginStatus;
-    } catch(e) {
-      loginStatus = {
-        'status': 'invalid',
-        'ids': [],
-        'user_id': ''
-      };
+    } catch (e) {
+      loginStatus = {'status': 'invalid', 'ids': [], 'user_id': ''};
 
       print(e);
       print('Invalid credentials');
@@ -142,36 +119,10 @@ class _LoginBodyState extends State<LoginBody> {
     return loginStatus;
   }
 
-  // void fetchPdf() async {
-  //   await initLoadPdf();
-  // }
-
-  // Future initLoadPdf() async {
-  //   // doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
-  //   doc = PdfController(
-  //     document: PdfDocument.openAsset('files/TWAMobileParentsGuide.pdf'),
-  //   );
-  //   int maxPages = doc.count;
-  //   maxPagesCount = maxPages;
-
-  //   for(int i = 0; i < maxPages; i++){
-  //     Widget page = await doc.get(page: i+1);
-  //     setState(() {
-  //       guidePages.add(page);
-  //     });
-  //   }
-  //   return guidePages;
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage("img/background-img.png"),
-              fit: BoxFit.cover
-          )
-      ),
+      decoration: BoxDecoration(image: DecorationImage(image: AssetImage("img/background-img.png"), fit: BoxFit.cover)),
       child: SafeArea(
         child: Container(
           alignment: AlignmentDirectional.center,
@@ -186,11 +137,11 @@ class _LoginBodyState extends State<LoginBody> {
                     width: 128.0,
                     height: 128.0,
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: AssetImage("img/woodbridge_logo.png"),
-                            fit: BoxFit.cover
-                        )
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: AssetImage("img/woodbridge_logo.png"),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -199,9 +150,9 @@ class _LoginBodyState extends State<LoginBody> {
                 margin: EdgeInsets.symmetric(horizontal: 28.0, vertical: 14.0),
                 padding: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                    boxShadow: [BrandTheme.cardShadow]
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                  boxShadow: [BrandTheme.cardShadow],
                 ),
                 child: Column(
                   children: <Widget>[
@@ -242,65 +193,54 @@ class _LoginBodyState extends State<LoginBody> {
                           final errorSnackBar = SnackBar(
                             content: Text(
                               'Invalid login credentials. Please try again.',
-                              style: TextStyle(
-                                  color: Colors.amberAccent
-                              ),
+                              style: TextStyle(color: Colors.amberAccent),
                             ),
                             action: SnackBarAction(
                               label: 'Okay',
                               textColor: Colors.white,
-                              onPressed: () {
-
-                              },
+                              onPressed: () {},
                             ),
                           );
                           final processingSnackBar = SnackBar(
                             content: Text(
                               'Preparing classroom...',
-                              style: TextStyle(
-                                  color: Colors.blue[200]
-                              ),
+                              style: TextStyle(color: Colors.blue[200]),
                             ),
                             duration: Duration(milliseconds: 1100),
                             action: SnackBarAction(
                               label: 'Got it',
                               textColor: Colors.white,
-                              onPressed: () {
-                              },
+                              onPressed: () {},
                             ),
                           );
                           Scaffold.of(context).showSnackBar(processingSnackBar);
                           await getData().then((data) async {
-                            if(data['status'] == 'auth'){
-                              Route route = MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return StudentPicker(users: data['ids']);
-                                  });
-                              Navigator.push(context, route);
-                            }else if(data['status'] == 'initial'){
-                              await checkHandbookAgreementStatus(data['user_id'])
-                                .then((resolves) {
-                                  bool hasAgreed = false;
-
-                                  if(resolves['data'] == 1 || resolves['data'] == '1'){
-                                    hasAgreed = true;
-                                  }else{
-                                    hasAgreed = false;
-                                  }
-
-                                  Route route = MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      return ChangePassword(
-                                        userId: data['user_id'],
-                                        userIds: data['ids'],
-                                        hasAgreed: hasAgreed,
-                                        // guidePages: guidePages,
-                                        maxPageCount: maxPagesCount,
-                                      );
-                                    });
-                                  Navigator.push(context, route);
+                            if (data['status'] == 'auth') {
+                              Route route = MaterialPageRoute(builder: (BuildContext context) {
+                                return StudentPicker(users: data['ids']);
                               });
-                            } else{
+                              Navigator.push(context, route);
+                            } else if (data['status'] == 'initial') {
+                              await checkHandbookAgreementStatus(data['user_id']).then((resolves) {
+                                bool hasAgreed = false;
+
+                                if (resolves['data'] == 1 || resolves['data'] == '1') {
+                                  hasAgreed = true;
+                                } else {
+                                  hasAgreed = false;
+                                }
+
+                                Route route = MaterialPageRoute(builder: (BuildContext context) {
+                                  return ChangePassword(
+                                    userId: data['user_id'],
+                                    userIds: data['ids'],
+                                    hasAgreed: hasAgreed,
+                                    maxPageCount: maxPagesCount,
+                                  );
+                                });
+                                Navigator.push(context, route);
+                              });
+                            } else {
                               Scaffold.of(context).hideCurrentSnackBar();
                               Scaffold.of(context).showSnackBar(errorSnackBar);
                             }
