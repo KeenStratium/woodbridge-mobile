@@ -477,16 +477,31 @@ class _HomePageState extends State<HomePage> {
             if (results.length > 0 || results != null) {
               Map latestAttendance = results[0];
               DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
-              DateTime attendanceDay =
-                  DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-              DateTime thisTime =
-                  DateTime(today.year, today.month, today.day, today.hour, today.minute);
+              DateTime attendanceDay = DateTime(
+                attendanceDate.year,
+                attendanceDate.month,
+                attendanceDate.day,
+              );
+              DateTime thisTime = DateTime(
+                today.year,
+                today.month,
+                today.day,
+                today.hour,
+                today.minute,
+              );
 
               getClassDetails(widget.classId).then((classDetails) {
                 Map classDetail = classDetails[0];
                 List startTime = classDetail['class_start_schedule'].split(':');
-                DateTime classStart = DateTime(today.year, today.month, today.day,
-                    int.parse(startTime[0]), int.parse(startTime[1]));
+                DateTime classStart = DateTime(
+                  today.year,
+                  today.month,
+                  today.day,
+                  int.parse(startTime[0]),
+                  int.parse(
+                    startTime[1],
+                  ),
+                );
                 if (resolve[thisDay] != null) {
                   attendanceStatus = 'No Class';
                   attendanceStatusColor = Colors.deepPurple[400];
@@ -536,25 +551,28 @@ class _HomePageState extends State<HomePage> {
           await getTotalSchoolDays(userId).then((result) async {
             await getAttendanceDays(userId).then((presents) {
               presents.forEach((result) {
-                DateTime attendanceDate = DateTime.parse(result['date_marked']).toLocal();
-                DateTime attendanceDay =
-                    DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+                DateTime attendanceDate = DateTime.parse(result['attendance_date']).toLocal();
+                DateTime attendanceDay = DateTime(
+                  attendanceDate.year,
+                  attendanceDate.month,
+                  attendanceDate.day,
+                );
                 presentDays.add(attendanceDay);
               });
-              setState(() {
-                absentDays = pastSchoolDays - presentDaysNo;
-                totalSchoolDays = result['totalDays'] + 0.0;
-                resolve.forEach((key, value) {
-                  DateTime holidayDay = key;
-                  if (holidayDay.weekday <= 5) {
-                    totalSchoolDays--;
-                    if ((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) &&
-                        !presentDays.contains(holidayDay)) {
-                      absentDays--;
-                    }
+              absentDays = pastSchoolDays - presentDaysNo;
+              totalSchoolDays = result['totalDays'] + 0.0;
+              resolve.forEach((key, value) {
+                DateTime holidayDay = key;
+                if (holidayDay.weekday <= 5) {
+                  totalSchoolDays--;
+                  if ((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) &&
+                      !presentDays.contains(holidayDay)) {
+                    absentDays--;
                   }
-                });
+                }
               });
+              if (absentDays < 0) absentDays = 0;
+              setState(() {});
             });
           });
 
@@ -572,8 +590,8 @@ class _HomePageState extends State<HomePage> {
         });
       }),
       getSchoolYearInformation().then((results) {
-        Map schoolYearInformation = results[results.length -
-            1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
+        // TODO: Verify which row to get, or if changes from year to year or new one will be added.
+        Map schoolYearInformation = results[results.length - 1];
         DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']).toLocal();
         DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']).toLocal();
 

@@ -656,7 +656,9 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     Text(
-                                      widget.totalSchoolDays.floor().toString(),
+                                      widget.totalSchoolDays
+                                          .floor()
+                                          .toString(), // TODO: Fetch from API
                                       overflow: TextOverflow.fade,
                                       style: TextStyle(
                                         color: Theme.of(context).accentColor,
@@ -684,16 +686,18 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                       'Days Absent',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87),
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87,
+                                      ),
                                     ),
                                     Text(
                                       widget.absentDays.toString(),
                                       style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                          fontSize: 32.0,
-                                          fontWeight: FontWeight.w600),
+                                        color: Theme.of(context).accentColor,
+                                        fontSize: 32.0,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     )
                                   ],
                                 ),
