@@ -91,8 +91,10 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       Container(
         margin: EdgeInsets.only(right: 4.0),
         padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-        decoration:
-            BoxDecoration(color: Colors.green[50], border: Border.all(color: Colors.green[50]), borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        decoration: BoxDecoration(
+            color: Colors.green[50],
+            border: Border.all(color: Colors.green[50]),
+            borderRadius: BorderRadius.all(Radius.circular(5.0))),
         child: Text(
           'Present',
           softWrap: false,
@@ -102,8 +104,10 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       Container(
         margin: EdgeInsets.only(right: 4.0),
         padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-        decoration:
-            BoxDecoration(color: Colors.red[300], border: Border.all(color: Colors.red[300]), borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        decoration: BoxDecoration(
+            color: Colors.red[300],
+            border: Border.all(color: Colors.red[300]),
+            borderRadius: BorderRadius.all(Radius.circular(5.0))),
         child: Text(
           'Absent',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14.0),
@@ -112,7 +116,9 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       Container(
         margin: EdgeInsets.only(right: 4.0),
         padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-        decoration: BoxDecoration(border: Border.all(color: Colors.deepPurple), borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.deepPurple),
+            borderRadius: BorderRadius.all(Radius.circular(5.0))),
         child: Text(
           'Holiday',
           softWrap: false,
@@ -148,7 +154,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   Future fetchHolidayList() async {
     String url = '$baseApi/sett/get-holidays';
 
-    var response = await http.get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+    var response = await http
+        .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
     return jsonDecode(response.body);
   }
@@ -163,7 +170,9 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
         DateTime holidayIndexDate = startHoliday;
 
-        for (; !(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))) {
+        for (;
+            !(holidayIndexDate.isAtSameMomentAs(endHoliday));
+            holidayIndexDate = holidayIndexDate.add(Duration(days: 1))) {
           if (widget.holidayDays[holidayIndexDate] == null) {
             widget.holidayDays[holidayIndexDate] = [];
           }
@@ -178,7 +187,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
       return Future.value(widget.holidayDays);
     }).then((resolve) {
-      buildAttendanceCalendarDays(widget.yearStartDay, DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
+      buildAttendanceCalendarDays(widget.yearStartDay,
+          DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
       return Future.value(resolve);
     });
   }
@@ -194,11 +204,13 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
             if (presentDays.length > 0) {
               try {
-                if (presentDays[presentDaysIndex].isBefore(schoolDayIndex) && presentDaysIndex < presentDays.length - 1) {
+                if (presentDays[presentDaysIndex].isBefore(schoolDayIndex) &&
+                    presentDaysIndex < presentDays.length - 1) {
                   presentDaysIndex++;
                 }
               } catch (e) {}
-              if (schoolDayIndex == presentDays[presentDaysIndex] && presentDaysIndex < presentDays.length) {
+              if (schoolDayIndex == presentDays[presentDaysIndex] &&
+                  presentDaysIndex < presentDays.length) {
                 attendanceStatus = 'PRESENT';
                 if (presentDaysIndex < presentDays.length - 1) {
                   presentDaysIndex++;
@@ -233,13 +245,17 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     setState(() {
       _visibleEvents = Map.fromEntries(
         _events.entries.where(
-          (entry) => entry.key.isAfter(first.subtract(const Duration(days: 1))) && entry.key.isBefore(last.add(const Duration(days: 1))),
+          (entry) =>
+              entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
+              entry.key.isBefore(last.add(const Duration(days: 1))),
         ),
       );
 
       _visibleHolidays = Map.fromEntries(
         widget.holidayDays.entries.where(
-          (entry) => entry.key.isAfter(first.subtract(const Duration(days: 1))) && entry.key.isBefore(last.add(const Duration(days: 1))),
+          (entry) =>
+              entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
+              entry.key.isBefore(last.add(const Duration(days: 1))),
         ),
       );
     });
@@ -328,7 +344,9 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         List thisEvents = _events[_selectedDay] ?? [''];
         eventsLegend = [];
         DateFormat formatter = DateFormat('MMM. d');
-        if (_selectedEvents.length != 0 && thisEvents[0] != '' && (thisEvents.length > 0 && thisEvents[0] != 'CURRENT')) {
+        if (_selectedEvents.length != 0 &&
+            thisEvents[0] != '' &&
+            (thisEvents.length > 0 && thisEvents[0] != 'CURRENT')) {
           eventsLegend.add(Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -350,10 +368,13 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                 margin: EdgeInsets.only(right: 4.0),
                 padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
                 decoration: BoxDecoration(
-                    color: Colors.red[300], border: Border.all(color: Colors.red[300]), borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    color: Colors.red[300],
+                    border: Border.all(color: Colors.red[300]),
+                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 child: Text(
                   'Absent',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14.0),
+                  style:
+                      TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14.0),
                 ),
               ));
             }
@@ -363,11 +384,14 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                   margin: EdgeInsets.only(right: 4.0),
                   padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
                   decoration: BoxDecoration(
-                      color: Colors.green[50], border: Border.all(color: Colors.green[50]), borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                      color: Colors.green[50],
+                      border: Border.all(color: Colors.green[50]),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: Text(
                     'Present',
                     softWrap: false,
-                    style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 14.0),
+                    style:
+                        TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 14.0),
                   ),
                 ));
               }
@@ -402,7 +426,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
               child: Text(
                 holiday,
                 softWrap: false,
-                style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.w600, fontSize: 14.0),
+                style: TextStyle(
+                    color: Colors.deepPurple, fontWeight: FontWeight.w600, fontSize: 14.0),
               ),
             ));
           }
@@ -450,7 +475,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       child: Center(
         child: Text(
           '${date.day}',
-          style: TextStyle().copyWith(color: fontColor, fontSize: 14.0, fontWeight: FontWeight.w600),
+          style:
+              TextStyle().copyWith(color: fontColor, fontSize: 14.0, fontWeight: FontWeight.w600),
         ),
       ),
     );
@@ -465,7 +491,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       child: Center(
         child: Text(
           '${date.day}',
-          style: TextStyle().copyWith(color: Colors.black87, fontSize: 14.0, fontWeight: FontWeight.w600),
+          style: TextStyle()
+              .copyWith(color: Colors.black87, fontSize: 14.0, fontWeight: FontWeight.w600),
         ),
       ),
     );
@@ -514,7 +541,9 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
                         decoration: BoxDecoration(
-                            color: Colors.white, boxShadow: [BrandTheme.cardShadow], borderRadius: BorderRadius.all(Radius.circular(7.0))),
+                            color: Colors.white,
+                            boxShadow: [BrandTheme.cardShadow],
+                            borderRadius: BorderRadius.all(Radius.circular(7.0))),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: Flex(
@@ -530,12 +559,18 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                       Text(
                                         'Days Present',
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w700, color: Colors.black87),
+                                        style: TextStyle(
+                                            fontSize: 13.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87),
                                       ),
                                       Text(
                                         widget.presentDaysNo.toString(),
                                         overflow: TextOverflow.fade,
-                                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 32.0, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                            color: Theme.of(context).accentColor,
+                                            fontSize: 32.0,
+                                            fontWeight: FontWeight.w600),
                                       )
                                     ],
                                   ),
@@ -557,12 +592,18 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                         'School Days',
                                         textAlign: TextAlign.center,
                                         overflow: TextOverflow.fade,
-                                        style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w700, color: Colors.black87),
+                                        style: TextStyle(
+                                            fontSize: 13.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87),
                                       ),
                                       Text(
                                         widget.totalSchoolDays.floor().toString(),
                                         overflow: TextOverflow.fade,
-                                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 32.0, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                            color: Theme.of(context).accentColor,
+                                            fontSize: 32.0,
+                                            fontWeight: FontWeight.w600),
                                       )
                                     ],
                                   ),
@@ -583,11 +624,17 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                       Text(
                                         'Days Absent',
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w700, color: Colors.black87),
+                                        style: TextStyle(
+                                            fontSize: 13.0,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black87),
                                       ),
                                       Text(
                                         widget.absentDays.toString(),
-                                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 32.0, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                            color: Theme.of(context).accentColor,
+                                            fontSize: 32.0,
+                                            fontWeight: FontWeight.w600),
                                       )
                                     ],
                                   ),
@@ -611,7 +658,8 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                     children: <Widget>[
                       Container(
                         height: 30.0,
-                        margin: EdgeInsets.only(top: 20.0, left: eventsLegend.length > 0 ? 20.0 : 0.0),
+                        margin:
+                            EdgeInsets.only(top: 20.0, left: eventsLegend.length > 0 ? 20.0 : 0.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -629,15 +677,21 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
                                   )
                                 : Text(
                                     formatter.format(_selectedDay),
-                                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: Colors.grey[600]),
+                                    style: TextStyle(
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey[600]),
                                   ),
                           ],
                         ),
                       ),
                       FutureBuilder(
-                        future: !widget.hasInitiated ? getHolidayList() : Future.value(_visibleHolidays),
+                        future: !widget.hasInitiated
+                            ? getHolidayList()
+                            : Future.value(_visibleHolidays),
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
-                          if ((snapshot.connectionState == ConnectionState.done) || widget.hasInitiated) {
+                          if ((snapshot.connectionState == ConnectionState.done) ||
+                              widget.hasInitiated) {
                             widget.hasInitiated = true;
                             _visibleHolidays = snapshot.data;
                             return _buildTableCalendarWithBuilders();

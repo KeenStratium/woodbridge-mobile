@@ -5,8 +5,6 @@ import 'package:myWoodbridge/payment_guide.dart';
 import 'model.dart';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
-import 'package:native_pdf_view/native_pdf_view.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,8 +35,9 @@ bool showStudentSwitcher = false;
 Future<Map> getPresentDaysNo(userId) async {
   String url = '$baseApi/att/get-present-days-of-student';
 
-  var response =
-      await http.post(url, body: json.encode({'data': userId}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(url,
+      body: json.encode({'data': userId}),
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body)[0];
 }
@@ -46,7 +45,8 @@ Future<Map> getPresentDaysNo(userId) async {
 Future fetchHolidayList() async {
   String url = '$baseApi/sett/get-holidays';
 
-  var response = await http.get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http
+      .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -54,7 +54,8 @@ Future fetchHolidayList() async {
 Future<Map> getTotalSchoolDays(userId) async {
   String url = '$baseApi/att/get-total-school-days';
 
-  var response = await http.get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http
+      .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body)[0];
 }
@@ -62,7 +63,8 @@ Future<Map> getTotalSchoolDays(userId) async {
 Future<Map> getAbsentDays(userId) async {
   String url = '$baseApi/att/get-absent-days-of-school?data=$userId';
 
-  var response = await http.get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http
+      .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body)[0];
 }
@@ -70,8 +72,9 @@ Future<Map> getAbsentDays(userId) async {
 Future<List> getAttendanceDays(userId) async {
   String url = '$baseApi/att/get-student-attendance';
 
-  var response =
-      await http.post(url, body: json.encode({"data": userId}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(url,
+      body: json.encode({"data": userId}),
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -79,7 +82,8 @@ Future<List> getAttendanceDays(userId) async {
 Future<List> getSchoolYearInformation() async {
   String url = '$baseApi/att/get-attendance-setting-information';
 
-  var response = await http.get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http
+      .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -87,8 +91,9 @@ Future<List> getSchoolYearInformation() async {
 Future<List> getStudentLatestAttendance(userId) async {
   String url = '$baseApi/att/get-student-latest-attendance';
 
-  var response =
-      await http.post(url, body: json.encode({"data": userId}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(url,
+      body: json.encode({"data": userId}),
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -96,8 +101,9 @@ Future<List> getStudentLatestAttendance(userId) async {
 Future<List> fetchStudentPayments(userId) async {
   String url = '$baseApi/pay/get-student-payments';
 
-  var response =
-      await http.post(url, body: json.encode({'data': userId}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(url,
+      body: json.encode({'data': userId}),
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -105,8 +111,9 @@ Future<List> fetchStudentPayments(userId) async {
 Future<Map> getStudentUnseenNotifications(userId) async {
   String url = '$baseApi/notif/get-student-unseen-notifs';
 
-  var response =
-      await http.post(url, body: json.encode({"data": userId}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(url,
+      body: json.encode({"data": userId}),
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -114,8 +121,9 @@ Future<Map> getStudentUnseenNotifications(userId) async {
 Future<Map> getStudentNotificationInfo(notifId) async {
   String url = '$baseApi/notif/get-student-notification-info';
 
-  var response =
-      await http.post(url, body: json.encode({"data": notifId}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(url,
+      body: json.encode({"data": notifId}),
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -123,8 +131,9 @@ Future<Map> getStudentNotificationInfo(notifId) async {
 Future getClassDetails(classId) async {
   String url = '$baseApi/classroom/get-class-details';
 
-  var response =
-      await http.post(url, body: json.encode({'data': classId}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(url,
+      body: json.encode({'data': classId}),
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -326,17 +335,6 @@ class _HomePageState extends State<HomePage> {
     setUnreadNotif(widget.heroTag);
   }
 
-  // Future initLoadPdf() async {
-  //   doc = await PDFDocument.fromAsset('files/TWAMobileParentsGuide.pdf');
-  //   int maxPages = doc.count;
-
-  //   for(int i = 0; i < maxPages; i++){
-  //     guidePages.add(await doc.get(page: i+1));
-  //   }
-
-  //   return guidePages;
-  // }
-
   Future getHolidayList() async {
     return await fetchHolidayList().then((resolve) {
       for (int i = 0; i < resolve.length; i++) {
@@ -346,7 +344,9 @@ class _HomePageState extends State<HomePage> {
         DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
         DateTime holidayIndexDate = startHoliday;
 
-        for (; !(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))) {
+        for (;
+            !(holidayIndexDate.isAtSameMomentAs(endHoliday));
+            holidayIndexDate = holidayIndexDate.add(Duration(days: 1))) {
           if (holidayDays[holidayIndexDate] == null) {
             holidayDays[holidayIndexDate] = [];
           }
@@ -410,7 +410,8 @@ class _HomePageState extends State<HomePage> {
         try {
           String paidDate = payment['paid_date'];
           if (paidDate != null) {
-            paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MMM dd y');
+            paymentDate =
+                timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MMM dd y');
           }
         } catch (e) {}
         payments.add(Payment(
@@ -424,11 +425,16 @@ class _HomePageState extends State<HomePage> {
             paymentSettingId: payment['pay_setting_id'].split(',')[0],
             amountDesc: payment['due_desc'],
             checkNo: payment['check_no'],
-            paymentType: {'type': payment['pay_type'], 'official_receipt': payment['official_receipt'], 'bank_abbr': payment['pay_bank']},
+            paymentType: {
+              'type': payment['pay_type'],
+              'official_receipt': payment['official_receipt'],
+              'bank_abbr': payment['pay_bank']
+            },
             paymentNote: payment['description']));
       });
     });
-    streamController.add({'totalPayments': totalPayments, 'totalBalance': totalBalance, 'payments': payments});
+    streamController
+        .add({'totalPayments': totalPayments, 'totalBalance': totalBalance, 'payments': payments});
     _completer.complete();
     return _completer.future;
   }
@@ -471,13 +477,16 @@ class _HomePageState extends State<HomePage> {
             if (results.length > 0 || results != null) {
               Map latestAttendance = results[0];
               DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
-              DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
-              DateTime thisTime = DateTime(today.year, today.month, today.day, today.hour, today.minute);
+              DateTime attendanceDay =
+                  DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+              DateTime thisTime =
+                  DateTime(today.year, today.month, today.day, today.hour, today.minute);
 
               getClassDetails(widget.classId).then((classDetails) {
                 Map classDetail = classDetails[0];
                 List startTime = classDetail['class_start_schedule'].split(':');
-                DateTime classStart = DateTime(today.year, today.month, today.day, int.parse(startTime[0]), int.parse(startTime[1]));
+                DateTime classStart = DateTime(today.year, today.month, today.day,
+                    int.parse(startTime[0]), int.parse(startTime[1]));
                 if (resolve[thisDay] != null) {
                   attendanceStatus = 'No Class';
                   attendanceStatusColor = Colors.deepPurple[400];
@@ -528,7 +537,8 @@ class _HomePageState extends State<HomePage> {
             await getAttendanceDays(userId).then((presents) {
               presents.forEach((result) {
                 DateTime attendanceDate = DateTime.parse(result['date_marked']).toLocal();
-                DateTime attendanceDay = DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
+                DateTime attendanceDay =
+                    DateTime(attendanceDate.year, attendanceDate.month, attendanceDate.day);
                 presentDays.add(attendanceDay);
               });
               setState(() {
@@ -538,7 +548,8 @@ class _HomePageState extends State<HomePage> {
                   DateTime holidayDay = key;
                   if (holidayDay.weekday <= 5) {
                     totalSchoolDays--;
-                    if ((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) && !presentDays.contains(holidayDay)) {
+                    if ((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) &&
+                        !presentDays.contains(holidayDay)) {
                       absentDays--;
                     }
                   }
@@ -561,8 +572,8 @@ class _HomePageState extends State<HomePage> {
         });
       }),
       getSchoolYearInformation().then((results) {
-        Map schoolYearInformation =
-            results[results.length - 1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
+        Map schoolYearInformation = results[results.length -
+            1]; // TODO: Verify which row to get, or if changes from year to year or new one will be added.
         DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']).toLocal();
         DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']).toLocal();
 
@@ -651,7 +662,8 @@ class _HomePageState extends State<HomePage> {
           String monthYearLabel = '$monthActivitiesFromYearName $year';
 
           monthWithYearActivities[monthYearLabel] = [];
-          monthWithYearActivities[monthYearLabel].addAll(monthActivitiesFromYear[monthActivitiesFromYearName]);
+          monthWithYearActivities[monthYearLabel]
+              .addAll(monthActivitiesFromYear[monthActivitiesFromYearName]);
         }
       });
       List iteratableActivityNames = monthWithYearActivities.keys.toList();
@@ -688,7 +700,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void iOSPermission() {
-    _firebaseMessaging.requestNotificationPermissions(IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {});
   }
 
@@ -766,7 +779,8 @@ class _HomePageState extends State<HomePage> {
             maxRadius: 54.0,
             minRadius: 20.0,
             fontSize: 20.0,
-            initial: "${widget.firstName != null ? widget.firstName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
+            initial:
+                "${widget.firstName != null ? widget.firstName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
             avatarUrl: widget.avatarUrl,
           ),
           firstName: widget.firstName ?? '',
@@ -886,10 +900,12 @@ class _HomePageState extends State<HomePage> {
     String nextPaymentMonth = nextPayment['nextPaymentMonth'];
     height *= .2;
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.black, // Color for Android
-        statusBarBrightness: Brightness.dark // Dark == white status bar -- for IOS.
-        ));
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: Colors.black, // Color for Android
+          statusBarBrightness: Brightness.dark // Dark == white status bar -- for IOS.
+          ),
+    );
 
     if (widget.userIds == null) {
       widget.userIds = [];
@@ -908,256 +924,25 @@ class _HomePageState extends State<HomePage> {
                   child: SafeArea(
                 child: Scaffold(
                   key: _scaffoldKey,
-                  drawer: Drawer(
-                    child: Flex(
-                      direction: Axis.vertical,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 0,
-                          child: UserAccountsDrawerHeader(
-                            accountName: Text(
-                              '${this.widget.firstName ?? ""} ${this.widget.lastName ?? ""}',
-                              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
-                            ),
-                            otherAccountsPictures: <Widget>[
-                              IconButton(
-                                icon: Icon(Icons.close),
-                                color: Color.fromRGBO(255, 255, 255, .35),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                splashColor: Colors.white,
-                              )
-                            ],
-                            currentAccountPicture: widget.child,
-                            accountEmail: null,
-                          ),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    ListTile(
-                                      leading: Icon(Icons.book),
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(builder: (BuildContext context) {
-                                          return InitialOnboard(
-                                            userIds: [],
-                                            showAgreementCta: false,
-                                          );
-                                        });
-                                        Navigator.push(context, route);
-                                      },
-                                      title: Text(
-                                        "Parents' Guide",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.payment),
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(builder: (BuildContext context) {
-                                          return PaymentGuide();
-                                        });
-                                        Navigator.push(context, route);
-                                      },
-                                      title: Text(
-                                        "Payment Guide",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                    ),
-                                    Divider(
-                                      color: Colors.grey[400],
-                                      height: 16.0,
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.verified_user),
-                                      title: Text(
-                                        'Privacy Policy',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(builder: (BuildContext context) {
-                                          return PrivacyPolicy();
-                                        });
-                                        Navigator.push(context, route);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.info),
-                                      title: Text(
-                                        'About Us',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(builder: (BuildContext context) {
-                                          return AboutUs();
-                                        });
-                                        Navigator.push(context, route);
-                                      },
-                                    ),
-                                    ExpansionTile(
-                                      leading: Icon(Icons.phone),
-                                      initiallyExpanded: false,
-                                      onExpansionChanged: (_isExpanded) {},
-                                      title: Text(
-                                        'Contact Us',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      children: <Widget>[
-                                        Container(
-                                          width: double.infinity,
-                                          padding: EdgeInsets.only(right: 18.0, bottom: 20.0),
-                                          child: Column(
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: EdgeInsets.only(left: 20.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: <Widget>[
-                                                        Icon(Icons.location_on, color: Colors.grey[600], size: 16.0),
-                                                        Padding(
-                                                          padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                        ),
-                                                        Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Text(
-                                                              "#5 23rd Street, Capitol Subdivision",
-                                                              style: TextStyle(fontSize: 14.0, color: Colors.grey[600], fontWeight: FontWeight.w600),
-                                                            ),
-                                                            Text(
-                                                              "Bacolod City, Negros Occidental",
-                                                              style: TextStyle(fontSize: 14.0, color: Colors.grey[600], fontWeight: FontWeight.w600),
-                                                            ),
-                                                            Text(
-                                                              "6100 Philippines",
-                                                              style: TextStyle(fontSize: 14.0, color: Colors.grey[600], fontWeight: FontWeight.w600),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: <Widget>[
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Icon(Icons.phone, color: Colors.grey[600], size: 16.0),
-                                                            Padding(
-                                                              padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                            ),
-                                                            Text(
-                                                              "(+6334) 433-3851",
-                                                              style: TextStyle(fontSize: 14.0, color: Colors.grey[600], fontWeight: FontWeight.w600),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Flex(
-                                                          direction: Axis.horizontal,
-                                                          children: <Widget>[
-                                                            Icon(Icons.email, color: Colors.grey[600], size: 16.0),
-                                                            Padding(
-                                                              padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                            ),
-                                                            Flexible(
-                                                              child: Text(
-                                                                "hello@thewoodbridgeacademy.com",
-                                                                softWrap: true,
-                                                                textAlign: TextAlign.start,
-                                                                maxLines: 2,
-                                                                overflow: TextOverflow.fade,
-                                                                style: TextStyle(
-                                                                  fontSize: 14.0,
-                                                                  color: Colors.grey[600],
-                                                                  fontWeight: FontWeight.w600,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Divider(
-                                      color: Colors.grey[400],
-                                      height: 16.0,
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.exit_to_app),
-                                      title: Text(
-                                        'Logout',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        List topics = getTopics();
-                                        _setLoggedInStatus(false);
-                                        removeNotificationToken(_token).then((resolves) {
-                                          for (int i = 0; i < topics.length; i++) {
-                                            String topic = topics[i]['topic'];
+                  drawer: _Drawer(
+                    name: '${this.widget.firstName ?? ""} ${this.widget.lastName ?? ""}',
+                    picture: widget.child,
+                    onLogout: () {
+                      List topics = getTopics();
+                      _setLoggedInStatus(false);
+                      removeNotificationToken(_token).then((resolves) {
+                        for (int i = 0; i < topics.length; i++) {
+                          String topic = topics[i]['topic'];
 
-                                            _firebaseMessaging.unsubscribeFromTopic(topic);
-                                          }
+                          _firebaseMessaging.unsubscribeFromTopic(topic);
+                        }
 
-                                          Route route = MaterialPageRoute(builder: (BuildContext context) {
-                                            return LoginPage();
-                                          });
-                                          Navigator.push(context, route);
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                        Route route = MaterialPageRoute(builder: (BuildContext context) {
+                          return LoginPage();
+                        });
+                        Navigator.push(context, route);
+                      });
+                    },
                   ),
                   body: Container(
                     child: Flex(
@@ -1193,7 +978,8 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     child: AspectRatio(
                                       aspectRatio: 1.0,
-                                      child: Hero(tag: this.widget.heroTag ?? '', child: this.widget.child),
+                                      child: Hero(
+                                          tag: this.widget.heroTag ?? '', child: this.widget.child),
                                     ),
                                   ),
                                 ),
@@ -1220,11 +1006,15 @@ class _HomePageState extends State<HomePage> {
                                             children: <Widget>[
                                               Text(
                                                 '${this.widget.lastName ?? ""}, ${this.widget.firstName ?? ""}',
-                                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18.0, color: Colors.white),
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18.0,
+                                                    color: Colors.white),
                                               ),
                                               otherChildHasUnreadNotif
                                                   ? Padding(
-                                                      padding: EdgeInsets.symmetric(horizontal: 6.0),
+                                                      padding:
+                                                          EdgeInsets.symmetric(horizontal: 6.0),
                                                       child: Container(
                                                         decoration: BoxDecoration(
                                                           color: Colors.red[600],
@@ -1242,7 +1032,10 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               Text(
                                                 '􀄥',
-                                                style: TextStyle(fontFamily: 'SFPro', color: Colors.white, fontSize: 9.0),
+                                                style: TextStyle(
+                                                    fontFamily: 'SFPro',
+                                                    color: Colors.white,
+                                                    fontSize: 9.0),
                                               )
                                             ],
                                           ),
@@ -1287,7 +1080,8 @@ class _HomePageState extends State<HomePage> {
                                     margin: EdgeInsets.symmetric(horizontal: 20.0),
                                     padding: EdgeInsets.symmetric(vertical: 12.0),
                                     child: ConstrainedBox(
-                                      constraints: BoxConstraints(maxWidth: double.infinity, maxHeight: 90.0),
+                                      constraints: BoxConstraints(
+                                          maxWidth: double.infinity, maxHeight: 90.0),
                                       child: Container(
                                         decoration: BoxDecoration(
                                             color: Colors.white,
@@ -1308,7 +1102,8 @@ class _HomePageState extends State<HomePage> {
                                                     children: <Widget>[
                                                       Flex(
                                                         direction: Axis.vertical,
-                                                        mainAxisAlignment: nextPaymentDay != null && nextPaymentDay != null
+                                                        mainAxisAlignment: nextPaymentDay != null &&
+                                                                nextPaymentDay != null
                                                             ? MainAxisAlignment.spaceBetween
                                                             : MainAxisAlignment.start,
                                                         children: <Widget>[
@@ -1320,35 +1115,48 @@ class _HomePageState extends State<HomePage> {
                                                               textAlign: TextAlign.center,
                                                               maxLines: 2,
                                                               softWrap: true,
-                                                              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w700, color: Colors.black87),
+                                                              style: TextStyle(
+                                                                  fontSize: 12.0,
+                                                                  fontWeight: FontWeight.w700,
+                                                                  color: Colors.black87),
                                                             ),
                                                           ),
-                                                          nextPaymentDay != null && nextPaymentDay != null
+                                                          nextPaymentDay != null &&
+                                                                  nextPaymentDay != null
                                                               ? Column(
                                                                   children: <Widget>[
                                                                     Text(
                                                                       nextPaymentMonth ?? "",
                                                                       style: TextStyle(
-                                                                          color: Colors.black38, fontSize: 12.0, fontWeight: FontWeight.w600),
+                                                                          color: Colors.black38,
+                                                                          fontSize: 12.0,
+                                                                          fontWeight:
+                                                                              FontWeight.w600),
                                                                     ),
                                                                     Text(
                                                                       nextPaymentDay ?? "",
                                                                       style: TextStyle(
-                                                                          color: Theme.of(context).accentColor,
+                                                                          color: Theme.of(context)
+                                                                              .accentColor,
                                                                           fontSize: 20.0,
-                                                                          fontWeight: FontWeight.w600),
+                                                                          fontWeight:
+                                                                              FontWeight.w600),
                                                                     ),
                                                                   ],
                                                                 )
                                                               : Expanded(
                                                                   flex: 1,
                                                                   child: Column(
-                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment.start,
                                                                     children: <Widget>[
                                                                       Text(
                                                                         'Fully paid!',
                                                                         style: TextStyle(
-                                                                            color: Colors.green, fontSize: 15.0, fontWeight: FontWeight.w600),
+                                                                            color: Colors.green,
+                                                                            fontSize: 15.0,
+                                                                            fontWeight:
+                                                                                FontWeight.w600),
                                                                       ),
                                                                     ],
                                                                   ),
@@ -1379,35 +1187,52 @@ class _HomePageState extends State<HomePage> {
                                                           Text(
                                                             'Attendance',
                                                             overflow: TextOverflow.fade,
-                                                            style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w700, color: Colors.black87),
+                                                            style: TextStyle(
+                                                                fontSize: 12.0,
+                                                                fontWeight: FontWeight.w700,
+                                                                color: Colors.black87),
                                                           ),
                                                           Flexible(
                                                             flex: 0,
                                                             child: Padding(
                                                               padding: EdgeInsets.only(top: 8.0),
                                                               child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment.center,
                                                                 children: <Widget>[
                                                                   attendanceStatus == 'No Class'
-                                                                      ? Padding(padding: EdgeInsets.symmetric(vertical: 4.0))
+                                                                      ? Padding(
+                                                                          padding:
+                                                                              EdgeInsets.symmetric(
+                                                                                  vertical: 4.0))
                                                                       : Container(),
                                                                   Flex(
                                                                     direction: Axis.horizontal,
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment.center,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment.center,
                                                                     children: <Widget>[
-                                                                      Flexible(flex: 0, child: Container(child: attendanceStatusIcon)),
+                                                                      Flexible(
+                                                                          flex: 0,
+                                                                          child: Container(
+                                                                              child:
+                                                                                  attendanceStatusIcon)),
                                                                       Expanded(
                                                                         flex: 0,
                                                                         child: Padding(
-                                                                          padding: EdgeInsets.only(left: 2.0),
+                                                                          padding: EdgeInsets.only(
+                                                                              left: 2.0),
                                                                           child: Text(
                                                                             attendanceStatus,
-                                                                            overflow: TextOverflow.fade,
+                                                                            overflow:
+                                                                                TextOverflow.fade,
                                                                             style: TextStyle(
-                                                                              color: attendanceStatusColor,
+                                                                              color:
+                                                                                  attendanceStatusColor,
                                                                               fontSize: 15.0,
-                                                                              fontWeight: FontWeight.w700,
+                                                                              fontWeight:
+                                                                                  FontWeight.w700,
                                                                             ),
                                                                           ),
                                                                         ),
@@ -1417,9 +1242,13 @@ class _HomePageState extends State<HomePage> {
                                                                   attendanceStatus != 'No Class'
                                                                       ? Text(
                                                                           '$presentDaysNo/${totalSchoolDays.floor()}',
-                                                                          overflow: TextOverflow.fade,
+                                                                          overflow:
+                                                                              TextOverflow.fade,
                                                                           style: TextStyle(
-                                                                              color: Colors.black38, fontSize: 12.0, fontWeight: FontWeight.w600),
+                                                                              color: Colors.black38,
+                                                                              fontSize: 12.0,
+                                                                              fontWeight:
+                                                                                  FontWeight.w600),
                                                                         )
                                                                       : Container(),
                                                                 ],
@@ -1444,38 +1273,52 @@ class _HomePageState extends State<HomePage> {
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Column(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.spaceBetween,
                                                       children: <Widget>[
                                                         Text(
                                                           'Next Event',
-                                                          style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w700, color: Colors.black87),
+                                                          style: TextStyle(
+                                                              fontSize: 12.0,
+                                                              fontWeight: FontWeight.w700,
+                                                              color: Colors.black87),
                                                         ),
-                                                        nextEventMonth != null && nextEventDay != null
+                                                        nextEventMonth != null &&
+                                                                nextEventDay != null
                                                             ? Column(
                                                                 children: <Widget>[
                                                                   Text(
                                                                     nextEventMonth ?? '',
-                                                                    style:
-                                                                        TextStyle(color: Colors.black38, fontSize: 12.0, fontWeight: FontWeight.w600),
+                                                                    style: TextStyle(
+                                                                        color: Colors.black38,
+                                                                        fontSize: 12.0,
+                                                                        fontWeight:
+                                                                            FontWeight.w600),
                                                                   ),
                                                                   Text(
                                                                     nextEventDay ?? '',
                                                                     style: TextStyle(
-                                                                        color: Theme.of(context).accentColor,
+                                                                        color: Theme.of(context)
+                                                                            .accentColor,
                                                                         fontSize: 20.0,
-                                                                        fontWeight: FontWeight.w600),
+                                                                        fontWeight:
+                                                                            FontWeight.w600),
                                                                   ),
                                                                 ],
                                                               )
                                                             : Expanded(
                                                                 flex: 1,
                                                                 child: Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment.center,
                                                                   children: <Widget>[
                                                                     Text(
                                                                       'Stay tuned.',
                                                                       style: TextStyle(
-                                                                          color: Colors.grey[500], fontSize: 14.0, fontWeight: FontWeight.w600),
+                                                                          color: Colors.grey[500],
+                                                                          fontSize: 14.0,
+                                                                          fontWeight:
+                                                                              FontWeight.w600),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -1506,8 +1349,10 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_payments.png',
                                         label: 'Payments',
-                                        cardShadow: dynamicCardShadow(Color.fromRGBO(83, 162, 193, .35)),
-                                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                                        cardShadow:
+                                            dynamicCardShadow(Color.fromRGBO(83, 162, 193, .35)),
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                                         pageBuilder: PaymentHistory(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
@@ -1518,8 +1363,10 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_attendance.png',
                                         label: 'Attendance',
-                                        cardShadow: dynamicCardShadow(Color.fromRGBO(6, 140, 92, .35)),
-                                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                        cardShadow:
+                                            dynamicCardShadow(Color.fromRGBO(6, 140, 92, .35)),
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                         pageBuilder: Attendance(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
@@ -1540,8 +1387,10 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_grades.png',
                                         label: 'Progress',
-                                        cardShadow: dynamicCardShadow(Color.fromRGBO(242, 197, 54, .35)),
-                                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                        cardShadow:
+                                            dynamicCardShadow(Color.fromRGBO(242, 197, 54, .35)),
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                         pageBuilder: Grades(
                                           userId: widget.heroTag,
                                           firstName: this.widget.firstName,
@@ -1553,7 +1402,8 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_activities.png',
                                         label: 'Activities',
-                                        cardShadow: dynamicCardShadow(Color.fromRGBO(123, 76, 167, .35)),
+                                        cardShadow:
+                                            dynamicCardShadow(Color.fromRGBO(123, 76, 167, .35)),
                                         pageBuilder: Activities(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
@@ -1567,8 +1417,10 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_gallery.png',
                                         label: 'Classroom',
-                                        cardShadow: dynamicCardShadow(Color.fromRGBO(219, 69, 58, .35)),
-                                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                        cardShadow:
+                                            dynamicCardShadow(Color.fromRGBO(219, 69, 58, .35)),
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                         pageBuilder: ActivityGallery(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
@@ -1580,7 +1432,8 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_announcements.png',
                                         label: 'Messages',
-                                        cardShadow: dynamicCardShadow(Color.fromRGBO(252, 142, 43, .35)),
+                                        cardShadow:
+                                            dynamicCardShadow(Color.fromRGBO(252, 142, 43, .35)),
                                         pageBuilder: MessageBoard(
                                           userId: widget.heroTag,
                                           firstName: widget.firstName,
@@ -1603,7 +1456,8 @@ class _HomePageState extends State<HomePage> {
                       height: 46,
                       margin: EdgeInsets.symmetric(horizontal: 14.0, vertical: 6.0),
                       decoration: BoxDecoration(
-                        image: DecorationImage(image: AssetImage("img/mywoodbridge.png"), fit: BoxFit.fitWidth),
+                        image: DecorationImage(
+                            image: AssetImage("img/mywoodbridge.png"), fit: BoxFit.fitWidth),
                       ),
                     ),
                     leading: IconButton(
@@ -1654,7 +1508,10 @@ class _HomePageState extends State<HomePage> {
                                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                                     child: Text(
                                       'Select Student',
-                                      style: TextStyle(color: Colors.white, fontSize: 24.0, fontWeight: FontWeight.w600),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 24.0,
+                                          fontWeight: FontWeight.w600),
                                     ),
                                   ),
                                   Expanded(
@@ -1674,7 +1531,8 @@ class _HomePageState extends State<HomePage> {
                                               return StudentAvatarPicker(
                                                   userId: '$userId',
                                                   isActive: userId == widget.heroTag,
-                                                  hasUnreadNotif: userIdUnreadStatus[userId] ?? false,
+                                                  hasUnreadNotif:
+                                                      userIdUnreadStatus[userId] ?? false,
                                                   onTap: (
                                                     lname,
                                                     fname,
@@ -1794,7 +1652,10 @@ class MenuItem extends StatelessWidget {
           children: <Widget>[
             Container(
               padding: EdgeInsets.symmetric(vertical: 4.0),
-              decoration: BoxDecoration(boxShadow: [cardShadow], color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(7.0))),
+              decoration: BoxDecoration(
+                  boxShadow: [cardShadow],
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(7.0))),
               child: Flex(
                 direction: Axis.vertical,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1804,7 +1665,8 @@ class MenuItem extends StatelessWidget {
                     child: Padding(
                       padding: padding ?? EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
                       child: Container(
-                        decoration: BoxDecoration(image: DecorationImage(image: AssetImage(iconPath))),
+                        decoration:
+                            BoxDecoration(image: DecorationImage(image: AssetImage(iconPath))),
                       ),
                     ),
                   ),
@@ -1812,7 +1674,10 @@ class MenuItem extends StatelessWidget {
                     flex: 2,
                     child: Text(
                       label,
-                      style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w700, color: Color.fromRGBO(0, 0, 0, .55)),
+                      style: TextStyle(
+                          fontSize: 13.0,
+                          fontWeight: FontWeight.w700,
+                          color: Color.fromRGBO(0, 0, 0, .55)),
                     ),
                   ),
                 ],
@@ -1824,14 +1689,17 @@ class MenuItem extends StatelessWidget {
                     top: 8,
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(color: unreadCount < 0 ? Colors.blueAccent : Colors.red, borderRadius: BorderRadius.circular(32.0)),
+                      decoration: BoxDecoration(
+                          color: unreadCount < 0 ? Colors.blueAccent : Colors.red,
+                          borderRadius: BorderRadius.circular(32.0)),
                       constraints: BoxConstraints(
                         minWidth: 17,
                         minHeight: 14,
                       ),
                       child: Text(
                         '${unreadCount < 0 ? '' : unreadCount}',
-                        style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -1839,6 +1707,291 @@ class MenuItem extends StatelessWidget {
                 : Container()
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _Drawer extends StatelessWidget {
+  final String name;
+  final Widget picture;
+  final onLogout;
+
+  const _Drawer({
+    Key key,
+    this.name,
+    this.picture,
+    this.onLogout,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Flex(
+        direction: Axis.vertical,
+        children: <Widget>[
+          Flexible(
+            flex: 0,
+            child: UserAccountsDrawerHeader(
+              accountName: Text(
+                name ?? 'N/A',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+              ),
+              otherAccountsPictures: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.close),
+                  color: Color.fromRGBO(255, 255, 255, .35),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  splashColor: Colors.white,
+                )
+              ],
+              currentAccountPicture: picture,
+              accountEmail: null,
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              child: Flex(
+                direction: Axis.vertical,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Flexible(
+                    child: Flex(
+                      direction: Axis.vertical,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(Icons.book),
+                          onTap: () {
+                            Route route = MaterialPageRoute(builder: (BuildContext context) {
+                              return InitialOnboard(
+                                userIds: [],
+                                showAgreementCta: false,
+                              );
+                            });
+                            Navigator.push(context, route);
+                          },
+                          title: Text(
+                            "Parents' Guide",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.payment),
+                          onTap: () {
+                            Route route = MaterialPageRoute(builder: (BuildContext context) {
+                              return PaymentGuide();
+                            });
+                            Navigator.push(context, route);
+                          },
+                          title: Text(
+                            "Payment Guide",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          color: Colors.grey[400],
+                          height: 16.0,
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.verified_user),
+                          title: Text(
+                            'Privacy Policy',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          onTap: () {
+                            Route route = MaterialPageRoute(builder: (BuildContext context) {
+                              return PrivacyPolicy();
+                            });
+                            Navigator.push(context, route);
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.info),
+                          title: Text(
+                            'About Us',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          onTap: () {
+                            Route route = MaterialPageRoute(builder: (BuildContext context) {
+                              return AboutUs();
+                            });
+                            Navigator.push(context, route);
+                          },
+                        ),
+                        Flexible(
+                          flex: 2,
+                          child: SingleChildScrollView(
+                            child: ExpansionTile(
+                              leading: Icon(Icons.phone),
+                              initiallyExpanded: false,
+                              onExpansionChanged: (_isExpanded) {},
+                              title: Text(
+                                'Contact Us',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              children: <Widget>[
+                                Flex(
+                                  direction: Axis.vertical,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Flexible(
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                          left: 20.0,
+                                          right: 18.0,
+                                          bottom: 12.0,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Icon(Icons.location_on,
+                                                    color: Colors.grey[600], size: 16.0),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "#5 23rd Street, Capitol Subdivision",
+                                                      style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          color: Colors.grey[600],
+                                                          fontWeight: FontWeight.w600),
+                                                    ),
+                                                    Text(
+                                                      "Bacolod City, Negros Occidental",
+                                                      style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          color: Colors.grey[600],
+                                                          fontWeight: FontWeight.w600),
+                                                    ),
+                                                    Text(
+                                                      "6100 Philippines",
+                                                      style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          color: Colors.grey[600],
+                                                          fontWeight: FontWeight.w600),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(padding: EdgeInsets.symmetric(vertical: 6.0)),
+                                            Flex(
+                                              direction: Axis.vertical,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Row(
+                                                  children: <Widget>[
+                                                    Icon(Icons.phone,
+                                                        color: Colors.grey[600], size: 16.0),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(horizontal: 4.0),
+                                                    ),
+                                                    Text(
+                                                      "(+6334) 433-3851",
+                                                      style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          color: Colors.grey[600],
+                                                          fontWeight: FontWeight.w600),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Icon(Icons.email,
+                                                        color: Colors.grey[600], size: 16.0),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(horizontal: 4.0),
+                                                    ),
+                                                    Text(
+                                                      "hello@thewoodbridgeacademy.com",
+                                                      softWrap: true,
+                                                      textAlign: TextAlign.start,
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.fade,
+                                                      style: TextStyle(
+                                                        fontSize: 14.0,
+                                                        color: Colors.grey[600],
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Divider(
+                        color: Colors.grey[400],
+                        height: 16.0,
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.exit_to_app),
+                        title: Text(
+                          'Logout',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        onTap: onLogout,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
