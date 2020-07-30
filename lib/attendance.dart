@@ -28,8 +28,6 @@ class Attendance extends StatefulWidget {
 
   final int absentDays;
   final String firstName;
-  bool hasInitiated = false;
-  Map<DateTime, List> holidayDays = {};
   final String lastName;
   final List<DateTime> noSchoolDays;
   final int pastSchoolDays;
@@ -48,6 +46,9 @@ class Attendance extends StatefulWidget {
 
 class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   static DateTime currentDate = DateTime.now();
+
+  bool hasInitiated = false;
+  Map<DateTime, List> holidayDays = {};
 
   DateTime currentDay = DateTime(currentDate.year, currentDate.month, currentDate.day);
   List<Widget> eventsLegend = <Widget>[];
@@ -92,43 +93,70 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         margin: EdgeInsets.only(right: 4.0),
         padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
         decoration: BoxDecoration(
-            color: Colors.green[50],
-            border: Border.all(color: Colors.green[50]),
-            borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          color: Colors.green[50],
+          border: Border.all(color: Colors.green[50]),
+          borderRadius: BorderRadius.all(
+            Radius.circular(5.0),
+          ),
+        ),
         child: Text(
           'Present',
           softWrap: false,
-          style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 14.0),
+          style: TextStyle(
+            color: Colors.green,
+            fontWeight: FontWeight.w600,
+            fontSize: 14.0,
+          ),
         ),
       ),
       Container(
         margin: EdgeInsets.only(right: 4.0),
         padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
         decoration: BoxDecoration(
-            color: Colors.red[300],
-            border: Border.all(color: Colors.red[300]),
-            borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          color: Colors.red[300],
+          border: Border.all(color: Colors.red[300]),
+          borderRadius: BorderRadius.all(
+            Radius.circular(5.0),
+          ),
+        ),
         child: Text(
           'Absent',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14.0),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14.0,
+          ),
         ),
       ),
       Container(
         margin: EdgeInsets.only(right: 4.0),
         padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.deepPurple),
-            borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          border: Border.all(color: Colors.deepPurple),
+          borderRadius: BorderRadius.all(
+            Radius.circular(5.0),
+          ),
+        ),
         child: Text(
           'Holiday',
           softWrap: false,
-          style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.w600, fontSize: 14.0),
+          style: TextStyle(
+            color: Colors.deepPurple,
+            fontWeight: FontWeight.w600,
+            fontSize: 14.0,
+          ),
         ),
       )
     ]);
 
     _selectedDay = DateTime.now();
-    _selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day, 0, 0);
+    _selectedDay = DateTime(
+      _selectedDay.year,
+      _selectedDay.month,
+      _selectedDay.day,
+      0,
+      0,
+    );
 
     _events = {
       _selectedDay: [],
@@ -154,15 +182,17 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   Future fetchHolidayList() async {
     String url = '$baseApi/sett/get-holidays';
 
-    var response = await http
-        .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+    var response = await http.get(url, headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    });
 
     return jsonDecode(response.body);
   }
 
   Future getHolidayList() async {
     return await fetchHolidayList().then((resolve) async {
-      widget.holidayDays = {};
+      holidayDays = {};
       for (int i = 0; i < resolve.length; i++) {
         Map holiday = resolve[i];
         String holidayTitle = holiday['title'];
@@ -173,22 +203,25 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         for (;
             !(holidayIndexDate.isAtSameMomentAs(endHoliday));
             holidayIndexDate = holidayIndexDate.add(Duration(days: 1))) {
-          if (widget.holidayDays[holidayIndexDate] == null) {
-            widget.holidayDays[holidayIndexDate] = [];
+          if (holidayDays[holidayIndexDate] == null) {
+            holidayDays[holidayIndexDate] = [];
           }
-          widget.holidayDays[holidayIndexDate].add(holidayTitle);
+          holidayDays[holidayIndexDate].add(holidayTitle);
         }
 
-        if (widget.holidayDays[holidayIndexDate] == null) {
-          widget.holidayDays[holidayIndexDate] = [];
+        if (holidayDays[holidayIndexDate] == null) {
+          holidayDays[holidayIndexDate] = [];
         }
-        widget.holidayDays[holidayIndexDate].add(holidayTitle);
+        holidayDays[holidayIndexDate].add(holidayTitle);
       }
 
-      return Future.value(widget.holidayDays);
+      return Future.value(holidayDays);
     }).then((resolve) {
-      buildAttendanceCalendarDays(widget.yearStartDay,
-          DateTime(today.year, today.month, today.day).add(Duration(days: 1)), widget.presentDays);
+      buildAttendanceCalendarDays(
+        widget.yearStartDay,
+        DateTime(today.year, today.month, today.day).add(Duration(days: 1)),
+        widget.presentDays,
+      );
       return Future.value(resolve);
     });
   }
@@ -198,7 +231,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
     int presentDaysIndex = 0;
     if (yearStartDay != null) {
       while (schoolDayIndex.isBefore(today)) {
-        if (widget.holidayDays[schoolDayIndex] == null) {
+        if (holidayDays[schoolDayIndex] == null) {
           if (schoolDayIndex.weekday <= 5) {
             String attendanceStatus = 'ABSENT';
 
@@ -252,7 +285,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       );
 
       _visibleHolidays = Map.fromEntries(
-        widget.holidayDays.entries.where(
+        holidayDays.entries.where(
           (entry) =>
               entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
               entry.key.isBefore(last.add(const Duration(days: 1))),
@@ -273,10 +306,14 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
         CalendarFormat.month: '',
       },
       calendarStyle: CalendarStyle(
-          outsideDaysVisible: false,
-          weekendStyle: TextStyle().copyWith(color: Colors.red[300]),
-          holidayStyle: TextStyle().copyWith(color: Colors.red[800]),
-          weekdayStyle: TextStyle().copyWith(fontSize: 14.0, fontWeight: FontWeight.w600)),
+        outsideDaysVisible: false,
+        weekendStyle: TextStyle().copyWith(color: Colors.red[300]),
+        holidayStyle: TextStyle().copyWith(color: Colors.red[800]),
+        weekdayStyle: TextStyle().copyWith(
+          fontSize: 14.0,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
       daysOfWeekStyle: DaysOfWeekStyle(
         weekendStyle: TextStyle().copyWith(color: Colors.red[300]),
       ),
@@ -340,7 +377,7 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       ),
       onDaySelected: (date, events) {
         _onDaySelected(date, events);
-        List selectedHolidays = widget.holidayDays[_selectedDay];
+        List selectedHolidays = holidayDays[_selectedDay];
         List thisEvents = _events[_selectedDay] ?? [''];
         eventsLegend = [];
         DateFormat formatter = DateFormat('MMM. d');
@@ -442,7 +479,13 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
 
   Widget _buildEventsMarker(DateTime date, List events) {
     DateTime thisDay = DateTime(date.year, date.month, date.day, 0, 0);
-    DateTime selectedDay = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day, 0, 0);
+    DateTime selectedDay = DateTime(
+      _selectedDay.year,
+      _selectedDay.month,
+      _selectedDay.day,
+      0,
+      0,
+    );
     Color bgColor;
     Color fontColor = Colors.white;
 
@@ -475,8 +518,11 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       child: Center(
         child: Text(
           '${date.day}',
-          style:
-              TextStyle().copyWith(color: fontColor, fontSize: 14.0, fontWeight: FontWeight.w600),
+          style: TextStyle().copyWith(
+            color: fontColor,
+            fontSize: 14.0,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -491,8 +537,11 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       child: Center(
         child: Text(
           '${date.day}',
-          style: TextStyle()
-              .copyWith(color: Colors.black87, fontSize: 14.0, fontWeight: FontWeight.w600),
+          style: TextStyle().copyWith(
+            color: Colors.black87,
+            fontSize: 14.0,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -507,7 +556,10 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
       child: Center(
         child: Text(
           '${date.day}',
-          style: TextStyle().copyWith(fontWeight: FontWeight.w600, color: Colors.black87),
+          style: TextStyle().copyWith(
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
         ),
       ),
     );
@@ -516,201 +568,208 @@ class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Attendance'),
-        ),
-        resizeToAvoidBottomInset: false,
-        body: Flex(
-          direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Flexible(
-              flex: 0,
-              child: Column(
-                children: <Widget>[
-                  ProfileHeader(
-                    firstName: this.widget.firstName,
-                    lastName: this.widget.lastName,
-                    heroTag: this.widget.userId,
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20.0),
-                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: double.infinity, maxHeight: 90.0),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [BrandTheme.cardShadow],
-                            borderRadius: BorderRadius.all(Radius.circular(7.0))),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          child: Flex(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            direction: Axis.horizontal,
-                            children: <Widget>[
-                              Expanded(
-                                flex: 1,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        'Days Present',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black87),
+      appBar: AppBar(
+        title: Text('Attendance'),
+      ),
+      resizeToAvoidBottomInset: false,
+      body: Flex(
+        direction: Axis.vertical,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            flex: 0,
+            child: Column(
+              children: <Widget>[
+                ProfileHeader(
+                  firstName: this.widget.firstName,
+                  lastName: this.widget.lastName,
+                  heroTag: this.widget.userId,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: double.infinity, maxHeight: 90.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [BrandTheme.cardShadow],
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(7.0),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Flex(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          direction: Axis.horizontal,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 1,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Days Present',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87,
                                       ),
-                                      Text(
-                                        widget.presentDaysNo.toString(),
-                                        overflow: TextOverflow.fade,
-                                        style: TextStyle(
-                                            color: Theme.of(context).accentColor,
-                                            fontSize: 32.0,
-                                            fontWeight: FontWeight.w600),
-                                      )
-                                    ],
-                                  ),
+                                    ),
+                                    Text(
+                                      widget.presentDaysNo.toString(),
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(
+                                        color: Theme.of(context).accentColor,
+                                        fontSize: 32.0,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Container(
-                                height: double.infinity,
-                                width: 1.0,
-                                color: Colors.black12,
-                                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        'School Days',
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.fade,
-                                        style: TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black87),
+                            ),
+                            Container(
+                              height: double.infinity,
+                              width: 1.0,
+                              color: Colors.black12,
+                              margin: EdgeInsets.symmetric(horizontal: 8.0),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'School Days',
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87,
                                       ),
-                                      Text(
-                                        widget.totalSchoolDays.floor().toString(),
-                                        overflow: TextOverflow.fade,
-                                        style: TextStyle(
-                                            color: Theme.of(context).accentColor,
-                                            fontSize: 32.0,
-                                            fontWeight: FontWeight.w600),
-                                      )
-                                    ],
-                                  ),
+                                    ),
+                                    Text(
+                                      widget.totalSchoolDays.floor().toString(),
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(
+                                        color: Theme.of(context).accentColor,
+                                        fontSize: 32.0,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Container(
-                                height: double.infinity,
-                                width: 1.0,
-                                color: Colors.black12,
-                                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        'Days Absent',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black87),
-                                      ),
-                                      Text(
-                                        widget.absentDays.toString(),
-                                        style: TextStyle(
-                                            color: Theme.of(context).accentColor,
-                                            fontSize: 32.0,
-                                            fontWeight: FontWeight.w600),
-                                      )
-                                    ],
-                                  ),
+                            ),
+                            Container(
+                              height: double.infinity,
+                              width: 1.0,
+                              color: Colors.black12,
+                              margin: EdgeInsets.symmetric(horizontal: 8.0),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Days Absent',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black87),
+                                    ),
+                                    Text(
+                                      widget.absentDays.toString(),
+                                      style: TextStyle(
+                                          color: Theme.of(context).accentColor,
+                                          fontSize: 32.0,
+                                          fontWeight: FontWeight.w600),
+                                    )
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Expanded(
+          ),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white),
               child: Container(
-                decoration: BoxDecoration(color: Colors.white),
-                child: Container(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Container(
-                        height: 30.0,
-                        margin:
-                            EdgeInsets.only(top: 20.0, left: eventsLegend.length > 0 ? 20.0 : 0.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            eventsLegend.length > 0
-                                ? Expanded(
-                                    flex: 1,
-                                    child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        shrinkWrap: true,
-                                        physics: AlwaysScrollableScrollPhysics(),
-                                        itemCount: eventsLegend.length,
-                                        itemBuilder: (BuildContext context, int index) {
-                                          return eventsLegend[index];
-                                        }),
-                                  )
-                                : Text(
-                                    formatter.format(_selectedDay),
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey[600]),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Container(
+                      height: 30.0,
+                      margin:
+                          EdgeInsets.only(top: 20.0, left: eventsLegend.length > 0 ? 20.0 : 0.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          eventsLegend.length > 0
+                              ? Expanded(
+                                  flex: 1,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    physics: AlwaysScrollableScrollPhysics(),
+                                    itemCount: eventsLegend.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return eventsLegend[index];
+                                    },
                                   ),
-                          ],
-                        ),
+                                )
+                              : Text(
+                                  formatter.format(_selectedDay),
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                        ],
                       ),
-                      FutureBuilder(
-                        future: !widget.hasInitiated
-                            ? getHolidayList()
-                            : Future.value(_visibleHolidays),
-                        builder: (BuildContext context, AsyncSnapshot snapshot) {
-                          if ((snapshot.connectionState == ConnectionState.done) ||
-                              widget.hasInitiated) {
-                            widget.hasInitiated = true;
-                            _visibleHolidays = snapshot.data;
-                            return _buildTableCalendarWithBuilders();
-                          } else {
-                            return Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 64.0),
-                                child: CircularProgressIndicator(),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                    FutureBuilder(
+                      future: !hasInitiated ? getHolidayList() : Future.value(_visibleHolidays),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if ((snapshot.connectionState == ConnectionState.done) || hasInitiated) {
+                          hasInitiated = true;
+                          _visibleHolidays = snapshot.data;
+                          return _buildTableCalendarWithBuilders();
+                        } else {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 64.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
-            )
-          ],
-        ));
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
