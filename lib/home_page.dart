@@ -476,7 +476,8 @@ class _HomePageState extends State<HomePage> {
           try {
             if (results.length > 0 || results != null) {
               Map latestAttendance = results[0];
-              DateTime attendanceDate = DateTime.parse(latestAttendance['date_marked']).toLocal();
+              DateTime attendanceDate =
+                  DateTime.parse(latestAttendance['attendance_date']).toLocal();
               DateTime attendanceDay = DateTime(
                 attendanceDate.year,
                 attendanceDate.month,
@@ -571,6 +572,7 @@ class _HomePageState extends State<HomePage> {
                   }
                 }
               });
+              presentDays.sort((a, b) => a.compareTo(b));
               if (absentDays < 0) absentDays = 0;
               setState(() {});
             });
@@ -594,7 +596,6 @@ class _HomePageState extends State<HomePage> {
         Map schoolYearInformation = results[results.length - 1];
         DateTime yearStart = DateTime.parse(schoolYearInformation['quarter_start']).toLocal();
         DateTime yearEnd = DateTime.parse(schoolYearInformation['quarter_end']).toLocal();
-
         yearStartDay = DateTime(yearStart.year, yearStart.month, yearStart.day);
         yearEndDay = DateTime(yearEnd.year, yearEnd.month, yearEnd.day);
 
@@ -652,12 +653,13 @@ class _HomePageState extends State<HomePage> {
 
         if (date.isAfter(currDay) || date.isAtSameMomentAs(currDay)) {
           ActivityEvent activityEvent = ActivityEvent(
-              title: activity['a_title'],
-              venue: activity['a_location'],
-              time: activity['a_time_start'],
-              desc: activity['a_desc'],
-              day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
-              weekday: weekdayNames[date.weekday - 1]);
+            title: activity['a_title'],
+            venue: activity['a_location'],
+            time: activity['a_time_start'],
+            desc: activity['a_desc'],
+            day: '${date.day < 10 ? '0' : ''}${date.day.toString()}',
+            weekday: weekdayNames[date.weekday - 1],
+          );
 
           if (yearActivities[year] == null) {
             yearActivities[year] = {};
@@ -1171,10 +1173,11 @@ class _HomePageState extends State<HomePage> {
                                                                       Text(
                                                                         'Fully paid!',
                                                                         style: TextStyle(
-                                                                            color: Colors.green,
-                                                                            fontSize: 15.0,
-                                                                            fontWeight:
-                                                                                FontWeight.w600),
+                                                                          color: Colors.green,
+                                                                          fontSize: 15.0,
+                                                                          fontWeight:
+                                                                              FontWeight.w600,
+                                                                        ),
                                                                       ),
                                                                     ],
                                                                   ),
@@ -1222,7 +1225,9 @@ class _HomePageState extends State<HomePage> {
                                                                       ? Padding(
                                                                           padding:
                                                                               EdgeInsets.symmetric(
-                                                                                  vertical: 4.0))
+                                                                            vertical: 4.0,
+                                                                          ),
+                                                                        )
                                                                       : Container(),
                                                                   Flex(
                                                                     direction: Axis.horizontal,
