@@ -27,18 +27,7 @@ Future<List> fetchStudentPayments(userId) async {
 
 class Payment {
   Payment(
-      {this.label,
-      this.amount,
-      this.rawDate,
-      this.paidDate,
-      this.isPaid,
-      this.dueAmount,
-      this.paymentModes,
-      this.paymentSettingId,
-      this.amountDesc,
-      this.paymentType,
-      this.paymentNote,
-      this.checkNo});
+      {this.label, this.amount, this.rawDate, this.paidDate, this.isPaid, this.dueAmount, this.paymentModes, this.paymentSettingId, this.amountDesc, this.paymentType, this.paymentNote, this.checkNo});
 
   String amount;
   String amountDesc;
@@ -198,9 +187,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         DashboardTile(
                                           label: 'Total Payments',
                                           displayPlainValue: true,
-                                          value: snapshot.data['totalPayments'] != null
-                                              ? localCurrencyFormat(snapshot.data['totalPayments'])
-                                              : "0.00",
+                                          value: snapshot.data['totalPayments'] != null ? localCurrencyFormat(snapshot.data['totalPayments']) : "0.00",
                                         ),
                                       ],
                                     ),
@@ -212,9 +199,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         DashboardTile(
                                           label: 'Total Balance',
                                           displayPlainValue: true,
-                                          value: snapshot.data['totalBalance'] != null
-                                              ? localCurrencyFormat(snapshot.data['totalBalance'])
-                                              : "0.00",
+                                          value: snapshot.data['totalBalance'] != null ? localCurrencyFormat(snapshot.data['totalBalance']) : "0.00",
                                           color: Color(0xFFDA4453),
                                         )
                                       ],
@@ -343,24 +328,18 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                 Expanded(
                                                   child: Text(
                                                     dueDataLabel,
-                                                    textAlign: isActive
-                                                        ? TextAlign.left
-                                                        : TextAlign.center,
+                                                    textAlign: isActive ? TextAlign.left : TextAlign.center,
                                                     style: TextStyle(
                                                       fontSize: 14.0,
                                                       fontWeight: FontWeight.w600,
-                                                      color: isActive
-                                                          ? Colors.black87
-                                                          : Colors.black38,
+                                                      color: isActive ? Colors.black87 : Colors.black38,
                                                     ),
                                                   ),
                                                   flex: 1,
                                                 ),
                                                 Expanded(
                                                   child: Text(
-                                                    payment.dueAmount != null
-                                                        ? localCurrencyFormat(payment.dueAmount)
-                                                        : 'N/A',
+                                                    payment.dueAmount != null ? localCurrencyFormat(payment.dueAmount) : 'N/A',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontSize: 14.0,
@@ -375,19 +354,22 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: <Widget>[
                                                       Padding(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            horizontal: 5.0),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                                         child: Text(
                                                           payment.paidDate ?? 'Unpaid',
                                                           textAlign: TextAlign.right,
                                                           style: TextStyle(
                                                             fontSize: 14.0,
                                                             fontWeight: FontWeight.w600,
-                                                            color: payment.paidDate == 'Unpaid'
-                                                                ? Colors.black38
-                                                                : Colors.black87,
+                                                            color: payment.paidDate == 'Unpaid' ? Colors.black38 : Colors.black87,
                                                           ),
                                                         ),
+                                                      ),
+                                                      Icon(
+                                                        Icons.info_outline,
+                                                        size: 16.0,
+                                                        semanticLabel: 'View payment details',
+                                                        color: Theme.of(context).accentColor,
                                                       ),
                                                       // SvgPicture.asset(
                                                       //   'img/Icons/details.svg',

@@ -107,18 +107,7 @@ class PaymentDataView extends StatelessWidget {
 }
 
 class Payment {
-  Payment(
-      {this.label,
-      this.amount,
-      this.rawDate,
-      this.paidDate,
-      this.isPaid,
-      this.dueAmount,
-      this.paymentModes,
-      this.paymentSettingId,
-      this.amountDesc,
-      this.paymentType,
-      this.paymentNote});
+  Payment({this.label, this.amount, this.rawDate, this.paidDate, this.isPaid, this.dueAmount, this.paymentModes, this.paymentSettingId, this.amountDesc, this.paymentType, this.paymentNote});
 
   String amount;
   String amountDesc;
@@ -262,17 +251,14 @@ class PaymentDetails extends StatelessWidget {
 
                           if (packageNum == 1) {
                             if (enrollmentFee != null && enrollmentFee != 0.0) {
-                              _preSchoolPayments.add(PaymentDetail(
-                                  label: 'ENROLLMENT FEES', amount: localCurrencyFormat(totalAnnualPackageOneFee), isPaid: paymentDate != 'Unpaid'));
+                              _preSchoolPayments.add(PaymentDetail(label: 'ENROLLMENT FEES', amount: localCurrencyFormat(totalAnnualPackageOneFee), isPaid: paymentDate != 'Unpaid'));
                             }
                           } else {
                             if (enrollmentFee != null && enrollmentFee != 0.0) {
-                              _preSchoolPayments.add(PaymentDetail(
-                                  label: 'ENROLLMENT FEES', amount: localCurrencyFormat(enrollmentFee), isPaid: paymentDate != 'Unpaid'));
+                              _preSchoolPayments.add(PaymentDetail(label: 'ENROLLMENT FEES', amount: localCurrencyFormat(enrollmentFee), isPaid: paymentDate != 'Unpaid'));
                             }
                             if (tuitionFee != null && tuitionFee != 0.0) {
-                              _preSchoolPayments
-                                  .add(PaymentDetail(label: 'TUITION FEE', amount: localCurrencyFormat(tuitionFee), isPaid: paymentDate != 'Unpaid'));
+                              _preSchoolPayments.add(PaymentDetail(label: 'TUITION FEE', amount: localCurrencyFormat(tuitionFee), isPaid: paymentDate != 'Unpaid'));
                             }
                           }
 
@@ -280,16 +266,13 @@ class PaymentDetails extends StatelessWidget {
                             _kumonPayments.add(PaymentDetail(label: 'MATH', amount: localCurrencyFormat(mathFee), isPaid: paymentDate != 'Unpaid'));
                           }
                           if (readingFee != null && readingFee != 0.0) {
-                            _kumonPayments
-                                .add(PaymentDetail(label: 'READING', amount: localCurrencyFormat(readingFee), isPaid: paymentDate != 'Unpaid'));
+                            _kumonPayments.add(PaymentDetail(label: 'READING', amount: localCurrencyFormat(readingFee), isPaid: paymentDate != 'Unpaid'));
                           }
                           if (kumonRegFee != null && kumonRegFee != 0.0) {
-                            _kumonPayments.add(
-                                PaymentDetail(label: 'REGISTRATION FEE', amount: localCurrencyFormat(kumonRegFee), isPaid: paymentDate != 'Unpaid'));
+                            _kumonPayments.add(PaymentDetail(label: 'REGISTRATION FEE', amount: localCurrencyFormat(kumonRegFee), isPaid: paymentDate != 'Unpaid'));
                           }
                         } else {
-                          _preSchoolPayments.add(PaymentDetail(
-                              label: amountDesc.toUpperCase(), amount: localCurrencyFormat(amountDue), isPaid: paymentDate != 'Unpaid'));
+                          _preSchoolPayments.add(PaymentDetail(label: amountDesc.toUpperCase(), amount: localCurrencyFormat(amountDue), isPaid: paymentDate != 'Unpaid'));
                         }
 
                         return Column(
@@ -342,18 +325,13 @@ class PaymentDetails extends StatelessWidget {
                                     tutorialFee != 0.0 && tutorialFee != null
                                         ? PaymentDataView(
                                             title: 'Tutorial',
-                                            payments: [
-                                              PaymentDetail(
-                                                  label: 'REGISTRATION FEE', amount: '₱${tutorialFee + 0.00}', isPaid: paymentDate != 'Unpaid')
-                                            ],
+                                            payments: [PaymentDetail(label: 'REGISTRATION FEE', amount: '₱${tutorialFee + 0.00}', isPaid: paymentDate != 'Unpaid')],
                                           )
                                         : Container(),
                                     othersFee != 0.0 && othersFee != null
                                         ? PaymentDataView(
                                             title: '',
-                                            payments: [
-                                              PaymentDetail(label: 'OTHERS', amount: '₱${othersFee + 0.00}', isPaid: paymentDate != 'Unpaid')
-                                            ],
+                                            payments: [PaymentDetail(label: 'OTHERS', amount: '₱${othersFee + 0.00}', isPaid: paymentDate != 'Unpaid')],
                                           )
                                         : Container()
                                   ]),
@@ -369,18 +347,22 @@ class PaymentDetails extends StatelessWidget {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
-                                            // SvgPicture.asset(
-                                            //   'img/Icons/notes.svg',
-                                            //   height: 12.0,
-                                            //   color: Colors.amber[700],
-                                            //   semanticsLabel: 'Notes'
-                                            // ),
+                                            Icon(
+                                              Icons.description,
+                                              size: 16.0,
+                                              semanticLabel: 'Note icon',
+                                              color: Colors.amber[700],
+                                            ),
                                             Padding(
                                               padding: EdgeInsets.symmetric(horizontal: 2.0),
                                             ),
                                             Text(
                                               'Note',
-                                              style: TextStyle(color: Colors.amber[700], fontSize: 14.0),
+                                              style: TextStyle(
+                                                color: Colors.amber[700],
+                                                fontSize: 15.0,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -388,7 +370,11 @@ class PaymentDetails extends StatelessWidget {
                                           padding: EdgeInsets.symmetric(vertical: 3.0),
                                           child: Text(
                                             paymentNote,
-                                            style: TextStyle(fontSize: 18.0, color: Colors.black87),
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -461,8 +447,7 @@ class PaymentDetails extends StatelessWidget {
                                                               children: <Widget>[
                                                                 Text(
                                                                   'Check Number',
-                                                                  style:
-                                                                      TextStyle(color: Colors.grey[500], fontWeight: FontWeight.w400, fontSize: 14.0),
+                                                                  style: TextStyle(color: Colors.grey[500], fontWeight: FontWeight.w400, fontSize: 14.0),
                                                                 ),
                                                                 Padding(
                                                                   padding: EdgeInsets.symmetric(vertical: 3.0),
@@ -484,8 +469,7 @@ class PaymentDetails extends StatelessWidget {
                                                               children: <Widget>[
                                                                 Text(
                                                                   'Bank',
-                                                                  style:
-                                                                      TextStyle(color: Colors.grey[500], fontWeight: FontWeight.w400, fontSize: 14.0),
+                                                                  style: TextStyle(color: Colors.grey[500], fontWeight: FontWeight.w400, fontSize: 14.0),
                                                                 ),
                                                                 Padding(
                                                                   padding: EdgeInsets.symmetric(vertical: 3.0),
@@ -514,9 +498,7 @@ class PaymentDetails extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(vertical: 24.0),
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: Color(0xFF3F9BDF),
-                                              borderRadius: BorderRadius.all(Radius.circular(14.0)),
-                                              border: Border.all(width: 1.0, color: Color.fromRGBO(0, 0, 0, .075))),
+                                              color: Color(0xFF3F9BDF), borderRadius: BorderRadius.all(Radius.circular(14.0)), border: Border.all(width: 1.0, color: Color.fromRGBO(0, 0, 0, .075))),
                                           padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
                                           child: Flex(
                                             direction: Axis.horizontal,

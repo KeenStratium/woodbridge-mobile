@@ -1266,7 +1266,7 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                           ),
                                                           Padding(
-                                                            padding: EdgeInsets.only(bottom: 6),
+                                                            padding: EdgeInsets.only(bottom: 2),
                                                             child: Column(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               mainAxisSize: MainAxisSize.max,
