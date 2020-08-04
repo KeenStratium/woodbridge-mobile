@@ -289,6 +289,7 @@ class _HomePageState extends State<HomePage> {
   Icon attendanceStatusIcon = Icon(
     Icons.error_outline,
     color: Colors.redAccent,
+    size: 18.0,
   );
 
   // PDFDocument doc;
@@ -1245,85 +1246,84 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               Expanded(
                                                 flex: 1,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    SingleChildScrollView(
-                                                      child: Flex(
+                                                child: OverflowBox(
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                    children: <Widget>[
+                                                      Flex(
                                                         direction: Axis.vertical,
-                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                         children: <Widget>[
-                                                          Text(
-                                                            'Attendance',
-                                                            overflow: TextOverflow.fade,
-                                                            style: TextStyle(
-                                                              fontSize: 12.0,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: Colors.black87,
+                                                          Expanded(
+                                                            child: Text(
+                                                              'Attendance',
+                                                              overflow: TextOverflow.fade,
+                                                              style: TextStyle(
+                                                                fontSize: 12.0,
+                                                                fontWeight: FontWeight.w700,
+                                                                color: Colors.black87,
+                                                              ),
                                                             ),
                                                           ),
-                                                          Flexible(
-                                                            flex: 0,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.only(top: 8.0),
-                                                              child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                children: <Widget>[
-                                                                  attendanceStatus == 'No Class'
-                                                                      ? Padding(
-                                                                          padding: EdgeInsets.symmetric(
-                                                                            vertical: 4.0,
-                                                                          ),
-                                                                        )
-                                                                      : Container(),
-                                                                  Flex(
-                                                                    direction: Axis.horizontal,
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                                    children: <Widget>[
-                                                                      Flexible(
-                                                                        flex: 0,
-                                                                        child: Container(
-                                                                          child: attendanceStatusIcon,
+                                                          Padding(
+                                                            padding: EdgeInsets.only(bottom: 6),
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              children: <Widget>[
+                                                                attendanceStatus == 'No Class'
+                                                                    ? Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          vertical: 4.0,
                                                                         ),
+                                                                      )
+                                                                    : Container(),
+                                                                Flex(
+                                                                  direction: Axis.horizontal,
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                                  children: <Widget>[
+                                                                    Flexible(
+                                                                      flex: 0,
+                                                                      child: Container(
+                                                                        child: attendanceStatusIcon,
                                                                       ),
-                                                                      Expanded(
-                                                                        flex: 0,
-                                                                        child: Padding(
-                                                                          padding: EdgeInsets.only(left: 2.0),
-                                                                          child: Text(
-                                                                            attendanceStatus,
-                                                                            overflow: TextOverflow.fade,
-                                                                            style: TextStyle(
-                                                                              color: attendanceStatusColor,
-                                                                              fontSize: 15.0,
-                                                                              fontWeight: FontWeight.w700,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  attendanceStatus != 'No Class'
-                                                                      ? Text(
-                                                                          '$presentDaysNo/${totalSchoolDays.floor()}',
+                                                                    ),
+                                                                    Expanded(
+                                                                      flex: 0,
+                                                                      child: Padding(
+                                                                        padding: EdgeInsets.only(left: 2.0),
+                                                                        child: Text(
+                                                                          attendanceStatus,
                                                                           overflow: TextOverflow.fade,
                                                                           style: TextStyle(
-                                                                            color: Colors.black38,
-                                                                            fontSize: 12.0,
-                                                                            fontWeight: FontWeight.w600,
+                                                                            color: attendanceStatusColor,
+                                                                            fontSize: 15.0,
+                                                                            fontWeight: FontWeight.w700,
                                                                           ),
-                                                                        )
-                                                                      : Container(),
-                                                                ],
-                                                              ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                attendanceStatus != 'No Class'
+                                                                    ? Text(
+                                                                        '$presentDaysNo/${totalSchoolDays.floor()}',
+                                                                        overflow: TextOverflow.fade,
+                                                                        style: TextStyle(
+                                                                          color: Colors.black38,
+                                                                          fontSize: 12.0,
+                                                                          fontWeight: FontWeight.w600,
+                                                                        ),
+                                                                      )
+                                                                    : Container(),
+                                                              ],
                                                             ),
                                                           )
                                                         ],
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                               Container(
@@ -1548,11 +1548,12 @@ class _HomePageState extends State<HomePage> {
                       IconButton(
                         onPressed: () async {
                           Route route = MaterialPageRoute(
-                              builder: (buildContext) => Notifications(
-                                    firstName: this.widget.firstName,
-                                    lastName: this.widget.lastName,
-                                    userId: this.widget.heroTag,
-                                  ));
+                            builder: (buildContext) => Notifications(
+                              firstName: this.widget.firstName,
+                              lastName: this.widget.lastName,
+                              userId: this.widget.heroTag,
+                            ),
+                          );
                           Navigator.push(context, route);
                         },
                         icon: Icon(
@@ -1604,10 +1605,21 @@ class _HomePageState extends State<HomePage> {
                                             physics: BouncingScrollPhysics(),
                                             children: widget.userIds.map((userId) {
                                               return StudentAvatarPicker(
-                                                  userId: '$userId',
-                                                  isActive: userId == widget.heroTag,
-                                                  hasUnreadNotif: userIdUnreadStatus[userId] ?? false,
-                                                  onTap: (
+                                                userId: '$userId',
+                                                isActive: userId == widget.heroTag,
+                                                hasUnreadNotif: userIdUnreadStatus[userId] ?? false,
+                                                onTap: (
+                                                  lname,
+                                                  fname,
+                                                  schoolLevel,
+                                                  classId,
+                                                  gradeLevel,
+                                                  gradeSection,
+                                                  avatarUrl,
+                                                ) {
+                                                  showStudentSwitcher = false;
+
+                                                  userData(
                                                     lname,
                                                     fname,
                                                     schoolLevel,
@@ -1615,20 +1627,10 @@ class _HomePageState extends State<HomePage> {
                                                     gradeLevel,
                                                     gradeSection,
                                                     avatarUrl,
-                                                  ) {
-                                                    showStudentSwitcher = false;
-
-                                                    userData(
-                                                      lname,
-                                                      fname,
-                                                      schoolLevel,
-                                                      classId,
-                                                      gradeLevel,
-                                                      gradeSection,
-                                                      avatarUrl,
-                                                      userId,
-                                                    );
-                                                  });
+                                                    userId,
+                                                  );
+                                                },
+                                              );
                                             }).toList()),
                                       ),
                                     ),
@@ -1664,12 +1666,12 @@ class MenuItem extends StatelessWidget {
 
   final BuildContext buildContext;
   final Widget child;
-  var customOnPressed;
   final String iconPath;
-  bool isCustomOnPressed;
-  EdgeInsetsGeometry padding;
+  var customOnPressed;
   final String label;
   final Widget pageBuilder;
+  bool isCustomOnPressed;
+  EdgeInsetsGeometry padding;
   BoxShadow cardShadow;
   String _unreadName;
   int unreadCount = 0;
