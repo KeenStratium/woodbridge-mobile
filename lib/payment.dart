@@ -1,14 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import 'services.dart';
 import 'model.dart';
-
 import 'package:flutter/material.dart';
 import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 
 Future<List> fetchStudentPayments(userId) async {
   String url = '$baseApi/pay/get-student-payments';
@@ -371,12 +368,6 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                         semanticLabel: 'View payment details',
                                                         color: Theme.of(context).accentColor,
                                                       ),
-                                                      // SvgPicture.asset(
-                                                      //   'img/Icons/details.svg',
-                                                      //   height: 13.0,
-                                                      //   color: Theme.of(context).accentColor,
-                                                      //   semanticsLabel: 'View payment details'
-                                                      // )
                                                     ],
                                                   ),
                                                   flex: 1,
