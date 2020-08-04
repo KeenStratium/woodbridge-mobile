@@ -35,9 +35,14 @@ bool showStudentSwitcher = false;
 Future<Map> getPresentDaysNo(userId) async {
   String url = '$baseApi/att/get-present-days-of-student';
 
-  var response = await http.post(url,
-      body: json.encode({'data': userId}),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({'data': userId}),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body)[0];
 }
@@ -45,8 +50,13 @@ Future<Map> getPresentDaysNo(userId) async {
 Future fetchHolidayList() async {
   String url = '$baseApi/sett/get-holidays';
 
-  var response = await http
-      .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.get(
+    url,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -54,8 +64,13 @@ Future fetchHolidayList() async {
 Future<Map> getTotalSchoolDays(userId) async {
   String url = '$baseApi/att/get-total-school-days';
 
-  var response = await http
-      .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.get(
+    url,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body)[0];
 }
@@ -63,8 +78,13 @@ Future<Map> getTotalSchoolDays(userId) async {
 Future<Map> getAbsentDays(userId) async {
   String url = '$baseApi/att/get-absent-days-of-school?data=$userId';
 
-  var response = await http
-      .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.get(
+    url,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body)[0];
 }
@@ -72,9 +92,14 @@ Future<Map> getAbsentDays(userId) async {
 Future<List> getAttendanceDays(userId) async {
   String url = '$baseApi/att/get-student-attendance';
 
-  var response = await http.post(url,
-      body: json.encode({"data": userId}),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({"data": userId}),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -82,8 +107,13 @@ Future<List> getAttendanceDays(userId) async {
 Future<List> getSchoolYearInformation() async {
   String url = '$baseApi/att/get-attendance-setting-information';
 
-  var response = await http
-      .get(url, headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.get(
+    url,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -91,9 +121,14 @@ Future<List> getSchoolYearInformation() async {
 Future<List> getStudentLatestAttendance(userId) async {
   String url = '$baseApi/att/get-student-latest-attendance';
 
-  var response = await http.post(url,
-      body: json.encode({"data": userId}),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({"data": userId}),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -101,9 +136,14 @@ Future<List> getStudentLatestAttendance(userId) async {
 Future<List> fetchStudentPayments(userId) async {
   String url = '$baseApi/pay/get-student-payments';
 
-  var response = await http.post(url,
-      body: json.encode({'data': userId}),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({'data': userId}),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -111,9 +151,14 @@ Future<List> fetchStudentPayments(userId) async {
 Future<Map> getStudentUnseenNotifications(userId) async {
   String url = '$baseApi/notif/get-student-unseen-notifs';
 
-  var response = await http.post(url,
-      body: json.encode({"data": userId}),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({"data": userId}),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -121,9 +166,14 @@ Future<Map> getStudentUnseenNotifications(userId) async {
 Future<Map> getStudentNotificationInfo(notifId) async {
   String url = '$baseApi/notif/get-student-notification-info';
 
-  var response = await http.post(url,
-      body: json.encode({"data": notifId}),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({"data": notifId}),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -131,9 +181,14 @@ Future<Map> getStudentNotificationInfo(notifId) async {
 Future getClassDetails(classId) async {
   String url = '$baseApi/classroom/get-class-details';
 
-  var response = await http.post(url,
-      body: json.encode({'data': classId}),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({'data': classId}),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -141,11 +196,16 @@ Future getClassDetails(classId) async {
 Future addNotificationToken(token, topic, studentId) async {
   String url = '$baseApi/account/notif-token-add';
 
-  var response = await http.post(url,
-      body: json.encode({
-        'data': {'uname': getUsername(), 'token': token, 'topic': topic, 's_id': studentId}
-      }),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({
+      'data': {'uname': getUsername(), 'token': token, 'topic': topic, 's_id': studentId}
+    }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -153,11 +213,16 @@ Future addNotificationToken(token, topic, studentId) async {
 Future addNotificationTopic(topic, token, _sId) async {
   String url = '$baseApi/account/add-notif-topic';
 
-  var response = await http.post(url,
-      body: json.encode({
-        'data': {'topic': topic, 'token': token, 's_id': _sId}
-      }),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({
+      'data': {'topic': topic, 'token': token, 's_id': _sId}
+    }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -165,13 +230,18 @@ Future addNotificationTopic(topic, token, _sId) async {
 Future removeNotificationToken(token) async {
   String url = '$baseApi/account/notif-token-remove';
 
-  var response = await http.post(url,
-      body: json.encode({
-        'data': {
-          'token': token,
-        }
-      }),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({
+      'data': {
+        'token': token,
+      }
+    }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
@@ -179,27 +249,22 @@ Future removeNotificationToken(token) async {
 Future seenNotification(notifId) async {
   String url = '$baseApi/notif/seen-student-notif';
 
-  var response = await http.post(url,
-      body: json.encode({
-        'data': {'notif_id': notifId}
-      }),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+  var response = await http.post(
+    url,
+    body: json.encode({
+      'data': {'notif_id': notifId}
+    }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  );
 
   return jsonDecode(response.body);
 }
 
 class HomePage extends StatefulWidget {
-  HomePage(
-      {this.child,
-      this.firstName,
-      this.lastName,
-      this.heroTag,
-      this.schoolLevel,
-      this.classId,
-      this.gradeLevel,
-      this.gradeSection,
-      this.userIds,
-      this.avatarUrl});
+  HomePage({this.child, this.firstName, this.lastName, this.heroTag, this.schoolLevel, this.classId, this.gradeLevel, this.gradeSection, this.userIds, this.avatarUrl});
 
   String avatarUrl;
   Widget child;
@@ -344,9 +409,7 @@ class _HomePageState extends State<HomePage> {
         DateTime endHoliday = DateTime.parse(holiday['holiday_end_date']).toLocal();
         DateTime holidayIndexDate = startHoliday;
 
-        for (;
-            !(holidayIndexDate.isAtSameMomentAs(endHoliday));
-            holidayIndexDate = holidayIndexDate.add(Duration(days: 1))) {
+        for (; !(holidayIndexDate.isAtSameMomentAs(endHoliday)); holidayIndexDate = holidayIndexDate.add(Duration(days: 1))) {
           if (holidayDays[holidayIndexDate] == null) {
             holidayDays[holidayIndexDate] = [];
           }
@@ -410,8 +473,7 @@ class _HomePageState extends State<HomePage> {
         try {
           String paidDate = payment['paid_date'];
           if (paidDate != null) {
-            paymentDate =
-                timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MMM dd y');
+            paymentDate = timeFormat(DateTime.parse(payment['paid_date']).toLocal().toString(), 'MMM dd y');
           }
         } catch (e) {}
         payments.add(Payment(
@@ -425,16 +487,11 @@ class _HomePageState extends State<HomePage> {
             paymentSettingId: payment['pay_setting_id'].split(',')[0],
             amountDesc: payment['due_desc'],
             checkNo: payment['check_no'],
-            paymentType: {
-              'type': payment['pay_type'],
-              'official_receipt': payment['official_receipt'],
-              'bank_abbr': payment['pay_bank']
-            },
+            paymentType: {'type': payment['pay_type'], 'official_receipt': payment['official_receipt'], 'bank_abbr': payment['pay_bank']},
             paymentNote: payment['description']));
       });
     });
-    streamController
-        .add({'totalPayments': totalPayments, 'totalBalance': totalBalance, 'payments': payments});
+    streamController.add({'totalPayments': totalPayments, 'totalBalance': totalBalance, 'payments': payments});
     _completer.complete();
     return _completer.future;
   }
@@ -476,8 +533,7 @@ class _HomePageState extends State<HomePage> {
           try {
             if (results.length > 0 || results != null) {
               Map latestAttendance = results[0];
-              DateTime attendanceDate =
-                  DateTime.parse(latestAttendance['attendance_date']).toLocal();
+              DateTime attendanceDate = DateTime.parse(latestAttendance['attendance_date']).toLocal();
               DateTime attendanceDay = DateTime(
                 attendanceDate.year,
                 attendanceDate.month,
@@ -566,8 +622,7 @@ class _HomePageState extends State<HomePage> {
                 DateTime holidayDay = key;
                 if (holidayDay.weekday <= 5) {
                   totalSchoolDays--;
-                  if ((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) &&
-                      !presentDays.contains(holidayDay)) {
+                  if ((holidayDay.isBefore(thisDay) || holidayDay.isAtSameMomentAs(thisDay)) && !presentDays.contains(holidayDay)) {
                     absentDays--;
                   }
                 }
@@ -682,8 +737,7 @@ class _HomePageState extends State<HomePage> {
           String monthYearLabel = '$monthActivitiesFromYearName $year';
 
           monthWithYearActivities[monthYearLabel] = [];
-          monthWithYearActivities[monthYearLabel]
-              .addAll(monthActivitiesFromYear[monthActivitiesFromYearName]);
+          monthWithYearActivities[monthYearLabel].addAll(monthActivitiesFromYear[monthActivitiesFromYearName]);
         }
       });
       List iteratableActivityNames = monthWithYearActivities.keys.toList();
@@ -720,8 +774,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void iOSPermission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.requestNotificationPermissions(IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {});
   }
 
@@ -799,8 +852,7 @@ class _HomePageState extends State<HomePage> {
             maxRadius: 54.0,
             minRadius: 20.0,
             fontSize: 20.0,
-            initial:
-                "${widget.firstName != null ? widget.firstName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
+            initial: "${widget.firstName != null ? widget.firstName[0] : ''}${widget.lastName != null ? widget.lastName[0] : ''}",
             avatarUrl: widget.avatarUrl,
           ),
           firstName: widget.firstName ?? '',
@@ -998,8 +1050,7 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     child: AspectRatio(
                                       aspectRatio: 1.0,
-                                      child: Hero(
-                                          tag: this.widget.heroTag ?? '', child: this.widget.child),
+                                      child: Hero(tag: this.widget.heroTag ?? '', child: this.widget.child),
                                     ),
                                   ),
                                 ),
@@ -1027,14 +1078,14 @@ class _HomePageState extends State<HomePage> {
                                               Text(
                                                 '${this.widget.lastName ?? ""}, ${this.widget.firstName ?? ""}',
                                                 style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 18.0,
-                                                    color: Colors.white),
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18.0,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                               otherChildHasUnreadNotif
                                                   ? Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(horizontal: 6.0),
+                                                      padding: EdgeInsets.symmetric(horizontal: 6.0),
                                                       child: Container(
                                                         decoration: BoxDecoration(
                                                           color: Colors.red[600],
@@ -1053,9 +1104,10 @@ class _HomePageState extends State<HomePage> {
                                               Text(
                                                 '􀄥',
                                                 style: TextStyle(
-                                                    fontFamily: 'SFPro',
-                                                    color: Colors.white,
-                                                    fontSize: 9.0),
+                                                  fontFamily: 'SFPro',
+                                                  color: Colors.white,
+                                                  fontSize: 9.0,
+                                                ),
                                               )
                                             ],
                                           ),
@@ -1100,13 +1152,15 @@ class _HomePageState extends State<HomePage> {
                                     margin: EdgeInsets.symmetric(horizontal: 20.0),
                                     padding: EdgeInsets.symmetric(vertical: 12.0),
                                     child: ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                          maxWidth: double.infinity, maxHeight: 90.0),
+                                      constraints: BoxConstraints(maxWidth: double.infinity, maxHeight: 90.0),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [BrandTheme.cardShadow],
-                                            borderRadius: BorderRadius.all(Radius.circular(7.0))),
+                                          color: Colors.white,
+                                          boxShadow: [BrandTheme.cardShadow],
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(7.0),
+                                          ),
+                                        ),
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(vertical: 12.0),
                                           child: Flex(
@@ -1122,10 +1176,7 @@ class _HomePageState extends State<HomePage> {
                                                     children: <Widget>[
                                                       Flex(
                                                         direction: Axis.vertical,
-                                                        mainAxisAlignment: nextPaymentDay != null &&
-                                                                nextPaymentDay != null
-                                                            ? MainAxisAlignment.spaceBetween
-                                                            : MainAxisAlignment.start,
+                                                        mainAxisAlignment: nextPaymentDay != null && nextPaymentDay != null ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
                                                         children: <Widget>[
                                                           Expanded(
                                                             flex: 1,
@@ -1136,47 +1187,45 @@ class _HomePageState extends State<HomePage> {
                                                               maxLines: 2,
                                                               softWrap: true,
                                                               style: TextStyle(
-                                                                  fontSize: 12.0,
-                                                                  fontWeight: FontWeight.w700,
-                                                                  color: Colors.black87),
+                                                                fontSize: 12.0,
+                                                                fontWeight: FontWeight.w700,
+                                                                color: Colors.black87,
+                                                              ),
                                                             ),
                                                           ),
-                                                          nextPaymentDay != null &&
-                                                                  nextPaymentDay != null
+                                                          nextPaymentDay != null && nextPaymentDay != null
                                                               ? Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                                   children: <Widget>[
                                                                     Text(
                                                                       nextPaymentMonth ?? "",
                                                                       style: TextStyle(
-                                                                          color: Colors.black38,
-                                                                          fontSize: 12.0,
-                                                                          fontWeight:
-                                                                              FontWeight.w600),
+                                                                        color: Colors.black38,
+                                                                        fontSize: 12.0,
+                                                                        fontWeight: FontWeight.w600,
+                                                                      ),
                                                                     ),
                                                                     Text(
                                                                       nextPaymentDay ?? "",
                                                                       style: TextStyle(
-                                                                          color: Theme.of(context)
-                                                                              .accentColor,
-                                                                          fontSize: 20.0,
-                                                                          fontWeight:
-                                                                              FontWeight.w600),
+                                                                        color: Theme.of(context).accentColor,
+                                                                        fontSize: 20.0,
+                                                                        fontWeight: FontWeight.w600,
+                                                                      ),
                                                                     ),
                                                                   ],
                                                                 )
                                                               : Expanded(
                                                                   flex: 1,
                                                                   child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment.start,
+                                                                    mainAxisAlignment: MainAxisAlignment.start,
                                                                     children: <Widget>[
                                                                       Text(
                                                                         'Fully paid!',
                                                                         style: TextStyle(
                                                                           color: Colors.green,
                                                                           fontSize: 15.0,
-                                                                          fontWeight:
-                                                                              FontWeight.w600,
+                                                                          fontWeight: FontWeight.w600,
                                                                         ),
                                                                       ),
                                                                     ],
@@ -1203,59 +1252,53 @@ class _HomePageState extends State<HomePage> {
                                                     SingleChildScrollView(
                                                       child: Flex(
                                                         direction: Axis.vertical,
-                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                         children: <Widget>[
                                                           Text(
                                                             'Attendance',
                                                             overflow: TextOverflow.fade,
                                                             style: TextStyle(
-                                                                fontSize: 12.0,
-                                                                fontWeight: FontWeight.w700,
-                                                                color: Colors.black87),
+                                                              fontSize: 12.0,
+                                                              fontWeight: FontWeight.w700,
+                                                              color: Colors.black87,
+                                                            ),
                                                           ),
                                                           Flexible(
                                                             flex: 0,
                                                             child: Padding(
                                                               padding: EdgeInsets.only(top: 8.0),
                                                               child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment.center,
+                                                                mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: <Widget>[
                                                                   attendanceStatus == 'No Class'
                                                                       ? Padding(
-                                                                          padding:
-                                                                              EdgeInsets.symmetric(
+                                                                          padding: EdgeInsets.symmetric(
                                                                             vertical: 4.0,
                                                                           ),
                                                                         )
                                                                       : Container(),
                                                                   Flex(
                                                                     direction: Axis.horizontal,
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment.center,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment.center,
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                                     children: <Widget>[
                                                                       Flexible(
-                                                                          flex: 0,
-                                                                          child: Container(
-                                                                              child:
-                                                                                  attendanceStatusIcon)),
+                                                                        flex: 0,
+                                                                        child: Container(
+                                                                          child: attendanceStatusIcon,
+                                                                        ),
+                                                                      ),
                                                                       Expanded(
                                                                         flex: 0,
                                                                         child: Padding(
-                                                                          padding: EdgeInsets.only(
-                                                                              left: 2.0),
+                                                                          padding: EdgeInsets.only(left: 2.0),
                                                                           child: Text(
                                                                             attendanceStatus,
-                                                                            overflow:
-                                                                                TextOverflow.fade,
+                                                                            overflow: TextOverflow.fade,
                                                                             style: TextStyle(
-                                                                              color:
-                                                                                  attendanceStatusColor,
+                                                                              color: attendanceStatusColor,
                                                                               fontSize: 15.0,
-                                                                              fontWeight:
-                                                                                  FontWeight.w700,
+                                                                              fontWeight: FontWeight.w700,
                                                                             ),
                                                                           ),
                                                                         ),
@@ -1265,13 +1308,12 @@ class _HomePageState extends State<HomePage> {
                                                                   attendanceStatus != 'No Class'
                                                                       ? Text(
                                                                           '$presentDaysNo/${totalSchoolDays.floor()}',
-                                                                          overflow:
-                                                                              TextOverflow.fade,
+                                                                          overflow: TextOverflow.fade,
                                                                           style: TextStyle(
-                                                                              color: Colors.black38,
-                                                                              fontSize: 12.0,
-                                                                              fontWeight:
-                                                                                  FontWeight.w600),
+                                                                            color: Colors.black38,
+                                                                            fontSize: 12.0,
+                                                                            fontWeight: FontWeight.w600,
+                                                                          ),
                                                                         )
                                                                       : Container(),
                                                                 ],
@@ -1296,52 +1338,49 @@ class _HomePageState extends State<HomePage> {
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.spaceBetween,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: <Widget>[
                                                         Text(
                                                           'Next Event',
                                                           style: TextStyle(
-                                                              fontSize: 12.0,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: Colors.black87),
+                                                            fontSize: 12.0,
+                                                            fontWeight: FontWeight.w700,
+                                                            color: Colors.black87,
+                                                          ),
                                                         ),
-                                                        nextEventMonth != null &&
-                                                                nextEventDay != null
+                                                        nextEventMonth != null && nextEventDay != null
                                                             ? Column(
                                                                 children: <Widget>[
                                                                   Text(
                                                                     nextEventMonth ?? '',
                                                                     style: TextStyle(
-                                                                        color: Colors.black38,
-                                                                        fontSize: 12.0,
-                                                                        fontWeight:
-                                                                            FontWeight.w600),
+                                                                      color: Colors.black38,
+                                                                      fontSize: 12.0,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
                                                                   ),
                                                                   Text(
                                                                     nextEventDay ?? '',
                                                                     style: TextStyle(
-                                                                        color: Theme.of(context)
-                                                                            .accentColor,
-                                                                        fontSize: 20.0,
-                                                                        fontWeight:
-                                                                            FontWeight.w600),
+                                                                      color: Theme.of(context).accentColor,
+                                                                      fontSize: 20.0,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
                                                                   ),
                                                                 ],
                                                               )
                                                             : Expanded(
                                                                 flex: 1,
                                                                 child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment.center,
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                                   children: <Widget>[
                                                                     Text(
                                                                       'Stay tuned.',
                                                                       style: TextStyle(
-                                                                          color: Colors.grey[500],
-                                                                          fontSize: 14.0,
-                                                                          fontWeight:
-                                                                              FontWeight.w600),
+                                                                        color: Colors.grey[500],
+                                                                        fontSize: 14.0,
+                                                                        fontWeight: FontWeight.w600,
+                                                                      ),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -1367,15 +1406,21 @@ class _HomePageState extends State<HomePage> {
                                     shrinkWrap: true,
                                     primary: false,
                                     scrollDirection: Axis.vertical,
-                                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 20.0,
+                                      vertical: 10.0,
+                                    ),
                                     children: <Widget>[
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_payments.png',
                                         label: 'Payments',
-                                        cardShadow:
-                                            dynamicCardShadow(Color.fromRGBO(83, 162, 193, .35)),
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                                        cardShadow: dynamicCardShadow(
+                                          Color.fromRGBO(83, 162, 193, .35),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 16.0,
+                                          vertical: 10.0,
+                                        ),
                                         pageBuilder: PaymentHistory(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
@@ -1386,10 +1431,13 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_attendance.png',
                                         label: 'Attendance',
-                                        cardShadow:
-                                            dynamicCardShadow(Color.fromRGBO(6, 140, 92, .35)),
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                        cardShadow: dynamicCardShadow(
+                                          Color.fromRGBO(6, 140, 92, .35),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 16.0,
+                                          vertical: 8.0,
+                                        ),
                                         pageBuilder: Attendance(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
@@ -1410,10 +1458,13 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_grades.png',
                                         label: 'Progress',
-                                        cardShadow:
-                                            dynamicCardShadow(Color.fromRGBO(242, 197, 54, .35)),
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                        cardShadow: dynamicCardShadow(
+                                          Color.fromRGBO(242, 197, 54, .35),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 16.0,
+                                          vertical: 8.0,
+                                        ),
                                         pageBuilder: Grades(
                                           userId: widget.heroTag,
                                           firstName: this.widget.firstName,
@@ -1425,8 +1476,9 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_activities.png',
                                         label: 'Activities',
-                                        cardShadow:
-                                            dynamicCardShadow(Color.fromRGBO(123, 76, 167, .35)),
+                                        cardShadow: dynamicCardShadow(
+                                          Color.fromRGBO(123, 76, 167, .35),
+                                        ),
                                         pageBuilder: Activities(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
@@ -1440,10 +1492,8 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_gallery.png',
                                         label: 'Classroom',
-                                        cardShadow:
-                                            dynamicCardShadow(Color.fromRGBO(219, 69, 58, .35)),
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                        cardShadow: dynamicCardShadow(Color.fromRGBO(219, 69, 58, .35)),
+                                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                         pageBuilder: ActivityGallery(
                                           firstName: this.widget.firstName,
                                           lastName: this.widget.lastName,
@@ -1455,8 +1505,7 @@ class _HomePageState extends State<HomePage> {
                                       MenuItem(
                                         iconPath: 'img/Icons/icon_announcements.png',
                                         label: 'Messages',
-                                        cardShadow:
-                                            dynamicCardShadow(Color.fromRGBO(252, 142, 43, .35)),
+                                        cardShadow: dynamicCardShadow(Color.fromRGBO(252, 142, 43, .35)),
                                         pageBuilder: MessageBoard(
                                           userId: widget.heroTag,
                                           firstName: widget.firstName,
@@ -1480,7 +1529,9 @@ class _HomePageState extends State<HomePage> {
                       margin: EdgeInsets.symmetric(horizontal: 14.0, vertical: 6.0),
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage("img/mywoodbridge.png"), fit: BoxFit.fitWidth),
+                          image: AssetImage("img/mywoodbridge.png"),
+                          fit: BoxFit.fitWidth,
+                        ),
                       ),
                     ),
                     leading: IconButton(
@@ -1532,9 +1583,10 @@ class _HomePageState extends State<HomePage> {
                                     child: Text(
                                       'Select Student',
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 24.0,
-                                          fontWeight: FontWeight.w600),
+                                        color: Colors.white,
+                                        fontSize: 24.0,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
                                   Expanded(
@@ -1554,8 +1606,7 @@ class _HomePageState extends State<HomePage> {
                                               return StudentAvatarPicker(
                                                   userId: '$userId',
                                                   isActive: userId == widget.heroTag,
-                                                  hasUnreadNotif:
-                                                      userIdUnreadStatus[userId] ?? false,
+                                                  hasUnreadNotif: userIdUnreadStatus[userId] ?? false,
                                                   onTap: (
                                                     lname,
                                                     fname,
@@ -1598,18 +1649,18 @@ class _HomePageState extends State<HomePage> {
 }
 
 class MenuItem extends StatelessWidget {
-  MenuItem(
-      {Key key,
-      this.child,
-      this.label,
-      this.iconPath,
-      this.pageBuilder,
-      this.buildContext,
-      this.isCustomOnPressed,
-      this.customOnPressed,
-      this.cardShadow,
-      this.padding})
-      : super(key: key);
+  MenuItem({
+    Key key,
+    this.child,
+    this.label,
+    this.iconPath,
+    this.pageBuilder,
+    this.buildContext,
+    this.isCustomOnPressed,
+    this.customOnPressed,
+    this.cardShadow,
+    this.padding,
+  }) : super(key: key);
 
   final BuildContext buildContext;
   final Widget child;
@@ -1676,9 +1727,12 @@ class MenuItem extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(vertical: 4.0),
               decoration: BoxDecoration(
-                  boxShadow: [cardShadow],
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(7.0))),
+                boxShadow: [cardShadow],
+                color: Colors.white,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(7.0),
+                ),
+              ),
               child: Flex(
                 direction: Axis.vertical,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1688,8 +1742,11 @@ class MenuItem extends StatelessWidget {
                     child: Padding(
                       padding: padding ?? EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
                       child: Container(
-                        decoration:
-                            BoxDecoration(image: DecorationImage(image: AssetImage(iconPath))),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(iconPath),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -1698,9 +1755,10 @@ class MenuItem extends StatelessWidget {
                     child: Text(
                       label,
                       style: TextStyle(
-                          fontSize: 13.0,
-                          fontWeight: FontWeight.w700,
-                          color: Color.fromRGBO(0, 0, 0, .55)),
+                        fontSize: 13.0,
+                        fontWeight: FontWeight.w700,
+                        color: Color.fromRGBO(0, 0, 0, .55),
+                      ),
                     ),
                   ),
                 ],
@@ -1713,8 +1771,9 @@ class MenuItem extends StatelessWidget {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                          color: unreadCount < 0 ? Colors.blueAccent : Colors.red,
-                          borderRadius: BorderRadius.circular(32.0)),
+                        color: unreadCount < 0 ? Colors.blueAccent : Colors.red,
+                        borderRadius: BorderRadius.circular(32.0),
+                      ),
                       constraints: BoxConstraints(
                         minWidth: 17,
                         minHeight: 14,
@@ -1722,7 +1781,10 @@ class MenuItem extends StatelessWidget {
                       child: Text(
                         '${unreadCount < 0 ? '' : unreadCount}',
                         style: TextStyle(
-                            color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600),
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -1897,8 +1959,7 @@ class _Drawer extends StatelessWidget {
                                             Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: <Widget>[
-                                                Icon(Icons.location_on,
-                                                    color: Colors.grey[600], size: 16.0),
+                                                Icon(Icons.location_on, color: Colors.grey[600], size: 16.0),
                                                 Padding(
                                                   padding: EdgeInsets.symmetric(horizontal: 4.0),
                                                 ),
@@ -1908,23 +1969,26 @@ class _Drawer extends StatelessWidget {
                                                     Text(
                                                       "#5 23rd Street, Capitol Subdivision",
                                                       style: TextStyle(
-                                                          fontSize: 14.0,
-                                                          color: Colors.grey[600],
-                                                          fontWeight: FontWeight.w600),
+                                                        fontSize: 14.0,
+                                                        color: Colors.grey[600],
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
                                                     ),
                                                     Text(
                                                       "Bacolod City, Negros Occidental",
                                                       style: TextStyle(
-                                                          fontSize: 14.0,
-                                                          color: Colors.grey[600],
-                                                          fontWeight: FontWeight.w600),
+                                                        fontSize: 14.0,
+                                                        color: Colors.grey[600],
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
                                                     ),
                                                     Text(
                                                       "6100 Philippines",
                                                       style: TextStyle(
-                                                          fontSize: 14.0,
-                                                          color: Colors.grey[600],
-                                                          fontWeight: FontWeight.w600),
+                                                        fontSize: 14.0,
+                                                        color: Colors.grey[600],
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
                                                     )
                                                   ],
                                                 ),
@@ -1938,28 +2002,25 @@ class _Drawer extends StatelessWidget {
                                               children: <Widget>[
                                                 Row(
                                                   children: <Widget>[
-                                                    Icon(Icons.phone,
-                                                        color: Colors.grey[600], size: 16.0),
+                                                    Icon(Icons.phone, color: Colors.grey[600], size: 16.0),
                                                     Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(horizontal: 4.0),
+                                                      padding: EdgeInsets.symmetric(horizontal: 4.0),
                                                     ),
                                                     Text(
                                                       "(+6334) 433-3851",
                                                       style: TextStyle(
-                                                          fontSize: 14.0,
-                                                          color: Colors.grey[600],
-                                                          fontWeight: FontWeight.w600),
+                                                        fontSize: 14.0,
+                                                        color: Colors.grey[600],
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
                                                 Row(
                                                   children: <Widget>[
-                                                    Icon(Icons.email,
-                                                        color: Colors.grey[600], size: 16.0),
+                                                    Icon(Icons.email, color: Colors.grey[600], size: 16.0),
                                                     Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(horizontal: 4.0),
+                                                      padding: EdgeInsets.symmetric(horizontal: 4.0),
                                                     ),
                                                     Text(
                                                       "hello@thewoodbridgeacademy.com",
