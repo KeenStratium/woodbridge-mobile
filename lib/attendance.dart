@@ -44,7 +44,7 @@ class Attendance extends StatefulWidget {
   _AttendanceState createState() => _AttendanceState();
 }
 
-class _AttendanceState extends State<Attendance> with TickerProviderStateMixin {
+class _AttendanceState extends State<Attendance> with SingleTickerProviderStateMixin {
   static DateTime currentDate = DateTime.now();
 
   bool hasInitiated = false;
