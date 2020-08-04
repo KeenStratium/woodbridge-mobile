@@ -14,7 +14,7 @@ description: Woodbridge Mobile Application
 version: 1.6.1+102
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
   flutter:
