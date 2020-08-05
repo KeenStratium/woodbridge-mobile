@@ -21,14 +21,9 @@ Future respondNotification(userId, notifId, notifResponse) async {
 }
 
 void _launchURL(String url) async {
-  String sanitizedUrl = 'https://flutter.dev';
-
-  print(url);
-  print('launching...');
-  print(sanitizedUrl);
+  String sanitizedUrl = url;
 
   if (await canLaunch(sanitizedUrl)) {
-    print('launching $sanitizedUrl');
     await launch(
       sanitizedUrl,
       forceSafariVC: false,
@@ -633,9 +628,6 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
           print(e);
         }
 
-        print('BOARD TITEL');
-        print(message['aa_attachment']);
-
         return Column(
           children: <Widget>[
             pageItemIndex != 0 ? Padding(padding: EdgeInsets.symmetric(vertical: 10.0)) : Container(),
@@ -696,10 +688,6 @@ Future fetchStudentMessages(userId, pageSize, pageNum) async {
         'data': {'page_size': pageSize, 'page_num': pageNum, 's_id': userId}
       }),
       headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
-
-  print(json.encode({
-    'data': {'page_size': pageSize, 'page_num': pageNum, 's_id': userId}
-  }));
 
   return jsonDecode(response.body);
 }

@@ -23,8 +23,20 @@ Future<List> fetchStudentPayments(userId) async {
 }
 
 class Payment {
-  Payment(
-      {this.label, this.amount, this.rawDate, this.paidDate, this.isPaid, this.dueAmount, this.paymentModes, this.paymentSettingId, this.amountDesc, this.paymentType, this.paymentNote, this.checkNo});
+  Payment({
+    this.label,
+    this.amount,
+    this.rawDate,
+    this.paidDate,
+    this.isPaid,
+    this.dueAmount,
+    this.paymentModes,
+    this.paymentSettingId,
+    this.amountDesc,
+    this.paymentType,
+    this.paymentNote,
+    this.checkNo,
+  });
 
   String amount;
   String amountDesc;
