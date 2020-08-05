@@ -286,7 +286,7 @@ class _BoardState extends State<Board> {
                                   decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.amber[400]))),
                                   child: Text(
                                     'How to reschedule',
-                                    style: TextStyle(color: Colors.grey[700], fontWeight: FontWeight.w400, fontSize: 16.0),
+                                    style: TextStyle(color: Color.fromRGBO(113, 89, 21, 1), fontWeight: FontWeight.w500, fontSize: 16.0),
                                   ),
                                 ),
                                 Container(
