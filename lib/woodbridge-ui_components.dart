@@ -517,40 +517,39 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                     height: 2.0,
                   ),
                 ),
-                Flexible(
-                  fit: FlexFit.loose,
+                Expanded(
                   flex: 2,
-                  child: Container(
-                    width: 128.0,
-                    child: Text(
-                      '${fname ?? ''}',
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: widget.isActive ? Colors.white : Colors.black87,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    )
+                  child: Center(
+                    child: Container(
+                        width: 128.0,
+                        child: Text(
+                          '${fname ?? ''}',
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: widget.isActive ? Colors.white : Colors.black87,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        )),
                   ),
                 )
               ],
             ),
           ),
-          widget.hasUnreadNotif ? Positioned(
-            top: 0,
-            right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.red[700],
-                borderRadius: BorderRadius.circular(24.0)
-              ),
-              constraints: BoxConstraints(
-                minWidth: 18,
-                minHeight: 18,
-              ),
-            ),
-          ) : Container()
+          widget.hasUnreadNotif
+              ? Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.red[700], borderRadius: BorderRadius.circular(24.0)),
+                    constraints: BoxConstraints(
+                      minWidth: 18,
+                      minHeight: 18,
+                    ),
+                  ),
+                )
+              : Container()
         ],
       ),
     );
@@ -558,13 +557,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
 }
 
 class InputRadioButton extends StatefulWidget {
-  InputRadioButton({
-    this.radioValue,
-    this.radioValueLabels,
-    this.label,
-    this.direction,
-    this.onChangeCallback
-  });
+  InputRadioButton({this.radioValue, this.radioValueLabels, this.label, this.direction, this.onChangeCallback});
 
   String direction;
   final String label;
