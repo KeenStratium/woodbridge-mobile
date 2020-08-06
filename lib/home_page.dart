@@ -1686,9 +1686,10 @@ class MenuItem extends StatelessWidget {
     label == 'Payments' ? _unreadName = 'payment_due' : null;
 
     if (label == 'Messages') {
-      unreadCount = getModuleUnreadCount('appointment') + getModuleUnreadCount('announcement');
+      unreadCount = getModuleUnreadCount('appointment') + getModuleUnreadCount('announcement') + getModuleUnreadCount('pdf');
       unreadNotifIds.addAll(getModuleUnreadNotifIds('appointment'));
       unreadNotifIds.addAll(getModuleUnreadNotifIds('announcement'));
+      unreadNotifIds.addAll(getModuleUnreadNotifIds('pdf'));
     } else {
       unreadCount = getModuleUnreadCount(_unreadName);
       unreadNotifIds.addAll(getModuleUnreadNotifIds(_unreadName));
