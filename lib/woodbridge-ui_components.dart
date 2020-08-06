@@ -338,8 +338,8 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
       Map student = data[0];
 
       setState(() {
-        fname = 'Vick';
-        lname = 'Reyes';
+        fname = student['s_fname'] ?? null;
+        lname = student['s_lname'] ?? null;
         schoolLevel = student['s_grade_level'];
         classId = student['class_id'];
         gradeLevel = student['s_grade_level'];
@@ -393,15 +393,7 @@ class _StudentAvatarPickerState extends State<StudentAvatarPicker> {
                         ),
                         child: InkWell(
                           onTap: () {
-                            return widget.onTap(
-                              lname,
-                              fname,
-                              schoolLevel,
-                              classId,
-                              gradeLevel,
-                              gradeSection,
-                              avatarUrl,
-                            );
+                            return widget.onTap(lname, fname, schoolLevel, classId, gradeLevel, gradeSection, avatarUrl);
                           },
                           child: Container(
                             decoration: BoxDecoration(
