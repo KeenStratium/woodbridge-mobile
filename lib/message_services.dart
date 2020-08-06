@@ -219,7 +219,9 @@ class _BoardState extends State<Board> {
                 child: Text(
                   capitalize(this.widget.category),
                   style: TextStyle(
-                      color: widget.category.toLowerCase() == 'announcement' ? Color.fromRGBO(212, 153, 83, 1) : Color.fromRGBO(21, 126, 204, .85), fontSize: 15.0, fontWeight: FontWeight.w700),
+                      color: widget.category.toLowerCase() == 'announcement' ? Color.fromRGBO(212, 153, 83, 1) : Color.fromRGBO(21, 126, 204, .85),
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w700),
                 ),
               ),
               Container(
@@ -450,7 +452,8 @@ class _BoardState extends State<Board> {
                                     child: Container(
                                       height: 40.0,
                                       child: FlatButton(
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0)), side: BorderSide(color: Colors.grey[300])),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(Radius.circular(32.0)), side: BorderSide(color: Colors.grey[300])),
                                         splashColor: Colors.grey[300],
                                         highlightColor: Colors.grey[300],
                                         color: Colors.white,
@@ -510,7 +513,8 @@ class _BoardState extends State<Board> {
                                                               width: 40.0,
                                                               height: 40.0,
                                                               decoration: BoxDecoration(
-                                                                gradient: LinearGradient(begin: Alignment.centerRight, end: Alignment.centerLeft, stops: [
+                                                                gradient:
+                                                                    LinearGradient(begin: Alignment.centerRight, end: Alignment.centerLeft, stops: [
                                                                   0.0,
                                                                   1
                                                                 ], colors: [
@@ -524,14 +528,15 @@ class _BoardState extends State<Board> {
                                                             width: 40.0,
                                                             height: 40.0,
                                                             child: ClipRRect(
-                                                              borderRadius: BorderRadius.only(topRight: Radius.circular(50.0), bottomRight: Radius.circular(50.0)),
+                                                              borderRadius: BorderRadius.only(
+                                                                  topRight: Radius.circular(50.0), bottomRight: Radius.circular(50.0)),
                                                               child: Container(
                                                                 padding: EdgeInsets.only(right: 8.0),
                                                                 decoration: BoxDecoration(
                                                                   color: Colors.white,
                                                                 ),
                                                                 child: Icon(
-                                                                  Icons.cloud_download_outlined,
+                                                                  Icons.open_in_new,
                                                                   color: Theme.of(context).primaryColor,
                                                                   semanticLabel: 'Download',
                                                                   size: 20.0,
