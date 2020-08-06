@@ -191,7 +191,11 @@ class _BoardState extends State<Board> {
           child: Text(
             widget.timeStamp,
             textAlign: TextAlign.left,
-            style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600, color: Colors.grey[500]),
+            style: TextStyle(
+              fontSize: 12.0,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[500],
+            ),
           ),
         ),
         Container(
@@ -199,7 +203,9 @@ class _BoardState extends State<Board> {
           margin: EdgeInsets.only(bottom: 10.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(9.0)),
-              boxShadow: [BoxShadow(color: Color.fromRGBO(0, 0, 0, .07), blurRadius: 8.0, offset: Offset(2.0, 1.0), spreadRadius: -2.0)],
+              boxShadow: [
+                BoxShadow(color: Color.fromRGBO(0, 0, 0, .07), blurRadius: 8.0, offset: Offset(2.0, 1.0), spreadRadius: -2.0),
+              ],
               color: Colors.white),
           child: Flex(
             direction: Axis.vertical,
@@ -248,7 +254,13 @@ class _BoardState extends State<Board> {
                                 ),
                               ],
                             ),
-                            decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.only(topRight: Radius.circular(50.0), bottomRight: Radius.circular(50.0))),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[50],
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(50.0),
+                                bottomRight: Radius.circular(50.0),
+                              ),
+                            ),
                             padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 15.0),
                             margin: EdgeInsets.only(bottom: 6.0, top: 12.0),
                           )
@@ -260,14 +272,22 @@ class _BoardState extends State<Board> {
                         children: <Widget>[
                           Text(
                             this.widget.title,
-                            style: TextStyle(fontSize: 17.0, color: Color.fromRGBO(78, 78, 78, 1), fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                              fontSize: 17.0,
+                              color: Color.fromRGBO(78, 78, 78, 1),
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 3.0),
                           ),
                           Text(
                             this.widget.description,
-                            style: TextStyle(fontSize: 16.0, color: Colors.grey[700], fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.w600,
+                            ),
                           )
                         ],
                       ),
@@ -276,7 +296,12 @@ class _BoardState extends State<Board> {
                         ? Container(
                             margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
                             padding: EdgeInsets.only(bottom: 12.0, left: 10.0, right: 10.0),
-                            decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7.0))),
+                            decoration: BoxDecoration(
+                              color: Colors.amber[100],
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(7.0),
+                              ),
+                            ),
                             width: double.infinity,
                             child: Column(
                               children: <Widget>[
