@@ -12,15 +12,7 @@ import 'services.dart';
 
 Future getClassImages(classId, pageSize, pageNum) async {
   String url = '$baseApi/student/get-images-from-class';
-  var response = await http.post(url, body: json.encode({
-    'data': classId,
-    'page_size': pageSize,
-    'page_num': pageNum
-  }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      });
+  var response = await http.post(url, body: json.encode({'data': classId, 'page_size': pageSize, 'page_num': pageNum}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
 
   return jsonDecode(response.body);
 }
@@ -28,12 +20,7 @@ Future getClassImages(classId, pageSize, pageNum) async {
 List<Widget> _photos = <Widget>[];
 
 class PhotoCard extends StatelessWidget {
-  PhotoCard({
-    this.id,
-    this.imgUrl,
-    this.timeStamp,
-    this.caption
-  });
+  PhotoCard({this.id, this.imgUrl, this.timeStamp, this.caption});
 
   final String caption;
   final int id;
@@ -42,11 +29,11 @@ class PhotoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String militaryTime = '${timeStamp.hour}:${timeStamp.minute}'; 
+    final String militaryTime = '${timeStamp.hour}:${timeStamp.minute}';
 
     DateTime now = DateTime.now();
-    int currentEpoch = (now.millisecondsSinceEpoch/1000).floor();
-    var postDateEpoch = (timeStamp.millisecondsSinceEpoch/1000).floor();
+    int currentEpoch = (now.millisecondsSinceEpoch / 1000).floor();
+    var postDateEpoch = (timeStamp.millisecondsSinceEpoch / 1000).floor();
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 10.0),
@@ -59,15 +46,9 @@ class PhotoCard extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 6.0),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(11.0)),
-                 boxShadow: [BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, .2),
-                  blurRadius: 15.0,
-                  offset: Offset(1.0, 3.0),
-                  spreadRadius: -4.0
-                )]
-              ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(11.0)),
+                  boxShadow: [BoxShadow(color: Color.fromRGBO(0, 0, 0, .2), blurRadius: 15.0, offset: Offset(1.0, 3.0), spreadRadius: -4.0)]),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -78,19 +59,11 @@ class PhotoCard extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           epochToHumanTime(currentEpoch - postDateEpoch),
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.grey[700],
-                            fontWeight: FontWeight.w700
-                          ),
+                          style: TextStyle(fontSize: 14.0, color: Colors.grey[700], fontWeight: FontWeight.w700),
                         ),
                         Text(
                           "${timeFormat(this.timeStamp.toString(), "MMMM d")}, ${formatMilitaryTime(militaryTime)}",
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.grey[500],
-                            fontWeight: FontWeight.w700
-                          ),
+                          style: TextStyle(fontSize: 12.0, color: Colors.grey[500], fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
@@ -98,7 +71,7 @@ class PhotoCard extends StatelessWidget {
                   Expanded(
                     flex: 0,
                     child: GestureDetector(
-                       onTap: () {
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -106,11 +79,12 @@ class PhotoCard extends StatelessWidget {
                               imageProvider: CachedNetworkImageProvider(imgUrl),
                               id: this.id,
                               caption: this.caption,
-                            )
-                          ));
+                            ),
+                          ),
+                        );
                       },
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(minHeight: 200.0),
+                        constraints: BoxConstraints(minHeight: 100.0),
                         child: Container(
                           alignment: Alignment(1.0, 1.0),
                           width: double.infinity,
@@ -119,33 +93,21 @@ class PhotoCard extends StatelessWidget {
                           ),
                           child: Hero(
                             tag: this.id,
-                            child:  CachedNetworkImage(
-                              imageUrl: imgUrl,
-                              fit: BoxFit.fitWidth
-                            ),
+                            child: CachedNetworkImage(imageUrl: imgUrl, fit: BoxFit.fitWidth),
                           ),
                         ),
                       ),
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                    child: Hero(
-                      tag: 'caption-${this.id}',
-                      child: Material(
-                        color: Colors.transparent,
-                        child: Text(
-                          this.caption,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black87
-                          )
+                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                      child: Hero(
+                        tag: 'caption-${this.id}',
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Text(this.caption, textAlign: TextAlign.left, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700, color: Colors.black87)),
                         ),
-                      ),
-                    )
-                  ),
+                      )),
                 ],
               ),
             ),
@@ -157,15 +119,15 @@ class PhotoCard extends StatelessWidget {
 }
 
 class HeroPhotoViewWrapper extends StatelessWidget {
-  const HeroPhotoViewWrapper(
-      {this.imageProvider,
-      this.loadingChild,
-      this.backgroundDecoration,
-      this.minScale,
-      this.maxScale,
-      this.caption,
-      this.id,
-      });
+  const HeroPhotoViewWrapper({
+    this.imageProvider,
+    this.loadingChild,
+    this.backgroundDecoration,
+    this.minScale,
+    this.maxScale,
+    this.caption,
+    this.id,
+  });
 
   final Decoration backgroundDecoration;
   final int id;
@@ -182,41 +144,40 @@ class HeroPhotoViewWrapper extends StatelessWidget {
         children: <Widget>[
           Positioned(
             child: Container(
-              constraints: BoxConstraints.expand(
-                height: MediaQuery.of(context).size.height,
-              ),
-              child: PhotoView(
-                imageProvider: imageProvider,
-                // loadingChild: loadingChild,
-                loadingBuilder: (context, progress) => Center(
-                  child: Container(
-                    width: 20.0,
-                    height: 20.0,
-                    child: CircularProgressIndicator(
-                      value: progress == null
-                          ? null
-                          : progress.cumulativeBytesLoaded /
-                              progress.expectedTotalBytes,
-                    ),
-                  ),
+                constraints: BoxConstraints.expand(
+                  height: MediaQuery.of(context).size.height,
                 ),
-                backgroundDecoration: backgroundDecoration,
-                minScale: minScale,
-                maxScale: maxScale,
-                heroAttributes: PhotoViewHeroAttributes(tag: id)
-              )),
+                child: PhotoView(
+                    imageProvider: imageProvider,
+                    // loadingChild: loadingChild,
+                    loadingBuilder: (context, progress) => Center(
+                          child: Container(
+                            width: 20.0,
+                            height: 20.0,
+                            child: CircularProgressIndicator(
+                              value: progress == null ? null : progress.cumulativeBytesLoaded / progress.expectedTotalBytes,
+                            ),
+                          ),
+                        ),
+                    backgroundDecoration: backgroundDecoration,
+                    minScale: minScale,
+                    maxScale: maxScale,
+                    heroAttributes: PhotoViewHeroAttributes(tag: id))),
           ),
           Positioned(
             child: Container(
-              margin: EdgeInsets.only(top: 40.0),
-              child: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white, size: 32.0,),
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ),
+                margin: EdgeInsets.only(top: 40.0),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 32.0,
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )),
           ),
           Positioned(
             bottom: 0.0,
@@ -235,11 +196,7 @@ class HeroPhotoViewWrapper extends StatelessWidget {
                       color: Colors.transparent,
                       child: Text(
                         this.caption,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w400
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),
@@ -254,12 +211,7 @@ class HeroPhotoViewWrapper extends StatelessWidget {
 }
 
 class ActivityGallery extends StatefulWidget {
-  ActivityGallery({
-    this.firstName,
-    this.lastName,
-    this.userId,
-    this.classId
-  });
+  ActivityGallery({this.firstName, this.lastName, this.userId, this.classId});
 
   final String classId;
   final String firstName;
@@ -285,7 +237,7 @@ class _ActivityGalleryState extends State<ActivityGallery> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
 
     _photos = <Widget>[
@@ -301,88 +253,66 @@ class _ActivityGalleryState extends State<ActivityGallery> {
 
     setState(() {
       widget.isLoading = true;
-      fetchClassImages(widget.classId, widget.pageSize, widget.pageNum)
-        .then((resolve) {
-          if(_photos.length == 1 && widget.noMoreImages){
-            _photos.add(Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "No photos yet. We'll let you know if we've got something for you.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey[500]
-                    ),
-                  ),
-                ],
-              ),
-            ));
-          }
-        });
+      fetchClassImages(widget.classId, widget.pageSize, widget.pageNum).then((resolve) {
+        if (_photos.length == 1 && widget.noMoreImages) {
+          _photos.add(Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "No photos yet. We'll let you know if we've got something for you.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.grey[500]),
+                ),
+              ],
+            ),
+          ));
+        }
+      });
     });
 
-
     _scrollController.addListener(() {
-      if(!widget.noMoreImages){
-        if (_scrollController.position.pixels >=
-          (_scrollController.position.maxScrollExtent) - 100) {
-            if(!widget.isLoading){
-              setState(() {
-                _photos.add(
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
-                    margin: EdgeInsets.only(bottom: 20.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                      color: Colors.white
-                    ),
-                    child: Text(
-                      'Fetching more photos...',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16.0
-                      ),
-                    ),
-                  )
-                );
-              });
-              widget.isLoading = true;
-              _loadMore();
-            }
+      if (!widget.noMoreImages) {
+        if (_scrollController.position.pixels >= (_scrollController.position.maxScrollExtent) - 100) {
+          if (!widget.isLoading) {
+            setState(() {
+              _photos.add(Container(
+                padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
+                margin: EdgeInsets.only(bottom: 20.0),
+                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(7.0)), color: Colors.white),
+                child: Text(
+                  'Fetching more photos...',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Theme.of(context).accentColor, fontWeight: FontWeight.w700, fontSize: 16.0),
+                ),
+              ));
+            });
+            widget.isLoading = true;
+            _loadMore();
           }
+        }
       }
     });
   }
 
   Future fetchClassImages(classId, pageSize, num) async {
-    return await getClassImages(classId, pageSize, num)
-      .then((results) {
-        setState(() {
-          if(_photos.length != 1){
-            _photos.removeLast();
+    return await getClassImages(classId, pageSize, num).then((results) {
+      setState(() {
+        if (_photos.length != 1) {
+          _photos.removeLast();
+        }
+        if (results.length == 0) {
+          widget.noMoreImages = true;
+        } else {
+          for (int i = 0; i < results.length; i++) {
+            Map photo = results[i];
+            _photos.add(PhotoCard(id: _photos.length, imgUrl: '$baseServer/${photo['img_url']}', timeStamp: DateTime.parse(photo['date_posted']).toLocal(), caption: photo['caption']));
           }
-          if(results.length == 0){
-            widget.noMoreImages = true;
-          }else{
-            for(int i = 0; i < results.length; i++){
-              Map photo = results[i];
-              _photos.add(PhotoCard(
-                id: _photos.length,
-                imgUrl: '$baseServer/${photo['img_url']}',
-                timeStamp: DateTime.parse(photo['date_posted']).toLocal(),
-                caption: photo['caption']
-              ));
-            }
-          }
-          widget.isLoading = false;
-        });
+        }
+        widget.isLoading = false;
       });
+    });
   }
 
   void _loadMore() {
@@ -399,25 +329,23 @@ class _ActivityGalleryState extends State<ActivityGallery> {
         title: Text('Photos'),
       ),
       body: SafeArea(
-        child: Flex(
-          direction: Axis.vertical,
-          children: <Widget>[
-            Expanded(
+          child: Flex(
+        direction: Axis.vertical,
+        children: <Widget>[
+          Expanded(
               flex: 1,
               child: Container(
                 child: ListView.builder(
                   itemCount: _photos.length,
-                  itemBuilder: (context, i){
+                  itemBuilder: (context, i) {
                     return _photos[i];
                   },
                   controller: _scrollController,
                   shrinkWrap: true,
                 ),
-              )
-            ),
-          ],
-        )
-      ),
+              )),
+        ],
+      )),
     );
   }
 }
