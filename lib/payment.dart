@@ -298,7 +298,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         packageNum = _payment.paymentModes.split(',')[0];
                                       }
 
-                                      if (packageNum == '3') {
+                                      if (packageNum == '3' || packageNum == '3.1') {
                                         isActive = false;
                                         dueDataLabel = '-';
                                       } else {

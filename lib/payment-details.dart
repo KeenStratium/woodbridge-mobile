@@ -179,7 +179,7 @@ class PaymentDetails extends StatelessWidget {
     double manualTuitionFee;
     double manualEnrollmentFee;
     double othersFee;
-    int packageNum;
+    double packageNum;
     List payments;
 
     _kumonPayments = <PaymentDetail>[];
@@ -239,7 +239,7 @@ class PaymentDetails extends StatelessWidget {
                           payments = paymentModes.split(',');
 
                           if (payments[0] != '') {
-                            packageNum = int.parse(payments[0]);
+                            packageNum = double.parse(payments[0]);
                           }
                           if (payments[1] != '') {
                             kumonRegFee = double.parse(payments[1]);
@@ -279,6 +279,8 @@ class PaymentDetails extends StatelessWidget {
                             if (enrollmentFee != null && enrollmentFee != 0.0) {
                               _preSchoolPayments.add(PaymentDetail(label: 'ENROLLMENT FEES', amount: localCurrencyFormat(totalAnnualPackageOneFee), isPaid: paymentDate != 'Unpaid'));
                             }
+                          } else if (packageNum == 3.1) {
+                            _preSchoolPayments.add(PaymentDetail(label: amountDesc.toUpperCase(), amount: localCurrencyFormat(amountDue), isPaid: paymentDate != 'Unpaid'));
                           } else {
                             if (enrollmentFee != null && enrollmentFee != 0.0) {
                               _preSchoolPayments.add(PaymentDetail(label: 'ENROLLMENT FEES', amount: localCurrencyFormat(enrollmentFee), isPaid: paymentDate != 'Unpaid'));
@@ -428,44 +430,45 @@ class PaymentDetails extends StatelessWidget {
                                           children: <Widget>[
                                             Column(
                                               children: <Widget>[
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(vertical: 6.0),
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      Text(
-                                                        'Official Receipt',
-                                                        style: TextStyle(
-                                                          color: Colors.grey[500],
-                                                          fontWeight: FontWeight.w400,
-                                                          fontSize: 14.0,
+                                                if (paymentType['type'] != 'bank' && paymentType['type'] != 'over')
+                                                  Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 6.0),
+                                                    child: Column(
+                                                      children: <Widget>[
+                                                        Text(
+                                                          'Official Receipt',
+                                                          style: TextStyle(
+                                                            color: Colors.grey[500],
+                                                            fontWeight: FontWeight.w400,
+                                                            fontSize: 14.0,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Padding(
-                                                        padding: EdgeInsets.symmetric(vertical: 3.0),
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: <Widget>[
-                                                            Text(
-                                                              '#',
-                                                              style: TextStyle(color: Colors.grey[500]),
-                                                            ),
-                                                            Padding(
-                                                              padding: EdgeInsets.symmetric(horizontal: 1.0),
-                                                            ),
-                                                            Text(
-                                                              '${paymentType['official_receipt']}',
-                                                              style: TextStyle(
-                                                                fontSize: 18.0,
-                                                                fontWeight: FontWeight.w600,
-                                                                color: Colors.black87,
+                                                        Padding(
+                                                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                '#',
+                                                                style: TextStyle(color: Colors.grey[500]),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              Padding(
+                                                                padding: EdgeInsets.symmetric(horizontal: 1.0),
+                                                              ),
+                                                              Text(
+                                                                '${paymentType['official_receipt']}',
+                                                                style: TextStyle(
+                                                                  fontSize: 18.0,
+                                                                  fontWeight: FontWeight.w600,
+                                                                  color: Colors.black87,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
                                                 Padding(
                                                   padding: EdgeInsets.symmetric(vertical: 6.0),
                                                   child: Column(
@@ -481,7 +484,9 @@ class PaymentDetails extends StatelessWidget {
                                                       Padding(
                                                         padding: EdgeInsets.symmetric(vertical: 3.0),
                                                         child: Text(
-                                                          capitalize(paymentType['type']),
+                                                          capitalize(
+                                                            paymentType['type'] == 'over' ? 'Over the Counter' : paymentType['type'] == 'bank' ? 'Bank Transfer' : paymentType['type'],
+                                                          ),
                                                           style: TextStyle(
                                                             fontSize: 18.0,
                                                             fontWeight: FontWeight.w600,
