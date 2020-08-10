@@ -134,7 +134,7 @@ Future<List> getStudentLatestAttendance(userId) async {
 }
 
 Future<List> fetchStudentPayments(userId) async {
-  String url = '$baseApi/pay/get-student-payments';
+  String url = '$baseApi/pay/get-student-payments-mobile';
 
   var response = await http.post(
     url,

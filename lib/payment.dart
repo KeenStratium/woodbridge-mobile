@@ -8,7 +8,7 @@ import 'woodbridge-ui_components.dart';
 import 'payment-details.dart';
 
 Future<List> fetchStudentPayments(userId) async {
-  String url = '$baseApi/pay/get-student-payments';
+  String url = '$baseApi/pay/get-student-payments-mobile';
 
   var response = await http.post(
     url,
