@@ -460,7 +460,13 @@ class _HomePageState extends State<HomePage> {
             if (nextPaymentMonth == null) {
               nextPaymentMonth = monthNames[dueDate.month - 1];
               nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
-              setNextPayment(nextPaymentDay, nextPaymentMonth);
+              String nextPaymentpackageNum;
+
+              if (payment['note'] != null) {
+                nextPaymentpackageNum = payment['note'].split(',')[0];
+              }
+
+              setNextPayment(nextPaymentDay, nextPaymentMonth, nextPaymentpackageNum);
             }
           } else {
             if (payment['amount_paid'] != null) {
@@ -971,6 +977,7 @@ class _HomePageState extends State<HomePage> {
     Map nextPayment = getNextPayment();
     String nextPaymentDay = nextPayment['nextPaymentDay'];
     String nextPaymentMonth = nextPayment['nextPaymentMonth'];
+    String nextPaymentPackageNum = nextPayment['nextPaymentPackageNum'];
     height *= .2;
 
     SystemChrome.setSystemUIOverlayStyle(
@@ -1195,27 +1202,61 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                           ),
                                                           nextPaymentDay != null && nextPaymentDay != null
-                                                              ? Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                  children: <Widget>[
-                                                                    Text(
-                                                                      nextPaymentMonth ?? "",
-                                                                      style: TextStyle(
-                                                                        color: Colors.black38,
-                                                                        fontSize: 12.0,
-                                                                        fontWeight: FontWeight.w600,
-                                                                      ),
-                                                                    ),
-                                                                    Text(
-                                                                      nextPaymentDay ?? "",
-                                                                      style: TextStyle(
-                                                                        color: Theme.of(context).accentColor,
-                                                                        fontSize: 20.0,
-                                                                        fontWeight: FontWeight.w600,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                )
+                                                              ? nextPaymentPackageNum == '3.1' || nextPaymentPackageNum == '3'
+                                                                  ? Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      children: <Widget>[
+                                                                        Padding(
+                                                                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                                                                          child: Row(
+                                                                            children: <Widget>[
+                                                                              Container(
+                                                                                width: 8.0,
+                                                                                height: 1.0,
+                                                                                decoration: BoxDecoration(color: Colors.grey[300]),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                                              ),
+                                                                              Container(
+                                                                                width: 8.0,
+                                                                                height: 1.0,
+                                                                                decoration: BoxDecoration(color: Colors.grey[300]),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                                              ),
+                                                                              Container(
+                                                                                width: 8.0,
+                                                                                height: 1.0,
+                                                                                decoration: BoxDecoration(color: Colors.grey[300]),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    )
+                                                                  : Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      children: <Widget>[
+                                                                        Text(
+                                                                          nextPaymentMonth ?? "",
+                                                                          style: TextStyle(
+                                                                            color: Colors.black38,
+                                                                            fontSize: 12.0,
+                                                                            fontWeight: FontWeight.w600,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          nextPaymentDay ?? "",
+                                                                          style: TextStyle(
+                                                                            color: Theme.of(context).accentColor,
+                                                                            fontSize: 20.0,
+                                                                            fontWeight: FontWeight.w600,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    )
                                                               : Expanded(
                                                                   flex: 1,
                                                                   child: Column(

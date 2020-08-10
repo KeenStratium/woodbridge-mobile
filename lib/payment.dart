@@ -106,7 +106,13 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             if (nextPaymentMonth == null) {
               nextPaymentMonth = monthNames[dueDate.month - 1];
               nextPaymentDay = '${dueDate.day < 10 ? "0" : ""}${dueDate.day}';
-              setNextPayment(nextPaymentDay, nextPaymentMonth);
+              String nextPaymentpackageNum;
+
+              if (payment['note'] != null) {
+                nextPaymentpackageNum = payment['note'].split(',')[0];
+              }
+
+              setNextPayment(nextPaymentDay, nextPaymentMonth, nextPaymentpackageNum);
             }
           } else {
             if (payment['amount_paid'] != null) {
@@ -290,9 +296,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                               children: snapshot.data['payments'] != null
                                   ? (snapshot.data['payments'] as List).map((payment) {
                                       Payment _payment = payment;
-                                      String packageNum;
                                       String dueDataLabel = 'N/A';
                                       bool isActive = false;
+                                      String packageNum;
 
                                       if (_payment.paymentModes != null) {
                                         packageNum = _payment.paymentModes.split(',')[0];

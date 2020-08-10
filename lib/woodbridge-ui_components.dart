@@ -12,6 +12,7 @@ List<Map> _topics = <Map>[];
 Map _moduleUnreadCount = {};
 String _nextPaymentDay;
 String _nextPaymentMonth;
+String _nextPaymentPackageNum;
 
 LinearGradient overflowGradient() {
   return LinearGradient(begin: Alignment.centerRight, end: Alignment.center, stops: [
@@ -24,14 +25,19 @@ LinearGradient overflowGradient() {
 }
 
 Map getNextPayment() {
-  Map nextPayment = {'nextPaymentDay': _nextPaymentDay ?? '', 'nextPaymentMonth': _nextPaymentMonth ?? ''};
+  Map nextPayment = {
+    'nextPaymentDay': _nextPaymentDay ?? '',
+    'nextPaymentMonth': _nextPaymentMonth ?? '',
+    'nextPaymentPackageNum': _nextPaymentPackageNum ?? '',
+  };
 
   return nextPayment;
 }
 
-void setNextPayment(String day, String month) {
+void setNextPayment(String day, String month, String packageNum) {
   _nextPaymentDay = day;
   _nextPaymentMonth = month;
+  _nextPaymentPackageNum = packageNum;
 }
 
 void setModuleUnreadCount(String moduleName, int count, List<int> notifIds) {
