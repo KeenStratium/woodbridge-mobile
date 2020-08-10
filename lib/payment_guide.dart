@@ -38,24 +38,32 @@ class PaymentGuide extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 20.0),
               ),
               Text(
-                "*If your bank asks for account holder information, please enter the following name:",
+                "*If your bank asks for account holder information, please enter the following name and mobile number:",
                 textAlign: TextAlign.start,
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.black87),
               ),
               Text(
-                "ABELIDO, Dominique Jose Y.\n",
+                "ABELIDO, Dominique Jose Y.\n(+639173017147)\n",
                 textAlign: TextAlign.start,
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700, color: Colors.black87),
               ),
               Text(
-                "Send a copy of your deposit slip or screenshot of your payment confirmation to",
+                "Send a copy of your deposit slip or a screenshot of your payment confirmation to",
                 textAlign: TextAlign.start,
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.black87),
               ),
               Text(
-                "payments.woodbridge@gmail.com\n",
+                "payments.woodbridge@gmail.com",
                 textAlign: TextAlign.start,
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700, color: Colors.black87),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
+              ),
+              Text(
+                "Please mare sure that the Date and Timestamp are visible.",
+                textAlign: TextAlign.start,
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.black87),
               ),
             ],
           ),
