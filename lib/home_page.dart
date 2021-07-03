@@ -337,7 +337,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    print('close');
     streamController.close();
     super.dispose();
   }
@@ -384,14 +383,14 @@ class _HomePageState extends State<HomePage> {
     buildStudentPayments(widget.heroTag);
     setStudentsUnreadNotif(widget.userIds);
     _saveUserProfileData();
-
     setAvatarUrl(widget.avatarUrl);
-
-    streamController.stream.listen((data) {
-      setState(() {
-        paymentData = data;
+    if (!streamController.isClosed) {
+      streamController.stream.listen((data) {
+        setState(() {
+          paymentData = data;
+        });
       });
-    });
+    }
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -450,7 +449,7 @@ class _HomePageState extends State<HomePage> {
     return await getStudentUnseenNotifications(userId).then((results) {
       if (results['success']) {
         setAllUnreadCount(results['data']);
-        setState(() {});
+        if (mounted) setState(() {});
       }
     });
   }
@@ -491,7 +490,10 @@ class _HomePageState extends State<HomePage> {
               }
 
               setNextPayment(
-                  nextPaymentDay, nextPaymentMonth, nextPaymentpackageNum);
+                nextPaymentDay,
+                nextPaymentMonth,
+                nextPaymentpackageNum,
+              );
             }
           } else {
             if (payment['amount_paid'] != null) {
@@ -531,12 +533,13 @@ class _HomePageState extends State<HomePage> {
             paymentNote: payment['description']));
       });
     });
-    print('add');
-    streamController.add({
-      'totalPayments': totalPayments,
-      'totalBalance': totalBalance,
-      'payments': payments
-    });
+    if (!streamController.isClosed) {
+      streamController.add({
+        'totalPayments': totalPayments,
+        'totalBalance': totalBalance,
+        'payments': payments
+      });
+    }
     _completer.complete();
     return _completer.future;
   }
@@ -679,7 +682,8 @@ class _HomePageState extends State<HomePage> {
               });
               presentDays.sort((a, b) => a.compareTo(b));
               if (absentDays < 0) absentDays = 0;
-              setState(() {});
+
+              if (mounted) setState(() {});
             });
           });
 
@@ -687,14 +691,16 @@ class _HomePageState extends State<HomePage> {
         });
       }),
       getPresentDaysNo(userId).then((result) {
-        setState(() {
-          presentDaysNo = result['presentDays'];
-        });
+        if (mounted)
+          setState(() {
+            presentDaysNo = result['presentDays'];
+          });
       }),
       getAbsentDays(userId).then((result) {
-        setState(() {
-          pastSchoolDays = result['totalDaysNow'];
-        });
+        if (mounted)
+          setState(() {
+            pastSchoolDays = result['totalDaysNow'];
+          });
       }),
       getSchoolYearInformation().then((results) {
         // TODO: Verify which row to get, or if changes from year to year or new one will be added.
@@ -733,7 +739,7 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    setState(() {});
+    if (mounted) setState(() {});
 
     return Future.value(otherChildHasUnreadNotif);
   }
@@ -812,7 +818,7 @@ class _HomePageState extends State<HomePage> {
         nextEventDay = monthWithYearActivities[activityWithYearNames[0]][0].day;
       } catch (e) {}
 
-      setState(() {});
+      if (mounted) setState(() {});
     });
   }
 
