@@ -1,18 +1,42 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
-List<String> dayNames = <String>['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-List<String> monthNames = <String>['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const List<String> dayNames = <String>[
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
+const List<String> monthNames = <String>[
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
 String localCurrencyFormat(double amount) {
-  return '₱${amount.toStringAsFixed(2)}'.replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+  return '₱${amount.toStringAsFixed(2)}'.replaceAllMapped(
+      new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
 }
 
 String timeFormat(unformattedTime, format) {
   String time;
   DateFormat formatter = DateFormat(format ?? 'MMMM d, yyyy');
 
-  time = unformattedTime != null ? formatter.format(DateTime.parse(unformattedTime).toLocal()) : time = '';
+  time = unformattedTime != null
+      ? formatter.format(DateTime.parse(unformattedTime).toLocal())
+      : time = '';
 
   return time;
 }
@@ -38,9 +62,11 @@ String formatMilitaryTime(time) {
   return '$hourStr:$minuteStr$meridiem';
 }
 
-String capitalize(String s) => s.length > 0 ? s[0].toUpperCase() + s.substring(1) : '';
+String capitalize(String s) =>
+    s.length > 0 ? s[0].toUpperCase() + s.substring(1) : '';
 
-List<List<Widget>> transformPaginationListCache(list, pageSize, offsetPage, callback) {
+List<List<Widget>> transformPaginationListCache(
+    list, pageSize, offsetPage, callback) {
   List<List<Widget>> paginatedList = <List<Widget>>[];
   for (int i = 0, n = 0; i < offsetPage; i++) {
     List<Widget> pageList = <Widget>[];
@@ -85,6 +111,7 @@ String epochToHumanTime(epoch) {
   majorTimePhrase = "$majorTime$majorTimeUnit${majorTime > 1 ? 's' : ''}";
   minorTimePhrase = "$minorTime$minorTimeUnit${minorTime > 1 ? 's' : ''}";
 
-  sentence = "$majorTimePhrase${i > 0 ? ' ' : ''}${i == 0 ? ' ' : ''}${minorTime == 0 ? '' : i == 0 ? '' : minorTimePhrase + ' '}ago";
+  sentence =
+      "$majorTimePhrase${i > 0 ? ' ' : ''}${i == 0 ? ' ' : ''}${minorTime == 0 ? '' : i == 0 ? '' : minorTimePhrase + ' '}ago";
   return sentence;
 }

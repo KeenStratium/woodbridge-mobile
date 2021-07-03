@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/material.dart';
 import 'services.dart';
+import 'i18n.dart';
 
 Future respondNotification(userId, notifId, notifResponse) async {
   String url = '$baseApi/notif/respond-student-notif';
@@ -14,7 +15,10 @@ Future respondNotification(userId, notifId, notifResponse) async {
       body: json.encode({
         'data': {'notif_id': notifId, 'response': notifResponse, 's_id': userId}
       }),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
 
   return jsonDecode(response.body);
 }
@@ -90,7 +94,9 @@ class _ResponseButtonState extends State<ResponseButton> {
       child: InkWell(
         onTap: widget.onTap,
         child: FlatButton(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0)), side: BorderSide(color: borderColor)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              side: BorderSide(color: borderColor)),
           splashColor: borderColor,
           highlightColor: borderColor,
           color: buttonColor,
@@ -104,7 +110,10 @@ class _ResponseButtonState extends State<ResponseButton> {
               ),
               Text(
                 widget.label,
-                style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w700, color: labelColor),
+                style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w700,
+                    color: labelColor),
               ),
             ],
           ),
@@ -203,7 +212,11 @@ class _BoardState extends State<Board> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(9.0)),
               boxShadow: [
-                BoxShadow(color: Color.fromRGBO(0, 0, 0, .07), blurRadius: 8.0, offset: Offset(2.0, 1.0), spreadRadius: -2.0),
+                BoxShadow(
+                    color: Color.fromRGBO(0, 0, 0, .07),
+                    blurRadius: 8.0,
+                    offset: Offset(2.0, 1.0),
+                    spreadRadius: -2.0),
               ],
               color: Colors.white),
           child: Flex(
@@ -213,13 +226,19 @@ class _BoardState extends State<Board> {
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(9.0), topRight: Radius.circular(9.0)),
-                  color: widget.category.toLowerCase() == 'announcement' ? Color.fromRGBO(212, 153, 83, .08) : Color.fromRGBO(21, 126, 204, .1),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(9.0),
+                      topRight: Radius.circular(9.0)),
+                  color: widget.category.toLowerCase() == 'announcement'
+                      ? Color.fromRGBO(212, 153, 83, .08)
+                      : Color.fromRGBO(21, 126, 204, .1),
                 ),
                 child: Text(
                   capitalize(this.widget.category),
                   style: TextStyle(
-                      color: widget.category.toLowerCase() == 'announcement' ? Color.fromRGBO(212, 153, 83, 1) : Color.fromRGBO(21, 126, 204, .85),
+                      color: widget.category.toLowerCase() == 'announcement'
+                          ? Color.fromRGBO(212, 153, 83, 1)
+                          : Color.fromRGBO(21, 126, 204, .85),
                       fontSize: 15.0,
                       fontWeight: FontWeight.w700),
                 ),
@@ -239,19 +258,27 @@ class _BoardState extends State<Board> {
                               children: <Widget>[
                                 Text(
                                   '${dateFormatted}',
-                                  style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey[600], fontSize: 14.0),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.grey[600],
+                                      fontSize: 14.0),
                                 ),
                                 widget.time != null
                                     ? Container(
                                         width: 1.0,
                                         height: 10.0,
-                                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                                        decoration: BoxDecoration(color: Colors.grey[300]),
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[300]),
                                       )
                                     : Container(),
                                 Text(
                                   "${timeFormatted ?? ''}",
-                                  style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey[600], fontSize: 14.0),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.grey[600],
+                                      fontSize: 14.0),
                                 ),
                               ],
                             ),
@@ -262,12 +289,14 @@ class _BoardState extends State<Board> {
                                 bottomRight: Radius.circular(50.0),
                               ),
                             ),
-                            padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 15.0),
+                            padding: EdgeInsets.only(
+                                left: 20.0, top: 8.0, bottom: 8.0, right: 15.0),
                             margin: EdgeInsets.only(bottom: 6.0, top: 12.0),
                           )
                         : Container(),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -295,8 +324,10 @@ class _BoardState extends State<Board> {
                     ),
                     widget.activeType == 3
                         ? Container(
-                            margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-                            padding: EdgeInsets.only(bottom: 12.0, left: 10.0, right: 10.0),
+                            margin: EdgeInsets.symmetric(
+                                vertical: 16.0, horizontal: 20.0),
+                            padding: EdgeInsets.only(
+                                bottom: 12.0, left: 10.0, right: 10.0),
                             decoration: BoxDecoration(
                               color: Colors.amber[100],
                               borderRadius: BorderRadius.all(
@@ -307,19 +338,30 @@ class _BoardState extends State<Board> {
                             child: Column(
                               children: <Widget>[
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.0, vertical: 12.0),
                                   width: double.infinity,
-                                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.amber[400]))),
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                              color: Colors.amber[400]))),
                                   child: Text(
                                     'How to reschedule',
-                                    style: TextStyle(color: Color.fromRGBO(113, 89, 21, 1), fontWeight: FontWeight.w500, fontSize: 16.0),
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(113, 89, 21, 1),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16.0),
                                   ),
                                 ),
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.0, vertical: 12.0),
                                   child: Text(
-                                    "Please contact (433-3851) or go to the admin office to reschedule with your preferred time and choose a response here accordingly afterwards.",
-                                    style: TextStyle(color: Colors.grey[700], fontSize: 16.0, fontWeight: FontWeight.w700),
+                                    'Please contact ${Labels.phoneNum} or go to the admin office to reschedule with your preferred time and choose a response here accordingly afterwards.',
+                                    style: TextStyle(
+                                        color: Colors.grey[700],
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w700),
                                   ),
                                 ),
                               ],
@@ -338,10 +380,13 @@ class _BoardState extends State<Board> {
                                   children: <Widget>[
                                     Text(
                                       'I am',
-                                      style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w700),
+                                      style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontWeight: FontWeight.w700),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 4.0),
                                     ),
                                     Expanded(
                                       child: Container(
@@ -360,8 +405,10 @@ class _BoardState extends State<Board> {
                                         type: 1,
                                         isActive: widget.activeType == 1,
                                         onTap: () {
-                                          respondNotification(widget.userId, widget.notifId, 'Going');
-                                          Timer(Duration(milliseconds: 145), () {
+                                          respondNotification(widget.userId,
+                                              widget.notifId, 'Going');
+                                          Timer(Duration(milliseconds: 145),
+                                              () {
                                             setState(() {
                                               widget.activeType = 1;
                                             });
@@ -369,11 +416,13 @@ class _BoardState extends State<Board> {
                                         },
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 2.0),
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 2.0),
                                       ),
                                       Flex(
                                         direction: Axis.horizontal,
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: <Widget>[
                                           Expanded(
                                             child: ResponseButton(
@@ -381,8 +430,13 @@ class _BoardState extends State<Board> {
                                               type: 2,
                                               isActive: widget.activeType == 2,
                                               onTap: () {
-                                                respondNotification(widget.userId, widget.notifId, 'Not going');
-                                                Timer(Duration(milliseconds: 145), () {
+                                                respondNotification(
+                                                    widget.userId,
+                                                    widget.notifId,
+                                                    'Not going');
+                                                Timer(
+                                                    Duration(milliseconds: 145),
+                                                    () {
                                                   setState(() {
                                                     widget.activeType = 2;
                                                   });
@@ -391,7 +445,8 @@ class _BoardState extends State<Board> {
                                             ),
                                           ),
                                           Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 4.0),
                                           ),
                                           Expanded(
                                             child: ResponseButton(
@@ -399,8 +454,13 @@ class _BoardState extends State<Board> {
                                               type: 3,
                                               isActive: widget.activeType == 3,
                                               onTap: () {
-                                                respondNotification(widget.userId, widget.notifId, 'Reschedule');
-                                                Timer(Duration(milliseconds: 145), () {
+                                                respondNotification(
+                                                    widget.userId,
+                                                    widget.notifId,
+                                                    'Reschedule');
+                                                Timer(
+                                                    Duration(milliseconds: 145),
+                                                    () {
                                                   setState(() {
                                                     widget.activeType = 3;
                                                   });
@@ -417,7 +477,8 @@ class _BoardState extends State<Board> {
                             ),
                           )
                         : Container(),
-                    if (widget.attachmentUrl != '' && widget.attachmentUrl != null)
+                    if (widget.attachmentUrl != '' &&
+                        widget.attachmentUrl != null)
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 20.0),
                         padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
@@ -429,10 +490,13 @@ class _BoardState extends State<Board> {
                               children: <Widget>[
                                 Text(
                                   'Attachment',
-                                  style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w700),
+                                  style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontWeight: FontWeight.w700),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 4.0),
                                 ),
                                 Expanded(
                                   child: Container(
@@ -453,7 +517,10 @@ class _BoardState extends State<Board> {
                                       height: 40.0,
                                       child: FlatButton(
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(32.0)), side: BorderSide(color: Colors.grey[300])),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(32.0)),
+                                            side: BorderSide(
+                                                color: Colors.grey[300])),
                                         splashColor: Colors.grey[300],
                                         highlightColor: Colors.grey[300],
                                         color: Colors.white,
@@ -463,18 +530,28 @@ class _BoardState extends State<Board> {
                                         },
                                         child: Flex(
                                           direction: Axis.horizontal,
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: <Widget>[
                                             Container(
                                               width: 40.0,
                                               height: 40.0,
                                               child: ClipRRect(
-                                                borderRadius: BorderRadius.only(topLeft: Radius.circular(50.0), bottomLeft: Radius.circular(50.0)),
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(50.0),
+                                                    bottomLeft:
+                                                        Radius.circular(50.0)),
                                                 child: Container(
-                                                  padding: EdgeInsets.only(left: 7.0),
+                                                  padding: EdgeInsets.only(
+                                                      left: 7.0),
                                                   decoration: BoxDecoration(
                                                     color: Colors.grey[100],
-                                                    border: Border(right: BorderSide(width: 1.0, color: Colors.grey[300])),
+                                                    border: Border(
+                                                        right: BorderSide(
+                                                            width: 1.0,
+                                                            color: Colors
+                                                                .grey[300])),
                                                   ),
                                                   child: Icon(
                                                     Icons.description,
@@ -491,14 +568,27 @@ class _BoardState extends State<Board> {
                                                 child: Stack(
                                                   children: <Widget>[
                                                     SingleChildScrollView(
-                                                      scrollDirection: Axis.horizontal,
+                                                      scrollDirection:
+                                                          Axis.horizontal,
                                                       child: Container(
-                                                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal:
+                                                                    10.0),
                                                         child: Center(
                                                           child: Text(
-                                                            widget.attachmentName ?? 'Download file',
-                                                            overflow: TextOverflow.fade,
-                                                            style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.grey[600]),
+                                                            widget.attachmentName ??
+                                                                'Download file',
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .fade,
+                                                            style: TextStyle(
+                                                                fontSize: 14.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: Colors
+                                                                    .grey[600]),
                                                           ),
                                                         ),
                                                       ),
@@ -512,15 +602,26 @@ class _BoardState extends State<Board> {
                                                             child: Container(
                                                               width: 40.0,
                                                               height: 40.0,
-                                                              decoration: BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(begin: Alignment.centerRight, end: Alignment.centerLeft, stops: [
-                                                                  0.0,
-                                                                  1
-                                                                ], colors: [
-                                                                  Colors.white,
-                                                                  Color.fromRGBO(255, 255, 255, 0),
-                                                                ]),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                gradient: LinearGradient(
+                                                                    begin: Alignment
+                                                                        .centerRight,
+                                                                    end: Alignment
+                                                                        .centerLeft,
+                                                                    stops: [
+                                                                      0.0,
+                                                                      1
+                                                                    ],
+                                                                    colors: [
+                                                                      Colors
+                                                                          .white,
+                                                                      Color.fromRGBO(
+                                                                          255,
+                                                                          255,
+                                                                          255,
+                                                                          0),
+                                                                    ]),
                                                               ),
                                                             ),
                                                           ),
@@ -529,16 +630,30 @@ class _BoardState extends State<Board> {
                                                             height: 40.0,
                                                             child: ClipRRect(
                                                               borderRadius: BorderRadius.only(
-                                                                  topRight: Radius.circular(50.0), bottomRight: Radius.circular(50.0)),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          50.0),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          50.0)),
                                                               child: Container(
-                                                                padding: EdgeInsets.only(right: 8.0),
-                                                                decoration: BoxDecoration(
-                                                                  color: Colors.white,
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        right:
+                                                                            8.0),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: Colors
+                                                                      .white,
                                                                 ),
                                                                 child: Icon(
-                                                                  Icons.open_in_new,
-                                                                  color: Theme.of(context).primaryColor,
-                                                                  semanticLabel: 'Download',
+                                                                  Icons
+                                                                      .open_in_new,
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .primaryColor,
+                                                                  semanticLabel:
+                                                                      'Download',
                                                                   size: 20.0,
                                                                 ),
                                                               ),
@@ -577,14 +692,17 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
   int offsetPage = 2;
   int offsetPageSize = pageSize * offsetPage;
   List<String> responseActions = ['Going', 'Not going', 'Reschedule'];
-  return await fetchStudentMessages(userId, offsetPageSize, pageNum).then((result) {
+  return await fetchStudentMessages(userId, offsetPageSize, pageNum)
+      .then((result) {
     List<List<Widget>> _messages = <List<Widget>>[];
     List _studentNotifications;
     List<DateTime> _timeStampDays = <DateTime>[];
     bool isSuccess = result['success'] ?? false;
     if (isSuccess) {
       _studentNotifications = result['data'];
-      _messages = transformPaginationListCache(_studentNotifications, pageSize, offsetPage, (item, page, pageItemIndex, index) {
+      _messages = transformPaginationListCache(
+          _studentNotifications, pageSize, offsetPage,
+          (item, page, pageItemIndex, index) {
         Map message = item;
         DateTime eventDate;
         DateTime timeStamp;
@@ -614,8 +732,10 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
           }
 
           timeStamp = DateTime.parse(message['notif_timestamp']).toLocal();
-          timeStampHourMinute = formatMilitaryTime('${timeStamp.hour}:${timeStamp.minute}');
-          timeStampDay = DateTime.utc(timeStamp.year, timeStamp.month, timeStamp.day);
+          timeStampHourMinute =
+              formatMilitaryTime('${timeStamp.hour}:${timeStamp.minute}');
+          timeStampDay =
+              DateTime.utc(timeStamp.year, timeStamp.month, timeStamp.day);
 
           _timeStampDays.add(timeStampDay);
 
@@ -624,7 +744,8 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
           day = _timeStampDays[index].day.toString();
 
           if (pageItemIndex > 0) {
-            if (_timeStampDays[index].isAtSameMomentAs(_timeStampDays[index - 1])) {
+            if (_timeStampDays[index]
+                .isAtSameMomentAs(_timeStampDays[index - 1])) {
               isSameDay = true;
             }
           }
@@ -659,11 +780,14 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
 
         return Column(
           children: <Widget>[
-            pageItemIndex != 0 ? Padding(padding: EdgeInsets.symmetric(vertical: 10.0)) : Container(),
+            pageItemIndex != 0
+                ? Padding(padding: EdgeInsets.symmetric(vertical: 10.0))
+                : Container(),
             isSameDay
                 ? Container()
                 : Container(
-                    margin: EdgeInsets.only(top: pageItemIndex != 0 ? 40.0 : 0.0, left: 20.0),
+                    margin: EdgeInsets.only(
+                        top: pageItemIndex != 0 ? 40.0 : 0.0, left: 20.0),
                     width: double.infinity,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -677,7 +801,10 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
                           padding: EdgeInsets.symmetric(vertical: 20.0),
                           child: Text(
                             '$dayName, $month $day',
-                            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+                            style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey[700]),
                           ),
                         ),
                       ],
@@ -702,7 +829,8 @@ Future buildMessageList(userId, pageSize, pageNum, hasIniated) async {
         );
       });
     } else {
-      return Text('Something went wrong getting you updated. Please try again.');
+      return Text(
+          'Something went wrong getting you updated. Please try again.');
     }
 
     return {'messages': _messages};
@@ -716,7 +844,10 @@ Future fetchStudentMessages(userId, pageSize, pageNum) async {
       body: json.encode({
         'data': {'page_size': pageSize, 'page_num': pageNum, 's_id': userId}
       }),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'});
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
 
   return jsonDecode(response.body);
 }

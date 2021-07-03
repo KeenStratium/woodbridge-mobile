@@ -23,6 +23,7 @@ import 'login.dart';
 import 'message_board.dart';
 import 'about_us.dart';
 import 'privacy_policy.dart';
+import 'i18n.dart';
 
 double totalBalance = 0.00;
 double totalPayments = 0.00;
@@ -2317,7 +2318,7 @@ class _Drawer extends StatelessWidget {
                                                               horizontal: 4.0),
                                                     ),
                                                     Text(
-                                                      "(+6334) 433-3851",
+                                                      Labels.phoneNum,
                                                       style: TextStyle(
                                                         fontSize: 14.0,
                                                         color: Colors.grey[600],
