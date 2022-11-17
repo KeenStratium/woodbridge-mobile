@@ -99,13 +99,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
           dueDate = DateTime.parse(payment['due_date']).toLocal();
         }
         String paymentDate = 'Unpaid';
-        double dueAmount =
-            payment['due_amount'] != null ? payment['due_amount'] + 0.00 : 0.00;
+        double dueAmount = payment['due_amount'] != null ? payment['due_amount'] + 0.00 : 0.00;
+
+        print(dueDate);
 
         try {
-          amount = payment['amount_paid'] != null
-              ? payment['amount_paid'].toString()
-              : 'N/A';
+          amount = payment['amount_paid'] != null ? payment['amount_paid'].toString() : 'N/A';
           if (amount == 'N/A' || amount == null || amount == '0') {
             totalBalance += payment['due_amount'];
             if (nextPaymentMonth == null) {
@@ -147,9 +146,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
         try {
           payments.add(
             Payment(
-              label: dueDate != null
-                  ? timeFormat(dueDate.toString(), 'MMM dd y')
-                  : '',
+              label: dueDate != null ? timeFormat(dueDate.toString(), 'MMM dd y') : '',
               amount: amount,
               dueAmount: dueAmount,
               rawDate: dueDate,
@@ -199,8 +196,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             FutureBuilder(
               future: buildStudentPayments(widget.userId),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.data != null) {
+                if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
                   return Expanded(
                     child: SingleChildScrollView(
                       child: Padding(
@@ -209,43 +205,34 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                           direction: Axis.vertical,
                           children: <Widget>[
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: Flex(
                                 direction: Axis.horizontal,
                                 children: <Widget>[
                                   Expanded(
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
                                         DashboardTile(
                                           label: 'Total Payments',
                                           displayPlainValue: true,
-                                          value:
-                                              snapshot.data['totalPayments'] !=
-                                                      null
-                                                  ? localCurrencyFormat(snapshot
-                                                      .data['totalPayments'])
-                                                  : "0.00",
+                                          value: snapshot.data['totalPayments'] != null
+                                              ? localCurrencyFormat(snapshot.data['totalPayments'])
+                                              : "0.00",
                                         ),
                                       ],
                                     ),
                                   ),
                                   Expanded(
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         DashboardTile(
                                           label: 'Total Balance',
                                           displayPlainValue: true,
-                                          value: snapshot
-                                                      .data['totalBalance'] !=
-                                                  null
-                                              ? localCurrencyFormat(
-                                                  snapshot.data['totalBalance'])
+                                          value: snapshot.data['totalBalance'] != null
+                                              ? localCurrencyFormat(snapshot.data['totalBalance'])
                                               : "0.00",
                                           color: Color(0xFFDA4453),
                                         )
@@ -266,14 +253,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                               ),
                               child: Flex(
                                 direction: Axis.horizontal,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Expanded(
                                     flex: 1,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           'Due Date',
@@ -290,8 +275,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                   Expanded(
                                     flex: 1,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Text(
                                           'Amount Due',
@@ -308,8 +292,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                   Expanded(
                                     flex: 1,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
                                       children: <Widget>[
                                         Text(
                                           'Payment Date',
@@ -330,34 +313,33 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
                               children: snapshot.data['payments'] != null
-                                  ? (snapshot.data['payments'] as List)
-                                      .map((payment) {
+                                  ? (snapshot.data['payments'] as List).map((payment) {
                                       Payment _payment = payment;
                                       String dueDataLabel = 'N/A';
                                       bool isActive = false;
                                       String packageNum;
 
                                       if (_payment.paymentModes != null) {
-                                        packageNum =
-                                            _payment.paymentModes.split(',')[0];
+                                        packageNum = _payment.paymentModes.split(',')[0];
                                       }
 
-                                      if (packageNum == '3' ||
-                                          packageNum == '3.1') {
-                                        isActive = false;
-                                        dueDataLabel = '-';
-                                      } else {
-                                        isActive = true;
-                                        dueDataLabel = payment.label;
-                                      }
+                                      // if (packageNum == '3.1') {
+                                      //   isActive = false;
+                                      //   dueDataLabel = '-';
+                                      // } else {
+                                      //   isActive = true;
+                                      //   dueDataLabel = payment.label;
+                                      // }
+
+                                      isActive = true;
+                                      dueDataLabel = payment.label;
 
                                       return Material(
                                         color: Colors.white,
                                         child: InkWell(
                                           onTap: () {
                                             Route route = MaterialPageRoute(
-                                              builder: (buildContext) =>
-                                                  PaymentDetails(
+                                              builder: (buildContext) => PaymentDetails(
                                                 userId: widget.userId,
                                                 firstName: widget.firstName,
                                                 lastName: widget.lastName,
@@ -375,11 +357,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                 ),
                                               ),
                                             ),
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 16.0),
+                                            padding: EdgeInsets.symmetric(vertical: 16.0),
                                             child: Flex(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                                               direction: Axis.horizontal,
                                               children: <Widget>[
                                                 Expanded(
@@ -390,8 +370,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                         : TextAlign.center,
                                                     style: TextStyle(
                                                       fontSize: 14.0,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                      fontWeight: FontWeight.w600,
                                                       color: isActive
                                                           ? Colors.black87
                                                           : Colors.black38,
@@ -402,14 +381,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                 Expanded(
                                                   child: Text(
                                                     payment.dueAmount != null
-                                                        ? localCurrencyFormat(
-                                                            payment.dueAmount)
+                                                        ? localCurrencyFormat(payment.dueAmount)
                                                         : 'N/A',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontSize: 14.0,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                      fontWeight: FontWeight.w600,
                                                       color: Colors.black87,
                                                     ),
                                                   ),
@@ -417,40 +394,28 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                 ),
                                                 Expanded(
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
+                                                    mainAxisAlignment: MainAxisAlignment.end,
                                                     children: <Widget>[
                                                       Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    5.0),
+                                                        padding: const EdgeInsets.symmetric(
+                                                            horizontal: 5.0),
                                                         child: Text(
-                                                          payment.paidDate ??
-                                                              'Unpaid',
-                                                          textAlign:
-                                                              TextAlign.right,
+                                                          payment.paidDate ?? 'Unpaid',
+                                                          textAlign: TextAlign.right,
                                                           style: TextStyle(
                                                             fontSize: 14.0,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: payment
-                                                                        .paidDate ==
-                                                                    'Unpaid'
+                                                            fontWeight: FontWeight.w600,
+                                                            color: payment.paidDate == 'Unpaid'
                                                                 ? Colors.black38
-                                                                : Colors
-                                                                    .black87,
+                                                                : Colors.black87,
                                                           ),
                                                         ),
                                                       ),
                                                       Icon(
                                                         Icons.info_outline,
                                                         size: 16.0,
-                                                        semanticLabel:
-                                                            'View payment details',
-                                                        color: Theme.of(context)
-                                                            .accentColor,
+                                                        semanticLabel: 'View payment details',
+                                                        color: Theme.of(context).accentColor,
                                                       ),
                                                     ],
                                                   ),

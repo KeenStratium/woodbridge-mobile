@@ -63,7 +63,9 @@ class PaymentDataView extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Padding(
-            padding: this.title != '' ? EdgeInsets.symmetric(vertical: 10.0) : EdgeInsets.symmetric(vertical: 0.0),
+            padding: this.title != ''
+                ? EdgeInsets.symmetric(vertical: 10.0)
+                : EdgeInsets.symmetric(vertical: 0.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -225,13 +227,15 @@ class PaymentDetails extends StatelessWidget {
                         this.date = payment.label;
                         this.paymentModes = payment.paymentModes;
                         this.amountDesc = payment.amountDesc;
-                        this.amountPaid = payment.amount != 'N/A' ? double.parse(payment.amount) : null;
+                        this.amountPaid =
+                            payment.amount != 'N/A' ? double.parse(payment.amount) : null;
                         this.enrollmentFee = totalAnnualFee - totalTuitionFee;
                         this.tuitionFee = settings['tuition_fee'] + 0.00;
                         this.paymentDate = payment.paidDate ?? 'Unpaid';
                         this.paymentType = paymentMetaInfo;
                         this.amountDue = payment.dueAmount;
-                        this.totalAnnualPackageOneFee = totalAnnualFee - (totalAnnualFee * settings['discount']);
+                        this.totalAnnualPackageOneFee =
+                            totalAnnualFee - (totalAnnualFee * settings['discount']);
                         this.paymentNote = payment.paymentNote;
                         this.installment = installment;
 
@@ -277,30 +281,54 @@ class PaymentDetails extends StatelessWidget {
 
                           if (packageNum == 1) {
                             if (enrollmentFee != null && enrollmentFee != 0.0) {
-                              _preSchoolPayments.add(PaymentDetail(label: 'ENROLLMENT FEES', amount: localCurrencyFormat(totalAnnualPackageOneFee), isPaid: paymentDate != 'Unpaid'));
+                              _preSchoolPayments.add(PaymentDetail(
+                                  label: 'ENROLLMENT FEES',
+                                  amount: localCurrencyFormat(totalAnnualPackageOneFee),
+                                  isPaid: paymentDate != 'Unpaid'));
                             }
                           } else if (packageNum == 3.1) {
-                            _preSchoolPayments.add(PaymentDetail(label: amountDesc.toUpperCase(), amount: localCurrencyFormat(amountDue), isPaid: paymentDate != 'Unpaid'));
+                            _preSchoolPayments.add(PaymentDetail(
+                                label: amountDesc.toUpperCase(),
+                                amount: localCurrencyFormat(amountDue),
+                                isPaid: paymentDate != 'Unpaid'));
                           } else {
                             if (enrollmentFee != null && enrollmentFee != 0.0) {
-                              _preSchoolPayments.add(PaymentDetail(label: 'ENROLLMENT FEES', amount: localCurrencyFormat(enrollmentFee), isPaid: paymentDate != 'Unpaid'));
+                              _preSchoolPayments.add(PaymentDetail(
+                                  label: 'ENROLLMENT FEES',
+                                  amount: localCurrencyFormat(enrollmentFee),
+                                  isPaid: paymentDate != 'Unpaid'));
                             }
                             if (tuitionFee != null && tuitionFee != 0.0) {
-                              _preSchoolPayments.add(PaymentDetail(label: 'TUITION FEE', amount: localCurrencyFormat(tuitionFee), isPaid: paymentDate != 'Unpaid'));
+                              _preSchoolPayments.add(PaymentDetail(
+                                  label: 'TUITION FEE',
+                                  amount: localCurrencyFormat(tuitionFee),
+                                  isPaid: paymentDate != 'Unpaid'));
                             }
                           }
 
                           if (mathFee != null && mathFee != 0.0) {
-                            _kumonPayments.add(PaymentDetail(label: 'MATH', amount: localCurrencyFormat(mathFee), isPaid: paymentDate != 'Unpaid'));
+                            _kumonPayments.add(PaymentDetail(
+                                label: 'MATH',
+                                amount: localCurrencyFormat(mathFee),
+                                isPaid: paymentDate != 'Unpaid'));
                           }
                           if (readingFee != null && readingFee != 0.0) {
-                            _kumonPayments.add(PaymentDetail(label: 'READING', amount: localCurrencyFormat(readingFee), isPaid: paymentDate != 'Unpaid'));
+                            _kumonPayments.add(PaymentDetail(
+                                label: 'READING',
+                                amount: localCurrencyFormat(readingFee),
+                                isPaid: paymentDate != 'Unpaid'));
                           }
                           if (kumonRegFee != null && kumonRegFee != 0.0) {
-                            _kumonPayments.add(PaymentDetail(label: 'REGISTRATION FEE', amount: localCurrencyFormat(kumonRegFee), isPaid: paymentDate != 'Unpaid'));
+                            _kumonPayments.add(PaymentDetail(
+                                label: 'REGISTRATION FEE',
+                                amount: localCurrencyFormat(kumonRegFee),
+                                isPaid: paymentDate != 'Unpaid'));
                           }
                         } else {
-                          _preSchoolPayments.add(PaymentDetail(label: amountDesc.toUpperCase(), amount: localCurrencyFormat(amountDue), isPaid: paymentDate != 'Unpaid'));
+                          _preSchoolPayments.add(PaymentDetail(
+                              label: amountDesc.toUpperCase(),
+                              amount: localCurrencyFormat(amountDue),
+                              isPaid: paymentDate != 'Unpaid'));
                         }
 
                         return Column(
@@ -348,8 +376,13 @@ class PaymentDetails extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 20.0),
                                   child: Column(children: <Widget>[
-                                    _preSchoolPayments.length > 0 ? PaymentDataView(title: 'Preschool', payments: _preSchoolPayments) : Container(),
-                                    _kumonPayments.length > 0 ? PaymentDataView(title: 'Kumon', payments: _kumonPayments) : Container(),
+                                    _preSchoolPayments.length > 0
+                                        ? PaymentDataView(
+                                            title: 'Preschool', payments: _preSchoolPayments)
+                                        : Container(),
+                                    _kumonPayments.length > 0
+                                        ? PaymentDataView(title: 'Kumon', payments: _kumonPayments)
+                                        : Container(),
                                     tutorialFee != 0.0 && tutorialFee != null
                                         ? PaymentDataView(
                                             title: 'Tutorial',
@@ -430,7 +463,8 @@ class PaymentDetails extends StatelessWidget {
                                           children: <Widget>[
                                             Column(
                                               children: <Widget>[
-                                                if (paymentType['type'] != 'bank' && paymentType['type'] != 'over')
+                                                if (paymentType['type'] != 'bank' &&
+                                                    paymentType['type'] != 'over')
                                                   Padding(
                                                     padding: EdgeInsets.symmetric(vertical: 6.0),
                                                     child: Column(
@@ -444,16 +478,20 @@ class PaymentDetails extends StatelessWidget {
                                                           ),
                                                         ),
                                                         Padding(
-                                                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                          padding:
+                                                              EdgeInsets.symmetric(vertical: 3.0),
                                                           child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment.center,
                                                             children: <Widget>[
                                                               Text(
                                                                 '#',
-                                                                style: TextStyle(color: Colors.grey[500]),
+                                                                style: TextStyle(
+                                                                    color: Colors.grey[500]),
                                                               ),
                                                               Padding(
-                                                                padding: EdgeInsets.symmetric(horizontal: 1.0),
+                                                                padding: EdgeInsets.symmetric(
+                                                                    horizontal: 1.0),
                                                               ),
                                                               Text(
                                                                 '${paymentType['official_receipt']}',
@@ -482,10 +520,15 @@ class PaymentDetails extends StatelessWidget {
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                        padding:
+                                                            EdgeInsets.symmetric(vertical: 3.0),
                                                         child: Text(
                                                           capitalize(
-                                                            paymentType['type'] == 'over' ? 'Over the Counter' : paymentType['type'] == 'bank' ? 'Bank Transfer' : paymentType['type'],
+                                                            paymentType['type'] == 'over'
+                                                                ? 'Over the Counter'
+                                                                : paymentType['type'] == 'bank'
+                                                                    ? 'Bank Transfer'
+                                                                    : paymentType['type'],
                                                           ),
                                                           style: TextStyle(
                                                             fontSize: 18.0,
@@ -501,7 +544,8 @@ class PaymentDetails extends StatelessWidget {
                                                     ? Column(
                                                         children: <Widget>[
                                                           Padding(
-                                                            padding: EdgeInsets.symmetric(vertical: 6.0),
+                                                            padding:
+                                                                EdgeInsets.symmetric(vertical: 6.0),
                                                             child: Column(
                                                               children: <Widget>[
                                                                 Text(
@@ -513,13 +557,19 @@ class PaymentDetails extends StatelessWidget {
                                                                   ),
                                                                 ),
                                                                 Padding(
-                                                                  padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      vertical: 3.0),
                                                                   child: Text(
                                                                     payment.checkNo ?? 'n/a',
                                                                     style: TextStyle(
                                                                       fontSize: 18.0,
-                                                                      fontWeight: payment.checkNo != null ? FontWeight.w600 : FontWeight.w400,
-                                                                      color: payment.checkNo != null ? Colors.black87 : Colors.black54,
+                                                                      fontWeight:
+                                                                          payment.checkNo != null
+                                                                              ? FontWeight.w600
+                                                                              : FontWeight.w400,
+                                                                      color: payment.checkNo != null
+                                                                          ? Colors.black87
+                                                                          : Colors.black54,
                                                                     ),
                                                                   ),
                                                                 ),
@@ -527,7 +577,8 @@ class PaymentDetails extends StatelessWidget {
                                                             ),
                                                           ),
                                                           Padding(
-                                                            padding: EdgeInsets.symmetric(vertical: 6.0),
+                                                            padding:
+                                                                EdgeInsets.symmetric(vertical: 6.0),
                                                             child: Column(
                                                               children: <Widget>[
                                                                 Text(
@@ -539,7 +590,8 @@ class PaymentDetails extends StatelessWidget {
                                                                   ),
                                                                 ),
                                                                 Padding(
-                                                                  padding: EdgeInsets.symmetric(vertical: 3.0),
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      vertical: 3.0),
                                                                   child: Text(
                                                                     paymentType['bank_name'] ?? '',
                                                                     style: TextStyle(
@@ -572,7 +624,8 @@ class PaymentDetails extends StatelessWidget {
                                               color: Color.fromRGBO(0, 0, 0, .075),
                                             ),
                                           ),
-                                          padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 24.0, horizontal: 16.0),
                                           child: Flex(
                                             direction: Axis.horizontal,
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

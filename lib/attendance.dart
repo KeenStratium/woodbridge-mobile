@@ -375,7 +375,7 @@ class _AttendanceState extends State<Attendance> with SingleTickerProviderStateM
           return children;
         },
       ),
-      onDaySelected: (date, events) {
+      onDaySelected: (date, events, _) {
         _onDaySelected(date, events);
         List selectedHolidays = holidayDays[_selectedDay];
         List thisEvents = _events[_selectedDay] ?? [''];
